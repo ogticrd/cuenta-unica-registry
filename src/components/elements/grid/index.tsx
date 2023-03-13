@@ -5,17 +5,20 @@ interface IPropsContainer {
     children: React.ReactNode
     // itemsCenter?: boolean
     marginY?: boolean
+    spacing?: number
     justifyCenter?: boolean
+    flexDirection?: any
 }
 
-export const GridContainer = ({children, marginY, justifyCenter}: IPropsContainer) => (
+export const GridContainer = ({children, spacing, marginY, justifyCenter, flexDirection}: IPropsContainer) => (
     <Grid 
         container 
-        spacing={2}
+        spacing={spacing ? spacing : 2}
         direction="row"
         // alignItems={itemsCenter ? "center" : "flex-start"}
         justifyContent={justifyCenter ? "center" : "flex-start"}
         marginY={marginY ? 1 : "none"}
+        flexDirection={flexDirection ? flexDirection : null}
     >
         {children}
     </Grid>
@@ -23,14 +26,14 @@ export const GridContainer = ({children, marginY, justifyCenter}: IPropsContaine
 
 interface IPropsItem {
     children?: React.ReactNode
+    sx?: any
     sm?: number
     md?: number
     lg?: number
-    className?: string
 }
 
-export const GridItem = ({children, sm=12, md=6, lg=4}: IPropsItem) => (
-    <Grid item xs={12} sm={sm} md={md} lg={lg}>
+export const GridItem = ({children, sx, sm=12, md=6, lg=4}: IPropsItem) => (
+    <Grid item sx={sx ? sx : null} xs={12} sm={sm} md={md} lg={lg}>
         {children}
     </Grid>
 )

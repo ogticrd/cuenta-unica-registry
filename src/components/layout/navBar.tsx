@@ -17,7 +17,7 @@ export default function Index() {
     return (
         <>
             <Script src="https://cdn.jsdelivr.net/gh/opticrd/official-header/main.js" defer />
-            <official-header></official-header>
+            {/* <official-header></official-header> */}
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
