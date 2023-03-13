@@ -5,7 +5,7 @@ import { theme } from '../themes';
 
 import Layout from '../components/layout'
 
-import AuthHome from './auth/home'
+import AuthHome from './auth'
 
 export default function Home() {
   return (

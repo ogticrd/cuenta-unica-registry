@@ -27,20 +27,20 @@ export const theme = createTheme({
     },
 
     components: {
-    //     MuiAppBar: {
-    //         styleOverrides: {
-    //             colorPrimary: {
-    //                 backgroundColor: "white",
-    //                 boxShadow: "none",
-    //                 borderBottom: "1px solid rgba(0, 0, 0, 0.12)"
-    //             }
-    //         }
-    //     },
+        //     MuiAppBar: {
+        //         styleOverrides: {
+        //             colorPrimary: {
+        //                 backgroundColor: "white",
+        //                 boxShadow: "none",
+        //                 borderBottom: "1px solid rgba(0, 0, 0, 0.12)"
+        //             }
+        //         }
+        //     },
         MuiInputLabel: {
             defaultProps: {
                 sx: {
-                    fontSize: "20px",
-                    color: '#166fb9',
+                    fontSize: "18px",
+                    color: '#003579',
                     whiteSpace: 'normal',
                     overflow: 'unset',
                     fontWeight: "bold",
@@ -51,27 +51,28 @@ export const theme = createTheme({
                 },
             },
         },
-    //     MuiFormLabel: {
-    //         defaultProps: {
-    //             sx: {
-    //                 fontSize: "15px",
-    //                 fontWeight: "600",
-    //                 lineHeight: "29px",
-    //                 color: '#404040',
-    //                 whiteSpace: 'normal',
+        //     MuiFormLabel: {
+        //         defaultProps: {
+        //             sx: {
+        //                 fontSize: "15px",
+        //                 fontWeight: "600",
+        //                 lineHeight: "29px",
+        //                 color: '#404040',
+        //                 whiteSpace: 'normal',
 
-    //                 "& span": {
-    //                     color: Red[500]
-    //                 }
-    //             },
-    //         },
-    //     },
-    MuiButton: {
-        defaultProps: {
-            sx: {
-                borderRadius: "20px"
-            }
-        }
-    },
+        //                 "& span": {
+        //                     color: Red[500]
+        //                 }
+        //             },
+        //         },
+        //     },
+
+        // MuiButton: {
+        //     defaultProps: {
+        //         sx: {
+        //             borderRadius: "50px",
+        //         }
+        //     }
+        // },
     },
 });
