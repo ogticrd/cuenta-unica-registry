@@ -1,0 +1,138 @@
+name: Dev deployment
+
+on:
+  pull_request:
+    branches:
+      - "main"
+      - "staging"
+      - "master"
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - 'package*.json'
+      - 'Dockerfile'
+      - 'entrypoint.sh'
+      - '.github/workflows/development.yml'
+    types: [ opened, synchronize, reopened, labeled ]
+
+env:
+  # Deployment variables
+  ARTIFACT_REGISTRY_NAME: ${{ secrets.REPOSITORY_NAME}}
+  GAR_BASE: us-docker.pkg.dev/${{ secrets.ARTIFACT_REGISTRY_NAME }}
+  SKIP_PREFLIGHT_CHECK: true
+  DISABLE_ESLINT_PLUGIN: true
+  NODE_ENV: development
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: ['14']
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install --pure-lockfiles
+
+  build:
+    runs-on: ubuntu-latest
+    environment: Dev
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x        
+
+      ### Build the Docker image and Push it
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: |
+            /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}
+
+      - name: Login to GAR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.GAR_BASE}}
+          username: _json_key
+          password: ${{ secrets.GAR_JSON_KEY }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          target: release
+          tags: ${{ env.GAR_BASE }}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          build-args: |
+            NODE_ENV=${{ env.NODE_ENV }}
+            SKIP_PREFLIGHT_CHECK=${{ env.SKIP_PREFLIGHT_CHECK }}
+            DISABLE_ESLINT_PLUGIN=${{ env.DISABLE_ESLINT_PLUGIN }}
+          push: true
+          cache-from: type=registry,ref=${{ env.GAR_BASE }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          cache-to: type=inline
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  deploy:
+    needs: ["build"]
+    runs-on: ubuntu-latest
+    environment: Dev
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GAR_JSON_KEY }}'
+
+      - id: deploy
+        uses: google-github-actions/deploy-cloudrun@v0.8.0
+        with:
+          image: ${{ env.GAR_BASE}}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          credentials: ${{ secrets.GAR_JSON_KEY }}
+          region: ${{ secrets.GCP_REGION }}
+          env_vars: |
+            NODE_ENV=${{ env.NODE_ENV }},
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GAR_JSON_KEY }}
+          export_default_credentials: true
+
+      - name: Allow unauthenticated calls to the service
+        run: |
+          gcloud run services add-iam-policy-binding ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }} \
+          --region=${{ secrets.GCP_REGION }} --member=allUsers --role=roles/run.invoker --quiet
+
+      # Example of using the output
+      - id: test
+        run: curl "${{ steps.deploy.outputs.url }}"
+
+      - name: Comment PR with DEV URL
+        if: ${{ success() }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            **DEV URL:** 
+            ${{ steps.deploy.outputs.url }}
+          reactions: heart
