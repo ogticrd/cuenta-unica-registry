@@ -12,7 +12,7 @@ on:
       - 'package*.json'
       - 'Dockerfile'
       - 'entrypoint.sh'
-      - '.github/workflows/development.yml'
+      - '.github/workflows/dev-auth-registry-infra.yml'
     types: [ opened, synchronize, reopened, labeled ]
 
 env:
