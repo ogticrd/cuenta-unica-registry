@@ -16,9 +16,8 @@ on:
     types: [ opened, synchronize, reopened, labeled ]
 
 env:
-  # Deployment variables
   ARTIFACT_REGISTRY_NAME: ${{ secrets.REPOSITORY_NAME}}
-  GAR_BASE: us-docker.pkg.dev/${{ secrets.ARTIFACT_REGISTRY_NAME }}
+  GAR_BASE: us-docker.pkg.dev/${{ secrets.GCP_PROJECT }}
   SKIP_PREFLIGHT_CHECK: true
   DISABLE_ESLINT_PLUGIN: true
   NODE_ENV: development
