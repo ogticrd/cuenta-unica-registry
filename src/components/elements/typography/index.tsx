@@ -8,6 +8,7 @@ interface IProps {
     notGutterBottom?: boolean
     noWrap?: boolean
     textCenter?: boolean
+    colorPrimary?: boolean
 }
 
 export const TextTitle = ({ children }: IProps) => {
@@ -36,15 +37,15 @@ export const TextSubTitleBody = ({ children }: IProps) => {
 
 export const TextBody = ({ children, textCenter }: IProps) => {
     return (
-        <Typography variant="body2" color="primary" sx={{ fontSize: "15px", fontWeight: "", textAlign: `${textCenter ? 'center' : 'left'}` }}>
+        <Typography variant="body2" color="primary" sx={{ fontSize: "15px", fontWeight: "400", textAlign: `${textCenter ? 'center' : 'left'}` }}>
             {children}
         </Typography>
     )
 }
 
-export const TextBodyTiny = ({ children, textCenter }: IProps) => {
+export const TextBodyTiny = ({ children, textCenter, colorPrimary }: IProps) => {
     return (
-        <Typography variant="body2" sx={{ fontSize: "13px", fontWeight: "600", color: "#433E3E", textAlign: `${textCenter ? 'center' : 'left'}` }}>
+        <Typography variant="body2" color={`${colorPrimary ? 'primary' : '#231F20'}`} sx={{ fontSize: "13px", fontWeight: "600",  textAlign: `${textCenter ? 'center' : 'left'}` }}>
             {children}
         </Typography>
     )
