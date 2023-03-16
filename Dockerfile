@@ -15,5 +15,6 @@ COPY --from=release /app/package.json ./package.json
 COPY --from=release /app/node_modules ./node_modules
 COPY --from=release /app/.next ./.next
 COPY --from=release /app/public ./public
-EXPOSE 3000
+ENV PORT 8080
+EXPOSE ${PORT}
 CMD ["yarn", "start"]
