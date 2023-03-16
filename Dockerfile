@@ -1,4 +1,4 @@
-FROM node:lts-alpine as release
+FROM node:lts-alpine as build
 WORKDIR /app
 COPY package.json yarn.lock ./
 # install dependencies
@@ -8,13 +8,14 @@ COPY . .
 RUN yarn build
 # remove dev dependencies
 RUN npm prune --production
-FROM node:lts-alpine 
+
+FROM node:lts-alpine as release
 WORKDIR /app
 # copy from build image
-COPY --from=release /app/package.json ./package.json
-COPY --from=release /app/node_modules ./node_modules
-COPY --from=release /app/.next ./.next
-COPY --from=release /app/public ./public
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
 
 ENV PORT 8080
 ENV HOST 0.0.0.0
