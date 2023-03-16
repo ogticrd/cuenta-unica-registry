@@ -101,6 +101,7 @@ export default function Index() {
                         <ButtonApp
                             color="info"
                             outlined
+                            onClick={() => router.push(routes.register)}
                         >
                             CREAR TU CUENTA UNICA CIUDADANA
                         </ButtonApp>

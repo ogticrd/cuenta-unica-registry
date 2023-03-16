@@ -25,13 +25,17 @@ export const CardAuth = ({ title, subTitle, subTitle2, children, lading }: any) 
                         {title}
                     </Typography>
                 </div>
-                <div style={{ padding: "10px" }}>
-                    <div style={{ padding: "50px 35px 0px 35px" }}>
-                        <TextBody textCenter>
-                            {subTitle}
-                        </TextBody>
-                    </div>
-                    <br />
+                <div style={{ padding: "25px 10px 10px 10px" }}>
+                    {subTitle &&
+                        <>
+                            <div style={{ padding: "35px 35px 0px 35px" }}>
+                                <TextBody textCenter>
+                                    {subTitle}
+                                </TextBody>
+                            </div>
+                            <br />
+                        </>
+                    }
                     {subTitle2 &&
                         <>
                             <div style={{ display: "flex", justifyContent: "center" }}>
