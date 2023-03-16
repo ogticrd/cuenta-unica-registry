@@ -1,6 +1,8 @@
 export const routes = {
     auth: {
         home: "/",
-        password: "auth/password"
-    }
+        password: "auth/password",
+        method: "method",
+    },
+    register: "register",
 }
