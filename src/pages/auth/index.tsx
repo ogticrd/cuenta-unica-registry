@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import * as yup from "yup";
 
 import LadingHome from "../../../public/assets/ladingHome.svg"
 
@@ -9,15 +10,20 @@ import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth"
 import { GridContainer, GridItem } from "@/components/elements/grid"
 import { TextBody, TextBodyTiny, TextSubTitle, TextSubTitleBody, TextTitle } from "@/components/elements/typography"
 
-import {schema} from './schema';
 import { FormControlApp } from '@/components/form/input';
 import { InputApp } from '@/themes/form/input';
 import { ButtonApp } from '@/components/elements/button';
 import { routes } from '@/constants/routes';
+import { labels } from '@/constants/labels';
 
 interface IFormInputs {
     cedulaOrEmail: string
 }
+
+const schema = yup.object({
+    cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
+})
+
 
 export default function Index() {
 
