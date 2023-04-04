@@ -23,13 +23,14 @@ interface IButtonApp {
     startIcon?: any
     size?: "small" | "medium" | "large" | undefined
     color?: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning"
+    variant?: "text" | "outlined" | "contained"
 }
 
-export const ButtonApp = ({outlined, disabled, submit, onClick, notFullWidth, children, size="medium", startIcon= null, color}: IButtonApp) => {
+export const ButtonApp = ({outlined, disabled, variant="contained", submit, onClick, notFullWidth, children, size="medium", startIcon= null, color}: IButtonApp) => {
     return (
         <Button
             size={size}
-            variant={outlined ? "outlined" : "contained"} 
+            variant={variant} 
             disabled={disabled}
             type={submit ? "submit" : "button"}
             onClick={onClick}

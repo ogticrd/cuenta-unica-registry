@@ -4,7 +4,7 @@ import InputBase from '@mui/material/InputBase';
 export const InputApp = styled(InputBase)(({ theme }) => ({
   'label + &': {
     fontSize: 10,
-    marginTop: theme.spacing(2.7),
+    marginTop: theme.spacing(2.4),
   },
   '& .MuiInputBase-input': {
     borderRadius: 4,
@@ -13,7 +13,8 @@ export const InputApp = styled(InputBase)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
     border: '.5px solid #dadada',
     color: "#606060",
-    fontSize: 12,
+    fontSize: 16,
+    fontweight: '400',
     width: '100%',
     padding: '11px 8px',
     marginBottom: '4px',

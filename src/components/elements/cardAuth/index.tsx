@@ -5,13 +5,13 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import LogoCuentaUnica from "../../../../public/assets/logoCuentaUnica.png"
 import { TextBody, TextBodyTiny } from '../typography';
 
-export const CardAuth = ({ title, subTitle, subTitle2, children, lading }: any) => {
+export const CardAuth = ({ title, subTitle, subTitle2, children, lading, ladingWidth, icon }: any) => {
 
     return (
         <div>
             {lading &&
                 <div style={{ position: "fixed", top: "40vh", left: "10vh", zIndex: "-1" }}>
-                    <img src={lading?.src} alt="Lading" width="500" />
+                    <img src={lading?.src} alt="Lading" width={ladingWidth ? ladingWidth : "500"} />
                 </div>
             }
             <div style={{ textAlign: "center" }}>
@@ -20,12 +20,17 @@ export const CardAuth = ({ title, subTitle, subTitle2, children, lading }: any) 
             <br />
             <div style={{ background: "white", border: "1px solid #E2E2E2", borderRadius: "4px 4px 0 0" }}>
                 <div style={{ display: "flex", background: "#F8F8F8", borderRadius: "4px 4px 0 0", padding: "10px 25px", boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.161)" }}>
-                    <AccountCircleOutlinedIcon color="primary" sx={{ margin: "4px 10px 0 0" }} />
-                    <Typography variant="h6" color="primary" sx={{ fontWeight: "bold", fontSize: "20px" }}>
+                    <AccountCircleOutlinedIcon color="primary" sx={{ margin: "4px 10px 0 0", fontSize: "28px" }} />
+                    <Typography color="primary" sx={{ fontWeight: "700", fontSize: "24px" }}>
                         {title}
                     </Typography>
                 </div>
                 <div style={{ padding: "25px 10px 10px 10px" }}>
+                    {icon && 
+                        <div style={{display: "flex", justifyContent: "center", marginTop: "25px"}}>
+                            {icon}
+                        </div>
+                    }
                     {subTitle &&
                         <>
                             <div style={{ padding: "35px 35px 0px 35px" }}>
