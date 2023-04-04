@@ -5,12 +5,18 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
 import Step1 from './step1';
 import Step2 from './step2';
+import Step3 from './step3';
+import { useRouter } from 'next/router';
+import { routes } from '@/constants/routes';
 
 const steps = ['PASO 1', 'PASO 2', 'PASO 3'];
 
 export default function StepperRegister() {
+    const router = useRouter()
+
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
@@ -23,6 +29,11 @@ export default function StepperRegister() {
     };
 
     const handleNext = () => {
+        console.log(activeStep)
+        if(activeStep === (steps.length - 1)){
+            return router.push(routes.register.confirmation)
+        }
+
         let newSkipped = skipped;
         if (isStepSkipped(activeStep)) {
             newSkipped = new Set(newSkipped.values());
@@ -112,7 +123,12 @@ export default function StepperRegister() {
                             handleNext={handleNext}
                         />
                     }
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    {activeStep === 2 &&
+                        <Step3
+                            handleNext={handleNext}
+                        />
+                    }
+                    {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Button
                             color="inherit"
                             disabled={activeStep === 0}
@@ -130,7 +146,7 @@ export default function StepperRegister() {
                         <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
-                    </Box>
+                    </Box> */}
                 </React.Fragment>
             )}
         </Box>

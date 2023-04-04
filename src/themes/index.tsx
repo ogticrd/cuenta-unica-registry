@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-// import Red from '@mui/material/colors/red';
+import { red } from '@mui/material/colors';
 
 export const theme = createTheme({
     palette: {
@@ -39,33 +39,33 @@ export const theme = createTheme({
         MuiInputLabel: {
             defaultProps: {
                 sx: {
-                    fontSize: "18px",
+                    fontSize: "16px",
+                    fontWeight: "400",
                     color: '#003579',
-                    whiteSpace: 'normal',
+                    // whiteSpace: 'normal',
                     overflow: 'unset',
-                    fontWeight: "bold",
 
-                    // "& span": {
-                    //     color: Red[500]
-                    // }
+                    "& span": {
+                        color: red[500]
+                    }
                 },
             },
         },
-        //     MuiFormLabel: {
-        //         defaultProps: {
-        //             sx: {
-        //                 fontSize: "15px",
-        //                 fontWeight: "600",
+            MuiFormLabel: {
+                defaultProps: {
+                    sx: {
+                        fontSize: "16px",
+                        fontWeight: "400",
         //                 lineHeight: "29px",
         //                 color: '#404040',
         //                 whiteSpace: 'normal',
 
-        //                 "& span": {
-        //                     color: Red[500]
-        //                 }
-        //             },
-        //         },
-        //     },
+                        "& span": {
+                            color: red[500]
+                        }
+                    },
+                },
+            },
 
         // MuiButton: {
         //     defaultProps: {

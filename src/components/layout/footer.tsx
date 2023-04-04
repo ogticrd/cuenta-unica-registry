@@ -18,7 +18,7 @@ export default function Index() {
     return (
         <>
             <div style={{ padding: "75px 25px" }} className="bg-primary">
-                <GridContainer>
+                <GridContainer spacing={4}>
                     <GridItem md={12} lg={3}>
                         <div style={{ display: "flex" }}>
                             <img src={logoGOB.src} alt="logo" width="200" />
@@ -28,39 +28,39 @@ export default function Index() {
                     <GridItem md={12} lg={9}>
                         <GridContainer>
                             <GridItem md={6} lg={3}>
-                                <Typography variant="subtitle2" fontWeight="600" color="white">CONÓCENOS</Typography>
+                                <Typography fontWeight="500" fontSize={16} color="white">CONÓCENOS</Typography>
                                 <br />
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     Oficina Gubernamental de Tecnologías de la Información y Comunicación
                                 </Typography>
                             </GridItem>
 
                             <GridItem md={6} lg={3}>
-                                <Typography variant="subtitle2" fontWeight="600" color="white">CONTÁCTANOS</Typography>
+                                <Typography fontWeight="500" fontSize={16} color="white">CONTÁCTANOS</Typography>
                                 <br />
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     Tel: (809)-286-1009
                                 </Typography>
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     Fax: (809)-732-5465
                                 </Typography>
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     info@ogtic.gob.do
                                 </Typography>
                             </GridItem>
 
                             <GridItem md={6} lg={3}>
-                                <Typography variant="subtitle2" fontWeight="600" color="white">BÚSCANOS</Typography>
+                                <Typography fontWeight="500" fontSize={16} color="white">BÚSCANOS</Typography>
                                 <br />
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     Av. 27 de Febrero #419 casi esquina Núñez de Cáceres, Santo Domingo, R.D.
                                 </Typography>
                             </GridItem>
 
                             <GridItem md={6} lg={3}>
-                                <Typography variant="subtitle2" fontWeight="600" color="white">INFÓRMATE</Typography>
+                                <Typography fontWeight="500" fontSize={16} color="white">INFÓRMATE</Typography>
                                 <br />
-                                <Typography variant="body2" color="white">
+                                <Typography color="white" fontWeight="400" fontSize="16">
                                     Términos de Uso Política de Privacidad Preguntas Frecuentes
                                 </Typography>
                             </GridItem>

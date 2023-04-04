@@ -4,5 +4,9 @@ export const routes = {
         password: "auth/password",
         method: "method",
     },
-    register: "register",
+    register: {
+        home: "register",
+        confirmation: "register/confirmation",
+        registered: "registered"
+    } 
 }

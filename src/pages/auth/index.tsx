@@ -52,7 +52,6 @@ export default function Index() {
                     <TextTitle>
                         ¡Bienvenido al Sistema de Autenticación Gubernamental <span className="text-error">Ciudadana</span>!
                     </TextTitle>
-                    <br />
                     <TextSubTitle>
                         Accede o regístrate con un único usuario y contraseña, para solicitar o consultar todos tus servicios y trámites gubernamentales.
                     </TextSubTitle>
@@ -74,6 +73,8 @@ export default function Index() {
                                 <FormControlApp
                                     label="Coloca cédula o correo electrónico"
                                     msg={errors.cedulaOrEmail?.message}
+                                    tooltip='Texto de ejemplo'
+                                    required
                                 >
                                     <InputApp
                                         defaultValue={dataItem.cedula}
@@ -95,13 +96,13 @@ export default function Index() {
                     </CardAuth>
                     <CardAuthFooter>
                         <TextBodyTiny textCenter>
-                            <span className="text-secondary">¿No tienes cuenta?</span> Registrate, accede a trámites y servicios del estado dominicano con un único usuario y contraseña, de forma segura y confiable.
+                            <span className="text-secondary text-bold">¿No tienes cuenta?</span> Registrate, accede a trámites y servicios del estado dominicano con un único usuario y contraseña, de forma segura y confiable.
                         </TextBodyTiny>
                         <br />
                         <ButtonApp
                             color="info"
-                            outlined
-                            onClick={() => router.push(routes.register)}
+                            variant='outlined'
+                            onClick={() => router.push(routes.register.home)}
                         >
                             CREAR TU CUENTA UNICA CIUDADANA
                         </ButtonApp>
