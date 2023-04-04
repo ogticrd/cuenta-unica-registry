@@ -77,15 +77,15 @@ export default function Index() {
                             </ButtonApp>
                         </GridItem>
 
-                        <GridItem md={12} lg={12}>
+                        {/* <GridItem md={12} lg={12}>
                             <ButtonApp
                                 color="info"
-                                outlined
+                                variant='outlined'
                                 onClick={() => router.push(routes.auth.method)}
                             >
                                 Cambiar Método de Inicio de Sesión
                             </ButtonApp>
-                        </GridItem>
+                        </GridItem> */}
                     </GridContainer>
 
                     <GridContainer marginY>

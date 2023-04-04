@@ -11,13 +11,15 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppsIcon from '@mui/icons-material/Apps';
+import Link from 'next/link';
+import { routes } from '@/constants/routes';
 
 export default function Index() {
     console.log(Logo)
     return (
         <>
             <Script src="https://cdn.jsdelivr.net/gh/opticrd/official-header/main.js" defer />
-            {/* <official-header></official-header> */}
+            <official-header></official-header>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
@@ -34,7 +36,9 @@ export default function Index() {
                             News
                         </Typography> */}
                         <div style={{flexGrow: 1}}>
-                            <img src={Logo.src} alt="logo" width="350" />
+                            <Link href={routes.auth.home}>
+                                <img src={Logo.src} alt="logo" width="350" />
+                            </Link>
                         </div>
                         <AppsIcon fontSize='large' />
                     </Toolbar>

@@ -53,7 +53,6 @@ export default function Index() {
                     <TextTitle>
                         Sistema registro <span className="text-error">cuenta única ciudadana.</span>
                     </TextTitle>
-                    <br />
                     <TextSubTitle>
                         ¡Es fácil y rápido! Solo siga los siguientes pasos:
                     </TextSubTitle>

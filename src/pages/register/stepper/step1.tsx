@@ -12,10 +12,12 @@ import { ButtonApp } from '@/components/elements/button';
 
 interface IFormInputs {
     cedula: string
+    birthDate: string
 }
 
 const schema = yup.object({
     cedula: yup.string().trim().required(labels.form.requiredField),
+    birthDate: yup.string().trim().required(labels.form.requiredField),
 })
 
 export default function Step1({handleNext} : any) {
@@ -35,21 +37,35 @@ export default function Step1({handleNext} : any) {
     return (
         <>
             <br />
-            <TextBody textCenter>
+            <TextBody textCenter bold>
                 Por favor completa los siguientes campos.
             </TextBody>
             
             <GridContainer marginY>
                 <GridItem md={12} lg={12}>
                     <FormControlApp
-                        label="Coloca tu número de identidad (cédula)"
+                        label="Coloca tu Cédula"
                         msg={errors.cedula?.message}
                         required
                     >
                         <InputApp
                             defaultValue={dataItem.cedula}
-                            placeholder="Cédula"
+                            placeholder="*** - **00000 - 0"
                             {...register("cedula")}
+                        />
+                    </FormControlApp>
+                </GridItem>
+
+                <GridItem md={12} lg={12}>
+                    <FormControlApp
+                        label="Fecha Nacimiento"
+                        msg={errors.birthDate?.message}
+                        required
+                    >
+                        <InputApp
+                            defaultValue={dataItem.cedula}
+                            placeholder="DD / MM / AAAA"
+                            {...register("birthDate")}
                         />
                     </FormControlApp>
                 </GridItem>

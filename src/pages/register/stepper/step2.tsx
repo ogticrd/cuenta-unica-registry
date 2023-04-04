@@ -14,7 +14,7 @@ import { InputApp } from "@/themes/form/input";
 import { labels } from '@/constants/labels';
 import { ButtonApp } from '@/components/elements/button';
 import { Typography } from '@mui/material';
-import Step2Modal from './step2Modal';
+import {Step2Modal} from './step2Modal';
 
 interface IFormInputs {
     cedula: string
@@ -46,8 +46,9 @@ export default function Step2({ handleNext }: any) {
         <>
             <br />
             <TextBody textCenter>
-                Para verificarte tu identidad y seguir con el proceso de tu registros necesitas disponer de lo siguiente:
+                Para verificarte tu identidad y seguir con el proceso de tu registro necesitas disponer de lo siguiente:
             </TextBody>
+            <br />
 
             <GridContainer marginY>
                 <GridItem md={12} lg={12}>
@@ -57,12 +58,12 @@ export default function Step2({ handleNext }: any) {
                     </div>
                 </GridItem>
 
-                <GridItem md={12} lg={12}>
+                {/* <GridItem md={12} lg={12}>
                     <div style={{ background: "#EFF7FF", borderRadius: "6px", padding: "30px 20px", display: "flex", alignItems: "center", flexDirection: "row" }}>
                         <BadgeOutlinedIcon sx={{ fontSize: "45px", marginRight: "12px" }} color="info" />
                         <Typography variant="body2" color="primary">Disponible tu <span style={{ fontWeight: "bold" }}>documento de identidad “cédula”.</span></Typography>
                     </div>
-                </GridItem>
+                </GridItem> */}
 
                 <GridItem md={12} lg={12}>
                     <div style={{ background: "#EFF7FF", borderRadius: "6px", padding: "30px 20px", display: "flex", alignItems: "center", flexDirection: "row" }}>
@@ -76,16 +77,19 @@ export default function Step2({ handleNext }: any) {
                         Verificación con pasaporte disponible próximamente
                     </TextBody>
                 </GridItem>
+            </GridContainer>
 
+            <GridContainer marginY>
                 <GridItem md={12} lg={12}>
                     <ButtonApp
                         onClick={handleClick}
                     >
                         INICIAR PROCESO
                     </ButtonApp>
-                    <Step2Modal 
+                    <Step2Modal
                         open={open}
                         handleClick={handleClick}
+                        handleNextForm={handleNextForm}
                     />
                 </GridItem>
             </GridContainer>
