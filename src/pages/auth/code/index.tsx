@@ -18,11 +18,11 @@ import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { labels } from '@/constants/labels';
 
 interface IFormInputs {
-    password: string
+    code: string
 }
 
 const schema = yup.object({
-    password: yup.string().trim().required(labels.form.requiredField),
+    code: yup.string().trim().required(labels.form.requiredField),
 })
 
 export default function Index() {
@@ -53,20 +53,15 @@ export default function Index() {
                     <GridContainer>
                         <GridItem md={12} lg={12}>
                             <FormControlApp
-                                label="Contraseña"
-                                msg={errors.password?.message}
+                                label="Código de Autenticación"
+                                msg={errors.code?.message}
                             >
                                 <InputApp
                                     defaultValue={dataItem.cedula}
-                                    type="password"
-                                    placeholder="**********"
-                                    {...register("password")}
+                                    placeholder="1234"
+                                    {...register("code")}
                                 />
                             </FormControlApp>
-                        </GridItem>
-
-                        <GridItem md={12} lg={12}>
-                            <TextBodyTiny colorPrimary><span style={{ fontWeight: "bold", textDecoration: "underline" }}>¿Olvidaste tu contraseña?</span></TextBodyTiny>
                         </GridItem>
 
                         <GridItem md={12} lg={12}>
@@ -77,7 +72,7 @@ export default function Index() {
                             </ButtonApp>
                         </GridItem>
 
-                        {/* <GridItem md={12} lg={12}>
+                        <GridItem md={12} lg={12}>
                             <ButtonApp
                                 color="info"
                                 variant='outlined'
@@ -85,14 +80,6 @@ export default function Index() {
                             >
                                 Cambiar Método de Inicio de Sesión
                             </ButtonApp>
-                        </GridItem> */}
-                    </GridContainer>
-
-                    <GridContainer marginY>
-                        <GridItem md={12} lg={12}>
-                            <TextBodyTiny textCenter>
-                                <span className="text-secondary">¿No tienes cuenta?</span> Registrate aquí.
-                            </TextBodyTiny>
                         </GridItem>
                     </GridContainer>
                 </CardAuth>

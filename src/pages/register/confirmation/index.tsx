@@ -4,7 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from "yup";
 
-import LadingChica from "../../../../public/assets/ladingChica.png"
+import LadingChico from "../../../../public/assets/ladingChico.png"
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 
 import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth"
 import { GridContainer, GridItem } from "@/components/elements/grid"
@@ -18,11 +19,11 @@ import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { labels } from '@/constants/labels';
 
 interface IFormInputs {
-    password: string
+    email: string
 }
 
 const schema = yup.object({
-    password: yup.string().trim().required(labels.form.requiredField),
+    email: yup.string().trim().email(labels.form.invalidEmail).required(labels.form.requiredField),
 })
 
 export default function Index() {
@@ -39,62 +40,43 @@ export default function Index() {
 
     const onSubmit = (data: IFormInputs) => {
         console.log(data)
+        router.push(routes.register.registered)
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <BoxContentCenter>
                 <CardAuth
-                    title="Acceso Cuenta Única"
-                    subTitle="Para acceder a su cuenta única ciudadana, por favor ingrese su contraseña o su código de autenticación de doble factor. Recuerde que su contraseña es sensible a mayúsculas y minúsculas."
-                    subTitle2="correo@usuario.com"
-                    lading={LadingChica}
+                    title="Confirmación de Cuenta"
+                    subTitle="¡Lorem Ipsum [colocar redacción UX para activación de cuenta via correo!"
+                    lading={LadingChico}
+                    ladingWidth={175}
+                    icon={<MarkEmailReadOutlinedIcon sx={{fontSize: "58px"}} color='info' />}
                 >
                     <GridContainer>
                         <GridItem md={12} lg={12}>
                             <FormControlApp
-                                label="Contraseña"
-                                msg={errors.password?.message}
+                                label="Hemos enviado una confirmación al siguiente correo:"
+                                msg={errors.email?.message}
                             >
                                 <InputApp
                                     defaultValue={dataItem.cedula}
-                                    type="password"
-                                    placeholder="**********"
-                                    {...register("password")}
+                                    placeholder="correo@confirmacion.com"
+                                    {...register("email")}
                                 />
                             </FormControlApp>
-                        </GridItem>
-
-                        <GridItem md={12} lg={12}>
-                            <TextBodyTiny colorPrimary><span style={{ fontWeight: "bold", textDecoration: "underline" }}>¿Olvidaste tu contraseña?</span></TextBodyTiny>
                         </GridItem>
 
                         <GridItem md={12} lg={12}>
                             <ButtonApp
                                 submit
                             >
-                                INICIAR SESIÓN
+                                REENVIAR CORREO
                             </ButtonApp>
                         </GridItem>
 
-                        {/* <GridItem md={12} lg={12}>
-                            <ButtonApp
-                                color="info"
-                                variant='outlined'
-                                onClick={() => router.push(routes.auth.method)}
-                            >
-                                Cambiar Método de Inicio de Sesión
-                            </ButtonApp>
-                        </GridItem> */}
                     </GridContainer>
 
-                    <GridContainer marginY>
-                        <GridItem md={12} lg={12}>
-                            <TextBodyTiny textCenter>
-                                <span className="text-secondary">¿No tienes cuenta?</span> Registrate aquí.
-                            </TextBodyTiny>
-                        </GridItem>
-                    </GridContainer>
                 </CardAuth>
             </BoxContentCenter>
         </form>

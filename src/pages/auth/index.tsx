@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import * as yup from "yup";
 
 import LadingHome from "../../../public/assets/ladingHome.svg"
 
@@ -9,15 +10,20 @@ import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth"
 import { GridContainer, GridItem } from "@/components/elements/grid"
 import { TextBody, TextBodyTiny, TextSubTitle, TextSubTitleBody, TextTitle } from "@/components/elements/typography"
 
-import {schema} from './schema';
 import { FormControlApp } from '@/components/form/input';
 import { InputApp } from '@/themes/form/input';
 import { ButtonApp } from '@/components/elements/button';
 import { routes } from '@/constants/routes';
+import { labels } from '@/constants/labels';
 
 interface IFormInputs {
     cedulaOrEmail: string
 }
+
+const schema = yup.object({
+    cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
+})
+
 
 export default function Index() {
 
@@ -46,7 +52,6 @@ export default function Index() {
                     <TextTitle>
                         ¡Bienvenido al Sistema de Autenticación Gubernamental <span className="text-error">Ciudadana</span>!
                     </TextTitle>
-                    <br />
                     <TextSubTitle>
                         Accede o regístrate con un único usuario y contraseña, para solicitar o consultar todos tus servicios y trámites gubernamentales.
                     </TextSubTitle>
@@ -68,6 +73,8 @@ export default function Index() {
                                 <FormControlApp
                                     label="Coloca cédula o correo electrónico"
                                     msg={errors.cedulaOrEmail?.message}
+                                    tooltip='Texto de ejemplo'
+                                    required
                                 >
                                     <InputApp
                                         defaultValue={dataItem.cedula}
@@ -89,12 +96,13 @@ export default function Index() {
                     </CardAuth>
                     <CardAuthFooter>
                         <TextBodyTiny textCenter>
-                            <span className="text-secondary">¿No tienes cuenta?</span> Registrate, accede a trámites y servicios del estado dominicano con un único usuario y contraseña, de forma segura y confiable.
+                            <span className="text-secondary text-bold">¿No tienes cuenta?</span> Registrate, accede a trámites y servicios del estado dominicano con un único usuario y contraseña, de forma segura y confiable.
                         </TextBodyTiny>
                         <br />
                         <ButtonApp
                             color="info"
-                            outlined
+                            variant='outlined'
+                            onClick={() => router.push(routes.register.home)}
                         >
                             CREAR TU CUENTA UNICA CIUDADANA
                         </ButtonApp>
