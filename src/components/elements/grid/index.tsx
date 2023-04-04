@@ -13,7 +13,7 @@ interface IPropsContainer {
 export const GridContainer = ({children, spacing, marginY, justifyCenter, flexDirection}: IPropsContainer) => (
     <Grid 
         container 
-        spacing={spacing ? spacing : 2}
+        spacing={spacing ? spacing : 1}
         direction="row"
         // alignItems={itemsCenter ? "center" : "flex-start"}
         justifyContent={justifyCenter ? "center" : "flex-start"}

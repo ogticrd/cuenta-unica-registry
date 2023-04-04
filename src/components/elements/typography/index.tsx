@@ -9,11 +9,12 @@ interface IProps {
     noWrap?: boolean
     textCenter?: boolean
     colorPrimary?: boolean
+    bold?: boolean
 }
 
 export const TextTitle = ({ children }: IProps) => {
     return (
-        <Typography variant="h5" color="primary" sx={{ fontWeight: "600", fontSize: "30px" }}>
+        <Typography color="primary" sx={{ fontWeight: "500", fontSize: "34px", lineHeight: "48px" }} gutterBottom>
             {children}
         </Typography>
     )
@@ -21,7 +22,7 @@ export const TextTitle = ({ children }: IProps) => {
 
 export const TextSubTitle = ({ children }: IProps) => {
     return (
-        <Typography variant="subtitle1" color="primary" sx={{ fontWeight: "600", fontSize: "18px" }}>
+        <Typography color="primary" sx={{ fontWeight: "500", fontSize: "20px", lineHeight: "25px" }}>
             {children}
         </Typography>
     )
@@ -29,15 +30,15 @@ export const TextSubTitle = ({ children }: IProps) => {
 
 export const TextSubTitleBody = ({ children }: IProps) => {
     return (
-        <Typography variant="subtitle2" sx={{ fontWeight: "500", color: "#433E3E", fontSize: "15px" }}>
+        <Typography sx={{ fontWeight: "400", color: "#433E3E", fontSize: "18px", lineHeight: "27.57px" }}>
             {children}
         </Typography>
     )
 }
 
-export const TextBody = ({ children, textCenter }: IProps) => {
+export const TextBody = ({ children, textCenter, bold }: IProps) => {
     return (
-        <Typography variant="body2" color="primary" sx={{ fontSize: "15px", fontWeight: "400", textAlign: `${textCenter ? 'center' : 'left'}` }}>
+        <Typography variant="body2" color="primary" sx={{ fontSize: "16px", fontWeight: `${bold ? "600" : "500"}`, textAlign: `${textCenter ? 'center' : 'left'}` }}>
             {children}
         </Typography>
     )
@@ -45,7 +46,7 @@ export const TextBody = ({ children, textCenter }: IProps) => {
 
 export const TextBodyTiny = ({ children, textCenter, colorPrimary }: IProps) => {
     return (
-        <Typography variant="body2" color={`${colorPrimary ? 'primary' : '#231F20'}`} sx={{ fontSize: "13px", fontWeight: "600",  textAlign: `${textCenter ? 'center' : 'left'}` }}>
+        <Typography color={`${colorPrimary ? 'primary' : '#231F20'}`} sx={{ fontSize: "14px", fontWeight: "400",  textAlign: `${textCenter ? 'center' : 'left'}`, lineHeight: "21px" }}>
             {children}
         </Typography>
     )
