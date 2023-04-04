@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+
 body {
   font-family: Poppins, sans-serif;
   background-image: url("../../public/assets/forma.png");
   background-repeat: no-repeat;
   background-position: right;
   background-size: 300px;
+}
+
+.text-bold {
+  font-weight: bold;
 }
 
 .text-primary {
