@@ -1,0 +1,579 @@
+.vu\.sop\.mb-3, .vu\.sop\.my-3 {
+    margin-bottom: 1rem!important;
+}
+
+.vu\.sop\.input-group {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+}
+
+.vu\.sop\.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    #background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.vu\.sop\.input-group>.vu\.sop\.custom-file, .vu\.sop\.input-group>.vu\.sop\.custom-select, .vu\.sop\.input-group>.vu\.sop\.form-control, .vu\.sop\.input-group>.vu\.sop\.form-control-plaintext {
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+}
+
+.vu\.sop\.input-group>.vu\.sop\.custom-select:not(:last-child), .vu\.sop\.input-group>.vu\.sop\.form-control:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.vu\.sop\.input-group-append {
+    margin-left: -1px;
+    display: flex;
+}
+
+.vu\.sop\.input-group>.vu\.sop\.input-group-append>.vu\.sop\.btn, .vu\.sop\.input-group>.vu\.sop\.input-group-append>.vu\.sop\.input-group-text, .vu\.sop\.input-group>.vu\.sop\.input-group-prepend:first-child>.vu\.sop\.btn:not(:first-child), .vu\.sop\.input-group>.vu\.sop\.input-group-prepend:first-child>.vu\.sop\.input-group-text:not(:first-child), .vu\.sop\.input-group>.vu\.sop\.input-group-prepend:not(:first-child)>.vu\.sop\.btn, .vu\.sop\.input-group>.vu\.sop\.input-group-prepend:not(:first-child)>.vu\.sop\.input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 1px solid;
+}
+
+.vu\.sop\.input-group-append .vu\.sop\.btn, .vu\.sop\.input-group-prepend .btn {
+    position: relative;
+    z-index: 2;
+}
+
+
+.vu\.sop\.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.vu\.sop\.btn {
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+
+/* ----------------------------- */
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+
+[type=button], [type=reset], [type=submit], button {
+    -webkit-appearance: button;
+}
+
+button, select {
+    text-transform: none;
+}
+button, input {
+    overflow: visible;
+}
+
+button, input, optgroup, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+button {
+    border-radius: 0;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+button {
+    -webkit-appearance: button;
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: buttontext;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    align-items: flex-start;
+    cursor: default;
+    background-color: buttonface;
+    box-sizing: border-box;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonface;
+    border-image: initial;
+}
+
+/* -----------------------------*/
+/* -----------------------------*/
+/* -----------------------------*/
+
+/* -----------------------------*/
+/* main                      */
+/* -----------------------------*/
+
+@media (orientation: portrait) {
+        .masthead {
+            display: none;
+        }
+        .page-section {
+            padding-top: 70px;
+            padding-bottom: 0px;
+        }
+        .container {
+            padding: 0px;
+        }
+
+        #vu\.sop {
+        margin: auto;
+        width: 100vw;
+        height: 480px;
+        background-color: black;
+        overflow: hidden
+    }
+    .footer {
+        display: none;
+    }
+ }
+
+ @media screen and (min-width: 320px) and (max-width: 768px) and (orientation: landscape) {
+    .masthead {
+        display: none;
+    }
+    .page-section {
+        padding-top: 45px;
+        padding-bottom: 0px;
+    }
+    #vu\.sop {
+        margin: auto;
+        width: 400px;
+        height: 290px;
+        background-color: black;
+        overflow: hidden
+    }
+ }
+
+ @media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .masthead {
+        display: none;
+    }
+    .page-section {
+        padding-top: 70px;
+        padding-bottom: 0px;
+    }
+    #vu\.sop {
+        margin: auto;
+        width: 390px;
+        background-color: black;
+        overflow: hidden
+    }
+ }
+@media screen and (min-width: 1024px) and (orientation: landscape) {
+    #vu\.sop {
+        margin: auto;
+        width: 600px;
+        height: 440px;
+        background-color: black;
+        overflow: hidden
+    }
+}
+
+
+#vu\.sop\.ui {
+    border: 0px solid;
+    padding: 0px;
+    margin: 0px;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    font-size: x-large;
+    font-family: sans-serif;
+    color: black;
+}
+
+/* -----------------------------*/
+/* Generic                      */
+/* -----------------------------*/
+
+.vu\.sop\.ui\.loadingImg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin:-60px 0 0 -60px;
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+
+
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+
+#vu\.sop\.ui\.whiteLoading {
+    background-color: white;
+}
+
+.vu\.sop\.ui\.fullSizeDiv {
+    padding-left: 10%;
+    padding-right: 10%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    display: none;
+}
+
+.vu\.sop\.ui\.innerVerticalAlign {
+    position: relative;
+    top: 50%;
+    height: 8em;
+    margin-top: -4em;
+}
+
+.vu\.sop\.ui\.innerBottomRight {
+    position: relative;
+    bottom: 1px;
+    right: 1px;
+    display: none;
+}
+
+#vu\.sop\.ui\.flash {
+    /*display: block;*/
+    padding: 0px !important;
+    background-color: white;
+    /*opacity: 0.75;*/
+    z-index: 1000;
+}
+
+#vu\.sop\.ui\.alert {
+    background-color: white;
+}
+
+#vu\.sop\.ui\.alertButton {
+    border: 1px solid;
+}
+
+/* -----------------------------*/
+/* User                         */
+/* -----------------------------*/
+
+#vu\.sop\.ui\.userContainer {
+    background-color: white;
+}
+
+/* -----------------------------*/
+/* Video                        */
+/* -----------------------------*/
+
+#vu\.sop\.ui\.video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    /*min-width: 640px;
+    min-height: 480px;*/
+}
+
+#vu\.sop\.ui\.videoBg {
+    position: absolute;
+    z-index: -2;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateY(180deg);
+}
+
+#vu\.sop\.ui\.videoBgOverlayTop {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 50%;
+    top: 0px;
+    left: 0px;
+}
+
+#vu\.sop\.ui\.videoBgOverlayBottom {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 50%;
+    top: 50%;
+    left: 0px;
+}
+
+
+#vu\.sop\.ui\.videoContainer {
+    overflow: hidden;
+    position: relative;
+    display: none;
+    text-align: center;
+    max-height: 100%;
+    height: 100%;
+    max-width: 100%;
+    #background-color: black;
+    left: 50%;
+    top: 50%;
+    z-index: 10;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+/***** DEBUG */
+
+#vu\.sop\.ui\.debugInfo {
+    min-height: 25px;
+    min-width: 25px;
+    position: fixed;
+    background-color: rgba(50,50,50,0.85);
+    z-index: 99999;
+    top: 0px;
+    left: 0px;
+    color: white;
+    padding: 5px 10px 5px 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    display: none;
+    min-width: 180px;
+}
+
+#vu\.sop\.ui\.debugEval {
+    min-height: 25px;
+    min-width: 25px;
+    position: fixed;
+    background-color: rgba(50,50,50,0.85);
+    z-index: 99999;
+    top: 0px;
+    right: 0px;
+    color: white;
+    padding: 5px 10px 5px 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    display: none;
+    min-width: 180px;
+}
+
+#vu\.sop\.ui\.debugVideoCenter {
+    z-index: 55555;
+    background-color: darkblue;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    display: none;
+    float: left;
+    border-radius: 5px;
+}
+
+#vu\.sop\.ui\.debugElementCenter {
+    z-index: 55556;
+    background-color: #1DC600;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    display: none;
+    float: left;
+    border-radius: 5px;
+}
+
+/******/
+
+#vu\.sop\.ui\.bottomTextAlert {
+    font-family: sans-serif;
+    color: white;
+    -webkit-text-stroke-width: 0px;
+    -webkit-text-stroke-color: #212529;
+    font-size: 18px;
+    position: absolute;
+    width: auto;
+    display: none;
+    z-index: 60;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px 20px 5px 20px;
+    text-align: center;
+    background-color: black;
+    border-radius: 20px;
+    bottom: 20%;
+    transform: translate(-50%, 0px);
+}
+
+#vu\.sop\.ui\.bottomText {
+    font-family: sans-serif;
+    color: white;
+    -webkit-text-stroke-width: 0px;
+    -webkit-text-stroke-color: #212529;
+    font-size: 28px;
+    position: absolute;
+    width: 100%;
+    display: none;
+    bottom: 0px;
+    z-index: 50;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+/* -----------------------------*/
+/* Doc                          */
+/* -----------------------------*/
+
+.vu\.sop\.document\.ui\.background {
+    position: absolute;
+    /*background-image: url('../img/rectangleCorners.svg');*/
+    /*top: 0px;
+    left: 0px;*/
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    background-repeat:no-repeat;
+    background-position: 50% 50%;
+    height: 101%;
+    width: 101%;
+    display: none;
+}
+
+#vu\.sop\.document\.ui\.box {
+    position: absolute;
+    border: 2px;
+    border-style: solid;
+    border-color: #1DC600;
+    display: none;
+    float: left;
+}
+
+/* -----------------------------*/
+/* Face                         */
+/* -----------------------------*/
+
+#vu\.sop\.ui\.faceTransferCanvas {
+    display: none;
+}
+
+.vu\.sop\.ui\.faceCircle {
+    position: absolute;
+    top: 5%;
+    left: 0px;
+    background-repeat:no-repeat;
+    background-position: 50% 50%;
+    height: 90%;
+    width: 100%;
+    display: none;
+}
+
+
+#vu\.sop\.ui\.faceDot {
+    position: absolute;
+    height: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    top: 0px;
+    background-repeat:no-repeat;
+    background-position: 50% 50%;
+    background-size: 10%;
+    display: none;
+    transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -o-transition: all 1s ease-out;
+}
+
+#vu\.sop\.ui\.faceOk {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-repeat:no-repeat;
+    background-position: 50% 50%;
+    background-size: 20%;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+/* ----------------------------- */
+
+.vu\.sop\.ui\.aPlainLink {
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.vu\.sop\.ui\.aPlainLink:hover {
+    color: #495057;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* -----------------------------*/
+/* Resoponsive                  */
+/* -----------------------------*/
+
+@media (orientation: portrait) {
+    #vu\.sop\.ui\.video {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateY(180deg);
+        height: auto;
+        width: auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #vu\.sop\.ui\.video {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateY(180deg);
+        height: auto;
+        width: auto;
+    }
+}

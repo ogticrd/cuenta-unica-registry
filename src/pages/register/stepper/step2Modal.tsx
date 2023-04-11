@@ -31,7 +31,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const Step2Modal = React.memo(function Step2Modal({ open, handleClick, handleNextForm }: any) {
+export default function Step2Modal({ open, handleClick, handleNextForm }: any) {
 
   const videoRef = React.useRef<HTMLVideoElement>(null);
   console.log(videoRef)
@@ -127,4 +127,4 @@ export const Step2Modal = React.memo(function Step2Modal({ open, handleClick, ha
       </Dialog>
     </div>
   );
-})
+}

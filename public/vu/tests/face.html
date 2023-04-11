@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <link
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV/TakUrInYQcchQXbQgKuKoVShChVArtOpgcumH0KQhSXFxFFwLDn4sVh1cnHV1cBUEwQ8QF1cnRRcp8X9JoUWsB8f9eHfvcfcOEKpFplmBMUDTbTMZj4npzIoYfEUXAuhFO0ZkZhmzkpRAy/F1Dx9f76I8q/W5P0e3mrUY4BOJZ5hh2sTrxFObtsF5nzjMCrJKfE48atIFiR+5rnj8xjnvssAzw2YqOUccJhbzTaw0MSuYGvEkcUTVdMoX0h6rnLc4a8Uyq9+TvzCU1ZeXuE5zEHEsYBESRCgoYwNF2IjSqpNiIUn7sRb+AdcvkUsh1wYYOeZRggbZ9YP/we9urdzEuJcUigFtL47zMQQEd4FaxXG+jx2ndgL4n4ErveEvVYHpT9IrDS1yBPRsAxfXDU3ZAy53gP4nQzZlV/LTFHI54P2MvikD9N0Cnateb/V9nD4AKeoqcQMcHALDecpea/Hujube/j1T7+8HMeVyjSnJniwAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfjCwQRBjdXta4EAAAB2klEQVQ4y5WTvW/aUBTFf8/Y4MQDLIFsmCkDkdjCRsVClxApE1tVMWTLn9BUZaJLhrJ0aio2GFGWZghqtnRDKkMmzAZkIVJcPQPGHcxXgUjN3d5595x777m6AuC5dGoCHwGT/w8L+CSeS6cRoANEeH0MVeD9OlnoBmoqS+Ag7QPSxml8wZP2PGOeGlHWyUoswc75V4K5Ikp4D4Bpv+PjZ5cI3finBXWdrL8r+UXrZYRuoESijFu3iJCBNxzgSRstnWd8f70pEHxbBMBpVAi+KaDEEgC4vQ5CN5D1Mlo6TzBXZNqzcLu/lwJKLEEgnmR8V0NL51FiCZxGhUmridB3EeEoO2eXjH5c4XbbiMgedFc6CJhJv5rVRj06RtbLuA/3gMCTf4BHv4iZRFY/LMdedX4ek1/XIG0C8cMF5kl7ZQtbTHR7HbT5I7TrE5wlIRA/ROjGhshCYNq3fCCVnTl9jPf0iGu1UfZNtEwBT9pMWs3tAt5wwKTVRE1lcRoVlFgCLVNAyyz/Zf3zyx0AjG6+oeybhE7OmbSayOrFcv6nASIcfdmDeaKsXhDMFVFTWdRUdlF92reYDgeMbjobAta6iNOoMLqroR4cLbYz+lnbek1ids5Xs6N6bXz/C+32u+l9g/IOAAAAAElFTkSuQmCC"
+      rel="icon"
+      type="image/x-icon"
+    />
+
+    <title>VUSecurity</title>
+
+    <!-- Custom styles for this template-->
+    <link href="/vu/css/main.css" rel="stylesheet" />
+    <link href="/vu/css/vu.sop.ui.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="vu.sop">
+      <div id="vu.sop.ui">
+        <div
+          id="vu.sop.ui.whiteLoading"
+          class="vu.sop.ui.fullSizeDiv"
+          style="display: block"
+        >
+          <div class="vu.sop.ui.innerVerticalAlign">
+            <img
+              class="vu.sop.ui.loadingImg"
+              src="data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhcyIgZGF0YS1pY29uPSJjb2ciIGNsYXNzPSJzdmctaW5saW5lLS1mYSBmYS1jb2cgZmEtdy0xNiIgcm9sZT0iaW1nIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik00ODcuNCAzMTUuN2wtNDIuNi0yNC42YzQuMy0yMy4yIDQuMy00NyAwLTcwLjJsNDIuNi0yNC42YzQuOS0yLjggNy4xLTguNiA1LjUtMTQtMTEuMS0zNS42LTMwLTY3LjgtNTQuNy05NC42LTMuOC00LjEtMTAtNS4xLTE0LjgtMi4zTDM4MC44IDExMGMtMTcuOS0xNS40LTM4LjUtMjcuMy02MC44LTM1LjFWMjUuOGMwLTUuNi0zLjktMTAuNS05LjQtMTEuNy0zNi43LTguMi03NC4zLTcuOC0xMDkuMiAwLTUuNSAxLjItOS40IDYuMS05LjQgMTEuN1Y3NWMtMjIuMiA3LjktNDIuOCAxOS44LTYwLjggMzUuMUw4OC43IDg1LjVjLTQuOS0yLjgtMTEtMS45LTE0LjggMi4zLTI0LjcgMjYuNy00My42IDU4LjktNTQuNyA5NC42LTEuNyA1LjQuNiAxMS4yIDUuNSAxNEw2Ny4zIDIyMWMtNC4zIDIzLjItNC4zIDQ3IDAgNzAuMmwtNDIuNiAyNC42Yy00LjkgMi44LTcuMSA4LjYtNS41IDE0IDExLjEgMzUuNiAzMCA2Ny44IDU0LjcgOTQuNiAzLjggNC4xIDEwIDUuMSAxNC44IDIuM2w0Mi42LTI0LjZjMTcuOSAxNS40IDM4LjUgMjcuMyA2MC44IDM1LjF2NDkuMmMwIDUuNiAzLjkgMTAuNSA5LjQgMTEuNyAzNi43IDguMiA3NC4zIDcuOCAxMDkuMiAwIDUuNS0xLjIgOS40LTYuMSA5LjQtMTEuN3YtNDkuMmMyMi4yLTcuOSA0Mi44LTE5LjggNjAuOC0zNS4xbDQyLjYgMjQuNmM0LjkgMi44IDExIDEuOSAxNC44LTIuMyAyNC43LTI2LjcgNDMuNi01OC45IDU0LjctOTQuNiAxLjUtNS41LS43LTExLjMtNS42LTE0LjF6TTI1NiAzMzZjLTQ0LjEgMC04MC0zNS45LTgwLTgwczM1LjktODAgODAtODAgODAgMzUuOSA4MCA4MC0zNS45IDgwLTgwIDgweiI+PC9wYXRoPjwvc3ZnPg=="
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/vu/js/vu.face.auth.js"></script>
+    <script
+      src="/vu/js/vu.sop.audioEsPreLoad.js"
+      type="text/javascript"
+    ></script>
+
+    <script>
+      vu.sop.audio.enabled = true;
+      vu.face.useGestures = "mixedChallenge";
+      vu.face.num;
+
+      vu.face.auth.load("../vu").then(
+        function () {
+          vu.sop.api.headers = {
+            "x-access-apikey": "adb2f860-73b1-4c9f-a50d-34b8ef5b442c",
+          };
+          vu.sop.api.host =
+            "https://presales3.vusecurity.solutions/vu-onboarding-rest";
+          vu.face.faceSizeMax = 0.75;
+          vu.face.faceSizeMin = 0.5;
+          vu.face.auth.registrationFlow = true;
+
+          vu.face.auth.userNameValue = '40238676742'
+          vu.face.auth.start().then(function (res) {
+            console.log(res);
+            if (res instanceof Error) {
+              window.location.reload(false);
+            } else {
+              vu.sop.ui.alert("Login Exitoso<br>").then(function (res) {
+                window.location.reload(false);
+              });
+            }
+          });
+        },
+        function (value) {
+          console.log("re", value);
+        }
+      );
+    </script>
+  </body>
+</html>

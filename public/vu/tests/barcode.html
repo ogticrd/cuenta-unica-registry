@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>Test</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+		<!-- Custom styles for this template-->
+		<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		-->
+		<link href="../css/main.css" rel="stylesheet">
+		<link href="../css/vu.sop.ui.css" rel="stylesheet">
+
+	</head>
+	<body>
+	    <div id="vu.sop.ui" >
+			<div id="vu.sop.ui.videoContainer" class="vu.sop.ui.videoContainer" style="display: block; height: 480px; width: 640px; overflow: hidden; transform: translate(-50%, -0%);">
+				<video id="vu.sop.ui.video" autoplay muted></video>
+			</div>
+
+			<div class="vu.sop.ui.fullSizeDiv" style="display: block; ">
+				<div class="vu.sop.ui.innerVerticalAlign">
+					<div style="position: absolute; height: 2px; width: 100%; background-color: red; top: 50%;"></div>
+				</div>
+			</div>
+		</div>
+
+
+    	<script src="../js/libs/webrtc/adapter-latest.js"></script>
+        <script src="../js/vu.camera.js"></script>
+
+		<script src="../js/libs/barcode/BigInteger.min.js"></script>
+		<script src="../js/libs/barcode/zxing-pdf417.js"></script>
+		<script src="../js/vu.sop.barcode.scanPdf417.js"></script>
+
+
+	</body>
+	<script>
+		/*
+			prepare the image and canvas context
+		*/
+
+		var camera;
+        sopStart = async function() {
+
+			vu.camera.config.orientation = 'user';
+			//vu.camera.config.orientation = 'environment';
+			await vu.camera.start("vu.sop.ui.video");
+			await vu.sop.barcode.scanPdf417.start()
+
+        }
+
+        sopStart().then(
+        		function (result) {
+        			console.log(result)
+        		})
+	</script>
+</html>
