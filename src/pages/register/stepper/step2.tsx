@@ -14,7 +14,7 @@ import { InputApp } from "@/themes/form/input";
 import { labels } from '@/constants/labels';
 import { ButtonApp } from '@/components/elements/button';
 import { Typography } from '@mui/material';
-import {Step2Modal} from './step2Modal';
+import Step2Modal from './step2Modal';
 
 interface IFormInputs {
     cedula: string
@@ -30,7 +30,10 @@ export default function Step2({ handleNext }: any) {
 
     const [dataItem, setDataItem] = useState<any>({})
 
-    const handleClick = () => setOpen(!open)
+    // const handleClick = () => setOpen(!open)
+    const handleClick = () => {
+        
+    }
 
     const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
         reValidateMode: 'onSubmit',
