@@ -1,112 +1,163 @@
 <!-- <div id="vu.sop" style="margin: auto; width: 640px; height: 480px; background-color: black; overflow: hidden"> -->
-<div id="vu.sop.ui">
-    <div id="vu.sop.ui.videoContainer">
-        <div id="vu.sop.ui.videoBgOverlayTop"></div>
-        <video id="vu.sop.ui.videoBg" autoplay muted playsinline> </video>
-        <div id="vu.sop.ui.videoBgOverlayBottom"></div>
-        <!-- VIDEO -->
-        <video id="vu.sop.ui.video" autoplay muted playsinline data-html2canvas-ignore> </video>
+<div id="vu.sop.ui" style="background-color: blue">
+  <div id="vu.sop.ui.videoContainer">
+    <div id="vu.sop.ui.videoBgOverlayTop"></div>
+    <video id="vu.sop.ui.videoBg" autoplay muted playsinline></video>
+    <div id="vu.sop.ui.videoBgOverlayBottom"></div>
+    <!-- VIDEO -->
+    <video
+      id="vu.sop.ui.video"
+      autoplay
+      muted
+      playsinline
+      data-html2canvas-ignore
+      style="background-color: blue"
+    ></video>
 
-        <!-- DOC -->
-        <div id="vu.sop.document.ui.background" class="vu.sop.document.ui.background"></div>
-        <div id="vu.sop.document.ui.box"> </div>
-
-        <!-- Debug -->
-        <div id="vu.sop.ui.debugVideoCenter"></div>
-        <div id="vu.sop.ui.debugElementCenter"></div>
-
-        <!-- FACE -->
-        <div id="vu.sop.ui.faceCircleLeft" class="vu.sop.ui.faceCircle" style="transform: rotate(180deg);"></div>
-        <div id="vu.sop.ui.faceCircleLeftTop" class="vu.sop.ui.faceCircle" style="transform: rotate(225deg);"></div>
-        <div id="vu.sop.ui.faceCircleTop" class="vu.sop.ui.faceCircle" style="transform: rotate(270deg);"></div>
-        <div id="vu.sop.ui.faceCircleRightTop" class="vu.sop.ui.faceCircle" style="transform: rotate(315deg);"></div>
-        <div id="vu.sop.ui.faceCircleRight" class="vu.sop.ui.faceCircle"></div>
-        <div id="vu.sop.ui.faceCircleRightBottom" class="vu.sop.ui.faceCircle" style="transform: rotate(45deg);"></div>
-        <div id="vu.sop.ui.faceCircleBottom" class="vu.sop.ui.faceCircle" style="transform: rotate(90deg);"></div>
-        <div id="vu.sop.ui.faceCircleLeftBottom" class="vu.sop.ui.faceCircle" style="transform: rotate(135deg);"></div>
-        <div id="vu.face.ui.gestures.circle" class="vu.sop.ui.faceCircle"></div>
-
-        <div id="vu.sop.ui.faceDot"></div>
-        <div id="vu.sop.ui.faceOk"></div>
-
-        <canvas id='vu.sop.ui.faceTransferCanvas'></canvas>
-        <canvas id='vu.sop.ui.documentFace' style="display: none;"></canvas>
-    </div>
-
-
-    <!-- USER -->
-    <div id="vu.sop.ui.userContainer" class="vu.sop.ui.fullSizeDiv">
-        <div class="vu.sop.ui.innerVerticalAlign" style="margin-top: -2em;">
-            <form id="vu.sop.ui.userForm" action="#" onsubmit="let send = vu.face.auth.userDo(); return false;">
-                <div class="vu.sop.input-group vu.sop.mb-3">
-                    <input minlength="5" id='vu.sop.ui.userName' type="number" class="vu.sop.form-control"
-                        placeholder="Cedula" aria-describedby="basic-addon2"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$">
-                    <div class="vu.sop.input-group-append">
-                        <button id='vu.sop.ui.userNameSendBtn' class="vu.sop.btn vu.sop.btn-outline-secondary"
-                            type="submit">
-                            Iniciar
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Alert -->
-    <div id="vu.sop.ui.alert" class="vu.sop.ui.fullSizeDiv">
-
-    </div>
-
-    <!-- LOADING -->
-    <div id="vu.sop.ui.whiteLoading" class="vu.sop.ui.fullSizeDiv">
-        <div id="vu.sop.ui.whiteLoadingImg" class="vu.sop.ui.innerVerticalAlign">
-        </div>
-    </div>
-
-    <div id="vu.sop.ui.loading" class="vu.sop.ui.fullSizeDiv">
-        <div id="vu.sop.ui.loadingImg" class="vu.sop.ui.innerVerticalAlign">
-
-        </div>
-    </div>
-
-    <!-- COUNTER -->
-    <div id="vu.sop.ui.counter" class="vu.sop.ui.innerBottomRight">
-        <span class="fa-stack fa-4x">
-            <span class="fa fa-circle fa-stack-2x"></span>
-            <strong id="vu.sop.ui.counterText" class="fa-stack-1x fa-inverse">
-            </strong>
-        </span>
-    </div>
-
-    <!-- Bottom Text -->
-    <div id="vu.sop.ui.bottomText"></div>
-
-    <!-- Bottom Text Alert-->
-    <div style="text-align: center;">
-        <div id="vu.sop.ui.bottomTextAlert"></div>
-    </div>
+    <!-- DOC -->
+    <div
+      id="vu.sop.document.ui.background"
+      class="vu.sop.document.ui.background"
+    ></div>
+    <div id="vu.sop.document.ui.box"></div>
 
     <!-- Debug -->
-    <div id="vu.sop.ui.debugInfo" data-html2canvas-ignore>
-        <div style="border-bottom: 1px solid; border-color: white;">INFO</div>
-        <div id="vu.sop.ui.debugInfo.content"></div><br>
-        <div style="border-bottom: 1px solid; border-color: white;">PERFORMANCE</div>
-        <div id="vu.sop.ui.debugPerf.content"></div>
-    </div>
-    <div id="vu.sop.ui.debugEval" data-html2canvas-ignore>
-        <div style="border-bottom: 1px solid; border-color: white;">DEBUG</div>
-        <div id="vu.sop.ui.debugEval.content"></div>
-    </div>
+    <div id="vu.sop.ui.debugVideoCenter"></div>
+    <div id="vu.sop.ui.debugElementCenter"></div>
 
-    <!-- Photo flash effect -->
-    <div id="vu.sop.ui.flash" class="vu.sop.ui.fullSizeDiv"></div>
+    <!-- FACE -->
+    <div
+      id="vu.sop.ui.faceCircleLeft"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(180deg)"
+    ></div>
+    <div
+      id="vu.sop.ui.faceCircleLeftTop"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(225deg)"
+    ></div>
+    <div
+      id="vu.sop.ui.faceCircleTop"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(270deg)"
+    ></div>
+    <div
+      id="vu.sop.ui.faceCircleRightTop"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(315deg)"
+    ></div>
+    <div id="vu.sop.ui.faceCircleRight" class="vu.sop.ui.faceCircle"></div>
+    <div
+      id="vu.sop.ui.faceCircleRightBottom"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(45deg)"
+    ></div>
+    <div
+      id="vu.sop.ui.faceCircleBottom"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(90deg)"
+    ></div>
+    <div
+      id="vu.sop.ui.faceCircleLeftBottom"
+      class="vu.sop.ui.faceCircle"
+      style="transform: rotate(135deg)"
+    ></div>
+    <div id="vu.face.ui.gestures.circle" class="vu.sop.ui.faceCircle"></div>
 
-    <!-- Alert -->
-    <div id="vu.sop.ui.endScreen" class="vu.sop.ui.fullSizeDiv" style="background-color: white;">
-        <div class="vu.sop.ui.innerVerticalAlign">
-            Onboarding finalizado
+    <div id="vu.sop.ui.faceDot"></div>
+    <div id="vu.sop.ui.faceOk"></div>
+
+    <canvas id="vu.sop.ui.faceTransferCanvas"></canvas>
+    <canvas id="vu.sop.ui.documentFace" style="display: none"></canvas>
+  </div>
+
+  <!-- USER -->
+  <div id="vu.sop.ui.userContainer" class="vu.sop.ui.fullSizeDiv">
+    <div class="vu.sop.ui.innerVerticalAlign" style="margin-top: -2em">
+      <form
+        id="vu.sop.ui.userForm"
+        action="#"
+        onsubmit="let send = vu.face.auth.userDo(); return false;"
+      >
+        <div class="vu.sop.input-group vu.sop.mb-3">
+          <input
+            minlength="5"
+            id="vu.sop.ui.userName"
+            type="number"
+            class="vu.sop.form-control"
+            placeholder="Cedula"
+            aria-describedby="basic-addon2"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$"
+          />
+          <div class="vu.sop.input-group-append">
+            <button
+              id="vu.sop.ui.userNameSendBtn"
+              class="vu.sop.btn vu.sop.btn-outline-secondary"
+              type="submit"
+            >
+              Iniciar
+            </button>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
+
+  <!-- Alert -->
+  <div id="vu.sop.ui.alert" class="vu.sop.ui.fullSizeDiv"></div>
+
+  <!-- LOADING -->
+  <div id="vu.sop.ui.whiteLoading" class="vu.sop.ui.fullSizeDiv">
+    <div
+      id="vu.sop.ui.whiteLoadingImg"
+      class="vu.sop.ui.innerVerticalAlign"
+    ></div>
+  </div>
+
+  <div id="vu.sop.ui.loading" class="vu.sop.ui.fullSizeDiv">
+    <div id="vu.sop.ui.loadingImg" class="vu.sop.ui.innerVerticalAlign"></div>
+  </div>
+
+  <!-- COUNTER -->
+  <div id="vu.sop.ui.counter" class="vu.sop.ui.innerBottomRight">
+    <span class="fa-stack fa-4x">
+      <span class="fa fa-circle fa-stack-2x"></span>
+      <strong id="vu.sop.ui.counterText" class="fa-stack-1x fa-inverse">
+      </strong>
+    </span>
+  </div>
+
+  <!-- Bottom Text -->
+  <div id="vu.sop.ui.bottomText"></div>
+
+  <!-- Bottom Text Alert-->
+  <div style="text-align: center">
+    <div id="vu.sop.ui.bottomTextAlert"></div>
+  </div>
+
+  <!-- Debug -->
+  <div id="vu.sop.ui.debugInfo" data-html2canvas-ignore>
+    <div style="border-bottom: 1px solid; border-color: white">INFO</div>
+    <div id="vu.sop.ui.debugInfo.content"></div>
+    <br />
+    <div style="border-bottom: 1px solid; border-color: white">PERFORMANCE</div>
+    <div id="vu.sop.ui.debugPerf.content"></div>
+  </div>
+  <div id="vu.sop.ui.debugEval" data-html2canvas-ignore>
+    <div style="border-bottom: 1px solid; border-color: white">DEBUG</div>
+    <div id="vu.sop.ui.debugEval.content"></div>
+  </div>
+
+  <!-- Photo flash effect -->
+  <div id="vu.sop.ui.flash" class="vu.sop.ui.fullSizeDiv"></div>
+
+  <!-- Alert -->
+  <div
+    id="vu.sop.ui.endScreen"
+    class="vu.sop.ui.fullSizeDiv"
+    style="background-color: white"
+  >
+    <div class="vu.sop.ui.innerVerticalAlign">Onboarding finalizado</div>
+  </div>
 </div>
 <!-- </div> -->
