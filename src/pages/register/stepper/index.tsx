@@ -1,4 +1,5 @@
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,7 +7,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import Step1 from './step1';
+// const Step1 = dynamic(() => import("./step1"), {ssr: false});
+import Step1 from './step1'
 import Step2 from './step2';
 import Step3 from './step3';
 import { useRouter } from 'next/router';
@@ -19,6 +21,19 @@ export default function StepperRegister() {
 
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
+
+    const [infoCedula, setInfoCedula] = React.useState({})
+    console.log(infoCedula)
+
+    React.useEffect(() => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const { validated } = Object.fromEntries(urlSearchParams.entries());
+        if(Boolean(validated) && sessionStorage.getItem("infoCedula")){
+            setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
+            setActiveStep(2)
+            sessionStorage.clear()
+        }
+    },[])
 
     const isStepOptional = (step: number) => {
         return step === 1;
