@@ -19,12 +19,12 @@ interface IFormInputs {
 
 const schema = yup.object({
     email: yup.string().trim().required(labels.form.requiredField),
-    emailConfirm: yup.string().trim().required(labels.form.requiredField),
-    password: yup.string().trim().required(labels.form.requiredField),
-    passwordConfirm: yup.string().trim().required(labels.form.requiredField),
+    emailConfirm: yup.string().trim().required(labels.form.requiredField).oneOf([yup.ref('email')], 'Los correos no coinciden'),
+    password: yup.string().min(8, "Debe contener al menos 8 caracteres").required(labels.form.requiredField).trim(),
+    passwordConfirm: yup.string().required(labels.form.requiredField).oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
 })
 
-export default function Step3({handleNext} : any) {
+export default function Step3({ handleNext }: any) {
 
     const [dataItem, setDataItem] = useState<any>({})
 
@@ -34,7 +34,7 @@ export default function Step3({handleNext} : any) {
         resolver: yupResolver(schema)
     });
 
-    const handleNextForm = () => {
+    const onSubmit = (data: IFormInputs) => {
         handleNext()
     }
 
@@ -44,74 +44,76 @@ export default function Step3({handleNext} : any) {
             <TextBody textCenter bold>
                 Por favor completa los siguientes campos para finalizar tu registro.
             </TextBody>
-            
-            <GridContainer marginY>
-                <GridItem md={12} lg={12}>
-                    <FormControlApp
-                        label="Correo Electrónico"
-                        msg={errors.email?.message}
-                        required
-                    >
-                        <InputApp
-                            defaultValue={dataItem.email}
-                            placeholder="Coloca tu correo electrónico"
-                            {...register("email")}
-                        />
-                    </FormControlApp>
-                </GridItem>
-                
-                <GridItem md={12} lg={12}>
-                    <FormControlApp
-                        label="Confirmación Correo Electrónico"
-                        msg={errors.emailConfirm?.message}
-                        required
-                    >
-                        <InputApp
-                            defaultValue={dataItem.emailConfirm}
-                            placeholder="Coloca tu correo electrónico"
-                            {...register("emailConfirm")}
-                        />
-                    </FormControlApp>
-                </GridItem>
 
-                <GridItem md={12} lg={12}>
-                    <FormControlApp
-                        label="Contraseña"
-                        msg={errors.password?.message}
-                        required
-                    >
-                        <InputApp
-                            defaultValue={dataItem.password}
-                            placeholder="*********"
-                            type="password"
-                            {...register("password")}
-                        />
-                    </FormControlApp>
-                </GridItem>
-                
-                <GridItem md={12} lg={12}>
-                    <FormControlApp
-                        label="Confirmar Contraseña"
-                        msg={errors.passwordConfirm?.message}
-                        required
-                    >
-                        <InputApp
-                            defaultValue={dataItem.passwordConfirm}
-                            placeholder="*********"
-                            type="password"
-                            {...register("passwordConfirm")}
-                        />
-                    </FormControlApp>
-                </GridItem>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <GridContainer marginY>
+                    <GridItem md={12} lg={12}>
+                        <FormControlApp
+                            label="Correo Electrónico"
+                            msg={errors.email?.message}
+                            required
+                        >
+                            <InputApp
+                                defaultValue={dataItem.email}
+                                placeholder="Coloca tu correo electrónico"
+                                {...register("email")}
+                            />
+                        </FormControlApp>
+                    </GridItem>
 
-                <GridItem md={12} lg={12}>
-                    <ButtonApp
-                        onClick={handleNextForm}
-                    >
-                        ACEPTAR Y CONFIRMAR
-                    </ButtonApp>
-                </GridItem>
-            </GridContainer>
+                    <GridItem md={12} lg={12}>
+                        <FormControlApp
+                            label="Confirmación Correo Electrónico"
+                            msg={errors.emailConfirm?.message}
+                            required
+                        >
+                            <InputApp
+                                defaultValue={dataItem.emailConfirm}
+                                placeholder="Coloca tu correo electrónico"
+                                {...register("emailConfirm")}
+                            />
+                        </FormControlApp>
+                    </GridItem>
+
+                    <GridItem md={12} lg={12}>
+                        <FormControlApp
+                            label="Contraseña"
+                            msg={errors.password?.message}
+                            required
+                        >
+                            <InputApp
+                                defaultValue={dataItem.password}
+                                placeholder="*********"
+                                type="password"
+                                {...register("password")}
+                            />
+                        </FormControlApp>
+                    </GridItem>
+
+                    <GridItem md={12} lg={12}>
+                        <FormControlApp
+                            label="Confirmar Contraseña"
+                            msg={errors.passwordConfirm?.message}
+                            required
+                        >
+                            <InputApp
+                                defaultValue={dataItem.passwordConfirm}
+                                placeholder="*********"
+                                type="password"
+                                {...register("passwordConfirm")}
+                            />
+                        </FormControlApp>
+                    </GridItem>
+
+                    <GridItem md={12} lg={12}>
+                        <ButtonApp
+                            submit
+                        >
+                            ACEPTAR Y CONFIRMAR
+                        </ButtonApp>
+                    </GridItem>
+                </GridContainer>
+            </form>
         </>
     )
 }

@@ -17,34 +17,34 @@ import { routes } from '@/constants/routes';
 import { labels } from '@/constants/labels';
 import StepperRegister from './stepper';
 
-interface IFormInputs {
-    cedulaOrEmail: string
-}
+// interface IFormInputs {
+//     cedulaOrEmail: string
+// }
 
-const schema = yup.object({
-    cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
-})
+// const schema = yup.object({
+//     cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
+// })
 
 
 export default function Index() {
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const [dataItem, setDataItem] = useState<any>({})
+    // const [dataItem, setDataItem] = useState<any>({})
 
-    const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
-        reValidateMode: 'onSubmit',
-        shouldFocusError: false,
-        resolver: yupResolver(schema)
-    });
+    // const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
+    //     reValidateMode: 'onSubmit',
+    //     shouldFocusError: false,
+    //     resolver: yupResolver(schema)
+    // });
 
-    const onSubmit = (data: IFormInputs) => {
-        console.log(data)
-        router.push(routes.auth.password)
-    }
+    // const onSubmit = (data: IFormInputs) => {
+    //     console.log(data)
+    //     router.push(routes.auth.password)
+    // }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        // <form onSubmit={handleSubmit(onSubmit)}>
             <GridContainer
                 spacing={10}
                 flexDirection={{ xs: "column", sm: "row" }}
@@ -72,6 +72,6 @@ export default function Index() {
                     </CardAuth>
                 </GridItem>
             </GridContainer>
-        </form>
+        // </form>
     )
 }
