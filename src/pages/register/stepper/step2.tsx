@@ -31,8 +31,7 @@ export default function Step2({ handleNext }: any) {
 
     // const handleClick = () => setOpen(!open)
     const handleClick = () => {
-        const infoCedula = JSON.parse(sessionStorage.getItem("infoCedula") || "")
-        window.location.assign(`/asd?cedula=${infoCedula?.payload?.id}`);
+        window.location.assign(`/vu-biometric`);
     };
 
     const {

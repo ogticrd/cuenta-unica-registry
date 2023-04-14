@@ -76,8 +76,7 @@
   <script src="/vu/js/vu.sop.audioEsPreLoad.js" type="text/javascript"></script>
 
   <script>
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const { cedula } = Object.fromEntries(urlSearchParams.entries());
+    const infoCedula = JSON.parse(sessionStorage.getItem("infoCedula") || "")
 
     vu.sop.audio.enabled = true;
     vu.face.useGestures = "mixedChallenge";
@@ -95,13 +94,14 @@
         vu.face.faceSizeMin = 0.5;
         vu.face.auth.registrationFlow = true;
 
-        vu.face.auth.userNameValue = cedula;
+        vu.face.auth.userNameValue = infoCedula?.payload?.id;
         vu.face.auth.start().then(function (res) {
           if (res instanceof Error) {
             window.location.reload(false);
           } else {
             // vu.sop.ui.alert("Login Exitoso<br>");
-            window.location.assign(`/register?validated=true`);
+            sessionStorage.setItem("validated", "true")
+            window.location.assign(`/register`);
           }
         });
       },
