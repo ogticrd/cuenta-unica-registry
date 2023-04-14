@@ -51,14 +51,14 @@ export default function Index() {
             >
                 <GridItem sx={{ order: { xs: 2, sm: 1 } }} sm={12} md={6} lg={6}>
                     <TextTitle>
-                        Sistema registro <span className="text-error">cuenta única ciudadana.</span>
+                        ¡Bienvenido a la Plataforma Única de Autenticación <span className="text-error">Ciudadana!</span>
                     </TextTitle>
                     <TextSubTitle>
-                        ¡Es fácil y rápido! Solo siga los siguientes pasos:
+                        Accede o regístrate con un único usuario y contraseña, para solicitar o consultar todos tus servicios y trámites gubernamentales.
                     </TextSubTitle>
                     <br />
                     <TextSubTitleBody>
-                        1. Inicia por identificarte colocando tu numero de identidad “Cédula” y validando con la información única de tu documento.
+                        Una manera fácil y cómoda de identificarte, para realizar trámites desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.
                     </TextSubTitleBody>
                     <br />
                     <img src={LadingChica2.src} alt="Lading Home" width="100%" />

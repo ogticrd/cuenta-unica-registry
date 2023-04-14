@@ -48,7 +48,7 @@ export default function Index() {
             <BoxContentCenter>
                 <CardAuth
                     title="Confirmación de Cuenta"
-                    subTitle="¡Lorem Ipsum [colocar redacción UX para activación de cuenta via correo!"
+                    subTitle="¡Gracias por completar tu registro! Revisa tu correo electrónico y haz clic en el enlace de confirmación."
                     lading={LadingChico}
                     ladingWidth={175}
                     icon={<MarkEmailReadOutlinedIcon sx={{fontSize: "58px"}} color='info' />}
@@ -74,7 +74,6 @@ export default function Index() {
                                 REENVIAR CORREO
                             </ButtonApp>
                         </GridItem>
-
                     </GridContainer>
 
                 </CardAuth>

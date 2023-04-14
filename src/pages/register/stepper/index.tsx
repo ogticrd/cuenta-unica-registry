@@ -26,9 +26,7 @@ export default function StepperRegister() {
     console.log(infoCedula)
 
     React.useEffect(() => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const { validated } = Object.fromEntries(urlSearchParams.entries());
-        if(Boolean(validated) && sessionStorage.getItem("infoCedula")){
+        if(Boolean(sessionStorage.getItem("validated")) && sessionStorage.getItem("infoCedula")){
             setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
             setActiveStep(2)
             sessionStorage.clear()
@@ -141,6 +139,7 @@ export default function StepperRegister() {
                     {activeStep === 2 &&
                         <Step3
                             handleNext={handleNext}
+                            infoCedula={infoCedula}
                         />
                     }
                     {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
