@@ -44,7 +44,7 @@ export default function StepperRegister() {
     const handleNext = () => {
         console.log(activeStep)
         if(activeStep === (steps.length - 1)){
-            return router.push(routes.register.confirmation)
+            return router.push(routes.register.registered)
         }
 
         let newSkipped = skipped;
@@ -82,9 +82,9 @@ export default function StepperRegister() {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Stepper activeStep={activeStep}>
+            <Stepper sx={{paddingBottom: "20px", borderBottom: "2px solid #E2E2E2"}} activeStep={activeStep}>
                 {steps.map((label, index) => {
-                    const stepProps: { completed?: boolean } = {};
+                    // const stepProps: { completed?: boolean } = {};
                     const labelProps: {
                         optional?: React.ReactNode;
                     } = {};
@@ -104,12 +104,15 @@ export default function StepperRegister() {
                         );
                     }
                     
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
+                    // if (isStepSkipped(index)) {
+                    //     stepProps.completed = false;
+                    // }
                     return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}><span style={{fontWeight: "bold"}}>{label}</span></StepLabel>
+
+                        <Step key={label} sx={{borderLeft: `${index === 0 ? "0px" : "1px"} solid #B7D9F8`}}>
+                            <StepLabel {...labelProps}>
+                                <span style={{fontWeight: "700"}}>{label}</span>
+                            </StepLabel>
                         </Step>
                     );
                 })}
@@ -125,7 +128,7 @@ export default function StepperRegister() {
                     </Box>
                 </React.Fragment>
             ) : (
-                <React.Fragment>
+                <div style={{margin: "0px 25px"}}>
                     {activeStep === 0 &&
                         <Step1 
                             handleNext={handleNext}
@@ -161,7 +164,7 @@ export default function StepperRegister() {
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
                     </Box> */}
-                </React.Fragment>
+                </div>
             )}
         </Box>
     );

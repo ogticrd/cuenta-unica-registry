@@ -14,14 +14,19 @@ import { InputApp } from "@/themes/form/input";
 import { labels } from "@/constants/labels";
 import { ButtonApp } from "@/components/elements/button";
 import { Typography } from "@mui/material";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { AlertWarning } from "@/components/elements/alert";
+
 // import Step2Modal from "./step2Modal";
 
 interface IFormInputs {
-    cedula: string;
+    acceptTermAndConditions: boolean;
 }
 
 const schema = yup.object({
-    cedula: yup.string().trim().required(labels.form.requiredField),
+    acceptTermAndConditions: yup.boolean().required(labels.form.requiredField).default(false),
 });
 
 export default function Step2({ handleNext }: any) {
@@ -46,8 +51,11 @@ export default function Step2({ handleNext }: any) {
         resolver: yupResolver(schema),
     });
 
-    const handleNextForm = () => {
-        handleNext();
+    const onSubmit = (data: IFormInputs) => {
+        if(!data.acceptTermAndConditions){
+            return AlertWarning("Para continuar debe aceptar Términos y Políticas de Privacidad")
+        }
+        handleClick();
     };
 
     return (
@@ -59,77 +67,94 @@ export default function Step2({ handleNext }: any) {
             </TextBody>
             <br />
 
-            <GridContainer marginY>
-                <GridItem md={12} lg={12}>
-                    <div
-                        style={{
-                            background: "#EFF7FF",
-                            borderRadius: "6px",
-                            padding: "30px 20px",
-                            display: "flex",
-                            alignItems: "center",
-                            flexDirection: "row",
-                        }}
-                    >
-                        <CameraAltOutlinedIcon
-                            sx={{ fontSize: "45px", marginRight: "12px" }}
-                            color="info"
-                        />
-                        <Typography variant="body2" color="primary">
-                            Tener disponible un teléfono móvil o computadora con{" "}
-                            <span style={{ fontWeight: "bold" }}>cámara</span> integrada.
-                        </Typography>
-                    </div>
-                </GridItem>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <GridContainer marginY>
+                    <GridItem md={12} lg={12}>
+                        <div
+                            style={{
+                                background: "#EFF7FF",
+                                borderRadius: "6px",
+                                padding: "30px 20px",
+                                display: "flex",
+                                alignItems: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <CameraAltOutlinedIcon
+                                sx={{ fontSize: "45px", marginRight: "12px" }}
+                                color="info"
+                            />
+                            <Typography variant="body2" color="primary">
+                                Tener disponible un teléfono móvil o computadora con{" "}
+                                <span style={{ fontWeight: "bold" }}>cámara</span> integrada.
+                            </Typography>
+                        </div>
+                    </GridItem>
 
-                {/* <GridItem md={12} lg={12}>
+                    {/* <GridItem md={12} lg={12}>
                     <div style={{ background: "#EFF7FF", borderRadius: "6px", padding: "30px 20px", display: "flex", alignItems: "center", flexDirection: "row" }}>
                         <BadgeOutlinedIcon sx={{ fontSize: "45px", marginRight: "12px" }} color="info" />
                         <Typography variant="body2" color="primary">Disponible tu <span style={{ fontWeight: "bold" }}>documento de identidad “cédula”.</span></Typography>
                     </div>
                 </GridItem> */}
 
-                <GridItem md={12} lg={12}>
-                    <div
-                        style={{
-                            background: "#EFF7FF",
-                            borderRadius: "6px",
-                            padding: "30px 20px",
-                            display: "flex",
-                            alignItems: "center",
-                            flexDirection: "row",
-                        }}
-                    >
-                        <SentimentSatisfiedOutlinedIcon
-                            sx={{ fontSize: "45px", marginRight: "12px" }}
-                            color="info"
-                        />
-                        <Typography variant="body2" color="primary">
-                            Permitir capturas de{" "}
-                            <span style={{ fontWeight: "bold" }}>
-                                fotografías de tu rostro.
-                            </span>
+                    <GridItem md={12} lg={12}>
+                        <div
+                            style={{
+                                background: "#EFF7FF",
+                                borderRadius: "6px",
+                                padding: "30px 20px",
+                                display: "flex",
+                                alignItems: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <SentimentSatisfiedOutlinedIcon
+                                sx={{ fontSize: "45px", marginRight: "12px" }}
+                                color="info"
+                            />
+                            <Typography variant="body2" color="primary">
+                                Permitir capturas de{" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                    fotografías de tu rostro.
+                                </span>
+                            </Typography>
+                        </div>
+                    </GridItem>
+
+                    <GridItem md={12} lg={12}>
+                        <Typography color="primary" sx={{ fontSize: "16px", fontWeight: "400", textAlign: "center" }}>
+                            Verificación con pasaporte disponible próximamente
                         </Typography>
-                    </div>
-                </GridItem>
+                    </GridItem>
+                    <br />
+                    <br />
+                    <GridItem md={12} lg={12}>
+                        <FormGroup sx={{ display: "flex", alignContent: "center" }}>
+                            <FormControlLabel
+                                onChange={(e: any) => {
+                                    setValue("acceptTermAndConditions", e.target.checked)
+                                }}
+                                control={<Checkbox />}
+                                label={
+                                    <a target="_blank" rel="noreferrer" href=''>Aceptar Términos y Políticas de Privacidad <span className="text-error">*</span></a>
+                                }
+                            />
+                        </FormGroup>
+                    </GridItem>
+                </GridContainer>
 
-                <GridItem md={12} lg={12}>
-                    <TextBody textCenter>
-                        Verificación con pasaporte disponible próximamente
-                    </TextBody>
-                </GridItem>
-            </GridContainer>
-
-            <GridContainer marginY>
-                <GridItem md={12} lg={12}>
-                    <ButtonApp onClick={handleClick}>INICIAR PROCESO</ButtonApp>
-                    {/* <Step2Modal
+                <GridContainer marginY>
+                    <GridItem md={12} lg={12}>
+                        <ButtonApp submit>INICIAR PROCESO</ButtonApp>
+                        {/* <Step2Modal
                         open={open}
                         handleClick={handleClick}
                         handleNextForm={handleNextForm}
                     /> */}
-                </GridItem>
-            </GridContainer>
+                    </GridItem>
+                </GridContainer>
+            </form>
         </>
     );
 }

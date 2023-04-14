@@ -18,10 +18,10 @@
   <link href="/vu/css/vu.sop.ui.css" rel="stylesheet" />
 </head>
 
-<body style="background-color: #003579; font-family: Poppins; margin: 1em 5em;">
+<body style="background-color: #003579; font-family: Poppins;">
   <div style="display: flex; width: 100%; margin-bottom: 20px;">
     <div style="flex-grow: 1;">
-      <img src="/assets/logo.png" width="350" />
+      <img src="/assets/logo.png" width="200" />
     </div>
     <div style="display: flex; align-items: center;">
       <button onclick="handleLeave()"
@@ -30,31 +30,34 @@
       </button>
     </div>
   </div>
-  <div style="display: flex; width: 100%;">
-    <div style="text-align: left; width: 30%;">
+  <div class="row">
+    <div class="col" style="text-align: left;">
       <h2 style="font-size: 18px; font-weight: 700; color: white;">Para verificar realiza unas fotos de tu rostro,
         mantén la mirada adelante con gesto neutral.</h2>
       <h2 style="font-size: 14px; font-weight: 400; color: white;">hasta que el círculo se ponga verde.</h2>
       <div
         style="background: #EFF7FF; border-radius: 4px; padding: 10px 8px; margin-bottom: 12px; display: flex; align-items: center; flex-direction: row">
+        <img src="/assets/glass.png" width="44" style="margin: 0 15px 0 0;" />
         <span style="font-size: 16px; font-weight: 600; color: #003579;">
           No usar lentes, gorra o cubrir el rostro
         </span>
       </div>
       <div
         style="background: #EFF7FF; border-radius: 4px; padding: 10px 8px; margin-bottom: 12px; display: flex; align-items: center; flex-direction: row">
+        <img src="/assets/smile.png" width="44" style="margin: 0 15px 0 0;" />
         <span style="font-size: 16px; font-weight: 600; color: #003579;">
           Acercar el rostro al círculo
         </span>
       </div>
       <div
         style="background: #EFF7FF; border-radius: 4px; padding: 10px 8px; margin-bottom: 12px; display: flex; align-items: center; flex-direction: row">
+        <img src="/assets/sun.png" width="44" style="margin: 0 15px 0 0;" />
         <span style="font-size: 16px; font-weight: 600; color: #003579;">
           Buscar buena iluminación sin reflejos
         </span>
       </div>
     </div>
-    <div id="vu.sop">
+    <div class="col" id="vu.sop">
       <div id="vu.sop.ui">
         <div id="vu.sop.ui.whiteLoading" class="vu.sop.ui.fullSizeDiv" style="display: block">
           <div class="vu.sop.ui.innerVerticalAlign">
@@ -65,6 +68,36 @@
       </div>
     </div>
   </div>
+
+  <style>
+    body {
+      margin: 1em 5em;
+    }
+    
+    @media only screen and (max-width: 1030px) {
+      body {
+        margin: 0px;
+        padding: 15px 25px;
+      }
+
+      .col {
+        width: 100% !important;
+        padding: 0px !important;
+      }
+    }
+
+    .row:after {
+      content: "" !important;
+      display: table !important;
+      clear: both !important;
+    }
+
+    .col {
+      padding: 0 25px;
+      float: left;
+      width: 30%;
+    }
+  </style>
 
   <script>
     function handleLeave() {
