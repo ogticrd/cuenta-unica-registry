@@ -7,6 +7,6 @@ export const routes = {
     register: {
         home: "register",
         confirmation: "register/confirmation",
-        registered: "registered"
+        registered: "register/registered"
     } 
 }

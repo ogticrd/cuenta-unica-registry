@@ -1,7 +1,8 @@
 import { FormControl, InputLabel, Typography } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
 
 interface IProps {
     label?: String,
@@ -11,9 +12,24 @@ interface IProps {
     noGutter?: boolean,
     children: React.ReactNode
     tooltip?: string
+    tooltipText?: any
 }
 
 export const FormControlApp = (props: IProps) => {
+
+    const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+        <Tooltip {...props} classes={{ popper: className }} arrow />
+    ))(({ theme }) => ({
+        [`& .${tooltipClasses.tooltip}`]: {
+            backgroundColor: '#fff',
+            color: '#707070',
+            maxWidth: 317,
+            fontSize: theme.typography.pxToRem(12),
+            borderRadius: '6px',
+            border: '1px solid #dadde9',
+            padding: '18px 20px'
+        }
+    }));
 
     return (
         <FormControl fullWidth variant="standard">
@@ -26,12 +42,25 @@ export const FormControlApp = (props: IProps) => {
                         shrink={true}
                     >
                         {props.label} {props.icon}
-                        {props.tooltip && 
-                            <Tooltip title={props.tooltip} arrow>
+                        {props.tooltip &&
+                            // <HtmlTooltip title={props.tooltip} arrow>
+                            <HtmlTooltip
+                                title={
+                                    <>
+                                        <Typography color="primary" sx={{ fontWeight: "700", fontSize: "16px" }}>{props.tooltip}</Typography>
+                                        {props.tooltipText &&
+                                            <>
+                                                <div style={{width: "100%", height: "1px", borderRadius: "10px", margin: "10px 0", background: "#E2E2E2"}} />
+                                                <Typography color="#707070" sx={{ fontWeight: "400", fontSize: "14px" }}>{props.tooltipText}</Typography>
+                                            </>
+                                        }
+                                    </>
+                                }
+                            >
                                 <IconButton sx={{ padding: "0 0 2px 0" }}>
                                     <HelpOutlineOutlinedIcon sx={{ fontSize: '18px' }} color='warning' />
                                 </IconButton>
-                            </Tooltip>
+                            </HtmlTooltip>
                         }
                     </InputLabel>
                 </>

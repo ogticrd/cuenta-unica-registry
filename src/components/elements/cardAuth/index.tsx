@@ -17,7 +17,7 @@ export const CardAuth = ({ title, subTitle, subTitle2, children, lading, ladingW
             {/* <div style={{ textAlign: "center" }}>
                 <img src={LogoCuentaUnica.src} alt="Logo" width="300" />
             </div> */}
-            <br />
+            {/* <br /> */}
             <div style={{ background: "white", border: "1px solid #E2E2E2", borderRadius: "4px 4px 0 0" }}>
                 <div style={{ display: "flex", background: "#F8F8F8", borderRadius: "4px 4px 0 0", padding: "13px 25px 0px 25px", boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.161)" }}>
                     {/* <AccountCircleOutlinedIcon color="primary" sx={{ margin: "4px 10px 0 0", fontSize: "28px" }} /> */}
@@ -55,7 +55,7 @@ export const CardAuth = ({ title, subTitle, subTitle2, children, lading, ladingW
                             <br />
                         </>
                     }
-                    <div style={{ padding: "0px 35px 25px 35px" }}>
+                    <div style={{ padding: "0px 15px 25px 15px" }}>
                         {children}
                     </div>
                 </div>
