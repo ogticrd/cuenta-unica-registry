@@ -4,7 +4,7 @@ const nextConfig = {
   rewrites: async () => {
     return [
       {
-        source: '/asd',
+        source: '/vu-biometric',
         destination: '/vu/tests/face.html',
       },
     ]

@@ -2,7 +2,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { Typography } from "@mui/material"
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
-import LogoCuentaUnica from "../../../../public/assets/logoCuentaUnica.png"
+import LogoDedo from "../../../../public/assets/logoDedo.png"
 import { TextBody, TextBodyTiny } from '../typography';
 
 export const CardAuth = ({ title, subTitle, subTitle2, children, lading, ladingWidth, icon }: any) => {
@@ -14,13 +14,16 @@ export const CardAuth = ({ title, subTitle, subTitle2, children, lading, ladingW
                     <img src={lading?.src} alt="Lading" width={ladingWidth ? ladingWidth : "500"} />
                 </div>
             }
-            <div style={{ textAlign: "center" }}>
+            {/* <div style={{ textAlign: "center" }}>
                 <img src={LogoCuentaUnica.src} alt="Logo" width="300" />
-            </div>
+            </div> */}
             <br />
             <div style={{ background: "white", border: "1px solid #E2E2E2", borderRadius: "4px 4px 0 0" }}>
-                <div style={{ display: "flex", background: "#F8F8F8", borderRadius: "4px 4px 0 0", padding: "10px 25px", boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.161)" }}>
-                    <AccountCircleOutlinedIcon color="primary" sx={{ margin: "4px 10px 0 0", fontSize: "28px" }} />
+                <div style={{ display: "flex", background: "#F8F8F8", borderRadius: "4px 4px 0 0", padding: "13px 25px 0px 25px", boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.161)" }}>
+                    {/* <AccountCircleOutlinedIcon color="primary" sx={{ margin: "4px 10px 0 0", fontSize: "28px" }} /> */}
+                    <div style={{marginRight: "15px", marginTop: "-3px"}}>
+                        <img src={LogoDedo.src} alt="Logo" width="40" />
+                    </div>
                     <Typography color="primary" sx={{ fontWeight: "700", fontSize: "24px" }}>
                         {title}
                     </Typography>
