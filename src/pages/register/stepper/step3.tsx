@@ -11,6 +11,7 @@ import { labels } from '@/constants/labels';
 import { ButtonApp } from '@/components/elements/button';
 import { authApi } from '@/services/app/auth';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { AlertError, AlertWarning } from '@/components/elements/alert';
 
 interface IFormInputs {
     email: string
@@ -22,7 +23,10 @@ interface IFormInputs {
 const schema = yup.object({
     email: yup.string().trim().email(labels.form.invalidEmail).required(labels.form.requiredField),
     emailConfirm: yup.string().trim().required(labels.form.requiredField).oneOf([yup.ref('email')], 'Los correos no coinciden'),
-    password: yup.string().min(8, "Debe contener al menos 8 caracteres").required(labels.form.requiredField).trim(),
+    password: yup.string().min(8, "Debe contener al menos 8 caracteres").required(labels.form.requiredField).trim().matches(
+        /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+        "La contraseña debe contener una mayúscula, un número y un carácter especial"
+    ),
     passwordConfirm: yup.string().required(labels.form.requiredField).oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
 })
 
@@ -51,10 +55,16 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
         authApi.post(obj)
             .then(() => {
-                alert("Bien!")
                 handleNext()
             })
-            .catch(() => alert("error"))
+            .catch((err) => {
+                console.log(err)
+                if(err?.response?.status === 409){
+                    AlertWarning("El correo electrónico que proporcionaste ya está registrado.")
+                }else {
+                    AlertError()
+                }
+            })
             .finally(() => setLoading(false));
     }
 
@@ -72,11 +82,22 @@ export default function Step3({ handleNext, infoCedula }: any) {
                         <FormControlApp
                             label="Correo Electrónico"
                             msg={errors.email?.message}
+                            tooltip="Completar Registro"
+                            tooltipText="Para completar tu cuenta única ciudadana es necesario proporcionar tu correo electrónico, asegúrate de estar correctamente escrito y de tu uso cotidiano."
                             required
                         >
                             <InputApp
                                 defaultValue={dataItem.email}
                                 placeholder="Coloca tu correo electrónico"
+                                onPaste={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                onCopy={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                autoComplete="off"
                                 {...register("email")}
                             />
                         </FormControlApp>
@@ -91,6 +112,15 @@ export default function Step3({ handleNext, infoCedula }: any) {
                             <InputApp
                                 defaultValue={dataItem.emailConfirm}
                                 placeholder="Coloca tu correo electrónico"
+                                onPaste={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                onCopy={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                autoComplete="off"
                                 {...register("emailConfirm")}
                             />
                         </FormControlApp>
@@ -100,12 +130,31 @@ export default function Step3({ handleNext, infoCedula }: any) {
                         <FormControlApp
                             label="Contraseña"
                             msg={errors.password?.message}
+                            tooltip="Su contraseña debe contener:"
+                            tooltipText={<>
+                                <b>
+                                    Al menos 8 caracteres de largo<br />Al menos 3 de los siguientes:
+                                </b>
+                                <li>Letras minúsculas (a-z)</li>
+                                <li>Letras mayúsculas (A-Z)</li>
+                                <li>Números (0-9)</li>
+                                <li>Caracteres especiales (por ejemplo, !@#$%^&*)</li>
+                            </>}
                             required
                         >
                             <InputApp
                                 defaultValue={dataItem.password}
                                 placeholder="*********"
                                 type="password"
+                                onPaste={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                onCopy={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                autoComplete="off"
                                 {...register("password")}
                             />
                         </FormControlApp>
@@ -121,6 +170,15 @@ export default function Step3({ handleNext, infoCedula }: any) {
                                 defaultValue={dataItem.passwordConfirm}
                                 placeholder="*********"
                                 type="password"
+                                onPaste={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                onCopy={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                autoComplete="off"
                                 {...register("passwordConfirm")}
                             />
                         </FormControlApp>

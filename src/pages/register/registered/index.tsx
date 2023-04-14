@@ -61,7 +61,7 @@ export default function Index() {
                     
                     <GridItem md={12} lg={12}>
                         <ButtonApp
-                            onClick={() => router.push(routes.auth.home)}
+                            onClick={() => window.open("https://beta.auth.digital.gob.do/realms/master/account/")}
                         >
                             IR A MI CUENTA
                         </ButtonApp>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { cedulaApi } from '@/services/cedula';
 import { useRouter } from 'next/router';
 import { routes } from '@/constants/routes';
+import { AlertWarning } from '@/components/elements/alert';
 
 interface IFormInputs {
     cedula: string
@@ -20,7 +21,7 @@ interface IFormInputs {
 }
 
 const schema = yup.object({
-    cedula: yup.string().trim().required(labels.form.requiredField),
+    cedula: yup.string().trim().required(labels.form.requiredField).min(11, "Debe contener 11 dígitos"),
     // birthDate: yup.string().trim().required(labels.form.requiredField),
 })
 
@@ -31,6 +32,21 @@ export default function Step1({ handleNext }: any) {
     const [dataItem, setDataItem] = useState<any>({})
 
     const [loading, setLoading] = useState(false)
+
+    const inputCedula = useRef<any>();
+    console.log(inputCedula.current)
+
+    const handleChange = (e: any) => {
+        const cardValue = e.target.value.replace(/\D/g, '')
+            .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
+        e.target.value = !cardValue[2]
+            ? cardValue[1]
+            : `${cardValue[1]}-${cardValue[2]}${`${cardValue[3] ? `-${cardValue[3]}` : ''
+            }`}${`${cardValue[4] ? `-${cardValue[4]}` : ''}`}`;
+        const numbers = e.target.value.replace(/(\D)/g, '');
+        setValue("cedula", numbers);
+        console.log(numbers)
+    };
 
     const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
         reValidateMode: 'onSubmit',
@@ -48,7 +64,7 @@ export default function Step1({ handleNext }: any) {
                 sessionStorage.setItem("infoCedula", JSON.stringify(res.data))
                 handleNext()
             })
-            .catch((err) => console.log(err))
+            .catch(() => AlertWarning("Cédula invalida"))
             .finally(() => setLoading(false))
     }
 
@@ -56,8 +72,8 @@ export default function Step1({ handleNext }: any) {
         <>
             {loading && <LoadingBackdrop />}
             <br />
-            <TextBody textCenter bold>
-                Por favor completa los siguientes campos.
+            <TextBody textCenter>
+                Por favor completa el siguiente campo.
             </TextBody>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -66,12 +82,23 @@ export default function Step1({ handleNext }: any) {
                         <FormControlApp
                             label="Coloca tu Cédula"
                             msg={errors.cedula?.message}
+                            tooltip="Identidad de Usuario"
+                            tooltipText="Para iniciar el proceso de validar tu identidad, coloca el número de tu cédula."
                             required
                         >
                             <InputApp
                                 defaultValue={dataItem.cedula}
                                 placeholder="*** - **00000 - 0"
-                                {...register("cedula")}
+                                onPaste={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                onCopy={(e) => {
+                                    e.preventDefault()
+                                    return false;
+                                }}
+                                autoComplete="off"
+                                onChange={(e) => handleChange(e)}
                             />
                         </FormControlApp>
                     </GridItem>
