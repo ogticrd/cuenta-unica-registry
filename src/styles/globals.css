@@ -71,7 +71,7 @@ body {
 /* MUI global */
 
 .MuiStepLabel-iconContainer, .MuiStepConnector-horizontal {
-  display: none;
+  display: none !important;
 }
 
 .MuiStepLabel-label {
