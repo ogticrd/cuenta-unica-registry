@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -34,6 +34,14 @@ export default function Step2({ handleNext }: any) {
 
     const [dataItem, setDataItem] = useState<any>({});
 
+    const [infoCedula, setInfoCedula] = useState<any>({})
+    
+    useEffect(() => {
+        if(sessionStorage.getItem("infoCedula")){
+            setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
+        }
+    },[])
+
     // const handleClick = () => setOpen(!open)
     const handleClick = () => {
         window.location.assign(`/vu-biometric`);
@@ -62,7 +70,7 @@ export default function Step2({ handleNext }: any) {
         <>
             <br />
             <TextBody textCenter>
-                Para verificarte tu identidad y seguir con el proceso de tu registro
+                Hola {infoCedula?.payload?.names}, para verificar tu identidad y seguir con el proceso de tu registro
                 necesitas disponer de lo siguiente:
             </TextBody>
             <br />

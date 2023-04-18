@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from "yup";
@@ -36,9 +36,10 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
     const [loading, setLoading] = useState(false)
 
-    const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
-        reValidateMode: 'onSubmit',
-        shouldFocusError: false,
+    const { register, handleSubmit, formState: { errors }, getValues, control, setValue } = useForm<IFormInputs>({
+        // reValidateMode: 'onChange',
+        // shouldFocusError: false,
+        mode: "onChange",
         resolver: yupResolver(schema)
     });
 
@@ -47,7 +48,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
         const obj = {
             email: data.email,
-            username: data.email,
+            username: infoCedula?.payload?.id,
             firstName: infoCedula?.payload?.names,
             lastName: `${infoCedula?.payload?.firstSurname} ${infoCedula?.payload?.secondSurname}`,
             password: data.password,
@@ -59,9 +60,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
             })
             .catch((err) => {
                 console.log(err)
-                if(err?.response?.status === 409){
-                    AlertWarning("El correo electrónico que proporcionaste ya está registrado.")
-                }else {
+                if (err?.response?.status === 409) {
+                    AlertWarning("El usuario ya esta registrado.")
+                } else {
                     AlertError()
                 }
             })
@@ -70,7 +71,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
     return (
         <>
-            {loading && <LoadingBackdrop />}
+            {loading && <LoadingBackdrop text="Estamos creando tu usuario..." />}
             <br />
             <TextBody textCenter bold>
                 Por favor completa los siguientes campos para finalizar tu registro.
@@ -187,6 +188,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                     <GridItem md={12} lg={12}>
                         <ButtonApp
                             submit
+                            disabled={Object.values(getValues()).every((value: any) => value !== null && value !== undefined && value !== '') === false ? true : false}
                         >
                             ACEPTAR Y CONFIRMAR
                         </ButtonApp>
