@@ -50,11 +50,12 @@ export default function Index() {
                     <GridItem md={12} lg={12}>
                         <br />
                         <TextBody textCenter>
-                            ¡Felicidades tu Cuenta Unica Ciudadana a sido creada con éxito!
+                            Hemos enviado una confirmación a tu correo electrónico.
+                            {/* ¡Felicidades tu Cuenta Unica Ciudadana a sido creada con éxito! */}
                         </TextBody>
                         <br />
                         <TextBody textCenter>
-                            Ahora puedes ver y realizar tramites y  solicitar servicios gubernamentales con una sola cuenta y contraseña.
+                            Revisa tu correo y haz clic en el enlace de confirmación, luego podras ver, realizar tramites y solicitar servicios gubernamentales con una sola cuenta y contraseña.
                         </TextBody>
                         <br />
                     </GridItem>
