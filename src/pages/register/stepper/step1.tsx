@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from "yup";
@@ -28,6 +29,8 @@ const schema = yup.object({
 export default function Step1({ handleNext }: any) {
 
     const router = useRouter();
+    const captchaRef = useRef<any>(null);
+    console.log(captchaRef)
 
     const [dataItem, setDataItem] = useState<any>({})
 
@@ -37,12 +40,12 @@ export default function Step1({ handleNext }: any) {
     console.log(inputCedula.current)
 
     const handleChange = (e: any) => {
-        const cardValue = e.target.value.replace(/\D/g, '')
+        const cedulaValue = e.target.value.replace(/\D/g, '')
             .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
-        e.target.value = !cardValue[2]
-            ? cardValue[1]
-            : `${cardValue[1]}-${cardValue[2]}${`${cardValue[3] ? `-${cardValue[3]}` : ''
-            }`}${`${cardValue[4] ? `-${cardValue[4]}` : ''}`}`;
+        e.target.value = !cedulaValue[2]
+            ? cedulaValue[1]
+            : `${cedulaValue[1]}-${cedulaValue[2]}${`${cedulaValue[3] ? `-${cedulaValue[3]}` : ''
+            }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
         const numbers = e.target.value.replace(/(\D)/g, '');
         setValue("cedula", numbers);
         console.log(numbers)
@@ -56,7 +59,13 @@ export default function Step1({ handleNext }: any) {
     console.log(errors)
 
     const onSubmit = (data: IFormInputs) => {
+        const tokenCaptcha = captchaRef.current.getValue()
         console.log(data)
+
+        if(!tokenCaptcha) {
+            return AlertWarning("Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad")
+        }
+
         setLoading(true)
         // router.replace(routes.register.home, routes.register.home, { shallow: true });
         cedulaApi.get(data.cedula)
@@ -103,8 +112,8 @@ export default function Step1({ handleNext }: any) {
                         </FormControlApp>
                     </GridItem>
 
-                    {/* <GridItem md={12} lg={12}>
-                        <FormControlApp
+                    <GridItem md={12} lg={12}>
+                        {/* <FormControlApp
                             label="Fecha Nacimiento"
                             msg={errors.birthDate?.message}
                             required
@@ -114,8 +123,11 @@ export default function Step1({ handleNext }: any) {
                                 placeholder="DD / MM / AAAA"
                                 {...register("birthDate")}
                             />
-                        </FormControlApp>
-                    </GridItem> */}
+                        </FormControlApp> */}
+                        <div style={{width: "100%", margin: "5px 0 22px 0", display: "flex", justifyContent: "center"}}>
+                            <ReCAPTCHA sitekey={"6LfS1ZUlAAAAAC5zuDE_kO6SDBXM2RLAf2ZmJaZG"} ref={captchaRef}  />
+                        </div>
+                    </GridItem>
 
                     <GridItem md={12} lg={12}>
                         <ButtonApp
