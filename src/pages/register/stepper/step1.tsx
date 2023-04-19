@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -12,9 +12,8 @@ import { labels } from '@/constants/labels';
 import { ButtonApp } from '@/components/elements/button';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { cedulaApi } from '@/services/cedula';
-import { useRouter } from 'next/router';
-import { routes } from '@/constants/routes';
-import { AlertWarning } from '@/components/elements/alert';
+import { AlertError, AlertWarning } from '@/components/elements/alert';
+import { authApi } from '@/services/app/auth';
 
 interface IFormInputs {
     cedula: string
@@ -28,16 +27,14 @@ const schema = yup.object({
 
 export default function Step1({ handleNext }: any) {
 
-    const router = useRouter();
     const captchaRef = useRef<any>(null);
-    console.log(captchaRef)
-
-    const [dataItem, setDataItem] = useState<any>({})
 
     const [loading, setLoading] = useState(false)
 
-    const inputCedula = useRef<any>();
-    console.log(inputCedula.current)
+    const configReCaptcha = {
+        sitekey: process.env.NEXT_PUBLIC_SITE_KEY || "",
+        ref: captchaRef
+    }
 
     const handleChange = (e: any) => {
         const cedulaValue = e.target.value.replace(/\D/g, '')
@@ -48,32 +45,37 @@ export default function Step1({ handleNext }: any) {
             }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
         const numbers = e.target.value.replace(/(\D)/g, '');
         setValue("cedula", numbers);
-        console.log(numbers)
     };
 
-    const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
+    const { handleSubmit, formState: { errors }, setValue } = useForm<IFormInputs>({
         reValidateMode: 'onSubmit',
         shouldFocusError: false,
         resolver: yupResolver(schema)
     });
-    console.log(errors)
 
     const onSubmit = (data: IFormInputs) => {
         const tokenCaptcha = captchaRef.current.getValue()
-        console.log(data)
 
-        if(!tokenCaptcha) {
+        if (!tokenCaptcha) {
             return AlertWarning("Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad")
         }
 
         setLoading(true)
-        // router.replace(routes.register.home, routes.register.home, { shallow: true });
-        cedulaApi.get(data.cedula)
+
+        authApi.getVerifyUser(data.cedula)
             .then((res) => {
-                sessionStorage.setItem("infoCedula", JSON.stringify(res.data))
-                handleNext()
+                if (res.data?.data?.exists) {
+                    return AlertWarning("La Cédula ya está registrada.")
+                } else {
+                    cedulaApi.get(data.cedula)
+                        .then((res) => {
+                            sessionStorage.setItem("infoCedula", JSON.stringify(res.data))
+                            handleNext()
+                        })
+                        .catch(() => AlertWarning("Cédula invalida"))
+                }
             })
-            .catch(() => AlertWarning("Cédula invalida"))
+            .catch(() => AlertError())
             .finally(() => setLoading(false))
     }
 
@@ -96,7 +98,6 @@ export default function Step1({ handleNext }: any) {
                             required
                         >
                             <InputApp
-                                defaultValue={dataItem.cedula}
                                 placeholder="*** - **00000 - 0"
                                 onPaste={(e) => {
                                     e.preventDefault()
@@ -124,8 +125,8 @@ export default function Step1({ handleNext }: any) {
                                 {...register("birthDate")}
                             />
                         </FormControlApp> */}
-                        <div style={{width: "100%", margin: "5px 0 22px 0", display: "flex", justifyContent: "center"}}>
-                            <ReCAPTCHA sitekey={"***REMOVED***"} ref={captchaRef}  />
+                        <div style={{ width: "100%", margin: "5px 0 22px 0", display: "flex", justifyContent: "center" }}>
+                            <ReCAPTCHA {...configReCaptcha} />
                         </div>
                     </GridItem>
 
