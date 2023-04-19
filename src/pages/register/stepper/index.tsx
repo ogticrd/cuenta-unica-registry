@@ -1,4 +1,5 @@
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,7 +7,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import Step1 from './step1';
+// const Step1 = dynamic(() => import("./step1"), {ssr: false});
+import Step1 from './step1'
 import Step2 from './step2';
 import Step3 from './step3';
 import { useRouter } from 'next/router';
@@ -20,6 +22,17 @@ export default function StepperRegister() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
+    const [infoCedula, setInfoCedula] = React.useState({})
+    console.log(infoCedula)
+
+    React.useEffect(() => {
+        if(Boolean(sessionStorage.getItem("validated")) && sessionStorage.getItem("infoCedula")){
+            setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
+            setActiveStep(2)
+            sessionStorage.clear()
+        }
+    },[])
+
     const isStepOptional = (step: number) => {
         return step === 1;
     };
@@ -31,7 +44,7 @@ export default function StepperRegister() {
     const handleNext = () => {
         console.log(activeStep)
         if(activeStep === (steps.length - 1)){
-            return router.push(routes.register.confirmation)
+            return router.push(routes.register.registered)
         }
 
         let newSkipped = skipped;
@@ -69,9 +82,9 @@ export default function StepperRegister() {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Stepper activeStep={activeStep}>
+            <Stepper sx={{paddingBottom: "20px", borderBottom: "2px solid #E2E2E2"}} activeStep={activeStep}>
                 {steps.map((label, index) => {
-                    const stepProps: { completed?: boolean } = {};
+                    // const stepProps: { completed?: boolean } = {};
                     const labelProps: {
                         optional?: React.ReactNode;
                     } = {};
@@ -91,12 +104,15 @@ export default function StepperRegister() {
                         );
                     }
                     
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
+                    // if (isStepSkipped(index)) {
+                    //     stepProps.completed = false;
+                    // }
                     return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}><span style={{fontWeight: "bold"}}>{label}</span></StepLabel>
+
+                        <Step key={label} sx={{borderLeft: `${index === 0 ? "0px" : "1px"} solid #B7D9F8`}}>
+                            <StepLabel {...labelProps}>
+                                <span style={{fontWeight: "700"}}>{label}</span>
+                            </StepLabel>
                         </Step>
                     );
                 })}
@@ -112,7 +128,7 @@ export default function StepperRegister() {
                     </Box>
                 </React.Fragment>
             ) : (
-                <React.Fragment>
+                <div style={{margin: "0px 25px"}}>
                     {activeStep === 0 &&
                         <Step1 
                             handleNext={handleNext}
@@ -126,6 +142,7 @@ export default function StepperRegister() {
                     {activeStep === 2 &&
                         <Step3
                             handleNext={handleNext}
+                            infoCedula={infoCedula}
                         />
                     }
                     {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -147,7 +164,7 @@ export default function StepperRegister() {
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
                     </Box> */}
-                </React.Fragment>
+                </div>
             )}
         </Box>
     );
