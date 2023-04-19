@@ -61,7 +61,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             .catch((err) => {
                 console.log(err)
                 if (err?.response?.status === 409) {
-                    AlertWarning("El usuario ya esta registrado.")
+                    AlertWarning("El correo electrónico ya está registrado.")
                 } else {
                     AlertError()
                 }
