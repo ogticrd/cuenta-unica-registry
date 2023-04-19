@@ -31,7 +31,7 @@ export default function Index() {
                                 <Typography fontWeight="500" fontSize={16} color="white">CONÓCENOS</Typography>
                                 <br />
                                 <Typography color="white" fontWeight="400" fontSize="16">
-                                    Oficina Gubernamental de Tecnologías de la Información y Comunicación
+                                    Oficina Gubernamental de Tecnologías de la Información y Comunicación (OGTIC)
                                 </Typography>
                             </GridItem>
 
@@ -53,7 +53,8 @@ export default function Index() {
                                 <Typography fontWeight="500" fontSize={16} color="white">BÚSCANOS</Typography>
                                 <br />
                                 <Typography color="white" fontWeight="400" fontSize="16">
-                                    Av. 27 de Febrero #419 casi esquina Núñez de Cáceres, Santo Domingo, R.D.
+                                    Oficina Gubernamental de Tecnologías de la Información y Comunicación (OGTIC)
+                                    Av. Rómulo Betancourt #311, Edificio Corporativo Vista 311, Santo Domingo, República Dominicana.
                                 </Typography>
                             </GridItem>
 

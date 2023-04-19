@@ -2,10 +2,14 @@
 
 body {
   font-family: Poppins, sans-serif;
-  background-image: url("../../public/assets/forma.png");
+  background-image: url("../../public/assets/forma.png") !important;
   background-repeat: no-repeat;
   background-position: right;
   background-size: 300px;
+}
+
+.swal2-container {
+  z-index: 1600 !important;
 }
 
 .text-bold {
@@ -63,3 +67,13 @@ body {
 .p-5 { padding: 25px; }
 .py-5 { padding-top: 25px; padding-bottom: 25px; }
 .px-5 { padding-left: 25px; padding-right: 25px; }
+
+/* MUI global */
+
+.MuiStepLabel-iconContainer, .MuiStepConnector-horizontal {
+  display: none !important;
+}
+
+.MuiStepLabel-label {
+  color: #03397775;
+}

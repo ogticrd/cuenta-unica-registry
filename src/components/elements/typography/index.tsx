@@ -38,7 +38,7 @@ export const TextSubTitleBody = ({ children }: IProps) => {
 
 export const TextBody = ({ children, textCenter, bold }: IProps) => {
     return (
-        <Typography variant="body2" color="primary" sx={{ fontSize: "16px", fontWeight: `${bold ? "600" : "500"}`, textAlign: `${textCenter ? 'center' : 'left'}` }}>
+        <Typography color="primary" sx={{ fontSize: "16px", fontWeight: `${bold ? "600" : "500"}`, textAlign: `${textCenter ? 'center' : 'left'}` }}>
             {children}
         </Typography>
     )
