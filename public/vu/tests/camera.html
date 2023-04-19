@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>Test</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+		<!-- Custom styles for this template-->
+		<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="../css/main.css" rel="stylesheet">
+		<link href="../css/vu.sop.ui.css" rel="stylesheet">-->
+
+	</head>
+	<body>
+		<div class="vu.sop.ui.videoContainer" style="height: 480px; width: 640px; overflow: hidden;">
+			<video id="vu.sop.ui.video" autoplay muted style="position: relative; width: 100%; height: 100%;"></video>
+		</div>>
+
+		<script src="../js/libs/inspector-bokeh/dist/measure_blur.js"></script>
+    	<script src="../js/libs/webrtc/adapter-latest.js"></script>
+        <script src="../js/vu.camera.js"></script>
+		<button onclick="vu.camera.start('vu.sop.ui.video')">Start</button>
+	</body>
+	<script>
+		/*
+			prepare the image and canvas context
+		*/
+
+        sopStart = async function() {
+            try {
+            	console.log('Start Camera');
+				try {
+					vu.camera.config.orientation = 'environment';
+					vu.camera.config.previewResolution = 'highest';
+					vu.camera.config.pictureResolution = 'highest';
+					vu.camera.config.pictureForceLandscape = true;
+					await vu.camera.start("vu.sop.ui.video")
+				} catch (e) {
+					alert(e.message)
+				}
+
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+        sopStart().then(
+        		function (result) {
+        			console.log(result)
+        		})
+	</script>
+</html>

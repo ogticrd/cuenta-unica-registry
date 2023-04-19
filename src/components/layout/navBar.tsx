@@ -35,9 +35,9 @@ export default function Index() {
                         {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             News
                         </Typography> */}
-                        <div style={{flexGrow: 1}}>
+                        <div style={{flexGrow: 1, paddingTop: "8px"}}>
                             <Link href={routes.auth.home}>
-                                <img src={Logo.src} alt="logo" width="350" />
+                                <img src={Logo.src} alt="logo" width="200" />
                             </Link>
                         </div>
                         <AppsIcon fontSize='large' />

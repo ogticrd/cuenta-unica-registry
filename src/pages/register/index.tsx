@@ -17,48 +17,48 @@ import { routes } from '@/constants/routes';
 import { labels } from '@/constants/labels';
 import StepperRegister from './stepper';
 
-interface IFormInputs {
-    cedulaOrEmail: string
-}
+// interface IFormInputs {
+//     cedulaOrEmail: string
+// }
 
-const schema = yup.object({
-    cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
-})
+// const schema = yup.object({
+//     cedulaOrEmail: yup.string().trim().required(labels.form.requiredField),
+// })
 
 
 export default function Index() {
 
-    const router = useRouter()
+    // const router = useRouter()
 
-    const [dataItem, setDataItem] = useState<any>({})
+    // const [dataItem, setDataItem] = useState<any>({})
 
-    const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
-        reValidateMode: 'onSubmit',
-        shouldFocusError: false,
-        resolver: yupResolver(schema)
-    });
+    // const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<IFormInputs>({
+    //     reValidateMode: 'onSubmit',
+    //     shouldFocusError: false,
+    //     resolver: yupResolver(schema)
+    // });
 
-    const onSubmit = (data: IFormInputs) => {
-        console.log(data)
-        router.push(routes.auth.password)
-    }
+    // const onSubmit = (data: IFormInputs) => {
+    //     console.log(data)
+    //     router.push(routes.auth.password)
+    // }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        // <form onSubmit={handleSubmit(onSubmit)}>
             <GridContainer
                 spacing={10}
                 flexDirection={{ xs: "column", sm: "row" }}
             >
                 <GridItem sx={{ order: { xs: 2, sm: 1 } }} sm={12} md={6} lg={6}>
                     <TextTitle>
-                        Sistema registro <span className="text-error">cuenta única ciudadana.</span>
+                        ¡Bienvenido a la Plataforma Única de Autenticación <span className="text-error">Ciudadana!</span>
                     </TextTitle>
                     <TextSubTitle>
-                        ¡Es fácil y rápido! Solo siga los siguientes pasos:
+                        Accede o regístrate con un único usuario y contraseña, para solicitar o consultar todos tus servicios y trámites gubernamentales.
                     </TextSubTitle>
                     <br />
                     <TextSubTitleBody>
-                        1. Inicia por identificarte colocando tu numero de identidad “Cédula” y validando con la información única de tu documento.
+                        Una manera fácil y cómoda de identificarte, para realizar trámites desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.
                     </TextSubTitleBody>
                     <br />
                     <img src={LadingChica2.src} alt="Lading Home" width="100%" />
@@ -72,6 +72,6 @@ export default function Index() {
                     </CardAuth>
                 </GridItem>
             </GridContainer>
-        </form>
+        // </form>
     )
 }
