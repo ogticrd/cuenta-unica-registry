@@ -25,13 +25,13 @@ export default function StepperRegister() {
     const [infoCedula, setInfoCedula] = React.useState({})
     console.log(infoCedula)
 
-    React.useEffect(() => {
-        if(Boolean(sessionStorage.getItem("validated")) && sessionStorage.getItem("infoCedula")){
-            setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
-            setActiveStep(2)
-            sessionStorage.clear()
-        }
-    },[])
+    // React.useEffect(() => {
+    //     if(Boolean(sessionStorage.getItem("validated")) && sessionStorage.getItem("infoCedula")){
+    //         setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
+    //         setActiveStep(2)
+    //         sessionStorage.clear()
+    //     }
+    // },[])
 
     const isStepOptional = (step: number) => {
         return step === 1;
@@ -131,18 +131,20 @@ export default function StepperRegister() {
                 <div style={{margin: "0px 25px"}}>
                     {activeStep === 0 &&
                         <Step1 
+                            setInfoCedula={setInfoCedula}
                             handleNext={handleNext}
                         />
                     }
                     {activeStep === 1 &&
                         <Step2
+                            infoCedula={infoCedula}
                             handleNext={handleNext}
                         />
                     }
                     {activeStep === 2 &&
                         <Step3
-                            handleNext={handleNext}
                             infoCedula={infoCedula}
+                            handleNext={handleNext}
                         />
                     }
                     {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
