@@ -16,8 +16,8 @@ export class Challenge {
       !this.sign?.PINKY
     ) {
       return {
-        text: 'Muestra tu mano cerrada',
-        image: 'fist',
+        text: "Muestra tu mano cerrada",
+        image: "fist",
       };
     }
 
@@ -29,8 +29,8 @@ export class Challenge {
       !this.sign?.PINKY
     ) {
       return {
-        text: 'Muestra tu pulgar',
-        image: 'thumb',
+        text: "Muestra tu pulgar",
+        image: "thumb",
       };
     }
 
@@ -42,8 +42,8 @@ export class Challenge {
       !this.sign?.PINKY
     ) {
       return {
-        text: 'Muestra dos dedos',
-        image: 'two-fingers',
+        text: "Muestra dos dedos",
+        image: "two-fingers",
       };
     }
 
@@ -55,8 +55,8 @@ export class Challenge {
       !this.sign?.PINKY
     ) {
       return {
-        text: 'Muestra tres dedos',
-        image: 'three-fingers',
+        text: "Muestra tres dedos",
+        image: "three-fingers",
       };
     }
 
@@ -68,8 +68,8 @@ export class Challenge {
       this.sign?.PINKY
     ) {
       return {
-        text: 'Muestra tu mano abierta',
-        image: 'open-hand',
+        text: "Muestra tu mano abierta",
+        image: "open-hand",
       };
     }
 
