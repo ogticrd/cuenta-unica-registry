@@ -107,12 +107,12 @@ jobs:
           credentials: ${{ secrets.GAR_JSON_KEY }}
           region: ${{ secrets.GCP_REGION }}
           env_vars: |
-            NODE_ENV=${{ env.NODE_ENV }}
-            REACT_APP_SOCKET_FACIAL_URL=${{ secrets.REACT_APP_SOCKET_FACIAL_URL }}
-            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }}
-            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }}
-            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }}
-            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }}
+            NODE_ENV=${{ env.NODE_ENV }},
+            REACT_APP_SOCKET_FACIAL_URL=${{ secrets.REACT_APP_SOCKET_FACIAL_URL }},
+            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }},
+            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }},
+            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }},
+            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }},
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
