@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import * as yup from "yup";
@@ -14,14 +14,14 @@ import { FormControlApp } from "@/components/form/input";
 import { InputApp } from "@/themes/form/input";
 import { labels } from "@/constants/labels";
 
-export async function getServerSideProps(context: any) {
-  const NEXT_PUBLIC_SITE_KEY = process.env["NEXT_PUBLIC_SITE_KEY"];
-  return {
-    props: {
-      siteKey: NEXT_PUBLIC_SITE_KEY,
-    },
-  };
-}
+// export async function getServerSideProps(context: any) {
+//   const NEXT_PUBLIC_SITE_KEY = process.env["NEXT_PUBLIC_SITE_KEY"];
+//   return {
+//     props: {
+//       siteKey: NEXT_PUBLIC_SITE_KEY,
+//     },
+//   };
+// }
 
 interface IFormInputs {
   cedula: string;
@@ -35,15 +35,15 @@ const schema = yup.object({
     .min(11, "Debe contener 11 dígitos"),
 });
 
-export default function Step1({ setInfoCedula, handleNext, siteKey }: any) {
-  const captchaRef = useRef<any>(null);
+export default function Step1({ setInfoCedula, handleNext /*siteKey*/ }: any) {
+  // const captchaRef = useRef<any>(null);
 
   const [loading, setLoading] = useState(false);
 
-  const configReCaptcha = {
-    sitekey: "6LfS1ZUlAAAAAC5zuDE_kO6SDBXM2RLAf2ZmJaZG",
-    ref: captchaRef,
-  };
+  // const configReCaptcha = {
+  //   sitekey: "6LfS1ZUlAAAAAC5zuDE_kO6SDBXM2RLAf2ZmJaZG",
+  //   ref: captchaRef,
+  // };
 
   const handleChange = (e: any) => {
     const cedulaValue = e.target.value
@@ -69,13 +69,13 @@ export default function Step1({ setInfoCedula, handleNext, siteKey }: any) {
   });
 
   const onSubmit = (data: IFormInputs) => {
-    const tokenCaptcha = captchaRef.current.getValue();
+    // const tokenCaptcha = captchaRef.current.getValue();
 
-    if (!tokenCaptcha) {
-      return AlertWarning(
-        "Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad"
-      );
-    }
+    // if (!tokenCaptcha) {
+    //   return AlertWarning(
+    //     "Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad"
+    //   );
+    // }
 
     setLoading(true);
 
@@ -141,7 +141,7 @@ export default function Step1({ setInfoCedula, handleNext, siteKey }: any) {
                 justifyContent: "center",
               }}
             >
-              <ReCAPTCHA {...configReCaptcha} />
+              {/* <ReCAPTCHA {...configReCaptcha} /> */}
             </div>
           </GridItem>
 
