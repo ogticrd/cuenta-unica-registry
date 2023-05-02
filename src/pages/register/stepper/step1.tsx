@@ -62,20 +62,20 @@ export default function Step1({ handleNext }: any) {
 
         setLoading(true)
 
-        authApi.getVerifyUser(data.cedula)
-            .then((res) => {
-                if (res.data?.data?.exists) {
-                    return AlertWarning("La Cédula ya está registrada.")
-                } else {
+        // authApi.getVerifyUser(data.cedula)
+        //     .then((res) => {
+        //         if (res.data?.data?.exists) {
+        //             return AlertWarning("La Cédula ya está registrada.")
+        //         } else {
                     cedulaApi.get(data.cedula)
                         .then((res) => {
                             sessionStorage.setItem("infoCedula", JSON.stringify(res.data))
                             handleNext()
                         })
                         .catch(() => AlertWarning("Cédula invalida"))
-                }
-            })
-            .catch(() => AlertError())
+                // }
+            // })
+            // .catch(() => AlertError())
             .finally(() => setLoading(false))
     }
 
