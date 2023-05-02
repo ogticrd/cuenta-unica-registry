@@ -1,34 +1,33 @@
-import { alpha, styled } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import { alpha, styled } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
 
 export const InputApp = styled(InputBase)(({ theme }) => ({
-  'label + &': {
+  "label + &": {
     fontSize: 10,
     marginTop: theme.spacing(2.4),
   },
-  '& .MuiInputBase-input': {
+  "& .MuiInputBase-input": {
     borderRadius: 4,
-    position: 'relative',
-    backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
-    // backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
-    border: '.5px solid #dadada',
+    position: "relative",
+    backgroundColor: theme.palette.mode === "light" ? "#fff" : "#2b2b2b",
+    border: ".5px solid #dadada",
     color: "#606060",
     fontSize: 16,
-    fontweight: '400',
-    width: '100%',
-    padding: '11px 8px',
-    marginBottom: '4px',
+    fontweight: "400",
+    width: "100%",
+    padding: "11px 8px",
+    marginBottom: "4px",
     transition: theme.transitions.create([
-      'border-color',
-      'background-color',
-      'box-shadow',
+      "border-color",
+      "background-color",
+      "box-shadow",
     ]),
-    '&:focus': {
+    "&:focus": {
       boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
       borderColor: theme.palette.primary.main,
     },
-    '&:disabled': {
-      backgroundColor: '#f2f2f2'
+    "&:disabled": {
+      backgroundColor: "#f2f2f2",
     },
   },
 }));
