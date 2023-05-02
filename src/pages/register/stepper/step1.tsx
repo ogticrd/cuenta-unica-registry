@@ -41,7 +41,7 @@ export default function Step1({ setInfoCedula, handleNext, siteKey }: any) {
   const [loading, setLoading] = useState(false);
 
   const configReCaptcha = {
-    sitekey: siteKey,
+    sitekey: "6LfS1ZUlAAAAAC5zuDE_kO6SDBXM2RLAf2ZmJaZG",
     ref: captchaRef,
   };
 
