@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
+import getConfig from "next/config";
 import * as yup from "yup";
 
 import { AlertError, AlertWarning } from "@/components/elements/alert";
@@ -13,6 +14,8 @@ import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
 import { InputApp } from "@/themes/form/input";
 import { labels } from "@/constants/labels";
+
+const { publicRuntimeConfig } = getConfig();
 
 interface IFormInputs {
   cedula: string;
@@ -32,7 +35,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   const [loading, setLoading] = useState(false);
 
   const configReCaptcha = {
-    sitekey: process.env.NEXT_PUBLIC_SITE_KEY || "",
+    sitekey: publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY || "",
     ref: captchaRef,
   };
 
