@@ -29,18 +29,14 @@ const schema = yup.object({
     acceptTermAndConditions: yup.boolean().required(labels.form.requiredField).default(false),
 });
 
-export default function Step2({ handleNext }: any) {
+export default function Step2({ infoCedula, handleNext }: any) {
     const [open, setOpen] = useState(false);
 
-    const [dataItem, setDataItem] = useState<any>({});
-
-    const [infoCedula, setInfoCedula] = useState<any>({})
-
-    useEffect(() => {
-        if (sessionStorage.getItem("infoCedula")) {
-            setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (sessionStorage.getItem("infoCedula")) {
+    //         setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
+    //     }
+    // }, [])
 
     const handleClick = () => setOpen(!open)
     // const handleClick = () => window.location.assign(`/vu-biometric`)
