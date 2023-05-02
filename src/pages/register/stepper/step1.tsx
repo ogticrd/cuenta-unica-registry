@@ -25,7 +25,7 @@ const schema = yup.object({
     // birthDate: yup.string().trim().required(labels.form.requiredField),
 })
 
-export default function Step1({ handleNext }: any) {
+export default function Step1({ setInfoCedula, handleNext }: any) {
 
     const captchaRef = useRef<any>(null);
 
@@ -69,7 +69,7 @@ export default function Step1({ handleNext }: any) {
         //         } else {
                     cedulaApi.get(data.cedula)
                         .then((res) => {
-                            sessionStorage.setItem("infoCedula", JSON.stringify(res.data))
+                            setInfoCedula(res.data)
                             handleNext()
                         })
                         .catch(() => AlertWarning("Cédula invalida"))
