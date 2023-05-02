@@ -19,7 +19,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { AlertWarning } from "@/components/elements/alert";
 
-// import Step2Modal from "./step2Modal";
+import Step2Modal from "./step2Modal";
 
 interface IFormInputs {
     acceptTermAndConditions: boolean;
@@ -35,17 +35,15 @@ export default function Step2({ handleNext }: any) {
     const [dataItem, setDataItem] = useState<any>({});
 
     const [infoCedula, setInfoCedula] = useState<any>({})
-    
+
     useEffect(() => {
-        if(sessionStorage.getItem("infoCedula")){
+        if (sessionStorage.getItem("infoCedula")) {
             setInfoCedula(JSON.parse(sessionStorage.getItem("infoCedula") || ""))
         }
-    },[])
+    }, [])
 
-    // const handleClick = () => setOpen(!open)
-    const handleClick = () => {
-        window.location.assign(`/vu-biometric`);
-    };
+    const handleClick = () => setOpen(!open)
+    // const handleClick = () => window.location.assign(`/vu-biometric`)
 
     const {
         register,
@@ -60,7 +58,7 @@ export default function Step2({ handleNext }: any) {
     });
 
     const onSubmit = (data: IFormInputs) => {
-        if(!data.acceptTermAndConditions){
+        if (!data.acceptTermAndConditions) {
             return AlertWarning("Para continuar debe aceptar Términos y Políticas de Privacidad")
         }
         handleClick();
@@ -70,7 +68,7 @@ export default function Step2({ handleNext }: any) {
         <>
             <br />
             <TextBody textCenter>
-                Hola {infoCedula?.payload?.names}, para verificar tu identidad y seguir con el proceso de tu registro
+                Hola {infoCedula?.payload?.names.split(" ")[0]}, para verificar tu identidad y seguir con el proceso de tu registro
                 necesitas disponer de lo siguiente:
             </TextBody>
             <br />
@@ -155,11 +153,19 @@ export default function Step2({ handleNext }: any) {
                 <GridContainer marginY>
                     <GridItem md={12} lg={12}>
                         <ButtonApp submit>INICIAR PROCESO</ButtonApp>
-                        {/* <Step2Modal
-                        open={open}
-                        handleClick={handleClick}
-                        handleNextForm={handleNextForm}
-                    /> */}
+                        {open &&
+                            <Step2Modal
+                                open={open}
+                                handleClick={handleClick}
+                                handleNextForm={handleNext}
+                                identity={
+                                    {
+                                        cedula: infoCedula?.payload?.id,
+                                        name: `${infoCedula?.payload?.names} ${infoCedula?.payload?.firstSurname} ${infoCedula?.payload?.secondSurname}`,
+                                    }
+                                }
+                            />
+                        }
                     </GridItem>
                 </GridContainer>
             </form>

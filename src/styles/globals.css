@@ -77,3 +77,9 @@ body {
 .MuiStepLabel-label {
   color: #03397775;
 }
+
+.test-life {
+  background: red;
+  z-index: 500 !important;
+  padding: 450px;
+}
