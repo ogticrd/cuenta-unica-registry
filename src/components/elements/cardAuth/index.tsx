@@ -1,5 +1,6 @@
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { Typography } from "@mui/material";
+import Image from "next/image";
 
 import LogoDedo from "../../../../public/assets/logoDedo.png";
 import { TextBody, TextBodyTiny } from "../typography";
@@ -19,7 +20,7 @@ export const CardAuth = ({
         <div
           style={{ position: "fixed", top: "40vh", left: "10vh", zIndex: "-1" }}
         >
-          <img
+          <Image
             src={lading?.src}
             alt="Lading"
             width={ladingWidth ? ladingWidth : "500"}
@@ -43,7 +44,7 @@ export const CardAuth = ({
           }}
         >
           <div style={{ marginRight: "15px", marginTop: "-3px" }}>
-            <img src={LogoDedo.src} alt="Logo" width="40" />
+            <Image src={LogoDedo.src} alt="Logo" width="40" />
           </div>
           <Typography
             color="primary"

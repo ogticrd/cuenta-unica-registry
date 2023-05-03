@@ -7,6 +7,7 @@ import LadingChica2 from "../../../public/assets/ladingChica2.png";
 import { GridContainer, GridItem } from "@/components/elements/grid";
 import { CardAuth } from "@/components/elements/cardAuth";
 import StepperRegister from "./stepper";
+import Image from "next/image";
 
 export default function Index() {
   return (
@@ -27,7 +28,7 @@ export default function Index() {
           organismos gubernamentales.
         </TextSubTitleBody>
         <br />
-        <img src={LadingChica2.src} alt="Lading Home" width="100%" />
+        <Image src={LadingChica2.src} alt="Lading Home" width="100" />
       </GridItem>
 
       <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>

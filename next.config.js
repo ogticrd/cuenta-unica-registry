@@ -8,14 +8,6 @@ const nextConfig = {
     NEXT_PUBLIC_SITE_KEY: process.env.NEXT_PUBLIC_SITE_KEY,
   },
   reactStrictMode: false,
-  rewrites: async () => {
-    return [
-      {
-        source: "/vu-biometric",
-        destination: "/vu/tests/face.html",
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;

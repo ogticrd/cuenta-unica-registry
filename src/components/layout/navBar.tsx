@@ -3,6 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Script from "next/script";
+import Image from "next/image";
 import Link from "next/link";
 
 import Logo from "../../../public/assets/logo.png";
@@ -21,7 +22,7 @@ export default function Index() {
           <Toolbar>
             <div style={{ flexGrow: 1, paddingTop: "8px" }}>
               <Link href={routes.auth.home}>
-                <img src={Logo.src} alt="logo" width="200" />
+                <Image src={Logo.src} alt="logo" width="200" />
               </Link>
             </div>
             <AppsIcon fontSize="large" />
