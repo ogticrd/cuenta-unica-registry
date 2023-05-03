@@ -11,13 +11,13 @@ export default async function handler(
   res: NextApiResponse<CitizensBasicInformationResponse>
 ): Promise<void> {
   const http = axios.create({
-    baseURL: publicRuntimeConfig.NEXT_PUBLIC_CEDULA_API,
+    baseURL: process.env.NEXT_PUBLIC_CEDULA_API,
   });
 
   const { cedula } = req.query;
 
   const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
-    `/${cedula}/info/basic?api-key=${publicRuntimeConfig.NEXT_PUBLIC_CEDULA_API_KEY}`
+    `/${cedula}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
   );
 
   res.status(200).json(citizen);
