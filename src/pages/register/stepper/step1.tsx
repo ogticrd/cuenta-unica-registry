@@ -31,7 +31,7 @@ const schema = yup.object({
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
   const sitekey = publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY;
-
+  console.log(sitekey);
   const captchaRef = useRef<any>(null);
 
   const [loading, setLoading] = useState(false);
