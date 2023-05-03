@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse<any>
 ): Promise<any> {
   const http = axios.create({
-    baseURL: process.env["NEXT_PUBLIC_IAM_API"],
+    baseURL: process.env.NEXT_PUBLIC_IAM_API,
   });
 
   if (req.method === "GET") {

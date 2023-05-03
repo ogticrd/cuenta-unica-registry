@@ -11,6 +11,7 @@ import AppBar from "@mui/material/AppBar";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import { Box } from "@mui/material";
+import Image from "next/image";
 import axios from "axios";
 
 import { GridContainer, GridItem } from "@/components/elements/grid";
@@ -183,7 +184,7 @@ export default function Step2Modal({
       destroyStreaming();
       socket.disconnect();
     };
-  }, [identity]);
+  }, [identity, listenVideoStreaming, startSocket]);
 
   return (
     <div>
@@ -196,7 +197,7 @@ export default function Step2Modal({
         <AppBar elevation={0} sx={{ position: "absolute" }}>
           <Toolbar>
             <Box sx={{ flex: 1 }}>
-              <img src={Logo.src} alt="logo" width="200" />
+              <Image src={Logo.src} alt="logo" width="200" />
             </Box>
             <ButtonApp
               notFullWidth
@@ -366,7 +367,7 @@ export default function Step2Modal({
                             alignItems: "center",
                           }}
                         >
-                          <img
+                          <Image
                             width="325"
                             height="216"
                             src={`/images/signs/${singDescription?.image}.png`}

@@ -2,23 +2,21 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 import * as yup from "yup";
 
-import LadingHome from "../../../public/assets/ladingHome.svg";
-
-import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth";
-import { GridContainer, GridItem } from "@/components/elements/grid";
 import {
-  TextBody,
   TextBodyTiny,
   TextSubTitle,
   TextSubTitleBody,
   TextTitle,
 } from "@/components/elements/typography";
-
+import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth";
+import { GridContainer, GridItem } from "@/components/elements/grid";
+import LadingHome from "../../../public/assets/ladingHome.svg";
+import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
 import { InputApp } from "@/themes/form/input";
-import { ButtonApp } from "@/components/elements/button";
 import { routes } from "@/constants/routes";
 import { labels } from "@/constants/labels";
 
@@ -71,7 +69,7 @@ export default function Index() {
             organismos gubernamentales.
           </TextSubTitleBody>
           <br />
-          <img src={LadingHome.src} alt="Lading Home" width="100%" />
+          <Image src={LadingHome.src} alt="Lading Home" width="100" />
         </GridItem>
 
         <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>

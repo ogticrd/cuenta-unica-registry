@@ -2,17 +2,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
+import getConfig from "next/config";
 import * as yup from "yup";
 
-import { AlertError, AlertWarning } from "@/components/elements/alert";
 import { GridContainer, GridItem } from "@/components/elements/grid";
-import LoadingBackdrop from "@/components/elements/loadingBackdrop";
 import { CitizensBasicInformationResponse } from "@/pages/api/types";
+import LoadingBackdrop from "@/components/elements/loadingBackdrop";
 import { TextBody } from "@/components/elements/typography";
+import { AlertWarning } from "@/components/elements/alert";
 import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
 import { InputApp } from "@/themes/form/input";
 import { labels } from "@/constants/labels";
+
+const { publicRuntimeConfig } = getConfig();
 
 interface IFormInputs {
   cedula: string;
@@ -28,11 +31,12 @@ const schema = yup.object({
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
   const captchaRef = useRef<any>(null);
-
   const [loading, setLoading] = useState(false);
 
+  const sitekey = publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY;
+
   const configReCaptcha = {
-    sitekey: process.env.NEXT_PUBLIC_SITE_KEY || "",
+    sitekey,
     ref: captchaRef,
   };
 
@@ -86,7 +90,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         handleNext();
       })
       .catch(() => {
-        AlertWarning("Cédula invalida");
+        AlertWarning("Parece que ha introducido una cédula inválida.");
       })
       .finally(() => setLoading(false));
   };
