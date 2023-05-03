@@ -94,7 +94,7 @@ jobs:
           credentials_json: '${{ secrets.GAR_JSON_KEY }}'
 
       - id: deploy
-        uses: google-github-actions/deploy-cloudrun@v0.8.0
+        uses: google-github-actions/deploy-cloudrun@v1.0.1
         with:
           image: ${{ env.GAR_BASE}}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version }}
