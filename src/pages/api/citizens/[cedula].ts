@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
-import getConfig from "next/config";
 import axios from "axios";
 
 import { CitizensBasicInformationResponse } from "../types";
-
-const { publicRuntimeConfig } = getConfig();
 
 export default async function handler(
   req: NextApiRequest,

@@ -3,6 +3,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { IconButton, Typography } from "@mui/material";
+import Image from "next/image";
 
 import logoOGTIC from "../../../public/assets/logoOGTIC.png";
 import { GridContainer, GridItem } from "../elements/grid";
@@ -16,8 +17,7 @@ export default function Index() {
         <GridContainer spacing={4}>
           <GridItem md={12} lg={3}>
             <div style={{ display: "flex" }}>
-              <img src={logoGOB.src} alt="logo" width="200" />
-              {/* <Divider orientation="vertical" sx={{background: "silver"}} variant="middle" flexItem /> */}
+              <Image src={logoGOB.src} alt="logo" width="200" />
             </div>
           </GridItem>
           <GridItem md={12} lg={9}>
@@ -83,7 +83,7 @@ export default function Index() {
                 © {new Date().getFullYear()} Todos los Derechos Reservados.
                 Desarrollado por
               </Typography>
-              <img
+              <Image
                 style={{ marginBottom: "-10px", marginLeft: "5px" }}
                 src={logoOGTIC.src}
                 alt="logo ogtic"
