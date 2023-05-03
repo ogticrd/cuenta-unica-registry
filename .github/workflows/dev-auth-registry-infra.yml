@@ -45,7 +45,6 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x        
 
-      ### Build the Docker image and Push it
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         with:
@@ -74,8 +73,11 @@ jobs:
           tags: ${{ env.GAR_BASE }}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           build-args: |
             NODE_ENV=${{ env.NODE_ENV }}
-            SKIP_PREFLIGHT_CHECK=${{ env.SKIP_PREFLIGHT_CHECK }}
-            DISABLE_ESLINT_PLUGIN=${{ env.DISABLE_ESLINT_PLUGIN }}
+            REACT_APP_SOCKET_FACIAL_URL=${{ secrets.REACT_APP_SOCKET_FACIAL_URL }}
+            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }}
+            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }}
+            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }}
+            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }}
           push: true
           cache-from: type=registry,ref=${{ env.GAR_BASE }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           cache-to: type=inline
@@ -108,12 +110,12 @@ jobs:
           credentials: ${{ secrets.GAR_JSON_KEY }}
           region: ${{ secrets.GCP_REGION }}
           env_vars: |
-            NODE_ENV=${{ env.NODE_ENV }}
-            REACT_APP_SOCKET_FACIAL_URL=${{ secrets.REACT_APP_SOCKET_FACIAL_URL }}
-            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }}
-            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }}
-            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }}
-            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }}
+            NODE_ENV=${{ env.NODE_ENV }},
+            REACT_APP_SOCKET_FACIAL_URL=${{ secrets.REACT_APP_SOCKET_FACIAL_URL }},
+            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }},
+            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }},
+            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }},
+            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }},
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
