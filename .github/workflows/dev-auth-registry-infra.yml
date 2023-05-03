@@ -67,7 +67,7 @@ jobs:
 
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           target: release
           tags: ${{ env.GAR_BASE }}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
