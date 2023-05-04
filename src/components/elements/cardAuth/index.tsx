@@ -12,6 +12,7 @@ export const CardAuth = ({
   children,
   lading,
   ladingWidth,
+  ladingHeight,
   icon,
 }: any) => {
   return (
@@ -24,6 +25,7 @@ export const CardAuth = ({
             src={lading?.src}
             alt="Lading"
             width={ladingWidth ? ladingWidth : "500"}
+            height={ladingHeight ? ladingHeight : "500"}
           />
         </div>
       )}
@@ -44,7 +46,7 @@ export const CardAuth = ({
           }}
         >
           <div style={{ marginRight: "15px", marginTop: "-3px" }}>
-            <Image src={LogoDedo.src} alt="Logo" width="40" />
+            <Image src={LogoDedo.src} alt="Logo" width="40" height="40" />
           </div>
           <Typography
             color="primary"

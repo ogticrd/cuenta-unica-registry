@@ -197,7 +197,7 @@ export default function Step2Modal({
         <AppBar elevation={0} sx={{ position: "absolute" }}>
           <Toolbar>
             <Box sx={{ flex: 1 }}>
-              <Image src={Logo.src} alt="logo" width="200" />
+              <Image src={Logo.src} alt="logo" width="200" height="40" />
             </Box>
             <ButtonApp
               notFullWidth

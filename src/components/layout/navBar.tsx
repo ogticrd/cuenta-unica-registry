@@ -19,14 +19,16 @@ export default function Index() {
       <official-header></official-header>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar>
-            <div style={{ flexGrow: 1, paddingTop: "8px" }}>
-              <Link href={routes.auth.home}>
-                <Image src={Logo.src} alt="logo" width="200" />
-              </Link>
-            </div>
-            <AppsIcon fontSize="large" />
+            <div style={{width: "100%", maxWidth: "1400px", margin: "auto"}}>
+          <Toolbar sx={{padding: "0px"}}>
+              <div style={{ flexGrow: 1, paddingTop: "8px" }}>
+                <Link href={"https://beta.auth.digital.gob.do/realms/master/account"}>
+                  <Image src={Logo.src} alt="logo" width="205" height="48" />
+                </Link>
+              </div>
+              <AppsIcon fontSize="large" />
           </Toolbar>
+            </div>
         </AppBar>
       </Box>
     </>
