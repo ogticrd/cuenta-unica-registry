@@ -11,12 +11,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/ui-react-liveness": "^1.0.0",
+    "@aws-sdk/client-rekognition": "^3.326.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fontsource/roboto": "^4.5.8",
     "@hookform/resolvers": "2.9.7",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
+    "aws-amplify": "^5.1.4",
     "axios": "^1.4.0",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
