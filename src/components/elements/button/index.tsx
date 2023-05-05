@@ -64,6 +64,7 @@ export const ButtonApp = ({
         fontWeight: `${outlined ? "bold" : "normal"}`,
         borderRadius: "50px",
         padding: "10px 0px",
+        height: "60px",
       }}
       startIcon={startIcon}
     >

@@ -46,9 +46,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
     e.target.value = !cedulaValue[2]
       ? cedulaValue[1]
-      : `${cedulaValue[1]}-${cedulaValue[2]}${`${
-          cedulaValue[3] ? `-${cedulaValue[3]}` : ""
-        }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ""}`}`;
+      : `${cedulaValue[1]}-${cedulaValue[2]}${`${cedulaValue[3] ? `-${cedulaValue[3]}` : ""
+      }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ""}`}`;
     const numbers = e.target.value.replace(/(\D)/g, "");
     setValue("cedula", numbers);
   };
@@ -99,7 +98,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     <>
       {loading && <LoadingBackdrop />}
       <br />
-      <TextBody textCenter>Por favor completa el siguiente campo.</TextBody>
+      <TextBody textCenter>Inicia colocando tu número de cédula para iniciar la verificación de tu identidad.</TextBody>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <GridContainer marginY>
@@ -128,6 +127,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           </GridItem>
 
           <GridItem md={12} lg={12}>
+            <hr style={{ background: "#CBE5FD", height: "1px", border: "none", borderRadius: "10px" }} />
+            <br />
             <div
               style={{
                 width: "100%",

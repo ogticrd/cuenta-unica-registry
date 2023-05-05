@@ -94,7 +94,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       {loading && <LoadingBackdrop text="Estamos creando tu usuario..." />}
       <br />
       <TextBody textCenter bold>
-        Por favor completa los siguientes campos para finalizar tu registro.
+        Para finalizar y completar tu registro completa los siguientes campos.
       </TextBody>
 
       <form onSubmit={handleSubmit(onSubmit)}>

@@ -13,6 +13,7 @@ import { LivenessQuickStartReact } from "@/components/biometric/face-liveness-de
 import { ContainerApp } from "@/components/elements/container";
 import { ButtonApp } from "@/components/elements/button";
 import Logo from "../../../../public/assets/logo.png";
+import { GridContainer, GridItem } from "@/components/elements/grid";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -29,6 +30,7 @@ export default function Step2Modal({
   handleNextForm,
   identity,
 }: any) {
+
   return (
     <div>
       <Dialog
@@ -38,37 +40,35 @@ export default function Step2Modal({
         TransitionComponent={Transition}
       >
         <AppBar elevation={0} sx={{ position: "absolute" }}>
-          <Toolbar>
-            <Box sx={{ flex: 1 }}>
-              <Image src={Logo.src} alt="logo" width="200" height="100" />
-            </Box>
-            <ButtonApp
-              notFullWidth
-              startIcon={<LogoutIcon />}
-              variant="text"
-              color="inherit"
-              onClick={handleClick}
-            >
-              Salir
-            </ButtonApp>
-          </Toolbar>
+          <div style={{ width: "100%", maxWidth: "1400px", margin: "auto" }}>
+            <Toolbar>
+              <Box sx={{ flex: 1 }}>
+                <Image src={Logo.src} alt="logo" width="200" height="48" />
+              </Box>
+              <ButtonApp
+                notFullWidth
+                startIcon={<LogoutIcon />}
+                variant="text"
+                color="inherit"
+                onClick={handleClick}
+              >
+                Salir
+              </ButtonApp>
+            </Toolbar>
+          </div>
         </AppBar>
         <div
           className="bg-primary"
           style={{ minHeight: "100vh", paddingTop: "100px" }}
         >
-          <ContainerApp>
-            {/* <GridContainer> */}
-            {/* <GridItem> */}
+          <div style={{width: "100%", maxWidth: "600px", margin: "auto", padding: "0 10px"}}>
             <ThemeProvider>
               <LivenessQuickStartReact
                 handleNextForm={handleNextForm}
                 cedula={identity?.payload?.id}
               />
             </ThemeProvider>
-            {/* </GridItem> */}
-            {/* </GridContainer> */}
-          </ContainerApp>
+          </div>
         </div>
       </Dialog>
     </div>
