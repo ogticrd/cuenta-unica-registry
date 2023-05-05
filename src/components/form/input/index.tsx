@@ -1,4 +1,4 @@
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { FormControl, InputLabel, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -35,11 +35,11 @@ export const FormControlApp = (props: IProps) => {
       {props.label && (
         <>
           <InputLabel
-            required={props.required}
+            // required={props.required}
             error={props.msg ? true : false}
             shrink={true}
           >
-            {props.label} {props.icon}
+            {props.label} <span style={{fontWeight: "bold", fontSize: "20px", position: "relative" , top: "4px"}}>{props.required && "*"}</span> {props.icon}
             {props.tooltip && (
               <HtmlTooltip
                 title={
@@ -72,10 +72,9 @@ export const FormControlApp = (props: IProps) => {
                   </>
                 }
               >
-                <IconButton sx={{ padding: "0 0 2px 0" }}>
-                  <HelpOutlineOutlinedIcon
-                    sx={{ fontSize: "18px" }}
-                    color="warning"
+                <IconButton sx={{ padding: "0 0 2px 0", marginLeft: "14px", position: "relative" , top: "0px" }}>
+                  <InfoOutlinedIcon
+                    sx={{ fontSize: "20px", color: "#FFBA00" }}
                   />
                 </IconButton>
               </HtmlTooltip>
