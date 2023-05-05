@@ -2,8 +2,9 @@ import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
 import { Loader, ThemeProvider } from "@aws-amplify/ui-react";
 import React from "react";
 
-export function LivenessQuickStartReact({ handleNextForm }: any) {
+export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
+  const id = cedula;
   const [loading, setLoading] = React.useState<boolean>(true);
   const [sessionId, setSessionId] = React.useState<string>("");
 
@@ -20,14 +21,15 @@ export function LivenessQuickStartReact({ handleNextForm }: any) {
   }, []);
 
   const handleAnalysisComplete = async () => {
-    const response = await fetch(`/api/biometric?sessionId=${sessionId}`);
+    const response = await fetch(
+      `/api/biometric?sessionId=${sessionId}&cedula=${id}`
+    );
     const data = await response.json();
 
-    if (data.isLive) {
+    if (data.match) {
       next();
-      console.log("User is live");
     } else {
-      console.log("User is not live");
+      alert("No se ha podido validar correctamente la identidad.");
     }
   };
 

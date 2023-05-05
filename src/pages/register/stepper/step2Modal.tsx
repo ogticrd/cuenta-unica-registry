@@ -1,26 +1,18 @@
-import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import MasksOutlinedIcon from "@mui/icons-material/MasksOutlined";
 import { TransitionProps } from "@mui/material/transitions";
-import { useState, useEffect, forwardRef } from "react";
+import { ThemeProvider } from "@aws-amplify/ui-react";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
-import { io, Socket } from "socket.io-client";
 import AppBar from "@mui/material/AppBar";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import { Box } from "@mui/material";
+import { forwardRef } from "react";
 import Image from "next/image";
-import axios from "axios";
 
-import { GridContainer, GridItem } from "@/components/elements/grid";
+import { LivenessQuickStartReact } from "@/components/biometric/face-liveness-detector";
 import { ContainerApp } from "@/components/elements/container";
 import { ButtonApp } from "@/components/elements/button";
-import { Challenge } from "@/models/challenge-response";
 import Logo from "../../../../public/assets/logo.png";
-import { LivenessQuickStartReact } from "@/components/biometric/face-liveness-detector";
-import { ThemeProvider } from "@aws-amplify/ui-react";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -69,7 +61,10 @@ export default function Step2Modal({
             {/* <GridContainer> */}
             {/* <GridItem> */}
             <ThemeProvider>
-              <LivenessQuickStartReact handleNextForm={handleNextForm} />
+              <LivenessQuickStartReact
+                handleNextForm={handleNextForm}
+                cedula={identity.payload.id}
+              />
             </ThemeProvider>
             {/* </GridItem> */}
             {/* </GridContainer> */}

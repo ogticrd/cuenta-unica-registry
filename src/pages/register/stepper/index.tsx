@@ -31,12 +31,12 @@ export default function StepperRegister() {
   };
 
   const handleNext = () => {
-    console.log(activeStep);
     if (activeStep === steps.length - 1) {
       return router.push(routes.register.registered);
     }
 
     let newSkipped = skipped;
+
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);

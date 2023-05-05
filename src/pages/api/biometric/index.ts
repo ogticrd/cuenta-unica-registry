@@ -1,11 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
+import axios from "axios";
 
-import { getRekognitionClient } from "@/helpers/rekognition";
+import { getRekognitionClient, validateSameSiteRequest } from "@/helpers";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<any | void>
 ): Promise<any> {
+  const isValidRequest = validateSameSiteRequest(req.headers);
+
+  if (!isValidRequest) {
+    return res.status(401).send(null);
+  }
+
+  const http = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_PHOTO_API,
+  });
+
   const rekognition = await getRekognitionClient(req);
 
   if (req.method === "GET") {
@@ -18,6 +29,7 @@ export default async function handler(
 
     let isLive: any;
     let base64Image: string = "";
+    let result: any;
 
     if (response.Confidence) {
       isLive = response.Confidence > 90;
@@ -25,20 +37,31 @@ export default async function handler(
 
     if (response.ReferenceImage && response.ReferenceImage.Bytes) {
       base64Image = response.ReferenceImage.Bytes.toString();
-      // TODO: implement face match
-      // rekognition.compareFaces({
-      //   SourceImage: {
-      //     Bytes: response.ReferenceImage.Bytes,
-      //   },
-      //   TargetImage: {
-      //     Bytes: response.ReferenceImage.Bytes,
-      //   },
-      // });
+
+      const { data } = await http.get(`/${cedula}/photo`, {
+        params: {
+          "api-key": process.env.NEXT_PUBLIC_PHOTO_API_KEY,
+        },
+        responseType: "arraybuffer",
+      });
+
+      result = await rekognition.compareFaces({
+        SimilarityThreshold: 80,
+        TargetImage: {
+          Bytes: data,
+        },
+        SourceImage: {
+          Bytes: response.ReferenceImage.Bytes,
+        },
+      });
     }
 
+    const { FaceMatches } = result;
+    const isFaceMatched =
+      FaceMatches && FaceMatches.length && FaceMatches[0].Similarity > 90;
+
     return res.status(200).json({
-      isLive,
-      base64Image,
+      match: isFaceMatched,
     });
   } else if (req.method === "POST") {
     const { SessionId: sessionId } =

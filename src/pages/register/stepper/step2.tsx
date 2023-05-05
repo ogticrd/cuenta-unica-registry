@@ -147,6 +147,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 open={open}
                 handleClick={handleClick}
                 handleNextForm={handleNext}
+                identity={infoCedula}
               />
             )}
           </GridItem>
