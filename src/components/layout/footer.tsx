@@ -77,7 +77,7 @@ export default function Index() {
         </div>
       </div>
 
-      <div style={{ background: "white", padding: "15px 25px" }}>
+      <div style={{ background: "white", padding: "12.5px 25px" }}>
         <div style={{ width: "100%", maxWidth: "1400px", margin: "auto", padding: "0px 24px" }}>
           <GridContainer>
             <GridItem md={6} lg={6}>
