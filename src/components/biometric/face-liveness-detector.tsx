@@ -42,6 +42,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
           sessionId={sessionId}
           region="us-east-1"
           onAnalysisComplete={handleAnalysisComplete}
+          disableInstructionScreen={true}
         />
       )}
     </ThemeProvider>
