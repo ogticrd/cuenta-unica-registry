@@ -63,7 +63,7 @@ export default function Step2Modal({
             <ThemeProvider>
               <LivenessQuickStartReact
                 handleNextForm={handleNextForm}
-                cedula={identity.payload.id}
+                cedula={identity?.payload?.id}
               />
             </ThemeProvider>
             {/* </GridItem> */}
