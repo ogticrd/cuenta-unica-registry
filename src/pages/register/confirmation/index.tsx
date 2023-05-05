@@ -45,7 +45,6 @@ export default function Index() {
   });
 
   const onSubmit = (data: IFormInputs) => {
-    console.log(data);
     router.push(routes.register.registered);
   };
 

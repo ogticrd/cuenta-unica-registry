@@ -1,12 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import axios from "axios";
 
+import { validateSameSiteRequest } from "@/helpers";
 import { VerifyIamUserResponse } from "../types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ): Promise<any> {
+  const isValidRequest = validateSameSiteRequest(req.headers);
+
+  if (!isValidRequest) {
+    return res.status(401).send(null);
+  }
+
   const http = axios.create({
     baseURL: process.env.NEXT_PUBLIC_IAM_API,
   });
