@@ -57,9 +57,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
     <>
       <br />
       <TextBody textCenter>
-        Hola {infoCedula?.payload?.names.split(" ")[0]}, para verificar tu
-        identidad y seguir con el proceso de tu registro necesitas disponer de
-        lo siguiente:
+        ¡Hola {infoCedula?.payload?.names.split(" ")[0]}! <span style={{fontWeight: "400"}}>Ahora vamos a verificar tu identidad mediante autenticación biométrica y continuar con el proceso de tú registro, asegúrate de disponer de los siguientes elementos:</span>
       </TextBody>
       <br />
 
@@ -127,7 +125,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 onChange={(e: any) => {
                   setValue("acceptTermAndConditions", e.target.checked);
                 }}
-                control={<Checkbox />}
+                control={<Checkbox color="error" />}
                 label={
                   <a target="_blank" rel="noreferrer" href="">
                     Aceptar Términos y Políticas de Privacidad{" "}
