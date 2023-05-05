@@ -44,7 +44,7 @@ export const CardAuth = ({
           }}
         >
           <div style={{ marginRight: "15px", marginTop: "-3px" }}>
-            <Image src={LogoDedo.src} alt="Logo" width="40" />
+            <Image src={LogoDedo.src} alt="Logo" width="40" height="20" />
           </div>
           <Typography
             color="primary"

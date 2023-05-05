@@ -22,7 +22,7 @@ export default function Index() {
           <Toolbar>
             <div style={{ flexGrow: 1, paddingTop: "8px" }}>
               <Link href={routes.auth.home}>
-                <Image src={Logo.src} alt="logo" width="200" />
+                <Image src={Logo.src} alt="logo" width="200" height="10" />
               </Link>
             </div>
             <AppsIcon fontSize="large" />

@@ -147,10 +147,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 open={open}
                 handleClick={handleClick}
                 handleNextForm={handleNext}
-                identity={{
-                  cedula: infoCedula?.payload?.id,
-                  name: `${infoCedula?.payload?.names} ${infoCedula?.payload?.firstSurname} ${infoCedula?.payload?.secondSurname}`,
-                }}
+                identity={infoCedula}
               />
             )}
           </GridItem>

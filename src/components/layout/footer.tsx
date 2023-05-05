@@ -17,7 +17,7 @@ export default function Index() {
         <GridContainer spacing={4}>
           <GridItem md={12} lg={3}>
             <div style={{ display: "flex" }}>
-              <Image src={logoGOB.src} alt="logo" width="200" />
+              <Image src={logoGOB.src} alt="logo" width="200" height="100" />
             </div>
           </GridItem>
           <GridItem md={12} lg={9}>
@@ -88,6 +88,7 @@ export default function Index() {
                 src={logoOGTIC.src}
                 alt="logo ogtic"
                 width="50"
+                height="25"
               />
             </div>
           </GridItem>
