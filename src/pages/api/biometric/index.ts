@@ -1,15 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import axios from "axios";
 
-import { getRekognitionClient, validateSameSiteRequest } from "@/helpers";
+import { getRekognitionClient } from "@/helpers";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any | void>
 ): Promise<any> {
-  const isValidRequest = validateSameSiteRequest(req.headers);
+  const { token } = req.cookies;
 
-  if (!isValidRequest) {
+  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
     return res.status(401).send(null);
   }
 

@@ -5,13 +5,13 @@ on:
     branches:
       - "master"
     paths:
-      - '**.js*'
-      - '**.ts*'
-      - 'package*.json'
-      - 'Dockerfile'
-      - 'entrypoint.sh'
-      - '.github/workflows/dev-auth-registry-infra.yml'
-    types: [ opened, synchronize, reopened, labeled ]
+      - "**.js*"
+      - "**.ts*"
+      - "package*.json"
+      - "Dockerfile"
+      - "entrypoint.sh"
+      - ".github/workflows/dev-auth-registry-infra.yml"
+    types: [opened, synchronize, reopened, labeled]
 
 env:
   ARTIFACT_REGISTRY_NAME: ${{ secrets.REPOSITORY_NAME}}
@@ -26,7 +26,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['14']
+        node: ["14"]
 
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x        
+        uses: rlespinasse/github-slug-action@v3.x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -97,11 +97,11 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0'
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
         with:
-          credentials_json: '${{ secrets.GAR_JSON_KEY }}'
+          credentials_json: "${{ secrets.GAR_JSON_KEY }}"
 
       - id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
@@ -118,6 +118,7 @@ jobs:
             NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }},
             NEXT_PUBLIC_PHOTO_API=${{ secrets.NEXT_PUBLIC_PHOTO_API }},
             NEXT_PUBLIC_PHOTO_API_KEY=${{ secrets.NEXT_PUBLIC_PHOTO_API_KEY }},
+            NEXT_PUBLIC_COOKIE_KEY=${{ secrets.NEXT_PUBLIC_COOKIE_KEY }},
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1

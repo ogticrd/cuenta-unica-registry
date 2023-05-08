@@ -57,7 +57,12 @@ export default function Step2({ infoCedula, handleNext }: any) {
     <>
       <br />
       <TextBody textCenter>
-        ¡Hola {infoCedula?.payload?.names.split(" ")[0]}! <span style={{fontWeight: "400"}}>Ahora vamos a verificar tu identidad mediante autenticación biométrica y continuar con el proceso de tú registro, asegúrate de disponer de los siguientes elementos:</span>
+        ¡Hola {infoCedula?.name}!{" "}
+        <span style={{ fontWeight: "400" }}>
+          Ahora vamos a verificar tu identidad mediante autenticación biométrica
+          y continuar con el proceso de tú registro, asegúrate de disponer de
+          los siguientes elementos:
+        </span>
       </TextBody>
       <br />
 
@@ -145,7 +150,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 open={open}
                 handleClick={handleClick}
                 handleNextForm={handleNext}
-                identity={infoCedula}
+                identity={infoCedula.id}
               />
             )}
           </GridItem>
