@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Step from "@mui/material/Step";
 import Box from "@mui/material/Box";
 import * as React from "react";
+import axios from "axios";
 
 import { routes } from "@/constants/routes";
 import { useRouter } from "next/router";
@@ -14,11 +15,27 @@ import Step3 from "./step3";
 
 const steps = ["PASO 1", "PASO 2", "PASO 3"];
 
+export async function getServerSideProps(ctx: any) {
+  await axios.get(`/api/auth`);
+
+  return {
+    props: { data: {} },
+  };
+}
+
 export default function StepperRegister() {
   const router = useRouter();
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+
+  React.useEffect(() => {
+    const fetcher = async (url: string) => {
+      await fetch(url);
+    };
+
+    fetcher(`/api/auth`).then().catch();
+  }, []);
 
   const [infoCedula, setInfoCedula] = React.useState({});
 
