@@ -30,7 +30,6 @@ export default function Step2Modal({
   handleNextForm,
   identity,
 }: any) {
-
   return (
     <div>
       <Dialog
@@ -61,11 +60,18 @@ export default function Step2Modal({
           className="bg-primary"
           style={{ minHeight: "100vh", paddingTop: "100px" }}
         >
-          <div style={{width: "100%", maxWidth: "600px", margin: "auto", padding: "0 10px"}}>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "600px",
+              margin: "auto",
+              padding: "0 10px",
+            }}
+          >
             <ThemeProvider>
               <LivenessQuickStartReact
                 handleNextForm={handleNextForm}
-                cedula={identity?.payload?.id}
+                cedula={identity}
               />
             </ThemeProvider>
           </div>

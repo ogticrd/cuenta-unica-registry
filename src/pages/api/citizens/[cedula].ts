@@ -2,15 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next/types";
 import axios from "axios";
 
 import { CitizensBasicInformationResponse } from "../types";
-import { validateSameSiteRequest } from "@/helpers";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CitizensBasicInformationResponse | void>
+  res: NextApiResponse<{ name: string; id: string } | void>
 ): Promise<void> {
-  const isValidRequest = validateSameSiteRequest(req.headers);
+  const { token } = req.cookies;
 
-  if (!isValidRequest) {
+  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
     return res.status(401).send();
   }
 
@@ -24,5 +23,8 @@ export default async function handler(
     `/${cedula}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
   );
 
-  res.status(200).json(citizen);
+  let { names, id } = citizen.payload;
+  const name = names.split(" ")[0];
+
+  res.status(200).json({ name, id });
 }
