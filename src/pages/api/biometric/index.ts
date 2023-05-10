@@ -45,20 +45,30 @@ export default async function handler(
         responseType: "arraybuffer",
       });
 
-      result = await rekognition.compareFaces({
-        SimilarityThreshold: 80,
-        TargetImage: {
-          Bytes: data,
-        },
-        SourceImage: {
-          Bytes: response.ReferenceImage.Bytes,
-        },
-      });
+      try {
+        result = await rekognition.compareFaces({
+          SimilarityThreshold: 80,
+          TargetImage: {
+            Bytes: data,
+          },
+          SourceImage: {
+            Bytes: response.ReferenceImage.Bytes,
+          },
+        });
+      } catch (ex) {
+        console.log(`Biometry validation failed for citizen ${cedula}`);
+
+        return res.status(500).json({
+          success: false,
+        });
+      }
     }
 
     const { FaceMatches } = result;
     const isFaceMatched =
       FaceMatches && FaceMatches.length && FaceMatches[0].Similarity > 90;
+
+    console.log(`Biometry validation successfully for citizen ${cedula}`);
 
     return res.status(200).json({
       match: isFaceMatched,
