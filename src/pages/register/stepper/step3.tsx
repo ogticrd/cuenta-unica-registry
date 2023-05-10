@@ -66,16 +66,12 @@ export default function Step3({ handleNext, infoCedula }: any) {
   const onSubmit = (data: IFormInputs) => {
     setLoading(true);
 
-    const obj = {
-      email: data.email,
-      username: infoCedula?.payload?.id,
-      firstName: infoCedula?.payload?.names,
-      lastName: `${infoCedula?.payload?.firstSurname} ${infoCedula?.payload?.secondSurname}`,
-      password: data.password,
-    };
-
     axios
-      .post("/api/iam", obj)
+      .post("/api/iam", {
+        email: data.email,
+        username: infoCedula.id,
+        password: data.password,
+      })
       .then(() => {
         handleNext();
       })
