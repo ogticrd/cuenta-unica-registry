@@ -57,5 +57,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - run: yarn install --frozen-lockfile
+      - name: Audit for vulnerabilities
+        run: npx audit-ci@^6 --config ./audit-ci.jsonc
+
+      - run: yarn install --check-files --frozen-lockfile
       - run: yarn build
