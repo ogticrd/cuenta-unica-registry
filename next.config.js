@@ -7,10 +7,10 @@ const nextConfig = {
     NEXT_PUBLIC_CEDULA_API: process.env.NEXT_PUBLIC_CEDULA_API,
     NEXT_PUBLIC_CEDULA_API_KEY: process.env.NEXT_PUBLIC_CEDULA_API_KEY,
     NEXT_PUBLIC_SITE_KEY: process.env.NEXT_PUBLIC_SITE_KEY,
-    NEXT_PUBLIC_COOKIE_KEY: process.env.NEXT_PUBLIC_COOKIE_KEY,
+    NEXT_PUBLIC_COOKIE_KEY: process.env.NEXT_PUBLIC_COOKIE_KEY
   },
   reactStrictMode: false,
-  output: 'standalone',
-};
+  output: 'standalone'
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

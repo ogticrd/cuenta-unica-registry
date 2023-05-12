@@ -32,8 +32,7 @@ jobs:
             return context.payload.release.tag_name.substring(0,2)
       - name: Setting API Version
         id: set
-        run: |
-          echo "version=${{ steps.get.outputs.result }}" >> $GITHUB_OUTPUT
+        run: echo "version=${{ steps.get.outputs.result }}" >> "$GITHUB_OUTPUT"
 
   deploy:
     name: Deploy to Cloud Run
