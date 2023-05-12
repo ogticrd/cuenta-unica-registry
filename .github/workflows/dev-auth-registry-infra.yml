@@ -69,7 +69,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v4
         with:
-          target: release
+          target: runner
           tags: ${{ env.GAR_BASE }}/${{env.ARTIFACT_REGISTRY_NAME}}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           build-args: |
             NODE_ENV=${{ env.NODE_ENV }}
