@@ -37,6 +37,5 @@ jobs:
       project: auth-do
       region: us-east1
       image: us-docker.pkg.dev/auth-do/auth-frontend/auth-registry-frontend@${{ needs.build.outputs.image_digest }}
-      namespace: auth-dev
     secrets: inherit
 
