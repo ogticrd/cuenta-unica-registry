@@ -1,0 +1,109 @@
+name: Build docker image
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      dockerfile_path:
+        required: true
+        type: string
+      dockerfile_target:
+        required: true
+        type: string
+      registry:
+        required: true
+        type: string
+    outputs:
+      image_digest:
+        description: 'The image digest to be used on a caller workflow'
+        value: ${{ jobs.build.outputs.image_digest }}
+
+jobs:
+  build:
+    name: Build images
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      image_digest: ${{ steps.docker_build.outputs.digest }}
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v3.5.2
+        with:
+          persist-credentials: false
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4.4.1
+        with:
+          short-length: 7
+
+      # Automatic tag management and OCI Image Format Specification for labels
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4.4.0
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ inputs.registry }}/${{ inputs.app_name }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            # semver and ref,tag automatically add a "latest" tag, but only on stable releases
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=tag
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            # edge is the latest commit on the default branch.
+            type=edge,enable={{is_default_branch}}
+
+      # Setup Docker Buildx to allow use of docker cache layers from GH
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Google Artifact Registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: us-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GAR_JSON_KEY }}
+
+      # Build and push image to Google Artifact Registry, and possibly DockerHub
+      - name: Build & push
+        id: docker_build
+        uses: docker/build-push-action@v4.0.0
+        with:
+          target: ${{ inputs.dockerfile_target }}
+          context: .
+          file: ${{ inputs.dockerfile_path }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+          build-args: |
+            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }}
+            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }}
+            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }}
+            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }}
+            NEXT_PUBLIC_PHOTO_API=${{ secrets.NEXT_PUBLIC_PHOTO_API }}
+            NEXT_PUBLIC_PHOTO_API_KEY=${{ secrets.NEXT_PUBLIC_PHOTO_API_KEY }}
+          # To improve build speeds, for each branch we push an additional image to the registry,
+          # to be used as the caching layer, using the `max` caching mode.
+          #
+          # We use multiple cache sources to confirm a cache hit, starting from a per-branch cache,
+          # and if there's no hit, then continue with the `main` branch. When changes are added to a PR,
+          # they are usually smaller than the diff between the PR and `main` branch. So this provides the
+          # best performance.
+          #
+          # The caches are tried in top-down order, the first available cache is used:
+          # https://github.com/moby/moby/pull/26839#issuecomment-277383550
+          cache-from: |
+            type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ env.GITHUB_REF_SLUG_URL }}-cache
+            type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ github.event.repository.default_branch }}-cache
+          cache-to: |
+            type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ env.GITHUB_REF_SLUG_URL }}-cache,mode=max
