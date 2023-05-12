@@ -1,0 +1,64 @@
+name: Tests
+
+on:
+  workflow_call:
+    inputs:
+      node_env:
+        required: true
+        type: string
+
+  pull_request:
+    branches: ['master']
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - 'package*.json'
+      - '.github/workflows/tests.yml'
+
+  push:
+    branches: ['master']
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - 'package*.json'
+      - '.github/workflows/tests.yml'
+
+concurrency:
+  # Ensures that only one workflow task will run at a time. Previous builds, if
+  # already in process, will get cancelled. Only the latest commit will be allowed
+  # to run, cancelling any workflows in between
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  NODE_ENV: ${{ inputs.node_env }}
+  NEXT_TELEMETRY_DISABLED: 1
+  # we build a dev binary for use in CI so skip downloading
+  # canary next-swc binaries in the monorepo
+  NEXT_SKIP_NATIVE_POSTINSTALL: 1
+  CI: true
+
+jobs:
+  test:
+    name: Test with Node.js ${{ matrix.node }}
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: ['lts/*', 'latest']
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3.5.2
+
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3.5.1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Audit for vulnerabilities
+        run: npx audit-ci@^6 --config ./audit-ci.jsonc
+
+      - run: yarn install --check-files --frozen-lockfile
+      - run: yarn build
