@@ -42,7 +42,7 @@ FROM base as deps
 RUN apk add --no-cache libc6-compat
 
 COPY package.json yarn.lock ./
-RUN yarn install --production --frozen-lockfile --non-interactive
+RUN yarn install --production=true --frozen-lockfile --non-interactive
 
 # ===================== Build Stage =====================
 # Rebuild the source code only when needed
