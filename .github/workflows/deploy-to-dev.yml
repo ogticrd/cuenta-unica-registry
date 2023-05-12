@@ -34,6 +34,7 @@ jobs:
     needs: ['build']
     uses: ./.github/workflows/cloudrun-deploy.yml
     with:
+      environment: development
       project: auth-do
       region: us-east1
       image: us-docker.pkg.dev/auth-do/auth-frontend/auth-registry-frontend@${{ needs.build.outputs.image_digest }}
