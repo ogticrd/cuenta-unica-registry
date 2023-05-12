@@ -13,22 +13,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  versioning:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.set.outputs.version }}
-    steps:
-      - name: Getting API Version
-        id: get
-        uses: actions/github-script@v6
-        with:
-          result-encoding: string
-          script: |
-            return context.payload.release.tag_name.substring(0,2)
-      - name: Setting API Version
-        id: set
-        run: echo "::set-output name=version::${{ steps.get.outputs.result }}"
-
   build:
     uses: ./.github/workflows/build-docker-image.yml
     with:
@@ -42,7 +26,7 @@ jobs:
     needs: ['build']
     uses: ./.github/workflows/cloudrun-deploy.yml
     with:
+      project: auth-do
       region: us-east1
       image: us-docker.pkg.dev/auth-do/auth-frontend/auth-registry-frontend@${{ needs.build.outputs.image_digest }}
     secrets: inherit
-
