@@ -1,0 +1,84 @@
+name: Deploy to Cloud Run
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+      project:
+        required: true
+        type: string
+      env_vars:
+        required: false
+        type: string
+
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set.outputs.version }}
+    steps:
+      - name: Getting API Version
+        id: get
+        uses: actions/github-script@v6
+        if: ${{ github.event_name == 'release' }}
+        with:
+          result-encoding: string
+          script: |
+            return context.payload.release.tag_name.substring(0,2)
+      - name: Setting API Version
+        id: set
+        run: echo "version=${{ steps.get.outputs.result }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to Cloud Run
+    needs: ["versioning"]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: development
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4.4.1
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v1.1.1
+        with:
+          credentials_json: ${{ secrets.GAR_JSON_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1.1.1
+
+      - name: Deploy to cloud run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1.0.2
+        with:
+          image: ${{ inputs.image }}
+          service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          credentials: ${{ secrets.credentials_json }}
+          region: ${{ inputs.region }}
+          env_vars: |
+            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }},
+            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }},
+            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }},
+            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }},
+            NEXT_PUBLIC_PHOTO_API=${{ secrets.NEXT_PUBLIC_PHOTO_API }},
+            NEXT_PUBLIC_PHOTO_API_KEY=${{ secrets.NEXT_PUBLIC_PHOTO_API_KEY }},
+            NEXT_PUBLIC_COOKIE_KEY=${{ secrets.NEXT_PUBLIC_COOKIE_KEY }},
+
+      - name: Allow unauthenticated calls to the service
+        run: |
+          gcloud run services add-iam-policy-binding ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }} \
+          --region=${{ inputs.region }} --member=allUsers --role=roles/run.invoker --quiet
+
+      - name: Test service with cURL
+        run: curl "${{ steps.deploy.outputs.url }}"
