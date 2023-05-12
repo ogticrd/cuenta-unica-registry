@@ -10,6 +10,7 @@ const nextConfig = {
     NEXT_PUBLIC_COOKIE_KEY: process.env.NEXT_PUBLIC_COOKIE_KEY,
   },
   reactStrictMode: false,
+  output: 'standalone',
 };
 
 module.exports = nextConfig;
