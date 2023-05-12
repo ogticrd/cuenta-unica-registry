@@ -23,7 +23,7 @@ on:
 jobs:
   build:
     name: Build images
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     outputs:
       image_digest: ${{ steps.docker_build.outputs.digest }}
