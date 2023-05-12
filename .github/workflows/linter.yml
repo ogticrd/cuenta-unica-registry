@@ -1,0 +1,53 @@
+name: Lint Code Base
+
+on:
+  pull_request:
+    branches: ['main']
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - "Dockerfile"
+      - 'package*.json'
+      - '.github/workflows/linter.yml'
+
+  push:
+    branches: ['main']
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - "Dockerfile"
+      - 'package*.json'
+      - '.github/workflows/linter.yml'
+
+concurrency:
+  # Ensures that only one workflow task will run at a time. Previous builds, if
+  # already in process, will get cancelled. Only the latest commit will be allowed
+  # to run, cancelling any workflows in between
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3.5.2
+        with:
+          # Full git history is needed to get a proper
+          # list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: super-linter/super-linter/slim@v5.0.0
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_SHELL_SHFMT: false
+          VALIDATE_JSCPD: false
+          VALIDATE_EDITORCONFIG: false
+          VALIDATE_MARKDOWN: false
+          # TODO: hadolint can be activated after this PR is accepted, merged and a new version is tagged https://github.com/github/super-linter/pull/3500
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          TYPESCRIPT_DEFAULT_STYLE: prettier
+          LOG_LEVEL: ERROR
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
