@@ -12,7 +12,7 @@ on:
       project:
         required: true
         type: string
-      env_vars:
+      environment:
         required: false
         type: string
 
@@ -43,7 +43,7 @@ jobs:
       contents: read
       id-token: write
     environment:
-      name: development
+      name: ${{ inputs.environment }}
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Inject slug/short variables
