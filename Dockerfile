@@ -1,15 +1,21 @@
-##############################################################
-#                   B U I L D   S T A G E                    #
-##############################################################
-FROM node:lts-alpine as build
 
-WORKDIR /app
+# ===================== Create base stage =====================
+ARG NODE_VERSION=lts
+ARG ALPINE_VERSION=3.16
+ARG WORK_DIR=/app
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS base
 
-COPY package.json yarn.lock ./
+ARG WORK_DIR
+ARG APP_ENV=production
 
-RUN yarn install --frozen-lockfile
+ENV PORT=3000
+ENV WORK_DIR=${WORK_DIR}
+ENV NODE_ENV=${APP_ENV}
+ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY . .
+WORKDIR ${WORK_DIR}
+
+# ==== App specific variables
 
 ARG NEXT_PUBLIC_PHOTO_API
 ENV NEXT_PUBLIC_PHOTO_API=${NEXT_PUBLIC_PHOTO_API}
@@ -29,26 +35,45 @@ ENV NEXT_PUBLIC_CEDULA_API_KEY=${NEXT_PUBLIC_CEDULA_API_KEY}
 ARG NEXT_PUBLIC_SITE_KEY
 ENV NEXT_PUBLIC_SITE_KEY=${NEXT_PUBLIC_SITE_KEY}
 
+# ===================== Install Deps =====================
+FROM base as deps
+
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+
+COPY package.json yarn.lock ./
+RUN yarn install --production=true --frozen-lockfile --non-interactive
+
+# ===================== Build Stage =====================
+# Rebuild the source code only when needed
+FROM base as build
+
+COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
+COPY . .
+
+# RUN mv .env.${NODE_ENV} .env
+
 RUN yarn build
 
+# TODO: validate if this is neccesary
 RUN npm prune --production
 
-##############################################################
-#               R E L E A S E   S T A G E                    #
-##############################################################
-FROM node:lts-alpine as release
+# ===================== App Runner Stage =====================
+FROM base as runner
 
-WORKDIR /app
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
 
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
+# Copy all necessary files
+COPY --from=build ${WORK_DIR}/public ./public
 
-ENV PORT 8080
+# Automatically leverage output traces to reduce image size 
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=build --chown=nextjs:nodejs ${WORK_DIR}/.next/standalone ./
+COPY --from=build --chown=nextjs:nodejs ${WORK_DIR}/.next/static ./.next/static
 
-ENV HOST 0.0.0.0
+USER nextjs
 
 EXPOSE ${PORT}
 
-CMD ["yarn", "start"]
+CMD ["node", "server.js"]
