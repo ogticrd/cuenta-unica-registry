@@ -2,7 +2,7 @@ name: Lint Code Base
 
 on:
   pull_request:
-    branches: ['main']
+    branches: ['master']
     paths:
       - '**.js*'
       - '**.ts*'
@@ -11,7 +11,7 @@ on:
       - '.github/workflows/linter.yml'
 
   push:
-    branches: ['main']
+    branches: ['master']
     paths:
       - '**.js*'
       - '**.ts*'
