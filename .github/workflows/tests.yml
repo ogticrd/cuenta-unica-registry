@@ -7,6 +7,14 @@ on:
         required: true
         type: string
 
+  pull_request:
+    branches: ['master']
+    paths:
+      - '**.js*'
+      - '**.ts*'
+      - 'package*.json'
+      - '.github/workflows/tests.yml'
+
   push:
     branches: ['master']
     paths:
