@@ -19,5 +19,5 @@
 !*.js
 !*.ts
 !*.json
-!.lock
-!.env
+!*.lock
+!*.env
