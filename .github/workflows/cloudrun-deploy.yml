@@ -15,10 +15,6 @@ on:
       env_vars:
         required: false
         type: string
-    secrets:
-      credentials_json:
-        description: 'GCP JSON Credentials'
-        required: true
 
 jobs:
   deploy:
