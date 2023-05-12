@@ -13,6 +13,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set.outputs.version }}
+    steps:
+      - name: Getting API Version
+        id: get
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            return context.payload.release.tag_name.substring(0,2)
+      - name: Setting API Version
+        id: set
+        run: echo "::set-output name=version::${{ steps.get.outputs.result }}"
+
   build:
     uses: ./.github/workflows/build-docker-image.yml
     with:
