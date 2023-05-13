@@ -1,20 +1,18 @@
-import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
-import { ThemeProvider } from "@aws-amplify/ui-react";
-import React from "react";
-import { LoadingProgress } from "../elements/loading";
-import { AlertErrorMessage } from "../elements/alert";
-import { defaultLivenessDisplayText } from "./displayText";
+import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
+import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import { useState, useEffect } from "react";
+import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
   const id = cedula;
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [error, setError] = React.useState<boolean>(false);
-  const [sessionId, setSessionId] = React.useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchCreateLiveness = async () => {
-      const response = await fetch(`/api/biometric`, { method: "POST" });
+      const response = await fetch(`/api/biometric`, { method: 'POST' });
       const { sessionId } = await response.json();
 
       setSessionId(sessionId);
@@ -24,41 +22,38 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     fetchCreateLiveness();
   }, []);
 
+  const onUserCancel = () => {
+    setSessionId('');
+    setError(false);
+  };
+
   const handleAnalysisComplete = async () => {
     const response = await fetch(
       `/api/biometric?sessionId=${sessionId}&cedula=${id}`
     );
     const data = await response.json();
 
-    if (data.match) {
+    if (data.match === true) {
       next();
     } else {
-      setError(true);
+      setError(error);
     }
   };
 
   return (
-    <>
-      {error && (
-        <AlertErrorMessage
-          type="info"
-          message="No se ha podido validar correctamente la identidad."
-        />
-      )}
-      <br />
-      <ThemeProvider>
+    <ThemeProvider>
         {loading ? (
-          <LoadingProgress />
+          <Loader />
         ) : (
           <FaceLivenessDetector
             sessionId={sessionId}
             region="us-east-1"
+            onUserCancel={onUserCancel}
             onAnalysisComplete={handleAnalysisComplete}
             disableInstructionScreen={true}
             displayText={defaultLivenessDisplayText}
           />
         )}
       </ThemeProvider>
-    </>
   );
 }
