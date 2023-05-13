@@ -1,19 +1,17 @@
-import { TransitionProps } from "@mui/material/transitions";
-import { ThemeProvider } from "@aws-amplify/ui-react";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Toolbar from "@mui/material/Toolbar";
-import AppBar from "@mui/material/AppBar";
-import Dialog from "@mui/material/Dialog";
-import Slide from "@mui/material/Slide";
-import { Box } from "@mui/material";
-import { forwardRef } from "react";
-import Image from "next/image";
+import { TransitionProps } from '@mui/material/transitions';
+import { ThemeProvider } from '@aws-amplify/ui-react';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
+import { Box } from '@mui/material';
+import { forwardRef } from 'react';
+import Image from 'next/image';
 
-import { LivenessQuickStartReact } from "@/components/biometric/face-liveness-detector";
-import { ContainerApp } from "@/components/elements/container";
-import { ButtonApp } from "@/components/elements/button";
-import Logo from "../../../../public/assets/logo.png";
-import { GridContainer, GridItem } from "@/components/elements/grid";
+import { LivenessQuickStartReact } from '@/components/biometric/face-liveness-detector';
+import { ButtonApp } from '@/components/elements/button';
+import Logo from '../../../../public/assets/logo.png';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -25,7 +23,6 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function Step2Modal({
-  open,
   handleClick,
   handleNextForm,
   identity,
@@ -38,8 +35,8 @@ export default function Step2Modal({
         onClose={handleClick}
         TransitionComponent={Transition}
       >
-        <AppBar elevation={0} sx={{ position: "absolute" }}>
-          <div style={{ width: "100%", maxWidth: "1400px", margin: "auto" }}>
+        <AppBar elevation={0} sx={{ position: 'absolute' }}>
+          <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar>
               <Box sx={{ flex: 1 }}>
                 <Image src={Logo.src} alt="logo" width="200" height="48" />
@@ -58,14 +55,14 @@ export default function Step2Modal({
         </AppBar>
         <div
           className="bg-primary"
-          style={{ minHeight: "100vh", paddingTop: "100px" }}
+          style={{ minHeight: '100vh', paddingTop: '100px' }}
         >
           <div
             style={{
-              width: "100%",
-              maxWidth: "600px",
-              margin: "auto",
-              padding: "0 10px",
+              width: '100%',
+              maxWidth: '600px',
+              margin: 'auto',
+              padding: '0 10px',
             }}
           >
             <ThemeProvider>

@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import LadingChica from "../../../../public/assets/ladingChica.png";
+import LandingChica from "../../../../public/assets/landingChica.png";
 
 import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth";
 import { GridContainer, GridItem } from "@/components/elements/grid";
@@ -56,7 +56,7 @@ export default function Index() {
           title="Acceso Cuenta Única"
           subTitle="Para acceder a su cuenta única ciudadana, por favor ingrese su contraseña o su código de autenticación de doble factor. Recuerde que su contraseña es sensible a mayúsculas y minúsculas."
           subTitle2="correo@usuario.com"
-          lading={LadingChica}
+          landing={LandingChica}
         >
           <GridContainer>
             <GridItem md={12} lg={12}>

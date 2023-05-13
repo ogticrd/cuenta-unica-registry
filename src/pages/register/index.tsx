@@ -1,51 +1,19 @@
-import {
-  TextSubTitle,
-  TextSubTitleBody,
-  TextTitle,
-} from "@/components/elements/typography";
-import LadingChica2 from "../../../public/assets/ladingChica2.png";
-import { GridContainer, GridItem } from "@/components/elements/grid";
-import { CardAuth } from "@/components/elements/cardAuth";
-import StepperRegister from "./stepper";
-import Image from "next/image";
-import BoxContentCenter from "@/components/elements/boxContentCenter";
-import LadingChica from "../../../public/assets/ladingChica.png";
+import LandingChica2 from '../../../public/assets/landingChica.png';
+import { CardAuth } from '@/components/elements/cardAuth';
+import StepperRegister from './stepper';
+import BoxContentCenter from '@/components/elements/boxContentCenter';
 
 export default function Index() {
   return (
-    // <GridContainer spacing={10} flexDirection={{ xs: "column", sm: "row" }}>
-    //   <GridItem sx={{ order: { xs: 2, sm: 1 } }} sm={12} md={6} lg={6}>
-    //     <TextTitle>
-    //       ¡Bienvenido a la Plataforma Única de Autenticación{" "}
-    //       <span className="text-error">Ciudadana!</span>
-    //     </TextTitle>
-    //     <TextSubTitle>
-    //       Accede o regístrate con un único usuario y contraseña, para solicitar
-    //       o consultar todos tus servicios y trámites gubernamentales.
-    //     </TextSubTitle>
-    //     <br />
-    //     <TextSubTitleBody>
-    //       Una manera fácil y cómoda de identificarte, para realizar trámites
-    //       desde tu computadora o celular sin necesidad de trasladarte a los
-    //       organismos gubernamentales.
-    //     </TextSubTitleBody>
-    //     <br />
-    //     <Image src={LadingChica2.src} alt="Lading Home" width="100" height="40" />
-    //   </GridItem>
-
-    // <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>
     <BoxContentCenter>
       <CardAuth
         title="Registrar Cuenta Única Ciudadana"
-        lading={LadingChica2}
-        ladingWidth={290}
-        ladingHeight={290}
+        landing={LandingChica2}
+        landingWidth={290}
+        landingHeight={290}
       >
         <StepperRegister />
       </CardAuth>
     </BoxContentCenter>
-
-    //   </GridItem>
-    // </GridContainer>
   );
 }

@@ -1,19 +1,19 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useForm } from "react-hook-form";
-import { useRef, useState } from "react";
-import getConfig from "next/config";
-import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useForm } from 'react-hook-form';
+import { useRef, useState } from 'react';
+import getConfig from 'next/config';
+import * as yup from 'yup';
 
-import { GridContainer, GridItem } from "@/components/elements/grid";
-import { CitizensBasicInformationResponse } from "@/pages/api/types";
-import LoadingBackdrop from "@/components/elements/loadingBackdrop";
-import { TextBody } from "@/components/elements/typography";
-import { AlertWarning } from "@/components/elements/alert";
-import { ButtonApp } from "@/components/elements/button";
-import { FormControlApp } from "@/components/form/input";
-import { InputApp } from "@/themes/form/input";
-import { labels } from "@/constants/labels";
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { CitizensBasicInformationResponse } from '@/pages/api/types';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { TextBody } from '@/components/elements/typography';
+import { AlertWarning } from '@/components/elements/alert';
+import { ButtonApp } from '@/components/elements/button';
+import { FormControlApp } from '@/components/form/input';
+import { InputApp } from '@/themes/form/input';
+import { labels } from '@/constants/labels';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -26,7 +26,7 @@ const schema = yup.object({
     .string()
     .trim()
     .required(labels.form.requiredField)
-    .min(11, "Debe contener 11 dígitos"),
+    .min(11, 'Debe contener 11 dígitos'),
 });
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
@@ -42,15 +42,15 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
 
   const handleChange = (e: any) => {
     const cedulaValue = e.target.value
-      .replace(/\D/g, "")
+      .replace(/\D/g, '')
       .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
     e.target.value = !cedulaValue[2]
       ? cedulaValue[1]
       : `${cedulaValue[1]}-${cedulaValue[2]}${`${
-          cedulaValue[3] ? `-${cedulaValue[3]}` : ""
-        }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ""}`}`;
-    const numbers = e.target.value.replace(/(\D)/g, "");
-    setValue("cedula", numbers);
+          cedulaValue[3] ? `-${cedulaValue[3]}` : ''
+        }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
+    const numbers = e.target.value.replace(/(\D)/g, '');
+    setValue('cedula', numbers);
   };
 
   const {
@@ -58,7 +58,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     formState: { errors },
     setValue,
   } = useForm<IFormInputs>({
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
     shouldFocusError: false,
     resolver: yupResolver(schema),
   });
@@ -68,7 +68,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
 
     if (!tokenCaptcha) {
       return AlertWarning(
-        "Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad"
+        'Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad'
       );
     }
 
@@ -90,7 +90,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         handleNext();
       })
       .catch(() => {
-        AlertWarning("Parece que ha introducido una cédula inválida.");
+        AlertWarning('Parece que ha introducido una cédula inválida.');
       })
       .finally(() => setLoading(false));
   };
@@ -133,19 +133,19 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <GridItem md={12} lg={12}>
             <hr
               style={{
-                background: "#CBE5FD",
-                height: "1px",
-                border: "none",
-                borderRadius: "10px",
+                background: '#CBE5FD',
+                height: '1px',
+                border: 'none',
+                borderRadius: '10px',
               }}
             />
             <br />
             <div
               style={{
-                width: "100%",
-                margin: "5px 0 22px 0",
-                display: "flex",
-                justifyContent: "center",
+                width: '100%',
+                margin: '5px 0 22px 0',
+                display: 'flex',
+                justifyContent: 'center',
               }}
             >
               <ReCAPTCHA {...configReCaptcha} />

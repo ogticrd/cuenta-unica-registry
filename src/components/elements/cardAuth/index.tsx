@@ -10,22 +10,22 @@ export const CardAuth = ({
   subTitle,
   subTitle2,
   children,
-  lading,
-  ladingWidth,
-  ladingHeight,
+  landing,
+  landingWidth,
+  landingHeight,
   icon,
 }: any) => {
   return (
     <div>
-      {lading && (
+      {landing && (
         <div
           style={{ position: "fixed", top: "40vh", left: "10vh", zIndex: "-1" }}
         >
           <Image
-            src={lading?.src}
-            alt="Lading"
-            width={ladingWidth ? ladingWidth : "500"}
-            height={ladingHeight ? ladingHeight : "500"}
+            src={landing?.src}
+            alt="Landing"
+            width={landingWidth ? landingWidth : "500"}
+            height={landingHeight ? landingHeight : "500"}
           />
         </div>
       )}
