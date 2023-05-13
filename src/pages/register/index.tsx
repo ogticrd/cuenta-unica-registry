@@ -33,17 +33,17 @@ export default function Index() {
     //     <Image src={LadingChica2.src} alt="Lading Home" width="100" height="40" />
     //   </GridItem>
 
-      // <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>
-      <BoxContentCenter>
-        <CardAuth 
-          title="Registrar Cuenta Única Ciudadana"
-          lading={LadingChica2}
-          ladingWidth={290}
-          ladingHeight={290}
-        >
-          <StepperRegister />
-        </CardAuth>
-      </BoxContentCenter>
+    // <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>
+    <BoxContentCenter>
+      <CardAuth
+        title="Registrar Cuenta Única Ciudadana"
+        lading={LadingChica2}
+        ladingWidth={290}
+        ladingHeight={290}
+      >
+        <StepperRegister />
+      </CardAuth>
+    </BoxContentCenter>
 
     //   </GridItem>
     // </GridContainer>
