@@ -28,7 +28,7 @@ export default async function handler(
     });
 
     let isLive: any;
-    let base64Image: string = "";
+    let base64Image = "";
     let result: any;
 
     if (response.Confidence) {

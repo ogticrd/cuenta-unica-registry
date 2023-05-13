@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
 
 interface IProps {
-  label?: String;
+  label?: string;
   icon?: any;
   msg?: string;
   required?: boolean;

@@ -31,8 +31,8 @@ export default async function handler(
     const { body } = req;
     const { username, email, password } = body;
 
-    let success: boolean = true;
-    let statusCode: number = 201;
+    let success = true;
+    let statusCode = 201;
 
     const { data: citizen } = await axios.get<CitizensBasicInformationResponse>(
       `${process.env.NEXT_PUBLIC_CEDULA_API}/${username}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
