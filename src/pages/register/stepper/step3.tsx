@@ -1,17 +1,17 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import * as yup from "yup";
-import axios from "axios";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import * as yup from 'yup';
+import axios from 'axios';
 
-import { AlertError, AlertWarning } from "@/components/elements/alert";
-import { GridContainer, GridItem } from "@/components/elements/grid";
-import LoadingBackdrop from "@/components/elements/loadingBackdrop";
-import { TextBody } from "@/components/elements/typography";
-import { FormControlApp } from "@/components/form/input";
-import { ButtonApp } from "@/components/elements/button";
-import { InputApp } from "@/themes/form/input";
-import { labels } from "@/constants/labels";
+import { AlertError, AlertWarning } from '@/components/elements/alert';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { TextBody } from '@/components/elements/typography';
+import { FormControlApp } from '@/components/form/input';
+import { ButtonApp } from '@/components/elements/button';
+import { InputApp } from '@/themes/form/input';
+import { labels } from '@/constants/labels';
 
 interface IFormInputs {
   email: string;
@@ -30,24 +30,24 @@ const schema = yup.object({
     .string()
     .trim()
     .required(labels.form.requiredField)
-    .oneOf([yup.ref("email")], "Los correos no coinciden"),
+    .oneOf([yup.ref('email')], 'Los correos no coinciden'),
   password: yup
     .string()
-    .min(8, "Debe contener al menos 8 caracteres")
+    .min(8, 'Debe contener al menos 8 caracteres')
     .required(labels.form.requiredField)
     .trim()
     .matches(
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "La contraseña debe contener una mayúscula, un número y un carácter especial"
+      'La contraseña debe contener una mayúscula, un número y un carácter especial'
     ),
   passwordConfirm: yup
     .string()
     .required(labels.form.requiredField)
-    .oneOf([yup.ref("password")], "Las contraseñas no coinciden"),
+    .oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
 });
 
 export default function Step3({ handleNext, infoCedula }: any) {
-  const [dataItem, setDataItem] = useState<any>({});
+  const [dataItem] = useState<any>({});
 
   const [loading, setLoading] = useState(false);
 
@@ -56,10 +56,8 @@ export default function Step3({ handleNext, infoCedula }: any) {
     handleSubmit,
     formState: { errors },
     getValues,
-    control,
-    setValue,
   } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(schema),
   });
 
@@ -67,7 +65,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     setLoading(true);
 
     axios
-      .post("/api/iam", {
+      .post('/api/iam', {
         email: data.email,
         username: infoCedula.id,
         password: data.password,
@@ -77,7 +75,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       })
       .catch((err) => {
         if (err?.response?.status === 409) {
-          AlertWarning("El correo electrónico ya está registrado.");
+          AlertWarning('El correo electrónico ya está registrado.');
         } else {
           AlertError();
         }
@@ -115,7 +113,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   return false;
                 }}
                 autoComplete="off"
-                {...register("email")}
+                {...register('email')}
               />
             </FormControlApp>
           </GridItem>
@@ -138,7 +136,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   return false;
                 }}
                 autoComplete="off"
-                {...register("emailConfirm")}
+                {...register('emailConfirm')}
               />
             </FormControlApp>
           </GridItem>
@@ -176,7 +174,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   return false;
                 }}
                 autoComplete="off"
-                {...register("password")}
+                {...register('password')}
               />
             </FormControlApp>
           </GridItem>
@@ -200,7 +198,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   return false;
                 }}
                 autoComplete="off"
-                {...register("passwordConfirm")}
+                {...register('passwordConfirm')}
               />
             </FormControlApp>
           </GridItem>
@@ -211,7 +209,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
               disabled={
                 Object.values(getValues()).every(
                   (value: any) =>
-                    value !== null && value !== undefined && value !== ""
+                    value !== null && value !== undefined && value !== ''
                 ) === false
                   ? true
                   : false

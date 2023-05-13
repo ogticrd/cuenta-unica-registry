@@ -7,7 +7,7 @@ import * as yup from "yup";
 import LockIcon from "@mui/icons-material/Lock";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 
-import LadingChica from "../../../../public/assets/ladingChica.png";
+import LandingChica from "../../../../public/assets/landingChica.png";
 
 import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth";
 import { GridContainer, GridItem } from "@/components/elements/grid";
@@ -35,7 +35,7 @@ export default function Index() {
         title="Seleccionar Método de Acceso"
         subTitle="Selecciona la opción de inicio de sesión"
         subTitle2="correo@usuario.com"
-        lading={LadingChica}
+        landing={LandingChica}
       >
         <GridContainer>
           <GridItem md={12} lg={12}>

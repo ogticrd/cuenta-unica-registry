@@ -70,11 +70,13 @@ export default async function handler(
           });
 
           if (similarPercent > 90) {
-            console.log(`Biometry validation successfully for citizen ${cedula}`);
-            res.status(200).end(JSON.stringify({match: true}));
+            console.log(
+              `Biometry validation successfully for citizen ${cedula}`
+            );
+            res.status(200).end(JSON.stringify({ match: true }));
           } else {
             console.log(`Biometry validation failed for citizen ${cedula}`);
-            res.status(200).end(JSON.stringify({match: false}));
+            res.status(200).end(JSON.stringify({ match: false }));
           }
         }
       } catch (error) {

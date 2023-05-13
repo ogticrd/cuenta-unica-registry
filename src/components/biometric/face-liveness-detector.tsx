@@ -1,6 +1,6 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
@@ -42,18 +42,18 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   return (
     <ThemeProvider>
-        {loading ? (
-          <Loader />
-        ) : (
-          <FaceLivenessDetector
-            sessionId={sessionId}
-            region="us-east-1"
-            onUserCancel={onUserCancel}
-            onAnalysisComplete={handleAnalysisComplete}
-            disableInstructionScreen={true}
-            displayText={defaultLivenessDisplayText}
-          />
-        )}
-      </ThemeProvider>
+      {loading ? (
+        <Loader />
+      ) : (
+        <FaceLivenessDetector
+          sessionId={sessionId}
+          region="us-east-1"
+          onUserCancel={onUserCancel}
+          onAnalysisComplete={handleAnalysisComplete}
+          disableInstructionScreen={true}
+          displayText={defaultLivenessDisplayText}
+        />
+      )}
+    </ThemeProvider>
   );
 }

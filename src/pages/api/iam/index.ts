@@ -1,10 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next/types";
-import axios, { AxiosError } from "axios";
+import { NextApiRequest, NextApiResponse } from 'next/types';
+import axios, { AxiosError } from 'axios';
 
 import {
   CitizensBasicInformationResponse,
   VerifyIamUserResponse,
-} from "../types";
+} from '../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,14 +20,14 @@ export default async function handler(
     baseURL: process.env.NEXT_PUBLIC_IAM_API,
   });
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     const { cedula } = req.query;
     const { data } = await http.get<VerifyIamUserResponse[]>(
       `/auth/validations/users/existence?username=${cedula}`
     );
 
     return res.status(200).json(data);
-  } else if (req.method === "POST") {
+  } else if (req.method === 'POST') {
     const { body } = req;
     const { username, email, password } = body;
 
