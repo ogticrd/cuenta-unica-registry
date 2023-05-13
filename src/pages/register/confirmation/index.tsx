@@ -7,7 +7,7 @@ import * as yup from "yup";
 import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
 import { GridContainer, GridItem } from "@/components/elements/grid";
 import BoxContentCenter from "@/components/elements/boxContentCenter";
-import LadingChico from "../../../../public/assets/ladingChico.png";
+import LandingChico from "../../../../public/assets/landingChico.png";
 import { CardAuth } from "@/components/elements/cardAuth";
 import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
@@ -54,8 +54,8 @@ export default function Index() {
         <CardAuth
           title="Confirmación de Cuenta"
           subTitle="¡Gracias por completar tu registro! Revisa tu correo electrónico y haz clic en el enlace de confirmación."
-          lading={LadingChico}
-          ladingWidth={175}
+          landing={LandingChico}
+          landingWidth={175}
           icon={
             <MarkEmailReadOutlinedIcon sx={{ fontSize: "58px" }} color="info" />
           }

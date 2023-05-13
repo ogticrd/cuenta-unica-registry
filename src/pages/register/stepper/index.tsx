@@ -1,19 +1,19 @@
-import Typography from "@mui/material/Typography";
-import StepLabel from "@mui/material/StepLabel";
-import Stepper from "@mui/material/Stepper";
-import Button from "@mui/material/Button";
-import Step from "@mui/material/Step";
-import Box from "@mui/material/Box";
-import * as React from "react";
-import axios from "axios";
+import Typography from '@mui/material/Typography';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import Button from '@mui/material/Button';
+import Step from '@mui/material/Step';
+import Box from '@mui/material/Box';
+import * as React from 'react';
+import axios from 'axios';
 
-import { routes } from "@/constants/routes";
-import { useRouter } from "next/router";
-import Step1 from "./step1";
-import Step2 from "./step2";
-import Step3 from "./step3";
+import { routes } from '@/constants/routes';
+import { useRouter } from 'next/router';
+import Step1 from './step1';
+import Step2 from './step2';
+import Step3 from './step3';
 
-const steps = ["PASO 1", "PASO 2", "PASO 3"];
+const steps = ['PASO 1', 'PASO 2', 'PASO 3'];
 
 export async function getServerSideProps(ctx: any) {
   await axios.get(`/api/auth`);
@@ -87,9 +87,9 @@ export default function StepperRegister() {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: '100%' }}>
       <Stepper
-        sx={{ paddingBottom: "20px", borderBottom: "2px solid #E2E2E2" }}
+        sx={{ paddingBottom: '20px', borderBottom: '2px solid #E2E2E2' }}
         activeStep={activeStep}
       >
         {steps.map((label, index) => {
@@ -116,11 +116,11 @@ export default function StepperRegister() {
             <Step
               key={label}
               sx={{
-                borderLeft: `${index === 0 ? "0px" : "1px"} solid #B7D9F8`,
+                borderLeft: `${index === 0 ? '0px' : '1px'} solid #B7D9F8`,
               }}
             >
               <StepLabel {...labelProps}>
-                <span style={{ fontWeight: "700" }}>{label}</span>
+                <span style={{ fontWeight: '700' }}>{label}</span>
               </StepLabel>
             </Step>
           );
@@ -131,13 +131,13 @@ export default function StepperRegister() {
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
         </React.Fragment>
       ) : (
-        <div style={{ margin: "0px 25px" }}>
+        <div style={{ margin: '0px 25px' }}>
           {activeStep === 0 && (
             <Step1 setInfoCedula={setInfoCedula} handleNext={handleNext} />
           )}

@@ -13,7 +13,7 @@ import {
 } from "@/components/elements/typography";
 import { CardAuth, CardAuthFooter } from "@/components/elements/cardAuth";
 import { GridContainer, GridItem } from "@/components/elements/grid";
-import LadingHome from "../../../public/assets/ladingHome.svg";
+import LandingHome from "../../../public/assets/landingHome.svg";
 import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
 import { InputApp } from "@/themes/form/input";
@@ -70,8 +70,8 @@ export default function Index() {
           </TextSubTitleBody>
           <br />
           <Image
-            src={LadingHome.src}
-            alt="Lading Home"
+            src={LandingHome.src}
+            alt="Landing Home"
             width="100"
             height="40"
           />
