@@ -3,7 +3,7 @@ import { ThemeProvider } from "@aws-amplify/ui-react";
 import React from "react";
 import { LoadingProgress } from "../elements/loading";
 import { AlertErrorMessage } from "../elements/alert";
-import { defaultLivenessDisplayText } from './displayText'
+import { defaultLivenessDisplayText } from "./displayText";
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
@@ -39,12 +39,12 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   return (
     <>
-      {error &&
+      {error && (
         <AlertErrorMessage
           type="info"
           message="No se ha podido validar correctamente la identidad."
         />
-      }
+      )}
       <br />
       <ThemeProvider>
         {loading ? (

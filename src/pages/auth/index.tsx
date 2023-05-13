@@ -69,7 +69,12 @@ export default function Index() {
             organismos gubernamentales.
           </TextSubTitleBody>
           <br />
-          <Image src={LadingHome.src} alt="Lading Home" width="100" height="40" />
+          <Image
+            src={LadingHome.src}
+            alt="Lading Home"
+            width="100"
+            height="40"
+          />
         </GridItem>
 
         <GridItem sx={{ order: { xs: 1, sm: 2 } }} sm={12} md={6} lg={6}>
