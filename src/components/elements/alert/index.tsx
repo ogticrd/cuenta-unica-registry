@@ -1,19 +1,20 @@
 import Swal from "sweetalert2";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
 interface IPropsAlertErrorMessage {
   message: string;
-  type: "error" | "warning" | "info" | "success"
+  type: "error" | "warning" | "info" | "success";
 }
-  interface IProps {
+interface IProps {
   text?: string;
 }
 
-export const AlertErrorMessage = ({message, type}: IPropsAlertErrorMessage) => (
-  <Alert severity={type}>{message}</Alert>
-)
+export const AlertErrorMessage = ({
+  message,
+  type,
+}: IPropsAlertErrorMessage) => <Alert severity={type}>{message}</Alert>;
 
-  export const AlertError = (text?: string) => {
+export const AlertError = (text?: string) => {
   return Swal.fire({
     icon: "error",
     title: "Error",
