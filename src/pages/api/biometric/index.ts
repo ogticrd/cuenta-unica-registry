@@ -2,11 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
 import { getRekognitionClient } from '@/helpers';
-import {
-  GetFaceLivenessSessionResultsCommand,
-  CompareFacesCommand,
-  CreateFaceLivenessSessionCommand,
-} from '@aws-sdk/client-rekognition';
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,10 +23,9 @@ export default async function handler(
     const { sessionId, cedula } = req.query;
     const SessionId = sessionId as string;
 
-    const command = new GetFaceLivenessSessionResultsCommand({
+    const response = await client.getFaceLivenessSessionResults({
       SessionId,
     });
-    const response = await client.send(command);
 
     let isLive;
 
@@ -59,11 +53,10 @@ export default async function handler(
         SimilarityThreshold: 90,
       };
 
-      const command = new CompareFacesCommand(params);
       let similarPercent = 0;
 
       try {
-        const compare = await client.send(command);
+        const compare = await client.compareFaces(params);
         if (compare.FaceMatches && compare.FaceMatches.length) {
           compare.FaceMatches.forEach((data) => {
             similarPercent = data.Similarity as number;
@@ -85,11 +78,10 @@ export default async function handler(
       }
     }
   } else if (req.method === 'POST') {
-    const command = new CreateFaceLivenessSessionCommand({
-      ClientRequestToken: req.cookies.token,
+    const response = await client.createFaceLivenessSession({
+      // TODO: Create a unique token for each request, and reuse on retry
+      // ClientRequestToken: req.cookies.token,
     });
-    const { SessionId: sessionId } = await client.send(command);
-
-    return res.status(201).json({ sessionId });
+    return res.status(201).json({ sessionId: response.SessionId });
   }
 }
