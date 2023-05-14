@@ -66,15 +66,15 @@ export default async function handler(
             console.log(
               `Biometry validation successfully for citizen ${cedula}`
             );
-            res.status(200).end(JSON.stringify({ match: true }));
+            return res.status(200).end(JSON.stringify({ match: true }));
           } else {
             console.log(`Biometry validation failed for citizen ${cedula}`);
-            res.status(200).end(JSON.stringify({ match: false }));
+            return res.status(200).end(JSON.stringify({ match: false }));
           }
         }
       } catch (error) {
         console.log(`Biometry validation failed for citizen ${cedula}`);
-        res.status(500).end();
+        return res.status(500).end();
       }
     }
   } else if (req.method === 'POST') {
