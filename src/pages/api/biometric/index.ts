@@ -32,6 +32,7 @@ export default async function handler(
     if (response.Confidence && response.Confidence > 85) {
       isLive = true; // Confidence threshold for live face
     } else {
+      console.log(`Low confidence for citizen ${cedula}`);
       return res.status(200).end(
         JSON.stringify({
           error: 'Low Confidence',
@@ -63,11 +64,13 @@ export default async function handler(
       try {
         const compare = await client.compareFaces(params);
         if (compare.FaceMatches && compare.FaceMatches.length) {
+          console.log(`Citizen ${cedula} matched`);
           return res.status(200).end(JSON.stringify({ isMatch: true }));
         } else {
+          console.log(`Citizen ${cedula} didn't match`);
           return res
             .status(200)
-            .end(JSON.stringify({ error: 'Low Confidence', isMatch: false }));
+            .end(JSON.stringify({ error: 'No Match', isMatch: false }));
         }
       } catch (error) {
         return res.status(500).end();
