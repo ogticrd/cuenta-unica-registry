@@ -3,7 +3,7 @@ export type CitizenBasicInformation = {
   names: string;
   firstSurname: string;
   secondSurname: string;
-  gender: "M" | "F";
+  gender: 'M' | 'F';
 };
 
 export type CitizensBasicInformationResponse = {

@@ -1,15 +1,15 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import BoxContentCenter from "@/components/elements/boxContentCenter";
-import { GridContainer, GridItem } from "@/components/elements/grid";
-import LadingChico from "../../../../public/assets/ladingChico.png";
-import { TextBody } from "@/components/elements/typography";
-import { CardAuth } from "@/components/elements/cardAuth";
-import { ButtonApp } from "@/components/elements/button";
-import { labels } from "@/constants/labels";
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import BoxContentCenter from '@/components/elements/boxContentCenter';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import LandingChico from '../../../../public/assets/landingChico.png';
+import { TextBody } from '@/components/elements/typography';
+import { CardAuth } from '@/components/elements/cardAuth';
+import { ButtonApp } from '@/components/elements/button';
+import { labels } from '@/constants/labels';
 
 interface IFormInputs {
   email: string;
@@ -25,9 +25,9 @@ const schema = yup.object({
 
 export default function Index() {
   const {
-    formState: { errors },
+    formState: { },
   } = useForm<IFormInputs>({
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
     shouldFocusError: false,
     resolver: yupResolver(schema),
   });
@@ -36,11 +36,11 @@ export default function Index() {
     <BoxContentCenter>
       <CardAuth
         title="Registro de Cuenta Exitoso"
-        lading={LadingChico}
-        ladingWidth={175}
+        landing={LandingChico}
+        landingWidth={175}
         icon={
           <CheckCircleOutlineOutlinedIcon
-            sx={{ fontSize: "103px", color: "#2ECC71" }}
+            sx={{ fontSize: '103px', color: '#2ECC71' }}
           />
         }
       >
@@ -63,7 +63,7 @@ export default function Index() {
             <ButtonApp
               onClick={() =>
                 window.open(
-                  "https://beta.auth.digital.gob.do/realms/master/account/"
+                  'https://beta.auth.digital.gob.do/realms/master/account/'
                 )
               }
             >
