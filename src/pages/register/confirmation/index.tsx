@@ -30,21 +30,19 @@ const schema = yup.object({
 export default function Index() {
   const router = useRouter();
 
-  const [dataItem, setDataItem] = useState<any>({});
+  const [dataItem] = useState<any>({});
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
-    setValue,
   } = useForm<IFormInputs>({
     reValidateMode: "onSubmit",
     shouldFocusError: false,
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: IFormInputs) => {
+  const onSubmit = () => {
     router.push(routes.register.registered);
   };
 
