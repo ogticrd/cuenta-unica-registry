@@ -15,7 +15,7 @@ import Step3 from './step3';
 
 const steps = ['PASO 1', 'PASO 2', 'PASO 3'];
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps() {
   await axios.get(`/api/auth`);
 
   return {
@@ -39,10 +39,6 @@ export default function StepperRegister() {
 
   const [infoCedula, setInfoCedula] = React.useState({});
 
-  const isStepOptional = (step: number) => {
-    return step === 1;
-  };
-
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
@@ -61,25 +57,6 @@ export default function StepperRegister() {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
   };
 
   const handleReset = () => {
