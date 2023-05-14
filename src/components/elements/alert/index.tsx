@@ -1,41 +1,39 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 import Alert from '@mui/material/Alert';
 
 interface IPropsAlertErrorMessage {
   message: string;
-  type: "error" | "warning" | "info" | "success"
-}
-  interface IProps {
-  text?: string;
+  type: 'error' | 'warning' | 'info' | 'success';
 }
 
-export const AlertErrorMessage = ({message, type}: IPropsAlertErrorMessage) => (
-  <Alert severity={type}>{message}</Alert>
-)
+export const AlertErrorMessage = ({
+  message,
+  type,
+}: IPropsAlertErrorMessage) => <Alert severity={type}>{message}</Alert>;
 
-  export const AlertError = (text?: string) => {
+export const AlertError = (text?: string) => {
   return Swal.fire({
-    icon: "error",
-    title: "Error",
-    text: text ? text : "Ocurrió un error al procesar la solicitud",
-    confirmButtonColor: "#003670",
+    icon: 'error',
+    title: 'Error',
+    text: text ? text : 'Ocurrió un error al procesar la solicitud',
+    confirmButtonColor: '#003670',
   });
 };
 
 export const AlertWarning = (text: string) => {
   return Swal.fire({
-    icon: "warning",
-    title: "Aviso",
+    icon: 'warning',
+    title: 'Aviso',
     text: text,
-    confirmButtonColor: "#003670",
+    confirmButtonColor: '#003670',
   });
 };
 
 export const AlertSuccess = (text?: string) => {
   return Swal.fire({
-    icon: "success",
-    title: "Correcto",
-    text: text ? text : "Proceso realizado correctamente",
-    confirmButtonColor: "#003670",
+    icon: 'success',
+    title: 'Correcto',
+    text: text ? text : 'Proceso realizado correctamente',
+    confirmButtonColor: '#003670',
   });
 };

@@ -14,7 +14,14 @@ export default function Index() {
   return (
     <>
       <div style={{ padding: "75px 25px" }} className="bg-primary">
-        <div style={{ width: "100%", maxWidth: "1400px", margin: "auto", padding: "0px 24px" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1400px",
+            margin: "auto",
+            padding: "0px 24px",
+          }}
+        >
           <GridContainer spacing={4}>
             <GridItem md={12} lg={3}>
               <div style={{ display: "flex" }}>
@@ -78,7 +85,14 @@ export default function Index() {
       </div>
 
       <div style={{ background: "white", padding: "12.5px 25px" }}>
-        <div style={{ width: "100%", maxWidth: "1400px", margin: "auto", padding: "0px 24px" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1400px",
+            margin: "auto",
+            padding: "0px 24px",
+          }}
+        >
           <GridContainer>
             <GridItem md={6} lg={6}>
               <div style={{ marginTop: "8px" }}>
