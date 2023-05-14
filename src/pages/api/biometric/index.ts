@@ -27,10 +27,17 @@ export default async function handler(
       SessionId,
     });
 
-    let isLive;
+    let isLive = false;
 
-    if (response.Confidence) {
-      isLive = response.Confidence > 90;
+    if (response.Confidence && response.Confidence > 85) {
+      isLive = true; // Confidence threshold for live face
+    } else {
+      return res.status(200).end(
+        JSON.stringify({
+          error: 'Low Confidence',
+          isLive: isLive,
+        })
+      );
     }
 
     if (isLive && response.ReferenceImage && response.ReferenceImage.Bytes) {
@@ -50,30 +57,19 @@ export default async function handler(
         TargetImage: {
           Bytes: buffer2,
         },
-        SimilarityThreshold: 90,
+        SimilarityThreshold: 95,
       };
-
-      let similarPercent = 0;
 
       try {
         const compare = await client.compareFaces(params);
         if (compare.FaceMatches && compare.FaceMatches.length) {
-          compare.FaceMatches.forEach((data) => {
-            similarPercent = data.Similarity as number;
-          });
-
-          if (similarPercent > 90) {
-            console.log(
-              `Biometry validation successfully for citizen ${cedula}`
-            );
-            return res.status(200).end(JSON.stringify({ match: true }));
-          } else {
-            console.log(`Biometry validation failed for citizen ${cedula}`);
-            return res.status(200).end(JSON.stringify({ match: false }));
-          }
+          return res.status(200).end(JSON.stringify({ isMatch: true }));
+        } else {
+          return res
+            .status(200)
+            .end(JSON.stringify({ error: 'Low Confidence', isMatch: false }));
         }
       } catch (error) {
-        console.log(`Biometry validation failed for citizen ${cedula}`);
         return res.status(500).end();
       }
     }
