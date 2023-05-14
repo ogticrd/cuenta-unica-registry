@@ -1,14 +1,18 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import React from 'react';
 import { useState, useEffect } from 'react';
+
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
   const id = cedula;
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [sessionId, setSessionId] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<{
+    sessionId: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchCreateLiveness = async () => {
@@ -23,8 +27,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   }, []);
 
   const onUserCancel = () => {
-    setSessionId('');
-    setError(false);
+    setError(null);
   };
 
   const handleAnalysisComplete = async () => {
@@ -45,14 +48,17 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
       {loading ? (
         <Loader />
       ) : (
-        <FaceLivenessDetector
-          sessionId={sessionId}
-          region="us-east-1"
-          onUserCancel={onUserCancel}
-          onAnalysisComplete={handleAnalysisComplete}
-          disableInstructionScreen={true}
-          displayText={defaultLivenessDisplayText}
-        />
+        sessionId && (
+          <FaceLivenessDetector
+            sessionId={sessionId?.sessionId}
+            region="us-east-1"
+            onUserCancel={onUserCancel}
+            onError={(error) => setError(error.message)}
+            onAnalysisComplete={handleAnalysisComplete}
+            disableInstructionScreen={true}
+            displayText={defaultLivenessDisplayText}
+          />
+        )
       )}
     </ThemeProvider>
   );

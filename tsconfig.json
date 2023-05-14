@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -28,6 +29,9 @@
       ],
       "@utils/*": [
         "utils/*"
+      ],
+      "@helpers/*": [
+        "helpers/*"
       ],
       "@lib/*": [
         "lib/*"
