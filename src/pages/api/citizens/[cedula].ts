@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next/types";
-import axios from "axios";
+import { NextApiRequest, NextApiResponse } from 'next/types';
+import axios from 'axios';
 
-import { CitizensBasicInformationResponse } from "../types";
+import { CitizensBasicInformationResponse } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,8 +23,8 @@ export default async function handler(
     `/${cedula}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
   );
 
-  let { names, id } = citizen.payload;
-  const name = names.split(" ")[0];
+  const { names, id } = citizen.payload;
+  const name = names.split(' ')[0];
 
   res.status(200).json({ name, id });
 }

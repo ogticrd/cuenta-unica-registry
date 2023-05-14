@@ -1,7 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next/types";
-import axios from "axios";
+import { NextApiRequest, NextApiResponse } from 'next/types';
+import axios from 'axios';
 
-import { getRekognitionClient } from "@/helpers";
+import { getRekognitionClient } from '@/helpers';
+import {
+  GetFaceLivenessSessionResultsCommand,
+  CompareFacesCommand,
+  CreateFaceLivenessSessionCommand,
+} from '@aws-sdk/client-rekognition';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,65 +22,73 @@ export default async function handler(
     baseURL: process.env.NEXT_PUBLIC_PHOTO_API,
   });
 
-  const rekognition = await getRekognitionClient(req);
+  const client = await getRekognitionClient(req);
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     const { sessionId, cedula } = req.query;
     const SessionId = sessionId as string;
 
-    const response = await rekognition.getFaceLivenessSessionResults({
+    const command = new GetFaceLivenessSessionResultsCommand({
       SessionId,
     });
+    const response = await client.send(command);
 
-    let isLive: any;
-    let base64Image: string = "";
-    let result: any;
+    let isLive;
 
     if (response.Confidence) {
       isLive = response.Confidence > 90;
     }
 
-    if (response.ReferenceImage && response.ReferenceImage.Bytes) {
-      base64Image = response.ReferenceImage.Bytes.toString();
-
+    if (isLive && response.ReferenceImage && response.ReferenceImage.Bytes) {
       const { data } = await http.get(`/${cedula}/photo`, {
         params: {
-          "api-key": process.env.NEXT_PUBLIC_PHOTO_API_KEY,
+          'api-key': process.env.NEXT_PUBLIC_PHOTO_API_KEY,
         },
-        responseType: "arraybuffer",
+        responseType: 'arraybuffer',
       });
 
-      try {
-        result = await rekognition.compareFaces({
-          SimilarityThreshold: 80,
-          TargetImage: {
-            Bytes: data,
-          },
-          SourceImage: {
-            Bytes: response.ReferenceImage.Bytes,
-          },
-        });
-      } catch (ex) {
-        console.log(`Biometry validation failed for citizen ${cedula}`);
+      const buffer1 = Buffer.from(response.ReferenceImage.Bytes);
+      const buffer2 = Buffer.from(data, 'base64');
+      const params = {
+        SourceImage: {
+          Bytes: buffer1,
+        },
+        TargetImage: {
+          Bytes: buffer2,
+        },
+        SimilarityThreshold: 90,
+      };
 
-        return res.status(500).json({
-          success: false,
-        });
+      const command = new CompareFacesCommand(params);
+      let similarPercent = 0;
+
+      try {
+        const compare = await client.send(command);
+        if (compare.FaceMatches && compare.FaceMatches.length) {
+          compare.FaceMatches.forEach((data) => {
+            similarPercent = data.Similarity as number;
+          });
+
+          if (similarPercent > 90) {
+            console.log(
+              `Biometry validation successfully for citizen ${cedula}`
+            );
+            res.status(200).end(JSON.stringify({ match: true }));
+          } else {
+            console.log(`Biometry validation failed for citizen ${cedula}`);
+            res.status(200).end(JSON.stringify({ match: false }));
+          }
+        }
+      } catch (error) {
+        console.log(`Biometry validation failed for citizen ${cedula}`);
+        res.status(500).end();
       }
     }
-
-    const { FaceMatches } = result;
-    const isFaceMatched =
-      FaceMatches && FaceMatches.length && FaceMatches[0].Similarity > 90;
-
-    console.log(`Biometry validation successfully for citizen ${cedula}`);
-
-    return res.status(200).json({
-      match: isFaceMatched,
+  } else if (req.method === 'POST') {
+    const command = new CreateFaceLivenessSessionCommand({
+      ClientRequestToken: req.cookies.token,
     });
-  } else if (req.method === "POST") {
-    const { SessionId: sessionId } =
-      await rekognition.createFaceLivenessSession({});
+    const { SessionId: sessionId } = await client.send(command);
 
     return res.status(201).json({ sessionId });
   }
