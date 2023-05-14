@@ -25,7 +25,7 @@ const schema = yup.object({
 
 export default function Index() {
   const {
-    formState: { errors },
+    formState: { },
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,

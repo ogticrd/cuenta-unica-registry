@@ -34,7 +34,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
 
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { },
     setValue,
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
