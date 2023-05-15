@@ -64,7 +64,6 @@ jobs:
         with:
           image: ${{ inputs.image }}
           service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
-          credentials: ${{ secrets.credentials_json }}
           region: ${{ inputs.region }}
           env_vars: |
             NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }},
@@ -77,7 +76,7 @@ jobs:
 
       - name: Allow unauthenticated calls to the service
         run: |
-          gcloud run services add-iam-policy-binding ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }} \
+          gcloud run services add-iam-policy-binding ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{  needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG  }} \
           --region=${{ inputs.region }} --member=allUsers --role=roles/run.invoker --quiet
 
       - name: Test service with cURL
