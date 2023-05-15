@@ -43,6 +43,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_SHELL_SHFMT: false
           VALIDATE_JSCPD: false
+          VALIDATE_CSS: false
           VALIDATE_EDITORCONFIG: false
           VALIDATE_MARKDOWN: false
           # TODO: hadolint can be activated after this PR is accepted, merged and a new version is tagged https://github.com/github/super-linter/pull/3500

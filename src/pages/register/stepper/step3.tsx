@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
+import { passwordStrength } from 'check-password-strength';
 
 import { AlertError, AlertWarning } from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -12,6 +13,7 @@ import { FormControlApp } from '@/components/form/input';
 import { ButtonApp } from '@/components/elements/button';
 import { InputApp } from '@/themes/form/input';
 import { labels } from '@/constants/labels';
+import PasswordLevel from '@/components/elements/passwordLevel';
 
 interface IFormInputs {
   email: string;
@@ -31,15 +33,7 @@ const schema = yup.object({
     .trim()
     .required(labels.form.requiredField)
     .oneOf([yup.ref('email')], 'Los correos no coinciden'),
-  password: yup
-    .string()
-    .min(8, 'Debe contener al menos 8 caracteres')
-    .required(labels.form.requiredField)
-    .trim()
-    .matches(
-      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      'La contraseña debe contener una mayúscula, un número y un carácter especial'
-    ),
+  password: yup.string().required(labels.form.requiredField),
   passwordConfirm: yup
     .string()
     .required(labels.form.requiredField)
@@ -47,21 +41,28 @@ const schema = yup.object({
 });
 
 export default function Step3({ handleNext, infoCedula }: any) {
-  const [dataItem] = useState<any>({});
-
   const [loading, setLoading] = useState(false);
+  const [passwordLevel, setPasswordLevel] = useState<any>({});
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm<IFormInputs>({
     mode: 'onChange',
     resolver: yupResolver(schema),
   });
 
+  const handleChangePassword = (password: string) => {
+    const level = passwordStrength(password);
+    setPasswordLevel(level);
+    setValue('password', password);
+  };
+
   const onSubmit = (data: IFormInputs) => {
+    if (passwordLevel.id !== 3) return;
     setLoading(true);
 
     axios
@@ -88,7 +89,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       {loading && <LoadingBackdrop text="Estamos creando tu usuario..." />}
       <br />
       <TextBody textCenter bold>
-        Para finalizar y completar tu registro completa los siguientes campos.
+        Para finalizar tu registro completa los siguientes campos:
       </TextBody>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -97,12 +98,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
             <FormControlApp
               label="Correo Electrónico"
               msg={errors.email?.message}
-              tooltip="Completar Registro"
-              tooltipText="Para completar tu cuenta única ciudadana es necesario proporcionar tu correo electrónico, asegúrate de estar correctamente escrito y de tu uso cotidiano."
+              tooltip="Correo personal"
+              tooltipText="Para completar tu cuenta única ciudadana es necesario proporcionar tu correo electrónico, asegúrate esté correctamente escrito y que sea de tu uso cotidiano. Aquí recibirás información importante sobre tu cuenta."
               required
             >
               <InputApp
-                defaultValue={dataItem.email}
                 placeholder="Coloca tu correo electrónico"
                 onPaste={(e) => {
                   e.preventDefault();
@@ -120,12 +120,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
           <GridItem md={12} lg={12}>
             <FormControlApp
-              label="Confirmación Correo Electrónico"
+              label="Confirma tu Correo Electrónico"
               msg={errors.emailConfirm?.message}
               required
             >
               <InputApp
-                defaultValue={dataItem.emailConfirm}
                 placeholder="Coloca tu correo electrónico"
                 onPaste={(e) => {
                   e.preventDefault();
@@ -162,43 +161,38 @@ export default function Step3({ handleNext, infoCedula }: any) {
               required
             >
               <InputApp
-                defaultValue={dataItem.password}
                 placeholder="*********"
                 type="password"
                 onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                onCopy={(e) => {
                   e.preventDefault();
                   return false;
                 }}
                 autoComplete="off"
                 {...register('password')}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChangePassword(e.target.value)
+                }
               />
             </FormControlApp>
+            <PasswordLevel passwordLevel={passwordLevel} />
           </GridItem>
 
           <GridItem md={12} lg={12}>
             <FormControlApp
-              label="Confirmar Contraseña"
+              label="Confirma tu Contraseña"
               msg={errors.passwordConfirm?.message}
               required
             >
               <InputApp
-                defaultValue={dataItem.passwordConfirm}
                 placeholder="*********"
                 type="password"
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
                 onCopy={(e) => {
                   e.preventDefault();
                   return false;
                 }}
                 autoComplete="off"
                 {...register('passwordConfirm')}
+                disabled={passwordLevel.id === 3 ? false : true}
               />
             </FormControlApp>
           </GridItem>

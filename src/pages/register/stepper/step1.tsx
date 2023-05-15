@@ -100,18 +100,18 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       {loading && <LoadingBackdrop />}
       <br />
       <TextBody textCenter>
-        Inicia colocando tu número de cédula para iniciar la verificación de tu
-        identidad.
+        Este es el primer paso para poder verificar tu identidad y crear tu
+        cuenta ciudadana.
       </TextBody>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <GridContainer marginY>
           <GridItem md={12} lg={12}>
             <FormControlApp
-              label="Coloca tu Cédula"
+              label="Número de Cédula"
               msg={errors.cedula?.message}
               tooltip="Identidad de Usuario"
-              tooltipText="Para iniciar el proceso de validar tu identidad, coloca el número de tu cédula."
+              tooltipText="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula."
               required
             >
               <InputApp
