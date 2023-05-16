@@ -5,6 +5,7 @@ import {
   CitizensBasicInformationResponse,
   VerifyIamUserResponse,
 } from '../types';
+import { Crypto } from '@/helpers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +30,11 @@ export default async function handler(
     return res.status(200).json(data);
   } else if (req.method === 'POST') {
     const { body } = req;
-    const { username, email, password } = body;
+    let { username, email, password } = body;
+
+    password = Crypto.decrypt(password);
+
+    console.log(password);
 
     let success = true;
     let statusCode = 201;
