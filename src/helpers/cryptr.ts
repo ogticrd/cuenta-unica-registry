@@ -1,8 +1,10 @@
 import getConfig from 'next/config';
 import Cryptr from 'cryptr';
 
+const DEFAULT_KEY = 'sf_d23424bdsdfkj@f42e@wdn5fgsdfdm**2asbn!d';
 const { publicRuntimeConfig } = getConfig();
-const NEXT_PUBLIC_CRYPTO_KEY = publicRuntimeConfig.NEXT_PUBLIC_CRYPTO_KEY;
+const NEXT_PUBLIC_CRYPTO_KEY =
+  publicRuntimeConfig.NEXT_PUBLIC_CRYPTO_KEY || DEFAULT_KEY;
 
 const cryptr = new Cryptr(NEXT_PUBLIC_CRYPTO_KEY, {
   pbkdf2Iterations: 10000,
