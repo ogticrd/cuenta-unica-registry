@@ -34,7 +34,7 @@ export default function Step2({ infoCedula, handleNext }: any) {
 
   const {
     handleSubmit,
-    formState: { },
+    formState: {},
     setValue,
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
@@ -57,12 +57,10 @@ export default function Step2({ infoCedula, handleNext }: any) {
       <TextBody textCenter>
         ¡Hola {infoCedula?.name}!{' '}
         <span style={{ fontWeight: '400' }}>
-          Ahora vamos a verificar tu identidad mediante autenticación biométrica
-          y continuar con el proceso de tú registro, asegúrate de disponer de
-          los siguientes elementos:
+          Ahora vamos a validar tu identidad mediante una verificación facial
+          para continuar con tu registro. Asegúrate de cumplir con lo siguiente:
         </span>
       </TextBody>
-      <br />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <GridContainer marginY>
@@ -104,23 +102,21 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Permitir capturas de{' '}
-                <span style={{ fontWeight: 'bold' }}>
-                  fotografías de tu rostro.
-                </span>
+                Estar de acuerdo en que hagamos capturas de{' '}
+                <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
           </GridItem>
 
-          <GridItem md={12} lg={12}>
+          {/* <GridItem md={12} lg={12}>
             <Typography
               color="primary"
               sx={{ fontSize: '16px', fontWeight: '400', textAlign: 'center' }}
             >
               Verificación con pasaporte disponible próximamente
             </Typography>
-          </GridItem>
-          <br />
+          </GridItem> */}
+          {/* <br /> */}
           <br />
           <GridItem md={12} lg={12}>
             <FormGroup sx={{ display: 'flex', alignContent: 'center' }}>

@@ -128,12 +128,11 @@ body {
 
 /* MUI global */
 
-.muisteplabel-iconcontainer,
-.muistepconnector-horizontal {
+.MuiStepConnector-line {
   display: none !important;
 }
 
-.muisteplabel-label {
+.MuiStepLabel-label {
   color: #03397775;
 }
 

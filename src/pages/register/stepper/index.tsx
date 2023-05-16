@@ -75,17 +75,17 @@ export default function StepperRegister() {
           } = {};
           if (index === 0) {
             labelProps.optional = (
-              <Typography variant="caption">Identidad de usuario</Typography>
+              <Typography variant="caption">Identifícate</Typography>
             );
           }
           if (index === 1) {
             labelProps.optional = (
-              <Typography variant="caption">Verificación Identidad</Typography>
+              <Typography variant="caption">Verifícate</Typography>
             );
           }
           if (index === 2) {
             labelProps.optional = (
-              <Typography variant="caption">Completar Registro</Typography>
+              <Typography variant="caption">Regístrate</Typography>
             );
           }
 
