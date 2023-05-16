@@ -30,11 +30,8 @@ export default async function handler(
     return res.status(200).json(data);
   } else if (req.method === 'POST') {
     const { body } = req;
-    let { username, email, password } = body;
-
-    password = Crypto.decrypt(password);
-
-    console.log(password);
+    const { username, email } = body;
+    const password = Crypto.decrypt(body.password);
 
     let success = true;
     let statusCode = 201;
