@@ -9,7 +9,7 @@ export default function Index() {
       <CardAuth
         title="Registrar Cuenta Única Ciudadana"
         landing={LandingChica2}
-        landingWidth={290}
+        landingWidth={320}
         landingHeight={290}
       >
         <StepperRegister />
