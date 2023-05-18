@@ -52,7 +52,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
+    // getValues,
     setValue,
   } = useForm<IFormInputs>({
     mode: 'onChange',
