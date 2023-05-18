@@ -107,4 +107,4 @@ jobs:
             type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ env.GITHUB_REF_SLUG_URL }}-cache
             type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ github.event.repository.default_branch }}-cache
           cache-to: |
-            type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ env.GITHUB_REF_SLUG_URL }}-cache,mode=max
+            type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ env.GITHUB_REF_SLUG_URL }}-cache,mode=min
