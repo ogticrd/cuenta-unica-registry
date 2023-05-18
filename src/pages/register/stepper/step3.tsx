@@ -1,19 +1,20 @@
+import { passwordStrength } from 'check-password-strength';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import { passwordStrength } from 'check-password-strength';
 
 import { AlertError, AlertWarning } from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import PasswordLevel from '@/components/elements/passwordLevel';
 import { TextBody } from '@/components/elements/typography';
 import { FormControlApp } from '@/components/form/input';
 import { ButtonApp } from '@/components/elements/button';
 import { InputApp } from '@/themes/form/input';
 import { labels } from '@/constants/labels';
-import PasswordLevel from '@/components/elements/passwordLevel';
+import { Crypto } from '@/helpers';
 
 interface IFormInputs {
   email: string;
@@ -65,11 +66,13 @@ export default function Step3({ handleNext, infoCedula }: any) {
     if (passwordLevel.id !== 3) return;
     setLoading(true);
 
+    const password = Crypto.encrypt(data.password);
+
     axios
       .post('/api/iam', {
         email: data.email,
         username: infoCedula.id,
-        password: data.password,
+        password,
       })
       .then(() => {
         handleNext();
