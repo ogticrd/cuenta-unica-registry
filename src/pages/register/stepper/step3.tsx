@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import sha1 from 'sha1';
 
 import { AlertError, AlertErrorMessage, AlertWarning } from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -74,14 +73,10 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const password = Crypto.encrypt(data.password);
 
     if (!isPwned) {
-      const passwordHash = sha1(data.password).toUpperCase();
-      const hashPrefix = passwordHash.substring(0, 5);
-      const hashSuffix = passwordHash.substring(5);
-
-      axios.get(`/api/pwned/${hashPrefix}`)
+      axios.get(`/api/pwned/${password}`)
         .then((res) => {
-          const hashes = res.data.split('\n').map((line: any) => line.split(':')[0]);
-          const isPwnedIncludes = hashes.includes(hashSuffix)
+          console.log(res);
+          const isPwnedIncludes = res.data === 0 ? false : true
           setIsPwned(isPwnedIncludes);
           if (!isPwnedIncludes) {
             setLoadingValidatingPassword(false)
