@@ -28,6 +28,7 @@
     "cryptr": "^6.2.0",
     "eslint": "^8.40.0",
     "eslint-config-next": "13.2.3",
+    "hibp": "^13.0.0",
     "next": "13.2.3",
     "prop-types": ">=15.7.0",
     "react": "18.2.0",
