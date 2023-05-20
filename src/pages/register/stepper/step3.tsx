@@ -5,7 +5,11 @@ import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
 
-import { AlertError, AlertWarning } from '@/components/elements/alert';
+import {
+  AlertError,
+  AlertErrorMessage,
+  AlertWarning,
+} from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import PasswordLevel from '@/components/elements/passwordLevel';
@@ -42,14 +46,16 @@ const schema = yup.object({
 });
 
 export default function Step3({ handleNext, infoCedula }: any) {
+  const [loadingValidatingPassword, setLoadingValidatingPassword] =
+    useState(false);
   const [loading, setLoading] = useState(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
+  const [isPwned, setIsPwned] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
     setValue,
   } = useForm<IFormInputs>({
     mode: 'onChange',
@@ -60,36 +66,58 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const level = passwordStrength(password);
     setPasswordLevel(level);
     setValue('password', password);
+    setIsPwned(false);
   };
 
   const onSubmit = (data: IFormInputs) => {
+    if (isPwned) return;
     if (passwordLevel.id !== 3) return;
-    setLoading(true);
+    setLoadingValidatingPassword(true);
 
     const password = Crypto.encrypt(data.password);
 
-    axios
-      .post('/api/iam', {
-        email: data.email,
-        username: infoCedula.id,
-        password,
-      })
-      .then(() => {
-        handleNext();
-      })
-      .catch((err) => {
-        if (err?.response?.status === 409) {
-          AlertWarning('El correo electrónico ya está registrado.');
-        } else {
-          AlertError();
-        }
-      })
-      .finally(() => setLoading(false));
+    if (!isPwned) {
+      axios
+        .get(`/api/pwned/${password}`)
+        .then((res) => {
+          console.log(res);
+          const isPwnedIncludes = res.data === 0 ? false : true;
+          setIsPwned(isPwnedIncludes);
+          if (!isPwnedIncludes) {
+            setLoadingValidatingPassword(false);
+            setLoading(true);
+            axios
+              .post('/api/iam', {
+                email: data.email,
+                username: infoCedula.id,
+                password,
+              })
+              .then(() => {
+                handleNext();
+              })
+              .catch((err) => {
+                if (err?.response?.status === 409) {
+                  AlertWarning('El correo electrónico ya está registrado.');
+                } else {
+                  AlertError();
+                }
+              })
+              .finally(() => setLoading(false));
+          }
+        })
+        .catch(() => {
+          return AlertWarning('No pudimos validar si la contraseña es segura.');
+        })
+        .finally(() => setLoadingValidatingPassword(false));
+    }
   };
 
   return (
     <>
-      {loading && <LoadingBackdrop text="Estamos creando tu usuario..." />}
+      {loadingValidatingPassword && (
+        <LoadingBackdrop text="Estamos validando tu contraseña..." />
+      )}
+      {loading && <LoadingBackdrop text="Creando usuario..." />}
       <br />
       <TextBody textCenter bold>
         Para finalizar tu registro completa los siguientes campos:
@@ -166,10 +194,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
               <InputApp
                 placeholder="*********"
                 type="password"
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
                 autoComplete="off"
                 {...register('password')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -189,10 +213,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
               <InputApp
                 placeholder="*********"
                 type="password"
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
                 autoComplete="off"
                 {...register('passwordConfirm')}
                 disabled={passwordLevel.id === 3 ? false : true}
@@ -200,20 +220,17 @@ export default function Step3({ handleNext, infoCedula }: any) {
             </FormControlApp>
           </GridItem>
 
+          {isPwned && (
+            <GridItem md={12} lg={12}>
+              <AlertErrorMessage
+                type="warning"
+                message="Esta contraseña ha estado en filtraciones de datos, por eso no se considera segura. Te recomendamos eligir otra contraseña."
+              />
+            </GridItem>
+          )}
+
           <GridItem md={12} lg={12}>
-            <ButtonApp
-              submit
-              disabled={
-                Object.values(getValues()).every(
-                  (value: any) =>
-                    value !== null && value !== undefined && value !== ''
-                ) === false
-                  ? true
-                  : false
-              }
-            >
-              ACEPTAR Y CONFIRMAR
-            </ButtonApp>
+            <ButtonApp submit>CREAR CUENTA ÚNICA</ButtonApp>
           </GridItem>
         </GridContainer>
       </form>
