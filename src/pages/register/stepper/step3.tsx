@@ -5,7 +5,11 @@ import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
 
-import { AlertError, AlertErrorMessage, AlertWarning } from '@/components/elements/alert';
+import {
+  AlertError,
+  AlertErrorMessage,
+  AlertWarning,
+} from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import PasswordLevel from '@/components/elements/passwordLevel';
@@ -42,7 +46,8 @@ const schema = yup.object({
 });
 
 export default function Step3({ handleNext, infoCedula }: any) {
-  const [loadingValidatingPassword, setLoadingValidatingPassword] = useState(false);
+  const [loadingValidatingPassword, setLoadingValidatingPassword] =
+    useState(false);
   const [loading, setLoading] = useState(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
   const [isPwned, setIsPwned] = useState(false);
@@ -51,7 +56,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
     register,
     handleSubmit,
     formState: { errors },
-    // getValues,
     setValue,
   } = useForm<IFormInputs>({
     mode: 'onChange',
@@ -62,7 +66,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const level = passwordStrength(password);
     setPasswordLevel(level);
     setValue('password', password);
-    setIsPwned(false)
+    setIsPwned(false);
   };
 
   const onSubmit = (data: IFormInputs) => {
@@ -73,14 +77,15 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const password = Crypto.encrypt(data.password);
 
     if (!isPwned) {
-      axios.get(`/api/pwned/${password}`)
+      axios
+        .get(`/api/pwned/${password}`)
         .then((res) => {
           console.log(res);
-          const isPwnedIncludes = res.data === 0 ? false : true
+          const isPwnedIncludes = res.data === 0 ? false : true;
           setIsPwned(isPwnedIncludes);
           if (!isPwnedIncludes) {
-            setLoadingValidatingPassword(false)
-            setLoading(true)
+            setLoadingValidatingPassword(false);
+            setLoading(true);
             axios
               .post('/api/iam', {
                 email: data.email,
@@ -101,16 +106,17 @@ export default function Step3({ handleNext, infoCedula }: any) {
           }
         })
         .catch(() => {
-          return AlertWarning('No pudimos validar si la contraseña es segura.')
+          return AlertWarning('No pudimos validar si la contraseña es segura.');
         })
         .finally(() => setLoadingValidatingPassword(false));
     }
-
   };
 
   return (
     <>
-      {loadingValidatingPassword && <LoadingBackdrop text="Estamos validando tu contraseña..." />}
+      {loadingValidatingPassword && (
+        <LoadingBackdrop text="Estamos validando tu contraseña..." />
+      )}
       {loading && <LoadingBackdrop text="Creando usuario..." />}
       <br />
       <TextBody textCenter bold>
@@ -214,29 +220,17 @@ export default function Step3({ handleNext, infoCedula }: any) {
             </FormControlApp>
           </GridItem>
 
-          {isPwned &&
+          {isPwned && (
             <GridItem md={12} lg={12}>
               <AlertErrorMessage
                 type="warning"
-                message="La contraseña que estás usando no es segura, te recomendamos que uses otra."
+                message="Esta contraseña ha estado en filtraciones de datos, por eso no se considera segura. Te recomendamos eligir otra contraseña."
               />
             </GridItem>
-          }
+          )}
 
           <GridItem md={12} lg={12}>
-            <ButtonApp
-              submit
-              // disabled={
-              //   Object.values(getValues()).every(
-              //     (value: any) =>
-              //       value !== null && value !== undefined && value !== ''
-              //   ) === false
-              //     ? true
-              //     : false
-              // }
-            >
-              ACEPTAR Y CONFIRMAR
-            </ButtonApp>
+            <ButtonApp submit>CREAR CUENTA ÚNICA</ButtonApp>
           </GridItem>
         </GridContainer>
       </form>
