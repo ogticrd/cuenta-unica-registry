@@ -11,7 +11,7 @@ export default function BoxContentCenter({ children }: any) {
         alignItems: "center",
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: "550px", padding: "0 10px" }}>
+      <Box sx={{ width: "100%", maxWidth: "560px", padding: "0 10px" }}>
         {children}
       </Box>
     </Box>
