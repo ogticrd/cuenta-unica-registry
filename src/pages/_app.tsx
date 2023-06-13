@@ -28,7 +28,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <CssBaseline />
         <Layout>
           <GoogleReCaptchaProvider
-            reCaptchaKey={publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY}
+            // reCaptchaKey={publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY} 
+            reCaptchaKey="6LeCFYMmAAAAABhOLfiTI7n9g1aV5kr6TfgpslIa" 
             scriptProps={{
               async: false,
               defer: false,
