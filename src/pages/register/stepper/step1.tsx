@@ -1,9 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-// import ReCAPTCHA from 'react-google-recaptcha';
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useForm } from 'react-hook-form';
-import { useCallback, useRef, useState } from 'react';
-import getConfig from 'next/config';
+import { useCallback, useState } from 'react';
 import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -15,8 +13,6 @@ import { ButtonApp } from '@/components/elements/button';
 import { FormControlApp } from '@/components/form/input';
 import { InputApp } from '@/themes/form/input';
 import { labels } from '@/constants/labels';
-
-const { publicRuntimeConfig } = getConfig();
 
 interface IFormInputs {
   cedula: string;
@@ -31,18 +27,9 @@ const schema = yup.object({
 });
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
-
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const captchaRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
-
-  const sitekey = publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY;
-
-  const configReCaptcha = {
-    sitekey,
-    ref: captchaRef,
-  };
 
   const handleChange = (e: any) => {
     const cedulaValue = e.target.value
@@ -50,8 +37,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
     e.target.value = !cedulaValue[2]
       ? cedulaValue[1]
-      : `${cedulaValue[1]}-${cedulaValue[2]}${`${cedulaValue[3] ? `-${cedulaValue[3]}` : ''
-      }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
+      : `${cedulaValue[1]}-${cedulaValue[2]}${`${
+          cedulaValue[3] ? `-${cedulaValue[3]}` : ''
+        }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
     const numbers = e.target.value.replace(/(\D)/g, '');
     setValue('cedula', numbers);
   };
@@ -66,29 +54,23 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = useCallback((data: IFormInputs) => {
-    if (!executeRecaptcha) {
-      AlertWarning('Problemas con el reCaptcha, intente nuevamente más tarde')
-      return;
-    }
-    executeRecaptcha("enquiryFormSubmit").then((gReCaptchaToken: any) => {
-      // console.log(gReCaptchaToken, "response Google reCaptcha server");
-      submitEnquiryForm(gReCaptchaToken, data);
-    });
-  },
+  const onSubmit = useCallback(
+    (data: IFormInputs) => {
+      if (!executeRecaptcha) {
+        AlertWarning(
+          'Problemas con el reCaptcha, intente nuevamente más tarde'
+        );
+        return;
+      }
+      executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken: any) => {
+        // console.log(gReCaptchaToken, "response Google reCaptcha server");
+        submitEnquiryForm(gReCaptchaToken, data);
+      });
+    },
     [executeRecaptcha]
   );
 
   const submitEnquiryForm = (gReCaptchaToken: any, data: IFormInputs) => {
-    // console.log(gReCaptchaToken)
-    // const tokenCaptcha = captchaRef.current.getValue();
-
-    // if (!tokenCaptcha) {
-    //   return AlertWarning(
-    //     'Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad'
-    //   );
-    // }
-
     setLoading(true);
 
     const fetcher = async (url: string) => {
@@ -146,28 +128,6 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
               />
             </FormControlApp>
           </GridItem>
-
-          {/* <GridItem md={12} lg={12}>
-            <hr
-              style={{
-                background: '#CBE5FD',
-                height: '1px',
-                border: 'none',
-                borderRadius: '10px',
-              }}
-            />
-            <br />
-            <div
-              style={{
-                width: '100%',
-                margin: '5px 0 22px 0',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <ReCAPTCHA {...configReCaptcha} />
-            </div>
-          </GridItem> */}
 
           <GridItem md={12} lg={12}>
             <ButtonApp submit>CONFIRMAR</ButtonApp>
