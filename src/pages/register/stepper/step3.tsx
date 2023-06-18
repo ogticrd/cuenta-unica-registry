@@ -126,6 +126,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     }
   };
 
+  // TODO: Use this Password UI approach https://stackblitz.com/edit/material-password-strength?file=Icons.js
   return (
     <>
       <div>
@@ -193,14 +194,44 @@ export default function Step3({ handleNext, infoCedula }: any) {
             >
               <TextField
                 required
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 label="Contraseña"
                 placeholder="*********"
                 helperText={errors.password?.message}
                 fullWidth
                 {...register('password')}
                 onChange={(e) => handleChangePassword(e.target.value)}
-                endAdornment={
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Tooltip>
+            <PasswordLevel passwordLevel={passwordLevel} />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              required
+              type="password"
+              label="Confirma tu Contraseña"
+              placeholder="*********"
+              disabled={passwordLevel.id === 3 ? false : true}
+              helperText={errors.passwordConfirm?.message}
+              fullWidth
+              {...register('passwordConfirm')}
+              InputProps={{
+                endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
@@ -211,21 +242,8 @@ export default function Step3({ handleNext, infoCedula }: any) {
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                }
-              />
-            </Tooltip>
-            <PasswordLevel passwordLevel={passwordLevel} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              type="password"
-              label="Confirma tu Contraseña"
-              placeholder="*********"
-              helperText={errors.passwordConfirm?.message}
-              fullWidth
-              {...register('passwordConfirm')}
-              disabled={passwordLevel.id === 3 ? false : true}
+                ),
+              }}
             />
           </Grid>
 
