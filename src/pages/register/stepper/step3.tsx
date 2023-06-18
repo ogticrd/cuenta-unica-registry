@@ -4,21 +4,25 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-
-import {
-  AlertError,
-  AlertErrorMessage,
-  AlertWarning,
-} from '@/components/elements/alert';
-import { GridContainer, GridItem } from '@/components/elements/grid';
-import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import PasswordLevel from '@/components/elements/passwordLevel';
-import { TextBody } from '@/components/elements/typography';
-import { FormControlApp } from '@/components/form/input';
-import { ButtonApp } from '@/components/elements/button';
-import { InputApp } from '@/themes/form/input';
-import { labels } from '@/constants/labels';
 import { Crypto } from '@/helpers';
+
+import PasswordLevel from '@/components/elements/passwordLevel';
+import { useSnackbar } from '@/components/elements/alert';
+import { labels } from '@/constants/labels';
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Snackbar,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface IFormInputs {
   email: string;
@@ -48,9 +52,11 @@ const schema = yup.object({
 export default function Step3({ handleNext, infoCedula }: any) {
   const [loadingValidatingPassword, setLoadingValidatingPassword] =
     useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
   const [isPwned, setIsPwned] = useState(false);
+  const { AlertError, AlertWarning } = useSnackbar();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -61,6 +67,14 @@ export default function Step3({ handleNext, infoCedula }: any) {
     mode: 'onChange',
     resolver: yupResolver(schema),
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const handleChangePassword = (password: string) => {
     const level = passwordStrength(password);
@@ -97,7 +111,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
               })
               .catch((err) => {
                 if (err?.response?.status === 409) {
-                  AlertWarning('El correo electrónico ya está registrado.');
+                  AlertError('Esta cédula/correo ya está registrado.');
                 } else {
                   AlertError();
                 }
@@ -106,7 +120,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           }
         })
         .catch(() => {
-          return AlertWarning('No pudimos validar si la contraseña es segura.');
+          AlertWarning('No pudimos validar si la contraseña es segura.');
         })
         .finally(() => setLoadingValidatingPassword(false));
     }
@@ -114,69 +128,56 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
   return (
     <>
-      {loadingValidatingPassword && (
-        <LoadingBackdrop text="Estamos validando tu contraseña..." />
-      )}
-      {loading && <LoadingBackdrop text="Creando usuario..." />}
+      <div>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loadingValidatingPassword}
+        >
+          <CircularProgress color="inherit" />
+          <Typography variant="subtitle1">Validando contraseña...</Typography>
+        </Backdrop>
+      </div>
+      <div>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+          <Typography variant="subtitle1">Creando usuario...</Typography>
+        </Backdrop>
+      </div>
       <br />
-      <TextBody textCenter bold>
+      <Typography variant="body1" align="center" gutterBottom>
         Para finalizar tu registro completa los siguientes campos:
-      </TextBody>
+      </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
-            <FormControlApp
-              label="Correo Electrónico"
-              msg={errors.email?.message}
-              tooltip="Correo personal"
-              tooltipText="Para completar tu cuenta única ciudadana es necesario proporcionar tu correo electrónico, asegúrate esté correctamente escrito y que sea de tu uso cotidiano. Aquí recibirás información importante sobre tu cuenta."
-              required
-            >
-              <InputApp
-                placeholder="Coloca tu correo electrónico"
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                autoComplete="off"
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Tooltip title="Correo personal">
+              <TextField
+                required
+                type="email"
+                label="Correo Electrónico"
+                helperText={errors.email?.message}
+                fullWidth
                 {...register('email')}
               />
-            </FormControlApp>
-          </GridItem>
+            </Tooltip>
+          </Grid>
 
-          <GridItem md={12} lg={12}>
-            <FormControlApp
+          <Grid item xs={12}>
+            <TextField
               label="Confirma tu Correo Electrónico"
-              msg={errors.emailConfirm?.message}
-              required
-            >
-              <InputApp
-                placeholder="Coloca tu correo electrónico"
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                autoComplete="off"
-                {...register('emailConfirm')}
-              />
-            </FormControlApp>
-          </GridItem>
+              helperText={errors.emailConfirm?.message}
+              fullWidth
+              {...register('emailConfirm')}
+            />
+          </Grid>
 
-          <GridItem md={12} lg={12}>
-            <FormControlApp
-              label="Contraseña"
-              msg={errors.password?.message}
-              tooltip="Su contraseña debe contener:"
-              tooltipText={
+          <Grid item xs={12}>
+            <Tooltip
+              title={
                 <>
                   <b>
                     Al menos 8 caracteres de largo
@@ -189,50 +190,62 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   <li>Caracteres especiales (por ejemplo, !@#$%^&*)</li>
                 </>
               }
-              required
             >
-              <InputApp
-                placeholder="*********"
+              <TextField
+                required
                 type="password"
-                autoComplete="off"
+                label="Contraseña"
+                placeholder="*********"
+                helperText={errors.password?.message}
+                fullWidth
                 {...register('password')}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleChangePassword(e.target.value)
+                onChange={(e) => handleChangePassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
                 }
               />
-            </FormControlApp>
+            </Tooltip>
             <PasswordLevel passwordLevel={passwordLevel} />
-          </GridItem>
+          </Grid>
 
-          <GridItem md={12} lg={12}>
-            <FormControlApp
+          <Grid item xs={12}>
+            <TextField
+              type="password"
               label="Confirma tu Contraseña"
-              msg={errors.passwordConfirm?.message}
-              required
-            >
-              <InputApp
-                placeholder="*********"
-                type="password"
-                autoComplete="off"
-                {...register('passwordConfirm')}
-                disabled={passwordLevel.id === 3 ? false : true}
-              />
-            </FormControlApp>
-          </GridItem>
+              placeholder="*********"
+              helperText={errors.passwordConfirm?.message}
+              fullWidth
+              {...register('passwordConfirm')}
+              disabled={passwordLevel.id === 3 ? false : true}
+            />
+          </Grid>
 
           {isPwned && (
-            <GridItem md={12} lg={12}>
-              <AlertErrorMessage
-                type="warning"
-                message="Esta contraseña ha estado en filtraciones de datos, por eso no se considera segura. Te recomendamos eligir otra contraseña."
-              />
-            </GridItem>
+            <Grid item xs={12}>
+              <Snackbar>
+                <Typography variant="body2" color="error">
+                  Esta contraseña ha estado en filtraciones de datos, por eso no
+                  se considera segura. Te recomendamos eligir otra contraseña.
+                </Typography>
+              </Snackbar>
+            </Grid>
           )}
 
-          <GridItem md={12} lg={12}>
-            <ButtonApp submit>CREAR CUENTA ÚNICA</ButtonApp>
-          </GridItem>
-        </GridContainer>
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" type="submit" fullWidth>
+              CREAR CUENTA ÚNICA
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </>
   );
