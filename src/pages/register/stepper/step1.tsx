@@ -1,11 +1,8 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useCallback, useState } from 'react';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { CitizensBasicInformationResponse } from '@/pages/api/types';
 import axios from 'axios';
-import * as yup from 'yup';
-
 import { useSnackbar } from '@/components/elements/alert';
 import {
   Button,
@@ -16,53 +13,65 @@ import {
   CircularProgress,
   Tooltip,
 } from '@mui/material';
+import IMask from 'imask';
 
 interface IFormInputs {
   cedula: string;
 }
 
-const schema = yup.object({
-  cedula: yup
-    .string()
-    .trim()
-    .required('This field is required')
-    .min(11, 'Debe contener 11 dígitos'),
-});
+interface IFormInputs {
+  cedula: string;
+}
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>();
 
-  const handleChange = (e: any) => {
-    const cedulaValue = e.target.value
-      .replace(/\D/g, '')
-      .match(/(\d{0,3})(\d{0,7})(\d{0,1})/);
-    e.target.value = !cedulaValue[2]
-      ? cedulaValue[1]
-      : `${cedulaValue[1]}-${cedulaValue[2]}${`${
-          cedulaValue[3] ? `-${cedulaValue[3]}` : ''
-        }`}${`${cedulaValue[4] ? `-${cedulaValue[4]}` : ''}`}`;
-    const numbers = e.target.value.replace(/(\D)/g, '');
-    setValue('cedula', numbers);
+  useEffect(() => {
+    if (inputRef.current) {
+      const maskOptions = {
+        mask: '000-0000000-0',
+      };
+      IMask(inputRef.current, maskOptions);
+    }
+  }, []);
+
+  const luhnCheck = (num: string) => {
+    const arr = (num + '')
+      .split('')
+      .reverse()
+      .map((x) => parseInt(x));
+    const lastDigit = arr.splice(0, 1)[0];
+    let sum = arr.reduce(
+      (acc, val, i) =>
+        i % 2 !== 0 ? acc + val : acc + ((2 * val) % 9) || 9,
+      0
+    );
+    sum += lastDigit;
+    return sum % 10 === 0;
   };
 
+
   const {
+    register,
     handleSubmit: handleFormSubmit,
     formState: { errors },
-    setValue,
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
-    resolver: yupResolver(schema),
   });
 
-  // Import 'executeRecaptcha' using 'useReCaptcha' hook
   const { executeRecaptcha } = useReCaptcha();
   const { AlertError, AlertWarning } = useSnackbar();
 
   const handleSubmit = useCallback(
     async (data: IFormInputs) => {
+      const cleanCedula = data?.cedula?.replace(/-/g, '');
+      if (cleanCedula?.length !== 11 || !luhnCheck(cleanCedula)) {
+        AlertError('Por favor introduzca un número de cédula válido.');
+        return;
+      }
       setLoading(true);
-
       // Generate ReCaptcha token
       const token = await executeRecaptcha('form_submit');
 
@@ -79,7 +88,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           token,
         });
         if (response.data && response.data.isHuman === true) {
-          const response = await fetch(`/api/citizens/${data.cedula}`);
+          const response = await fetch(`/api/citizens/${cleanCedula}`);
           if (response.status !== 200) {
             throw new Error('Failed to fetch citizen data');
           }
@@ -95,7 +104,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
       } catch (err) {
         console.error(err);
-        AlertError('Parece que ha introducido una cédula inválida.');
+        AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
       } finally {
         setLoading(false);
       }
@@ -125,26 +134,18 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <Grid item xs={12}>
             <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
               <TextField
+                {...register('cedula', { required: true })}
                 required
                 label="Número de Cédula"
                 placeholder="***-**00000-0"
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
+                inputRef={inputRef}
                 autoComplete="off"
-                onChange={(e) => handleChange(e)}
                 error={Boolean(errors.cedula)}
-                helperText={errors.cedula?.message}
+                helperText={errors.cedula && 'Debe contener 11 dígitos'}
                 fullWidth
               />
             </Tooltip>
           </Grid>
-
           <Grid item xs={12}>
             <Button type="submit" variant="contained" fullWidth>
               CONFIRMAR

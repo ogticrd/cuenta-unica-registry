@@ -1,9 +1,7 @@
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import * as yup from 'yup';
+import { useCallback, useState } from 'react';
 
 import Grid from '@mui/material/Grid';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,23 +17,23 @@ interface IFormInputs {
   acceptTermAndConditions: boolean;
 }
 
-const schema = yup.object().shape({
-  acceptTermAndConditions: yup
-    .boolean()
-    .required('Required field')
-    .default(false),
-});
+interface IStep2Props {
+  infoCedula: { [key: string]: any };
+  handleNext: () => void;
+}
 
-export default function Step2({ infoCedula, handleNext }: any) {
+export default function Step2({ infoCedula, handleNext }: IStep2Props) {
   const [open, setOpen] = useState(false);
 
-  const handleClick = () => setOpen(!open);
+  const handleClick = useCallback(() => {
+    setOpen((prevOpen) => !prevOpen);
+  }, []);
 
-  const { handleSubmit, setValue } = useForm<IFormInputs>({
-    reValidateMode: 'onSubmit',
-    shouldFocusError: false,
-    resolver: yupResolver(schema),
-  });
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<IFormInputs>();
 
   const { AlertError } = useSnackbar();
 
@@ -110,10 +108,12 @@ export default function Step2({ infoCedula, handleNext }: any) {
           <Grid item xs={12}>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox color="error" />}
-                onChange={(e: any) => {
-                  setValue('acceptTermAndConditions', e.target.checked);
-                }}
+                control={
+                  <Checkbox
+                    color="error"
+                    {...register('acceptTermAndConditions', { required: true })}
+                  />
+                }
                 label={
                   // TODO: Add link to terms and conditions
                   <a target="_blank" rel="noreferrer" href="">
@@ -122,6 +122,11 @@ export default function Step2({ infoCedula, handleNext }: any) {
                   </a>
                 }
               />
+              {errors.acceptTermAndConditions && (
+                <Typography color="error">
+                  Para continuar debe aceptar Términos y Políticas de Privacidad
+                </Typography>
+              )}
             </FormGroup>
           </Grid>
         </Grid>
