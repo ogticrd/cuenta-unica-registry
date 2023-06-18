@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
-import { useRef, useState } from 'react';
-import getConfig from 'next/config';
+import { useCallback, useState } from 'react';
+import { useReCaptcha } from 'next-recaptcha-v3';
+import axios from 'axios';
 import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -14,8 +14,6 @@ import { ButtonApp } from '@/components/elements/button';
 import { FormControlApp } from '@/components/form/input';
 import { InputApp } from '@/themes/form/input';
 import { labels } from '@/constants/labels';
-
-const { publicRuntimeConfig } = getConfig();
 
 interface IFormInputs {
   cedula: string;
@@ -30,15 +28,7 @@ const schema = yup.object({
 });
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
-  const captchaRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
-
-  const sitekey = publicRuntimeConfig.NEXT_PUBLIC_SITE_KEY;
-
-  const configReCaptcha = {
-    sitekey,
-    ref: captchaRef,
-  };
 
   const handleChange = (e: any) => {
     const cedulaValue = e.target.value
@@ -54,7 +44,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   };
 
   const {
-    handleSubmit,
+    handleSubmit: handleFormSubmit,
     formState: { errors },
     setValue,
   } = useForm<IFormInputs>({
@@ -63,37 +53,52 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: IFormInputs) => {
-    const tokenCaptcha = captchaRef.current.getValue();
+  // Import 'executeRecaptcha' using 'useReCaptcha' hook
+  const { executeRecaptcha } = useReCaptcha();
 
-    if (!tokenCaptcha) {
-      return AlertWarning(
-        'Necesitamos verificar que no eres un robot. Por favor complete el control de seguridad'
-      );
-    }
+  const handleSubmit = useCallback(
+    async (data: IFormInputs) => {
+      setLoading(true);
 
-    setLoading(true);
+      // Generate ReCaptcha token
+      const token = await executeRecaptcha('form_submit');
 
-    const fetcher = async (url: string) => {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (res.status !== 200) {
-        throw new Error(data.message);
+      if (!token) {
+        AlertWarning(
+          'Problemas con el reCaptcha, intente nuevamente más tarde'
+        );
+        setLoading(false);
+        return;
       }
-      return data;
-    };
 
-    fetcher(`/api/citizens/${data.cedula}`)
-      .then((citizen: CitizensBasicInformationResponse) => {
-        setInfoCedula(citizen);
-        handleNext();
-      })
-      .catch(() => {
+      try {
+        const response = await axios.post('/api/recaptcha/assesments', {
+          token,
+        });
+        if (response.data && response.data.isHuman === true) {
+          const response = await fetch(`/api/citizens/${data.cedula}`);
+          if (response.status !== 200) {
+            throw new Error('Failed to fetch citizen data');
+          }
+          const citizen: CitizensBasicInformationResponse =
+            await response.json();
+          setInfoCedula(citizen);
+          handleNext();
+        }
+        if (response.data && response.data.isHuman === false) {
+          AlertWarning(
+            'No podemos validar si eres un humano, intenta desde otro navegador o dispositivo.'
+          );
+        }
+      } catch (err) {
+        console.error(err);
         AlertWarning('Parece que ha introducido una cédula inválida.');
-      })
-      .finally(() => setLoading(false));
-  };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [executeRecaptcha, handleNext, setInfoCedula]
+  );
 
   return (
     <>
@@ -104,7 +109,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         cuenta ciudadana.
       </TextBody>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleFormSubmit(handleSubmit)}>
         <GridContainer marginY>
           <GridItem md={12} lg={12}>
             <FormControlApp
@@ -128,28 +133,6 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
                 onChange={(e) => handleChange(e)}
               />
             </FormControlApp>
-          </GridItem>
-
-          <GridItem md={12} lg={12}>
-            <hr
-              style={{
-                background: '#CBE5FD',
-                height: '1px',
-                border: 'none',
-                borderRadius: '10px',
-              }}
-            />
-            <br />
-            <div
-              style={{
-                width: '100%',
-                margin: '5px 0 22px 0',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <ReCAPTCHA {...configReCaptcha} />
-            </div>
           </GridItem>
 
           <GridItem md={12} lg={12}>
