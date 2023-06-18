@@ -24,6 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <CssBaseline />
         <Layout>
           <ReCaptchaProvider
+            reCaptchaKey="6LeCFYMmAAAAABhOLfiTI7n9g1aV5kr6TfgpslIa"
             useEnterprise
           >
             <Component {...pageProps} />
