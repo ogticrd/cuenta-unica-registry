@@ -8,7 +8,8 @@ const nextConfig = {
     NEXT_PUBLIC_CEDULA_API_KEY: process.env.NEXT_PUBLIC_CEDULA_API_KEY,
     NEXT_PUBLIC_SITE_KEY: process.env.NEXT_PUBLIC_SITE_KEY,
     NEXT_PUBLIC_COOKIE_KEY: process.env.NEXT_PUBLIC_COOKIE_KEY,
-    NEXT_PUBLIC_CRYPTO_KEY: process.env.NEXT_PUBLIC_CRYPTO_KEY
+    NEXT_PUBLIC_CRYPTO_KEY: process.env.NEXT_PUBLIC_CRYPTO_KEY,
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
   },
   reactStrictMode: false,
   output: 'standalone'

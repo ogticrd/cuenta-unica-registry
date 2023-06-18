@@ -2,6 +2,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import { Amplify } from 'aws-amplify';
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 import Head from 'next/head';
 
 import Layout from '../components/layout';
@@ -22,7 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Layout>
-          <Component {...pageProps} />
+          <ReCaptchaProvider
+            useEnterprise
+          >
+            <Component {...pageProps} />
+          </ReCaptchaProvider>
         </Layout>
       </ThemeProvider>
     </>

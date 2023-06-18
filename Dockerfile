@@ -38,6 +38,9 @@ ENV NEXT_PUBLIC_SITE_KEY=${NEXT_PUBLIC_SITE_KEY}
 ARG NEXT_PUBLIC_CRYPTO_KEY
 ENV NEXT_PUBLIC_CRYPTO_KEY=${NEXT_PUBLIC_CRYPTO_KEY}
 
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+
 # ===================== Install Deps =====================
 FROM base as deps
 
@@ -58,14 +61,11 @@ COPY . .
 
 RUN yarn build
 
-# TODO: validate if this is neccesary
-RUN npm prune --production
-
 # ===================== App Runner Stage =====================
 FROM base as runner
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
 
 # Copy all necessary files
 COPY --from=build ${WORK_DIR}/public ./public
