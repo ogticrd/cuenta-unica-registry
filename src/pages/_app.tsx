@@ -2,7 +2,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import { Amplify } from 'aws-amplify';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 import Head from 'next/head';
 
 import Layout from '../components/layout';
@@ -23,17 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Layout>
-          <GoogleReCaptchaProvider
-            reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY as string}
-            scriptProps={{
-              async: false,
-              defer: false,
-              appendTo: 'head',
-              nonce: undefined,
-            }}
+          <ReCaptchaProvider
+            useEnterprise
           >
             <Component {...pageProps} />
-          </GoogleReCaptchaProvider>
+          </ReCaptchaProvider>
         </Layout>
       </ThemeProvider>
     </>

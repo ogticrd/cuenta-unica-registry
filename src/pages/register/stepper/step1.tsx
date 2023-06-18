@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
+import { useReCaptcha } from 'next-recaptcha-v3';
 import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -27,8 +27,6 @@ const schema = yup.object({
 });
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
-  const { executeRecaptcha } = useGoogleReCaptcha();
-
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any) => {
@@ -45,7 +43,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   };
 
   const {
-    handleSubmit,
+    handleSubmit: handleFormSubmit,
     formState: { errors },
     setValue,
   } = useForm<IFormInputs>({
@@ -54,45 +52,40 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = useCallback(
-    (data: IFormInputs) => {
-      if (!executeRecaptcha) {
+  // Import 'executeRecaptcha' using 'useReCaptcha' hook
+  const { executeRecaptcha } = useReCaptcha();
+
+  const handleSubmit = useCallback(
+    async (data: IFormInputs) => {
+      setLoading(true);
+
+      // Generate ReCaptcha token
+      const token = await executeRecaptcha('form_submit');
+
+      if (!token) {
         AlertWarning(
           'Problemas con el reCaptcha, intente nuevamente más tarde'
         );
+        setLoading(false);
         return;
       }
-      executeRecaptcha('enquiryFormSubmit').then((gReCaptchaToken: any) => {
-        // console.log(gReCaptchaToken, "response Google reCaptcha server");
-        submitEnquiryForm(gReCaptchaToken, data);
-      });
-    },
-    [executeRecaptcha]
-  );
 
-  const submitEnquiryForm = (gReCaptchaToken: any, data: IFormInputs) => {
-    setLoading(true);
-
-    const fetcher = async (url: string) => {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (res.status !== 200) {
-        throw new Error(data.message);
-      }
-      return data;
-    };
-
-    fetcher(`/api/citizens/${data.cedula}`)
-      .then((citizen: CitizensBasicInformationResponse) => {
+      try {
+        const response = await fetch(`/api/citizens/${data.cedula}`);
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch citizen data');
+        }
+        const citizen: CitizensBasicInformationResponse = await response.json();
         setInfoCedula(citizen);
         handleNext();
-      })
-      .catch(() => {
+      } catch (err) {
         AlertWarning('Parece que ha introducido una cédula inválida.');
-      })
-      .finally(() => setLoading(false));
-  };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [executeRecaptcha, handleNext, setInfoCedula]
+  );
 
   return (
     <>
@@ -103,7 +96,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         cuenta ciudadana.
       </TextBody>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleFormSubmit(handleSubmit)}>
         <GridContainer marginY>
           <GridItem md={12} lg={12}>
             <FormControlApp
