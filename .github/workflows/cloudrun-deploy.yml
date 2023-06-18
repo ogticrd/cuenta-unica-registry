@@ -74,6 +74,8 @@ jobs:
             NEXT_PUBLIC_PHOTO_API_KEY=${{ secrets.NEXT_PUBLIC_PHOTO_API_KEY }},
             NEXT_PUBLIC_COOKIE_KEY=${{ secrets.NEXT_PUBLIC_COOKIE_KEY }},
             NEXT_PUBLIC_CRYPTO_KEY=${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }},
+            RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
+            RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
 
       - name: Allow unauthenticated calls to the service
         run: |

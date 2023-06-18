@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { useReCaptcha } from 'next-recaptcha-v3';
+import axios from 'axios';
 import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -71,14 +72,26 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       }
 
       try {
-        const response = await fetch(`/api/citizens/${data.cedula}`);
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch citizen data');
+        const response = await axios.post('/api/recaptcha/assesments', {
+          token,
+        });
+        if (response.data && response.data.isHuman === true) {
+          const response = await fetch(`/api/citizens/${data.cedula}`);
+          if (response.status !== 200) {
+            throw new Error('Failed to fetch citizen data');
+          }
+          const citizen: CitizensBasicInformationResponse =
+            await response.json();
+          setInfoCedula(citizen);
+          handleNext();
         }
-        const citizen: CitizensBasicInformationResponse = await response.json();
-        setInfoCedula(citizen);
-        handleNext();
+        if (response.data && response.data.isHuman === false) {
+          AlertWarning(
+            'No podemos validar si eres un humano, intenta desde otro navegador o dispositivo.'
+          );
+        }
       } catch (err) {
+        console.error(err);
         AlertWarning('Parece que ha introducido una cédula inválida.');
       } finally {
         setLoading(false);
