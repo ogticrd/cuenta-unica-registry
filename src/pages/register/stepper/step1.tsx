@@ -2,18 +2,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { useReCaptcha } from 'next-recaptcha-v3';
+import { CitizensBasicInformationResponse } from '@/pages/api/types';
 import axios from 'axios';
 import * as yup from 'yup';
 
-import { GridContainer, GridItem } from '@/components/elements/grid';
-import { CitizensBasicInformationResponse } from '@/pages/api/types';
-import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import { TextBody } from '@/components/elements/typography';
-import { AlertWarning } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
-import { FormControlApp } from '@/components/form/input';
-import { InputApp } from '@/themes/form/input';
-import { labels } from '@/constants/labels';
+import { useSnackbar } from '@/components/elements/alert';
+import {
+  Button,
+  Grid,
+  TextField,
+  Typography,
+  Backdrop,
+  CircularProgress,
+  Tooltip,
+} from '@mui/material';
 
 interface IFormInputs {
   cedula: string;
@@ -23,7 +25,7 @@ const schema = yup.object({
   cedula: yup
     .string()
     .trim()
-    .required(labels.form.requiredField)
+    .required('This field is required')
     .min(11, 'Debe contener 11 dígitos'),
 });
 
@@ -55,6 +57,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
 
   // Import 'executeRecaptcha' using 'useReCaptcha' hook
   const { executeRecaptcha } = useReCaptcha();
+  const { AlertError, AlertWarning } = useSnackbar();
 
   const handleSubmit = useCallback(
     async (data: IFormInputs) => {
@@ -92,35 +95,39 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
       } catch (err) {
         console.error(err);
-        AlertWarning('Parece que ha introducido una cédula inválida.');
+        AlertError('Parece que ha introducido una cédula inválida.');
       } finally {
         setLoading(false);
       }
     },
-    [executeRecaptcha, handleNext, setInfoCedula]
+    [executeRecaptcha, handleNext, setInfoCedula, AlertWarning, AlertError]
   );
 
   return (
     <>
-      {loading && <LoadingBackdrop />}
+      <div>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+          <Typography variant="subtitle1">Validando cédula...</Typography>
+        </Backdrop>
+      </div>
       <br />
-      <TextBody textCenter>
+      <Typography variant="body1" align="center">
         Este es el primer paso para poder verificar tu identidad y crear tu
         cuenta ciudadana.
-      </TextBody>
+      </Typography>
 
       <form onSubmit={handleFormSubmit(handleSubmit)}>
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
-            <FormControlApp
-              label="Número de Cédula"
-              msg={errors.cedula?.message}
-              tooltip="Identidad de Usuario"
-              tooltipText="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula."
-              required
-            >
-              <InputApp
-                placeholder="*** - **00000 - 0"
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
+              <TextField
+                required
+                label="Número de Cédula"
+                placeholder="***-**00000-0"
                 onPaste={(e) => {
                   e.preventDefault();
                   return false;
@@ -131,14 +138,19 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
                 }}
                 autoComplete="off"
                 onChange={(e) => handleChange(e)}
+                error={Boolean(errors.cedula)}
+                helperText={errors.cedula?.message}
+                fullWidth
               />
-            </FormControlApp>
-          </GridItem>
+            </Tooltip>
+          </Grid>
 
-          <GridItem md={12} lg={12}>
-            <ButtonApp submit>CONFIRMAR</ButtonApp>
-          </GridItem>
-        </GridContainer>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" fullWidth>
+              CONFIRMAR
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </>
   );

@@ -5,25 +5,24 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import * as yup from 'yup';
 
-import { GridContainer, GridItem } from '@/components/elements/grid';
+import Grid from '@mui/material/Grid';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { TextBody } from '@/components/elements/typography';
-import { AlertWarning } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
+import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
-import { labels } from '@/constants/labels';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Step2Modal from './step2Modal';
+
+import { useSnackbar } from '@/components/elements/alert';
 
 interface IFormInputs {
   acceptTermAndConditions: boolean;
 }
 
-const schema = yup.object({
+const schema = yup.object().shape({
   acceptTermAndConditions: yup
     .boolean()
-    .required(labels.form.requiredField)
+    .required('Required field')
     .default(false),
 });
 
@@ -32,21 +31,20 @@ export default function Step2({ infoCedula, handleNext }: any) {
 
   const handleClick = () => setOpen(!open);
 
-  const {
-    handleSubmit,
-    formState: {},
-    setValue,
-  } = useForm<IFormInputs>({
+  const { handleSubmit, setValue } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
     resolver: yupResolver(schema),
   });
 
+  const { AlertError } = useSnackbar();
+
   const onSubmit = (data: IFormInputs) => {
     if (!data.acceptTermAndConditions) {
-      return AlertWarning(
+      AlertError(
         'Para continuar debe aceptar Términos y Políticas de Privacidad'
       );
+      return;
     }
     handleClick();
   };
@@ -54,17 +52,17 @@ export default function Step2({ infoCedula, handleNext }: any) {
   return (
     <>
       <br />
-      <TextBody textCenter>
+      <Typography align="center">
         ¡Hola {infoCedula?.name}!{' '}
         <span style={{ fontWeight: '400' }}>
           Ahora vamos a validar tu identidad mediante una verificación facial
           para continuar con tu registro. Asegúrate de cumplir con lo siguiente:
         </span>
-      </TextBody>
+      </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
             <div
               style={{
                 background: '#EFF7FF',
@@ -84,9 +82,9 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
-          </GridItem>
+          </Grid>
 
-          <GridItem md={12} lg={12}>
+          <Grid item xs={12}>
             <div
               style={{
                 background: '#EFF7FF',
@@ -106,26 +104,18 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
-          </GridItem>
+          </Grid>
 
-          {/* <GridItem md={12} lg={12}>
-            <Typography
-              color="primary"
-              sx={{ fontSize: '16px', fontWeight: '400', textAlign: 'center' }}
-            >
-              Verificación con pasaporte disponible próximamente
-            </Typography>
-          </GridItem> */}
-          {/* <br /> */}
           <br />
-          <GridItem md={12} lg={12}>
-            <FormGroup sx={{ display: 'flex', alignContent: 'center' }}>
+          <Grid item xs={12}>
+            <FormGroup>
               <FormControlLabel
+                control={<Checkbox color="error" />}
                 onChange={(e: any) => {
                   setValue('acceptTermAndConditions', e.target.checked);
                 }}
-                control={<Checkbox color="error" />}
                 label={
+                  // TODO: Add link to terms and conditions
                   <a target="_blank" rel="noreferrer" href="">
                     Aceptar Términos y Políticas de Privacidad{' '}
                     <span className="text-error">*</span>
@@ -133,12 +123,14 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 }
               />
             </FormGroup>
-          </GridItem>
-        </GridContainer>
+          </Grid>
+        </Grid>
 
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
-            <ButtonApp submit>INICIAR PROCESO</ButtonApp>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" fullWidth>
+              INICIAR PROCESO
+            </Button>
             {open && (
               <Step2Modal
                 open={open}
@@ -147,8 +139,8 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 identity={infoCedula.id}
               />
             )}
-          </GridItem>
-        </GridContainer>
+          </Grid>
+        </Grid>
       </form>
     </>
   );
