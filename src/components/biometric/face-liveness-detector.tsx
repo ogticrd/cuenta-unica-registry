@@ -69,7 +69,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               onUserCancel={onUserCancel}
               onError={(error) => setError(error)}
               onAnalysisComplete={handleAnalysisComplete}
-              disableInstructionScreen={true}
+              disableInstructionScreen={false}
               displayText={defaultLivenessDisplayText}
             />
           )
