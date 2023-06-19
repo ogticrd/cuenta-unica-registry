@@ -5,6 +5,7 @@ import { CitizensBasicInformationResponse } from '@/pages/api/types';
 import axios from 'axios';
 import { useSnackbar } from '@/components/elements/alert';
 import {
+  Box,
   Button,
   Grid,
   TextField,
@@ -43,14 +44,12 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       .map((x) => parseInt(x));
     const lastDigit = arr.splice(0, 1)[0];
     let sum = arr.reduce(
-      (acc, val, i) =>
-        i % 2 !== 0 ? acc + val : acc + ((2 * val) % 9) || 9,
+      (acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((2 * val) % 9) || 9),
       0
     );
     sum += lastDigit;
     return sum % 10 === 0;
   };
-
 
   const {
     register,
@@ -123,10 +122,11 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <Typography variant="subtitle1">Validando cédula...</Typography>
         </Backdrop>
       </div>
-      <br />
-      <Typography variant="body1" align="center">
-        Este es el primer paso para poder verificar tu identidad y crear tu
-        cuenta ciudadana.
+      <Typography color="primary" textAlign="center" p={2}>
+        <Box sx={{ fontWeight: 'bold' }}>
+          Este es el primer paso para poder verificar tu identidad y crear tu
+          cuenta ciudadana.
+        </Box>
       </Typography>
 
       <form onSubmit={handleFormSubmit(handleSubmit)}>
