@@ -27,7 +27,6 @@
     "eslint": "^8.40.0",
     "eslint-config-next": "13.2.3",
     "hibp": "^13.0.0",
-    "imask": "^6.6.3",
     "next": "13.2.3",
     "next-recaptcha-v3": "^1.1.5",
     "react": "18.2.0",

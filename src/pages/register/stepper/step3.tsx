@@ -148,7 +148,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           <Typography variant="subtitle1">Creando usuario...</Typography>
         </Backdrop>
       </div>
-      <Typography color="primary" textAlign="center" p={2}>
+      <Typography component="div" color="primary" textAlign="center" p={2}>
         <Box sx={{ fontWeight: 'bold' }}>
           Para finalizar tu registro completa los siguientes campos:
         </Box>
