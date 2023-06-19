@@ -56,8 +56,8 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
         <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
         <Box>
           {' '}
-          Ahora vamos a validar tu identidad mediante una verificación facial
-          para continuar con tu registro. Asegúrate de cumplir con lo siguiente:
+          Ahora vamos a validar tu identidad mediante una verificación facial y
+          una prueba de vida. Asegúrate de cumplir con lo siguiente:
         </Box>
       </Typography>
 
@@ -79,7 +79,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Tener disponible un dispositivo con{' '}
+                Utilizar un dispositivo que posea {' '}
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
@@ -101,7 +101,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Estar de acuerdo en que hagamos capturas de{' '}
+                Permitir que tomemos capturas de {' '}
                 <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
