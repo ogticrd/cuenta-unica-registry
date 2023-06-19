@@ -51,7 +51,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   useEffect(() => {
     if (error) {
-      AlertError("No se ha podido validar correctamente la identidad.");
+      AlertError('No se ha podido validar correctamente la identidad.');
     }
   }, [error, AlertError]);
 
