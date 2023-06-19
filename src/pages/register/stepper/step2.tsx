@@ -3,12 +3,15 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 
-import Grid from '@mui/material/Grid';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Button from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  Grid,
+  Typography,
+} from '@mui/material';
 import Step2Modal from './step2Modal';
 
 import { useSnackbar } from '@/components/elements/alert';
@@ -49,18 +52,18 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
 
   return (
     <>
-      <br />
-      <Typography align="center">
-        ¡Hola {infoCedula?.name}!{' '}
-        <span style={{ fontWeight: '400' }}>
+      <Typography color="primary" textAlign="center" p={2}>
+        <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
+        <Box>
+          {' '}
           Ahora vamos a validar tu identidad mediante una verificación facial
           para continuar con tu registro. Asegúrate de cumplir con lo siguiente:
-        </span>
+        </Box>
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid item xs>
             <div
               style={{
                 background: '#EFF7FF',
@@ -76,13 +79,13 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Tener disponible un teléfono móvil o computadora con{' '}
+                Tener disponible un dispositivo con{' '}
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs>
             <div
               style={{
                 background: '#EFF7FF',
