@@ -11,6 +11,7 @@ import { useSnackbar } from '@/components/elements/alert';
 import { labels } from '@/constants/labels';
 import {
   Backdrop,
+  Box,
   Button,
   CircularProgress,
   Grid,
@@ -147,9 +148,10 @@ export default function Step3({ handleNext, infoCedula }: any) {
           <Typography variant="subtitle1">Creando usuario...</Typography>
         </Backdrop>
       </div>
-      <br />
-      <Typography variant="body1" align="center" gutterBottom>
-        Para finalizar tu registro completa los siguientes campos:
+      <Typography color="primary" textAlign="center" p={2}>
+        <Box sx={{ fontWeight: 'bold' }}>
+          Para finalizar tu registro completa los siguientes campos:
+        </Box>
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -157,18 +159,19 @@ export default function Step3({ handleNext, infoCedula }: any) {
           <Grid item xs={12}>
             <Tooltip title="Correo personal">
               <TextField
+                {...register('email')}
                 required
                 type="email"
                 label="Correo Electrónico"
                 helperText={errors.email?.message}
                 fullWidth
-                {...register('email')}
               />
             </Tooltip>
           </Grid>
 
           <Grid item xs={12}>
             <TextField
+              required
               label="Confirma tu Correo Electrónico"
               helperText={errors.emailConfirm?.message}
               fullWidth
