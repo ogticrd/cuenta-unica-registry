@@ -49,9 +49,9 @@ export const defaultErrorDisplayText = {
   timeoutHeaderText: 'Se acabó el tiempo',
   timeoutMessageText:
     'La cara no llenó el óvalo dentro del límite de tiempo. Vuelva a intentarlo y llene completamente el óvalo con la cara en 7 segundos.',
-  faceDistanceHeaderText: 'Comprobación fallida durante la cuenta atrás',
+  faceDistanceHeaderText: 'Comprobación fallida durante la cuenta regresiva',
   faceDistanceMessageText:
-    'Evite acercarse durante la cuenta regresiva y asegúrese de que solo una cara esté frente a la cámara.',
+    'Evite acercarse durante la cuenta regresiva y asegúrese de que solo haya una cara frente a la cámara.',
   clientHeaderText: 'Error del cliente',
   clientMessageText: 'Verificación fallida debido a un problema con el cliente',
   serverHeaderText: 'Problema del servidor',
@@ -69,54 +69,54 @@ export type ErrorDisplayTextFoo = typeof defaultErrorDisplayText;
 export type ErrorDisplayText = Partial<ErrorDisplayTextFoo>;
 
 export const defaultLivenessDisplayText: Required<LivenessDisplayText> = {
-  instructionsHeaderHeadingText: 'Liveness check',
+  instructionsHeaderHeadingText: 'Prueba de vida',
   instructionsHeaderBodyText:
-    'You will go through a face verification process to prove that you are a real person.',
-  instructionsBeginCheckText: 'Begin check',
-  photosensitivyWarningHeadingText: 'Photosensitivity warning',
+    'Ahora va a realizar un proceso de verificación facial para demostrar que es una persona real.',
+  instructionsBeginCheckText: 'Iniciar prueba',
+  photosensitivyWarningHeadingText: 'Alerta de fotosensibilidad',
   photosensitivyWarningBodyText:
-    'This check displays colored lights. Use caution if you are photosensitive.',
+    'Esta comprobación muestra luces de colores. Tenga cuidado si es fotosensible.',
   photosensitivyWarningInfoText:
-    'A small percentage of individuals may experience epileptic seizures when exposed to colored lights. Use caution if you, or anyone in your family, have an epileptic condition.',
-  instructionListHeadingText: 'Follow the instructions to complete the check:',
-  goodFitCaptionText: 'Good fit',
+    'Un pequeño porcentaje de personas puede experimentar convulsiones epilépticas cuando se exponen a luces de colores. Tenga cuidado si usted o alguien de su familia tiene alguna condición epiléptica.',
+  instructionListHeadingText: 'Siga las instrucciones para completar la verificación:',
+  goodFitCaptionText: 'Bien encajado',
   goodFitAltText:
-    "Ilustration of a person's face, perfectly fitting inside of an oval.",
-  tooFarCaptionText: 'Too far',
+    'Ilustración de la cara de una persona, encajando perfectamente dentro de un óvalo.',
+  tooFarCaptionText: 'Demasiado lejos',
   tooFarAltText:
-    "Illustration of a person's face inside of an oval; there is a gap between the perimeter of the face and the boundaries of the oval.",
+    'Ilustración de la cara de una persona dentro de un óvalo; hay un espacio entre el perímetro de la cara y los límites del óvalo.',
   instructionListStepOneText:
-    'When an oval appears, fill the oval with your face within 7 seconds.',
-  instructionListStepTwoText: "Maximize your screen's brightness.",
+    'Cuando el óvalo aparezca, llénelo con su cara en 7 segundos.',
+  instructionListStepTwoText: 'Maximice el brillo de su pantalla.',
   instructionListStepThreeText:
-    'Make sure your face is not covered with sunglasses or a mask.',
+    'Asegúrese de que su cara no esté cubierta con gafas de sol o una máscara.',
   instructionListStepFourText:
-    'Move to a well-lit place that is not in direct sunlight.',
+    'Muévase a un lugar bien iluminado que no esté expuesto a la luz solar directa.',
   cameraMinSpecificationsHeadingText:
-    'Camera does not meet minimum specifications',
+    'La cámara no cumple con las especificaciones mínimas',
   cameraMinSpecificationsMessageText:
-    'Camera must support at least 320*240 resolution and 15 frames per second.',
-  cameraNotFoundHeadingText: 'Camera not accessible.',
+    'La cámara debe admitir una resolución de al menos 320 * 240 y 15 fotogramas por segundo.',
+  cameraNotFoundHeadingText: 'Cámara no accesible',
   cameraNotFoundMessageText:
     'Verifique que la cámara esté conectada y que los permisos de la cámara estén habilitados en la configuración antes de volver a intentarlo.',
   retryCameraPermissionsText: 'Procesar de nuevo',
-  cancelLivenessCheckText: 'Cancelar comprobación de vitalidad',
-  recordingIndicatorText: 'Grabación',
-  hintMoveFaceFrontOfCameraText: 'Mover la cara frente a la cámara',
+  cancelLivenessCheckText: 'Cancelar prueba de vida',
+  recordingIndicatorText: 'Grabando',
+  hintMoveFaceFrontOfCameraText: 'Posicione la cara frente a la cámara',
   hintTooManyFacesText:
-    'Asegúrese de que solo una cara esté frente a la cámara',
+    'Asegúrese que solo una cara esté frente a la cámara',
   hintFaceDetectedText: 'Cara detectada',
-  hintCanNotIdentifyText: 'Mover la cara frente a la cámara',
-  hintTooCloseText: 'Muévete mas atrás',
-  hintTooFarText: 'Muévete mas cerca',
+  hintCanNotIdentifyText: 'No podemos identificar su cara frente a la cámara',
+  hintTooCloseText: 'Muévase más atrás',
+  hintTooFarText: 'Muévase más cerca',
   hintHoldFacePositionCountdownText:
-    'Mantener la posición de la cara durante la cuenta regresiva',
+    'Mantenga la posición de la cara durante la cuenta regresiva',
   hintConnectingText: 'Conectando...',
   hintVerifyingText: 'Verificando...',
-  hintIlluminationTooBrightText: 'Mover al área de atenuación',
-  hintIlluminationTooDarkText: 'Mover a un área más brillante',
-  hintIlluminationNormalText: 'Condiciones de iluminación normales',
-  hintHoldFaceForFreshnessText: 'Quédate quieto',
+  hintIlluminationTooBrightText: 'Muévase a un área con menos iluminación',
+  hintIlluminationTooDarkText: 'Muévase a un área con mayor iluminación',
+  hintIlluminationNormalText: 'Condiciones de iluminación correctas',
+  hintHoldFaceForFreshnessText: 'Quédese quieto',
   ...defaultErrorDisplayText,
 };
 
