@@ -78,7 +78,8 @@ export const defaultLivenessDisplayText: Required<LivenessDisplayText> = {
     'Esta comprobación muestra luces de colores. Tenga cuidado si es fotosensible.',
   photosensitivyWarningInfoText:
     'Un pequeño porcentaje de personas puede experimentar convulsiones epilépticas cuando se exponen a luces de colores. Tenga cuidado si usted o alguien de su familia tiene alguna condición epiléptica.',
-  instructionListHeadingText: 'Siga las instrucciones para completar la verificación:',
+  instructionListHeadingText:
+    'Siga las instrucciones para completar la verificación:',
   goodFitCaptionText: 'Bien encajado',
   goodFitAltText:
     'Ilustración de la cara de una persona, encajando perfectamente dentro de un óvalo.',
@@ -103,8 +104,7 @@ export const defaultLivenessDisplayText: Required<LivenessDisplayText> = {
   cancelLivenessCheckText: 'Cancelar prueba de vida',
   recordingIndicatorText: 'Grabando',
   hintMoveFaceFrontOfCameraText: 'Posicione la cara frente a la cámara',
-  hintTooManyFacesText:
-    'Asegúrese que solo una cara esté frente a la cámara',
+  hintTooManyFacesText: 'Asegúrese que solo una cara esté frente a la cámara',
   hintFaceDetectedText: 'Cara detectada',
   hintCanNotIdentifyText: 'No podemos identificar su cara frente a la cámara',
   hintTooCloseText: 'Muévase más atrás',
