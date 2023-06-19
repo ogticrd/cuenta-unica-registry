@@ -3,7 +3,7 @@ import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import React from 'react';
 import { useState, useEffect } from 'react';
 
-import { AlertErrorMessage } from '../elements/alert';
+import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
@@ -12,6 +12,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const { AlertError } = useSnackbar();
 
   const fetchCreateLiveness = async () => {
     const response = await fetch(`/api/biometric`, { method: 'POST' });
@@ -48,14 +49,14 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     });
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      AlertError('No se ha podido validar correctamente la identidad.');
+    }
+  }, [error, AlertError]);
+
   return (
     <>
-      {error && (
-        <AlertErrorMessage
-          type="info"
-          message="No se ha podido validar correctamente la identidad."
-        />
-      )}
       <br />
       <ThemeProvider>
         {loading ? (
@@ -68,7 +69,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               onUserCancel={onUserCancel}
               onError={(error) => setError(error)}
               onAnalysisComplete={handleAnalysisComplete}
-              disableInstructionScreen={true}
+              disableInstructionScreen={false}
               displayText={defaultLivenessDisplayText}
             />
           )

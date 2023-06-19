@@ -1,39 +1,74 @@
-import Swal from 'sweetalert2';
-import Alert from '@mui/material/Alert';
+import React, { createContext, useContext, useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
-interface IPropsAlertErrorMessage {
-  message: string;
-  type: 'error' | 'warning' | 'info' | 'success';
+interface SnackbarContextProps {
+  openSnackbar: (message: string, severity: AlertProps['severity']) => void;
 }
 
-export const AlertErrorMessage = ({
-  message,
-  type,
-}: IPropsAlertErrorMessage) => <Alert severity={type}>{message}</Alert>;
+// Create context with default undefined value
+const SnackbarContext = createContext<SnackbarContextProps | undefined>(
+  undefined
+);
 
-export const AlertError = (text?: string) => {
-  return Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: text ? text : 'Ocurrió un error al procesar la solicitud',
-    confirmButtonColor: '#003670',
+interface SnackbarProviderProps {
+  children?: React.ReactNode;
+}
+
+export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
+  const [snackbarConfig, setSnackbarConfig] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as AlertProps['severity'],
   });
+
+  // Open snackbar
+  const openSnackbar = (message: string, severity: AlertProps['severity']) => {
+    setSnackbarConfig({ open: true, message, severity });
+  };
+
+  // Close snackbar
+  const closeSnackbar = () => {
+    setSnackbarConfig((prevState) => ({ ...prevState, open: false }));
+  };
+
+  return (
+    <SnackbarContext.Provider value={{ openSnackbar }}>
+      <Snackbar
+        open={snackbarConfig.open}
+        autoHideDuration={6000}
+        onClose={closeSnackbar}
+      >
+        <MuiAlert
+          onClose={closeSnackbar}
+          severity={snackbarConfig.severity}
+          variant="filled"
+        >
+          {snackbarConfig.message}
+        </MuiAlert>
+      </Snackbar>
+      {children}
+    </SnackbarContext.Provider>
+  );
 };
 
-export const AlertWarning = (text: string) => {
-  return Swal.fire({
-    icon: 'warning',
-    title: 'Aviso',
-    text: text,
-    confirmButtonColor: '#003670',
-  });
-};
+export const useSnackbar = () => {
+  const context = useContext(SnackbarContext);
 
-export const AlertSuccess = (text?: string) => {
-  return Swal.fire({
-    icon: 'success',
-    title: 'Correcto',
-    text: text ? text : 'Proceso realizado correctamente',
-    confirmButtonColor: '#003670',
-  });
+  if (!context) {
+    throw new Error('useSnackbar must be used within a SnackbarProvider');
+  }
+
+  const { openSnackbar } = context;
+
+  return {
+    AlertError: (text?: string) =>
+      openSnackbar(
+        text || 'Ocurrió un error al procesar la solicitud',
+        'error'
+      ),
+    AlertWarning: (text: string) => openSnackbar(text, 'warning'),
+    AlertSuccess: (text: string) =>
+      openSnackbar(text || 'Proceso realizado correctamente', 'success'),
+  };
 };
