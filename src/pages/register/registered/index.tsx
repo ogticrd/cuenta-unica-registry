@@ -53,8 +53,8 @@ export default function Index() {
             <br />
             <TextBody textCenter>
               Revisa tu correo y haz clic en el enlace de confirmación, luego
-              podras ver, realizar tramites y solicitar servicios
-              gubernamentales con una sola cuenta y contraseña.
+              realizar tramites y solicitar servicios gubernamentales
+              con una sola cuenta y contraseña.
             </TextBody>
             <br />
           </GridItem>
