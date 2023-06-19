@@ -1,5 +1,4 @@
 import { TransitionProps } from '@mui/material/transitions';
-import { ThemeProvider } from '@aws-amplify/ui-react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
@@ -65,12 +64,10 @@ export default function Step2Modal({
               padding: '0 10px',
             }}
           >
-            <ThemeProvider>
-              <LivenessQuickStartReact
-                handleNextForm={handleNextForm}
-                cedula={identity}
-              />
-            </ThemeProvider>
+            <LivenessQuickStartReact
+              handleNextForm={handleNextForm}
+              cedula={identity}
+            />
           </div>
         </div>
       </Dialog>
