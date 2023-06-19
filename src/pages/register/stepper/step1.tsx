@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { CitizensBasicInformationResponse } from '@/pages/api/types';
@@ -14,28 +14,12 @@ import {
   CircularProgress,
   Tooltip,
 } from '@mui/material';
-import IMask from 'imask';
-
-interface IFormInputs {
-  cedula: string;
-}
-
 interface IFormInputs {
   cedula: string;
 }
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
   const [loading, setLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>();
-
-  useEffect(() => {
-    if (inputRef.current) {
-      const maskOptions = {
-        mask: '000-0000000-0',
-      };
-      IMask(inputRef.current, maskOptions);
-    }
-  }, []);
 
   const luhnCheck = (num: string) => {
     const arr = (num + '')
@@ -122,7 +106,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <Typography variant="subtitle1">Validando cédula...</Typography>
         </Backdrop>
       </div>
-      <Typography color="primary" textAlign="center" p={2}>
+      <Typography component="div" color="primary" textAlign="center" p={2}>
         <Box sx={{ fontWeight: 'bold' }}>
           Este es el primer paso para poder verificar tu identidad y crear tu
           cuenta ciudadana.
@@ -138,7 +122,6 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
                 required
                 label="Número de Cédula"
                 placeholder="***-**00000-0"
-                inputRef={inputRef}
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
                 helperText={errors.cedula && 'Debe contener 11 dígitos'}

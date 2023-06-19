@@ -52,7 +52,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
 
   return (
     <>
-      <Typography color="primary" textAlign="center" p={2}>
+      <Typography component="div" color="primary" textAlign="center" p={2}>
         <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
         <Box>
           {' '}
