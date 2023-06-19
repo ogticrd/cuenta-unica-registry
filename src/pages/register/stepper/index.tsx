@@ -14,6 +14,7 @@ import Step2 from './step2';
 import Step3 from './step3';
 
 const steps = ['PASO 1', 'PASO 2', 'PASO 3'];
+const optionalLabels = ['Identifícate', 'Verifícate', 'Regístrate'];
 
 export async function getServerSideProps() {
   await axios.get(`/api/auth`);
@@ -30,37 +31,40 @@ export default function StepperRegister() {
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   React.useEffect(() => {
-    const fetcher = async (url: string) => {
-      await fetch(url);
-    };
-
-    fetcher(`/api/auth`).then().catch();
+    axios.get(`/api/auth`).then().catch();
   }, []);
 
   const [infoCedula, setInfoCedula] = React.useState({});
-
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
       return router.push(routes.register.registered);
     }
 
-    let newSkipped = skipped;
-
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
+    if (skipped.has(activeStep)) {
+      const newSkipped = new Set(skipped.values());
       newSkipped.delete(activeStep);
+      setSkipped(newSkipped);
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const getStepComponent = () => {
+    switch (activeStep) {
+      case 0:
+        return <Step1 setInfoCedula={setInfoCedula} handleNext={handleNext} />;
+      case 1:
+        return <Step2 infoCedula={infoCedula} handleNext={handleNext} />;
+      case 2:
+        return <Step3 infoCedula={infoCedula} handleNext={handleNext} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -69,39 +73,24 @@ export default function StepperRegister() {
         sx={{ paddingBottom: '20px', borderBottom: '2px solid #E2E2E2' }}
         activeStep={activeStep}
       >
-        {steps.map((label, index) => {
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
-          if (index === 0) {
-            labelProps.optional = (
-              <Typography variant="caption">Identifícate</Typography>
-            );
-          }
-          if (index === 1) {
-            labelProps.optional = (
-              <Typography variant="caption">Verifícate</Typography>
-            );
-          }
-          if (index === 2) {
-            labelProps.optional = (
-              <Typography variant="caption">Regístrate</Typography>
-            );
-          }
-
-          return (
-            <Step
-              key={label}
-              sx={{
-                borderLeft: `${index === 0 ? '0px' : '1px'} solid #B7D9F8`,
-              }}
+        {steps.map((label, index) => (
+          <Step
+            key={label}
+            sx={{
+              borderLeft: `${index === 0 ? '0px' : '1px'} solid #B7D9F8`,
+            }}
+          >
+            <StepLabel
+              optional={
+                <Typography variant="caption">
+                  {optionalLabels[index]}
+                </Typography>
+              }
             >
-              <StepLabel {...labelProps}>
-                <span style={{ fontWeight: '700' }}>{label}</span>
-              </StepLabel>
-            </Step>
-          );
-        })}
+              <span style={{ fontWeight: '700' }}>{label}</span>
+            </StepLabel>
+          </Step>
+        ))}
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
@@ -114,17 +103,7 @@ export default function StepperRegister() {
           </Box>
         </React.Fragment>
       ) : (
-        <div style={{ margin: '0px 25px' }}>
-          {activeStep === 0 && (
-            <Step1 setInfoCedula={setInfoCedula} handleNext={handleNext} />
-          )}
-          {activeStep === 1 && (
-            <Step2 infoCedula={infoCedula} handleNext={handleNext} />
-          )}
-          {activeStep === 2 && (
-            <Step3 infoCedula={infoCedula} handleNext={handleNext} />
-          )}
-        </div>
+        <div style={{ margin: '0px 25px' }}>{getStepComponent()}</div>
       )}
     </Box>
   );

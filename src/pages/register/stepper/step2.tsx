@@ -1,70 +1,69 @@
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import * as yup from 'yup';
+import { useCallback, useState } from 'react';
 
-import { GridContainer, GridItem } from '@/components/elements/grid';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { TextBody } from '@/components/elements/typography';
-import { AlertWarning } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
-import { labels } from '@/constants/labels';
-import { Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  Grid,
+  Typography,
+} from '@mui/material';
 import Step2Modal from './step2Modal';
+
+import { useSnackbar } from '@/components/elements/alert';
 
 interface IFormInputs {
   acceptTermAndConditions: boolean;
 }
 
-const schema = yup.object({
-  acceptTermAndConditions: yup
-    .boolean()
-    .required(labels.form.requiredField)
-    .default(false),
-});
+interface IStep2Props {
+  infoCedula: { [key: string]: any };
+  handleNext: () => void;
+}
 
-export default function Step2({ infoCedula, handleNext }: any) {
+export default function Step2({ infoCedula, handleNext }: IStep2Props) {
   const [open, setOpen] = useState(false);
 
-  const handleClick = () => setOpen(!open);
+  const handleClick = useCallback(() => {
+    setOpen((prevOpen) => !prevOpen);
+  }, []);
 
   const {
     handleSubmit,
-    formState: {},
-    setValue,
-  } = useForm<IFormInputs>({
-    reValidateMode: 'onSubmit',
-    shouldFocusError: false,
-    resolver: yupResolver(schema),
-  });
+    register,
+    formState: { errors },
+  } = useForm<IFormInputs>();
+
+  const { AlertError } = useSnackbar();
 
   const onSubmit = (data: IFormInputs) => {
     if (!data.acceptTermAndConditions) {
-      return AlertWarning(
+      AlertError(
         'Para continuar debe aceptar Términos y Políticas de Privacidad'
       );
+      return;
     }
     handleClick();
   };
 
   return (
     <>
-      <br />
-      <TextBody textCenter>
-        ¡Hola {infoCedula?.name}!{' '}
-        <span style={{ fontWeight: '400' }}>
-          Ahora vamos a validar tu identidad mediante una verificación facial
-          para continuar con tu registro. Asegúrate de cumplir con lo siguiente:
-        </span>
-      </TextBody>
+      <Typography component="div" color="primary" textAlign="center" p={2}>
+        <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
+        <Box>
+          {' '}
+          Ahora vamos a validar tu identidad mediante una verificación facial y
+          una prueba de vida. Asegúrate de cumplir con lo siguiente:
+        </Box>
+      </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
+        <Grid container spacing={3}>
+          <Grid item xs>
             <div
               style={{
                 background: '#EFF7FF',
@@ -80,13 +79,13 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Tener disponible un teléfono móvil o computadora con{' '}
+                Utilizar un dispositivo que posea {' '}
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
-          </GridItem>
+          </Grid>
 
-          <GridItem md={12} lg={12}>
+          <Grid item xs>
             <div
               style={{
                 background: '#EFF7FF',
@@ -102,43 +101,44 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Estar de acuerdo en que hagamos capturas de{' '}
+                Permitir que tomemos capturas de {' '}
                 <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
-          </GridItem>
+          </Grid>
 
-          {/* <GridItem md={12} lg={12}>
-            <Typography
-              color="primary"
-              sx={{ fontSize: '16px', fontWeight: '400', textAlign: 'center' }}
-            >
-              Verificación con pasaporte disponible próximamente
-            </Typography>
-          </GridItem> */}
-          {/* <br /> */}
           <br />
-          <GridItem md={12} lg={12}>
-            <FormGroup sx={{ display: 'flex', alignContent: 'center' }}>
+          <Grid item xs={12}>
+            <FormGroup>
               <FormControlLabel
-                onChange={(e: any) => {
-                  setValue('acceptTermAndConditions', e.target.checked);
-                }}
-                control={<Checkbox color="error" />}
+                control={
+                  <Checkbox
+                    color="error"
+                    {...register('acceptTermAndConditions', { required: true })}
+                  />
+                }
                 label={
+                  // TODO: Add link to terms and conditions
                   <a target="_blank" rel="noreferrer" href="">
                     Aceptar Términos y Políticas de Privacidad{' '}
                     <span className="text-error">*</span>
                   </a>
                 }
               />
+              {errors.acceptTermAndConditions && (
+                <Typography color="error">
+                  Para continuar debe aceptar Términos y Políticas de Privacidad
+                </Typography>
+              )}
             </FormGroup>
-          </GridItem>
-        </GridContainer>
+          </Grid>
+        </Grid>
 
-        <GridContainer marginY>
-          <GridItem md={12} lg={12}>
-            <ButtonApp submit>INICIAR PROCESO</ButtonApp>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" fullWidth>
+              INICIAR PROCESO
+            </Button>
             {open && (
               <Step2Modal
                 open={open}
@@ -147,8 +147,8 @@ export default function Step2({ infoCedula, handleNext }: any) {
                 identity={infoCedula.id}
               />
             )}
-          </GridItem>
-        </GridContainer>
+          </Grid>
+        </Grid>
       </form>
     </>
   );
