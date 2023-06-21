@@ -22,6 +22,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { labels } from '@/constants/labels';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { TextBodyTiny } from '@/components/elements/typography';
+import Link from 'next/link';
 interface IFormInputs {
   cedula: string;
 }
@@ -127,7 +129,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
             throw new Error('Failed to fetch iam data');
           }
           const { exists } = await responseCedula.json();
-          if(exists){
+          if (exists) {
             console.log(exists)
             return AlertWarning(
               'Su Cédula ya se encuentra registrada.'
@@ -206,6 +208,22 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
             >
               CONFIRMAR
             </ButtonApp>
+          </GridItem>
+        </GridContainer>
+        
+        <br />
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+              <TextBodyTiny textCenter>
+            <Link
+              href={
+                'https://beta.auth.digital.gob.do/realms/master/account'
+              }
+              style={{textDecoration: "none"}}
+            >
+                <span className="text-secondary">¿Ya tienes una cuenta?</span> Inicia sesión aquí.
+            </Link>
+              </TextBodyTiny>
           </GridItem>
         </GridContainer>
       </form>
