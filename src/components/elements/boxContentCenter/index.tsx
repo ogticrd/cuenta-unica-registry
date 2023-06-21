@@ -5,7 +5,7 @@ export default function BoxContentCenter({ children }: any) {
     <Box
       sx={{
         width: "100%",
-        minHeight: `calc(100vh - 199px)`,
+        minHeight: `calc(100vh - 630px)`,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
