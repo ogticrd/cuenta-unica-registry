@@ -23,7 +23,7 @@ export default function Index() {
               <div style={{ flexGrow: 1, paddingTop: '8px' }}>
                 <Link
                   href={
-                    'https://beta.auth.digital.gob.do/realms/master/account'
+                    '/'
                   }
                 >
                   <Image src={Logo.src} alt="logo" width="200" height="48" />
