@@ -21,6 +21,7 @@ import { IMaskInput } from 'react-imask';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { labels } from '@/constants/labels';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 interface IFormInputs {
   cedula: string;
 }
@@ -100,10 +101,10 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   const handleSubmit = useCallback(
     async (data: IFormInputs) => {
       const cleanCedula = data?.cedula?.replace(/-/g, '');
-      if (cleanCedula?.length !== 11 || !luhnCheck(cleanCedula)) {
-        AlertError('Por favor introduzca un número de cédula válido.');
-        return;
-      }
+      // if (cleanCedula?.length !== 11 || !luhnCheck(cleanCedula)) {
+      //   AlertError('Por favor introduzca un número de cédula válido.');
+      //   return;
+      // }
       setLoading(true);
       // Generate ReCaptcha token
       const token = await executeRecaptcha('form_submit');
@@ -121,6 +122,17 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           token,
         });
         if (response.data && response.data.isHuman === true) {
+          const responseCedula = await fetch(`/api/iam/${cleanCedula}`);
+          if (responseCedula.status !== 200) {
+            throw new Error('Failed to fetch iam data');
+          }
+          const { exists } = await responseCedula.json();
+          if(exists){
+            console.log(exists)
+            return AlertWarning(
+              'Su Cédula ya se encuentra registrada.'
+            );
+          }
           const response = await fetch(`/api/citizens/${cleanCedula}`);
           if (response.status !== 200) {
             throw new Error('Failed to fetch citizen data');
@@ -137,7 +149,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
       } catch (err) {
         console.error(err);
-        AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
+        // AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
+        AlertError('No hemos podido validar su Cédula');
       } finally {
         setLoading(false);
       }
@@ -147,7 +160,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
 
   return (
     <>
-      <div>
+      {/* <div>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
@@ -155,7 +168,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <CircularProgress color="inherit" />
           <Typography variant="subtitle1">Validando cédula...</Typography>
         </Backdrop>
-      </div>
+      </div> */}
+      {loading && <LoadingBackdrop text="Validando cédula..." />}
+
       <Typography component="div" color="primary" textAlign="center" p={2}>
         <Box sx={{ fontWeight: 'bold' }}>
           Este es el primer paso para poder verificar tu identidad y crear tu
@@ -164,11 +179,12 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       </Typography>
 
       <form onSubmit={handleFormSubmit(handleSubmit)}>
-        <GridContainer spacing={2}>
+        <GridContainer>
           <GridItem lg={12} md={12}>
             <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
               <TextField
                 required
+                variant='filled'
                 value={valueCedula}
                 onChange={handleChange}
                 label="Número de Cédula"
