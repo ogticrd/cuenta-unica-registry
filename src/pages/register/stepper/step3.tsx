@@ -303,6 +303,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             <ButtonApp
               submit
               endIcon={<CheckCircleOutlineOutlinedIcon />}
+              disabled={isPwned}
             >
               CREAR CUENTA ÚNICA
             </ButtonApp>
