@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { CitizensBasicInformationResponse } from '@/pages/api/types';
 import axios from 'axios';
 import { useSnackbar } from '@/components/elements/alert';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import {
   Box,
   Button,
@@ -14,12 +15,53 @@ import {
   CircularProgress,
   Tooltip,
 } from '@mui/material';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { ButtonApp } from '@/components/elements/button';
+import { IMaskInput } from 'react-imask';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { labels } from '@/constants/labels';
 interface IFormInputs {
   cedula: string;
 }
 
+const schema = yup.object({
+  cedula: yup
+    .string()
+    .trim()
+    .required(labels.form.requiredField)
+    .min(11, 'Debe contener 11 dígitos')
+    .max(11, 'Debe contener 11 dígitos')
+});
+
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+  function TextMaskCustom(props, ref: any) {
+    const { onChange, ...other } = props;
+    return (
+      <IMaskInput
+        {...other}
+        mask="000-0000000-0"
+        // definitions={{
+        //   '#': /[1-9]/,
+        // }}
+        inputRef={ref}
+        onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+        overwrite
+      />
+    );
+  },
+);
+
 export default function Step1({ setInfoCedula, handleNext }: any) {
+
   const [loading, setLoading] = useState(false);
+
+  const [valueCedula, setValueCedula] = useState("")
 
   const luhnCheck = (num: string) => {
     const arr = (num + '')
@@ -39,13 +81,21 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     register,
     handleSubmit: handleFormSubmit,
     formState: { errors },
+    setValue,
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
-    shouldFocusError: false,
+    // shouldFocusError: false,
+    resolver: yupResolver(schema),
   });
+
 
   const { executeRecaptcha } = useReCaptcha();
   const { AlertError, AlertWarning } = useSnackbar();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('cedula', event.target.value.replace(/-/g, ''))
+    setValueCedula(event.target.value)
+  }
 
   const handleSubmit = useCallback(
     async (data: IFormInputs) => {
@@ -114,27 +164,34 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       </Typography>
 
       <form onSubmit={handleFormSubmit(handleSubmit)}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <GridContainer spacing={2}>
+          <GridItem lg={12} md={12}>
             <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
               <TextField
-                {...register('cedula', { required: true })}
                 required
+                value={valueCedula}
+                onChange={handleChange}
                 label="Número de Cédula"
                 placeholder="***-**00000-0"
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
-                helperText={errors.cedula && 'Debe contener 11 dígitos'}
+                helperText={errors?.cedula?.message}
+                InputProps={{
+                  inputComponent: TextMaskCustom as any,
+                }}
                 fullWidth
               />
             </Tooltip>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" fullWidth>
+          </GridItem>
+          <GridItem lg={12} md={12}>
+            <ButtonApp
+              submit
+              endIcon={<ArrowCircleRightOutlinedIcon />}
+            >
               CONFIRMAR
-            </Button>
-          </Grid>
-        </Grid>
+            </ButtonApp>
+          </GridItem>
+        </GridContainer>
       </form>
     </>
   );

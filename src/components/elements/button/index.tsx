@@ -26,6 +26,7 @@ interface IButtonApp {
   notFullWidth?: boolean;
   children: React.ReactNode;
   startIcon?: any;
+  endIcon?: any;
   size?: "small" | "medium" | "large" | undefined;
   color?:
     | "inherit"
@@ -48,6 +49,7 @@ export const ButtonApp = ({
   children,
   size = "medium",
   startIcon = null,
+  endIcon = null,
   color,
 }: IButtonApp) => {
   return (
@@ -67,6 +69,7 @@ export const ButtonApp = ({
         height: "60px",
       }}
       startIcon={startIcon}
+      endIcon={endIcon}
     >
       {children}
     </Button>
