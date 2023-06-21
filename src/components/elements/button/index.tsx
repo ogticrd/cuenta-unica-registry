@@ -61,13 +61,13 @@ export const ButtonApp = ({
       onClick={onClick}
       color={color ? color : "primary"}
       fullWidth={notFullWidth ? false : true}
-      sx={{
-        paddingX: `${notFullWidth ? "35px" : "auto"}`,
-        fontWeight: `${outlined ? "bold" : "normal"}`,
-        borderRadius: "50px",
-        padding: "10px 0px",
-        height: "60px",
-      }}
+      // sx={{
+      //   paddingX: `${notFullWidth ? "35px" : "auto"}`,
+      //   fontWeight: `${outlined ? "bold" : "normal"}`,
+      //   borderRadius: "50px",
+      //   padding: "10px 0px",
+      //   height: "60px",
+      // }}
       startIcon={startIcon}
       endIcon={endIcon}
     >
