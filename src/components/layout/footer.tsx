@@ -101,11 +101,12 @@ export default function Index() {
                   Desarrollado por
                 </Typography>
                 <Image
-                  style={{ marginBottom: "-10px", marginLeft: "5px" }}
+                  style={{ marginBottom: "-10px", marginLeft: "5px", cursor: "pointer" }}
                   src={logoOGTIC.src}
                   alt="logo ogtic"
                   width="55"
                   height="29"
+                  onClick={() => window.open("https://ogtic.gob.do/")}
                 />
               </div>
             </GridItem>
