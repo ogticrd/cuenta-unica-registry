@@ -166,12 +166,13 @@ export default function Step3({ handleNext, infoCedula }: any) {
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <GridContainer spacing={2}>
+        <GridContainer>
           <GridItem lg={12} md={12}>
             <Tooltip title="Correo personal">
               <TextField
                 {...register('email')}
                 required
+                variant='filled'
                 type="email"
                 label="Correo Electrónico"
                 helperText={errors.email?.message}
@@ -193,6 +194,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             <TextField
               {...register('emailConfirm')}
               required
+              variant='filled'
               type="email"
               label="Confirma tu Correo Electrónico"
               helperText={errors.emailConfirm?.message}
@@ -227,6 +229,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             >
               <TextField
                 required
+                variant='filled'
                 type={showPassword ? 'text' : 'password'}
                 label="Contraseña"
                 placeholder="*********"
@@ -256,6 +259,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           <GridItem lg={12} md={12}>
             <TextField
               required
+              variant='filled'
               type={showPasswordConfirm ? 'text' : 'password'}
               label="Confirma tu Contraseña"
               placeholder="*********"

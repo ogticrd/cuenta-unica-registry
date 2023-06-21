@@ -64,7 +64,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <GridContainer spacing={3}>
+        <GridContainer>
           <GridItem lg={6} md={6}>
             <div
               style={{

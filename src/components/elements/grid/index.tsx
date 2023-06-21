@@ -18,7 +18,7 @@ export const GridContainer = ({
 }: IPropsContainer) => (
   <Grid
     container
-    spacing={spacing ? spacing : 1}
+    spacing={spacing ? spacing : 2}
     direction="row"
     justifyContent={justifyCenter ? "center" : "flex-start"}
     marginY={marginY ? 1 : "none"}
