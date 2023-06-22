@@ -56,7 +56,8 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     if (error) {
       AlertError('No se ha podido validar correctamente la identidad.');
     }
-  }, [error, AlertError]);
+  // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
+  }, [error]);
 
   const theme: Theme = {
     name: 'Face Liveness Theme',
