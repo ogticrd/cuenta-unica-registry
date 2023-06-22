@@ -175,7 +175,6 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
             <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
               <TextField
                 required
-                variant="filled"
                 value={valueCedula}
                 onChange={handleChange}
                 label="Número de Cédula"
