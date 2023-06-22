@@ -128,10 +128,6 @@ body {
 
 /* MUI global */
 
-.MuiStepConnector-line {
-  display: none !important;
-}
-
 .MuiStepLabel-label {
   color: #03397775;
 }
