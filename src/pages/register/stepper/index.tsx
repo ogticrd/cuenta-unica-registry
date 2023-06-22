@@ -13,8 +13,8 @@ import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
 
-const steps = ['PASO 1', 'PASO 2', 'PASO 3'];
-const optionalLabels = ['Identifícate', 'Verifícate', 'Regístrate'];
+const steps = ['Identificación', 'Verificación', 'Registro'];
+const optionalLabels = ['NDI del usuario', 'Prueba de vida', 'Cuenta de usuario'];
 
 export async function getServerSideProps() {
   await axios.get(`/api/auth`);
@@ -70,15 +70,12 @@ export default function StepperRegister() {
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper
-        sx={{ paddingBottom: '20px', borderBottom: '2px solid #E2E2E2' }}
+        sx={{ paddingBottom: '20px' }}
         activeStep={activeStep}
       >
         {steps.map((label, index) => (
           <Step
             key={label}
-            sx={{
-              borderLeft: `${index === 0 ? '0px' : '1px'} solid #B7D9F8`,
-            }}
           >
             <StepLabel
               optional={
