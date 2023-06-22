@@ -23,8 +23,8 @@ export default async function handler(
     `/${cedula}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
   );
 
-  const { names, firstSurname, id } = citizen.payload;
-  const name = `${names.split(' ')[0]} ${firstSurname}`;
+  const { names, id } = citizen.payload;
+  const name = names.split(' ')[0];
 
   res.status(200).json({ name, id });
 }
