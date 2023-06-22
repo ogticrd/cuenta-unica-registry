@@ -3,51 +3,64 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { Typography } from '@mui/material';
 
+// TODO: Refactor this with a simpler approach
 export default function PasswordLevel({ passwordLevel }: any) {
   return passwordLevel.length > 0 ? (
-    <div style={{marginTop: "10px"}}>
+    <div style={{ marginTop: '10px' }}>
       <div>
         <CheckCircleIcon
-          color={passwordLevel.contains?.includes("lowercase") ? "success" : "disabled"}
-          style={{ fontSize: "20px", marginBottom: "-4px", marginRight: "3px" }}
+          color={
+            passwordLevel.contains?.includes('lowercase')
+              ? 'success'
+              : 'disabled'
+          }
+          style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
         />
-        <Typography variant='caption' color="gray">
+        <Typography variant="caption" color="gray">
           Una letra minúscula
         </Typography>
       </div>
       <div>
         <CheckCircleIcon
-          color={passwordLevel.contains?.includes("uppercase") ? "success" : "disabled"}
-          style={{ fontSize: "20px", marginBottom: "-4px", marginRight: "3px" }}
+          color={
+            passwordLevel.contains?.includes('uppercase')
+              ? 'success'
+              : 'disabled'
+          }
+          style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
         />
-        <Typography variant='caption' color="gray">
+        <Typography variant="caption" color="gray">
           Una letra mayúscula
         </Typography>
       </div>
       <div>
         <CheckCircleIcon
-          color={passwordLevel.contains?.includes("number") ? "success" : "disabled"}
-          style={{ fontSize: "20px", marginBottom: "-4px", marginRight: "3px" }}
+          color={
+            passwordLevel.contains?.includes('number') ? 'success' : 'disabled'
+          }
+          style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
         />
-        <Typography variant='caption' color="gray">
+        <Typography variant="caption" color="gray">
           Un número
         </Typography>
       </div>
       <div>
         <CheckCircleIcon
-          color={passwordLevel.contains?.includes("symbol") ? "success" : "disabled"}
-          style={{ fontSize: "20px", marginBottom: "-4px", marginRight: "3px" }}
+          color={
+            passwordLevel.contains?.includes('symbol') ? 'success' : 'disabled'
+          }
+          style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
         />
-        <Typography variant='caption' color="gray">
+        <Typography variant="caption" color="gray">
           Un carácter especial
         </Typography>
       </div>
       <div>
         <CheckCircleIcon
-          color={passwordLevel.length >= 10 ? "success" : "disabled"}
-          style={{ fontSize: "20px", marginBottom: "-4px", marginRight: "3px" }}
+          color={passwordLevel.length >= 10 ? 'success' : 'disabled'}
+          style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
         />
-        <Typography variant='caption' color="gray">
+        <Typography variant="caption" color="gray">
           10 caracteres como mínimo
         </Typography>
       </div>
@@ -58,7 +71,7 @@ export default function PasswordLevel({ passwordLevel }: any) {
           display: 'flex',
           gap: '2%',
           marginBottom: '12px',
-          marginTop: "10px"
+          marginTop: '10px',
         }}
       >
         {passwordLevel.id >= 0 && (

@@ -36,7 +36,7 @@ export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
     <SnackbarContext.Provider value={{ openSnackbar }}>
       <Snackbar
         open={snackbarConfig.open}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={closeSnackbar}
       >
         <MuiAlert

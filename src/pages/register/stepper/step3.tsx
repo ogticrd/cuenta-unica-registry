@@ -12,14 +12,9 @@ import { useSnackbar } from '@/components/elements/alert';
 import { labels } from '@/constants/labels';
 import {
   Alert,
-  Backdrop,
   Box,
-  Button,
-  CircularProgress,
-  Grid,
   IconButton,
   InputAdornment,
-  Snackbar,
   TextField,
   Tooltip,
   Typography,
@@ -172,11 +167,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
               <TextField
                 {...register('email')}
                 required
-                variant='filled'
+                variant="filled"
                 type="email"
                 label="Correo Electrónico"
                 helperText={errors.email?.message}
-                autoComplete='off'
+                autoComplete="off"
                 fullWidth
                 onPaste={(e) => {
                   e.preventDefault();
@@ -194,11 +189,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
             <TextField
               {...register('emailConfirm')}
               required
-              variant='filled'
+              variant="filled"
               type="email"
               label="Confirma tu Correo Electrónico"
               helperText={errors.emailConfirm?.message}
-              autoComplete='off'
+              autoComplete="off"
               fullWidth
               onPaste={(e) => {
                 e.preventDefault();
@@ -229,7 +224,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             >
               <TextField
                 required
-                variant='filled'
+                variant="filled"
                 type={showPassword ? 'text' : 'password'}
                 label="Contraseña"
                 placeholder="*********"
@@ -259,7 +254,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           <GridItem lg={12} md={12}>
             <TextField
               required
-              variant='filled'
+              variant="filled"
               type={showPasswordConfirm ? 'text' : 'password'}
               label="Confirma tu Contraseña"
               placeholder="*********"
@@ -272,7 +267,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                      onClick={() =>
+                        setShowPasswordConfirm(!showPasswordConfirm)
+                      }
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
@@ -284,6 +281,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             />
           </GridItem>
 
+          {/* TODO: validate why not use snackbar */}
           {/* {isPwned && (
             <GridItem lg={12} md={12}>
               <Snackbar>
@@ -298,7 +296,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             <GridItem lg={12} md={12}>
               <Alert severity="warning">
                 Esta contraseña ha estado en filtraciones de datos, por eso no
-                  se considera segura. Te recomendamos eligir otra contraseña.
+                se considera segura. Te recomendamos eligir otra contraseña.
               </Alert>
             </GridItem>
           )}

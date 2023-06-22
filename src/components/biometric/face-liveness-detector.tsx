@@ -8,8 +8,7 @@ import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
-
-  const { tokens } = useTheme();
+  // const { tokens } = useTheme();
 
   const next = handleNextForm;
   const id = cedula;
@@ -57,7 +56,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     if (error) {
       AlertError('No se ha podido validar correctamente la identidad.');
     }
-  }, [error]);
+  }, [error, AlertError]);
 
   const theme: Theme = {
     name: 'Face Liveness Theme',
@@ -66,23 +65,23 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
         background: {
           primary: {
             // value: tokens.colors.neutral['90'].value,
-            value: "#fff",
+            value: '#fff',
           },
           secondary: {
             // value: tokens.colors.neutral['100'].value,
-            value: "#000",
+            value: '#000',
           },
         },
         font: {
           primary: {
             // value: tokens.colors.white.value,
-            value: "#000",
+            value: '#000',
           },
         },
         brand: {
           primary: {
-            '80': "#003876",
-            '90': "#003876",
+            '80': '#003876',
+            '90': '#003876',
           },
         },
       },

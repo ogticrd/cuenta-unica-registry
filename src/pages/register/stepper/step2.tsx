@@ -81,7 +81,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Utilizar un dispositivo que posea {' '}
+                Utilizar un dispositivo que posea{' '}
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
@@ -103,7 +103,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Permitir que tomemos capturas de {' '}
+                Permitir que tomemos capturas de{' '}
                 <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
@@ -137,14 +137,9 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
         </GridContainer>
         <br />
 
-
         <GridContainer spacing={3}>
           <GridItem lg={12} md={12}>
-            <ButtonApp
-              submit
-            >
-              INICIAR PROCESO
-            </ButtonApp>
+            <ButtonApp submit>INICIAR PROCESO</ButtonApp>
             {open && (
               <Step2Modal
                 open={open}
