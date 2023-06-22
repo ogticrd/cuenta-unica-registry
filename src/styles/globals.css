@@ -137,3 +137,54 @@ body {
   z-index: 500 !important;
   padding: 450px;
 }
+
+/* Face live */
+
+.amplify-card {
+  background: transparent;
+}
+
+.amplify-alert {
+  background: #b8cef9 !important;
+}
+
+.amplify-alert__heading, .amplify-alert__body, .amplify-icon {
+  color: #003876;
+}
+
+.amplify-text {
+  color: white !important;
+}
+
+.amplify-button {
+  background: white;
+  border: 1px solid #003876;
+  color: #003876;
+}
+.amplify-button:hover {
+  background: #e3e3e3;
+  color: #003876;
+  border: 1px solid #003876;
+}
+
+[data-amplify-theme] {
+  /* --amplify-colors-background-primary: #003876; */
+  --amplify-colors-font-primary: white;
+  /* --amplify-colors-brand-primary-10: #003876; */
+  /* --amplify-colors-brand-primary-80: #003876;
+  --amplify-colors-brand-primary-90: #003876;
+  --amplify-colors-brand-primary-100: #003876; */
+}
+
+.amplify-liveness-instruction-overlay div .amplify-liveness-toast {
+  background: white;
+  color: #003876;
+}
+
+.amplify-liveness-toast__message div p {
+  color: black !important;
+}
+
+.amplify-liveness-toast--default div .amplify-liveness-toast__message {
+  color: black;
+}

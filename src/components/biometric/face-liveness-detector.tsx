@@ -1,5 +1,5 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
-import { Loader, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
+import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -8,7 +8,6 @@ import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
-  // const { tokens } = useTheme();
 
   const next = handleNextForm;
   const id = cedula;
@@ -56,43 +55,13 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     if (error) {
       AlertError('No se ha podido validar correctamente la identidad.');
     }
-  // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
+    // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
   }, [error]);
-
-  const theme: Theme = {
-    name: 'Face Liveness Theme',
-    tokens: {
-      colors: {
-        background: {
-          primary: {
-            // value: tokens.colors.neutral['90'].value,
-            value: '#fff',
-          },
-          secondary: {
-            // value: tokens.colors.neutral['100'].value,
-            value: '#000',
-          },
-        },
-        font: {
-          primary: {
-            // value: tokens.colors.white.value,
-            value: '#000',
-          },
-        },
-        brand: {
-          primary: {
-            '80': '#003876',
-            '90': '#003876',
-          },
-        },
-      },
-    },
-  };
 
   return (
     <>
       <br />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         {loading ? (
           <Loader />
         ) : (
@@ -105,6 +74,59 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               onAnalysisComplete={handleAnalysisComplete}
               disableInstructionScreen={false}
               displayText={defaultLivenessDisplayText}
+              // components={{
+              //   Header: () => {
+              //     return (
+              //       <View flex="1">
+              //         <Heading>Verificación de vida</Heading>
+              //         <Text>
+              //           Pasará por un proceso de verificación facial para demostrar que es una persona real.
+              //         </Text>
+              //       </View>
+              //     );
+              //   },
+              //   PhotosensitiveWarning: (): JSX.Element => {
+              //     return (
+              //       <Alert
+              //         variation="info"
+              //         isDismissible={false}
+              //         hasIcon={true}
+              //         heading="Advertencia de fotosensibilidad"
+              //       >
+              //         Esta verificación muestra luces de colores. Tenga cuidado si es fotosensible.
+              //       </Alert>
+              //     );
+              //   },
+              //   Instructions: (): JSX.Element => {
+              //     return (
+              //       <Card color="white">
+              //         Siga las instrucciones para completar la verificación:
+              //         <ol>
+              //           <li>
+              //             Cuando aparezca un óvalo, rellena el óvalo con tu cara en 7 segundos.
+              //           </li>
+              //           <li>
+              //             Maximiza el brillo de tu pantalla.
+              //           </li>
+              //           <li>
+              //             Asegúrese de que su cara no esté cubierta con gafas de sol o una máscara.
+              //           </li>
+              //           <li>
+              //             Muévase a un lugar bien iluminado que no esté expuesto a la luz solar directa.
+              //           </li>
+              //         </ol>
+              //       </Card>
+              //     );
+              //   },
+              //   // ErrorView: ({ children }) => {
+              //   //   return (
+              //   //     <View flex="1" backgroundColor="white">
+              //   //       <Heading color="black">Error</Heading>
+              //   //       {children}
+              //   //     </View>
+              //   //   );
+              //   // },
+              // }}
             />
           )
         )}
