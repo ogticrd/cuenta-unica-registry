@@ -205,21 +205,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <Tooltip
-              title={
-                <>
-                  <b>
-                    Al menos 8 caracteres de largo
-                    <br />
-                    Al menos 3 de los siguientes:
-                  </b>
-                  <li>Letras minúsculas (a-z)</li>
-                  <li>Letras mayúsculas (A-Z)</li>
-                  <li>Números (0-9)</li>
-                  <li>Caracteres especiales (por ejemplo, !@#$%^&*)</li>
-                </>
-              }
-            >
               <TextField
                 required
                 type={showPassword ? 'text' : 'password'}
@@ -244,7 +229,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   ),
                 }}
               />
-            </Tooltip>
             <PasswordLevel passwordLevel={passwordLevel} />
           </GridItem>
 
