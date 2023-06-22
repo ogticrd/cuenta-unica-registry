@@ -35,7 +35,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ filled, color }) => (
   />
 );
 
-const PASSWORD_LEVELS = [' Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
+const PASSWORD_LEVELS = ['Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
 const ProgressBarColors = ['#E05D56', '#E0D256', '#B4E056', '#A3E056'];
 
 interface PasswordLevelProps {
