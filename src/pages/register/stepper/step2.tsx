@@ -15,6 +15,8 @@ import {
 import Step2Modal from './step2Modal';
 
 import { useSnackbar } from '@/components/elements/alert';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { ButtonApp } from '@/components/elements/button';
 
 interface IFormInputs {
   acceptTermAndConditions: boolean;
@@ -62,8 +64,8 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid item xs>
+        <GridContainer>
+          <GridItem lg={6} md={6}>
             <div
               style={{
                 background: '#EFF7FF',
@@ -79,13 +81,13 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Utilizar un dispositivo que posea {' '}
+                Utilizar un dispositivo que posea{' '}
                 <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
               </Typography>
             </div>
-          </Grid>
+          </GridItem>
 
-          <Grid item xs>
+          <GridItem lg={6} md={6}>
             <div
               style={{
                 background: '#EFF7FF',
@@ -101,14 +103,14 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 color="info"
               />
               <Typography variant="body2" color="primary">
-                Permitir que tomemos capturas de {' '}
+                Permitir que tomemos capturas de{' '}
                 <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
               </Typography>
             </div>
-          </Grid>
+          </GridItem>
 
           <br />
-          <Grid item xs={12}>
+          <GridItem lg={12} md={12}>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -131,14 +133,13 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 </Typography>
               )}
             </FormGroup>
-          </Grid>
-        </Grid>
+          </GridItem>
+        </GridContainer>
+        <br />
 
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" fullWidth>
-              INICIAR PROCESO
-            </Button>
+        <GridContainer spacing={3}>
+          <GridItem lg={12} md={12}>
+            <ButtonApp submit>INICIAR PROCESO</ButtonApp>
             {open && (
               <Step2Modal
                 open={open}
@@ -147,8 +148,8 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 identity={infoCedula.id}
               />
             )}
-          </Grid>
-        </Grid>
+          </GridItem>
+        </GridContainer>
       </form>
     </>
   );

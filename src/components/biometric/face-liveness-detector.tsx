@@ -1,5 +1,6 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
-import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import { Loader, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
+
 import React from 'react';
 import { useState, useEffect } from 'react';
 
@@ -7,6 +8,8 @@ import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
+  // const { tokens } = useTheme();
+
   const next = handleNextForm;
   const id = cedula;
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,12 +56,43 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     if (error) {
       AlertError('No se ha podido validar correctamente la identidad.');
     }
-  }, [error, AlertError]);
+  // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
+  }, [error]);
+
+  const theme: Theme = {
+    name: 'Face Liveness Theme',
+    tokens: {
+      colors: {
+        background: {
+          primary: {
+            // value: tokens.colors.neutral['90'].value,
+            value: '#fff',
+          },
+          secondary: {
+            // value: tokens.colors.neutral['100'].value,
+            value: '#000',
+          },
+        },
+        font: {
+          primary: {
+            // value: tokens.colors.white.value,
+            value: '#000',
+          },
+        },
+        brand: {
+          primary: {
+            '80': '#003876',
+            '90': '#003876',
+          },
+        },
+      },
+    },
+  };
 
   return (
     <>
       <br />
-      <ThemeProvider>
+      <ThemeProvider theme={theme}>
         {loading ? (
           <Loader />
         ) : (

@@ -17,7 +17,7 @@ body {
 }
 
 .text-primary {
-  color: #003670;
+  color: #003876;
 }
 
 .text-success {
@@ -37,7 +37,7 @@ body {
 }
 
 .bg-primary {
-  background: #003670;
+  background: #003876;
 }
 
 .bg-success {
@@ -127,10 +127,6 @@ body {
 }
 
 /* MUI global */
-
-.MuiStepConnector-line {
-  display: none !important;
-}
 
 .MuiStepLabel-label {
   color: #03397775;

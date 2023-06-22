@@ -1,4 +1,4 @@
-import Button from "@mui/material/Button";
+import Button from '@mui/material/Button';
 
 interface IButtonTextApp {
   onClick?: any;
@@ -11,7 +11,7 @@ export const ButtonTextApp = ({ onClick, children }: IButtonTextApp) => {
       onClick={onClick}
       variant="text"
       size="small"
-      sx={{ textTransform: "inherit" }}
+      sx={{ textTransform: 'inherit' }}
     >
       {children}
     </Button>
@@ -26,28 +26,30 @@ interface IButtonApp {
   notFullWidth?: boolean;
   children: React.ReactNode;
   startIcon?: any;
-  size?: "small" | "medium" | "large" | undefined;
+  endIcon?: any;
+  size?: 'small' | 'medium' | 'large' | undefined;
   color?:
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
-  variant?: "text" | "outlined" | "contained";
+    | 'inherit'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'error'
+    | 'info'
+    | 'warning';
+  variant?: 'text' | 'outlined' | 'contained';
 }
 
 export const ButtonApp = ({
   outlined,
   disabled,
-  variant = "contained",
+  variant = 'contained',
   submit,
   onClick,
   notFullWidth,
   children,
-  size = "medium",
+  size = 'medium',
   startIcon = null,
+  endIcon = null,
   color,
 }: IButtonApp) => {
   return (
@@ -55,18 +57,12 @@ export const ButtonApp = ({
       size={size}
       variant={variant}
       disabled={disabled}
-      type={submit ? "submit" : "button"}
+      type={submit ? 'submit' : 'button'}
       onClick={onClick}
-      color={color ? color : "primary"}
+      color={color ? color : 'primary'}
       fullWidth={notFullWidth ? false : true}
-      sx={{
-        paddingX: `${notFullWidth ? "35px" : "auto"}`,
-        fontWeight: `${outlined ? "bold" : "normal"}`,
-        borderRadius: "50px",
-        padding: "10px 0px",
-        height: "60px",
-      }}
       startIcon={startIcon}
+      endIcon={endIcon}
     >
       {children}
     </Button>
