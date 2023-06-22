@@ -30,6 +30,12 @@ export type ReCaptchaResponse = {
   name: string;
 };
 
+export type VerifyIamUserNameResponse = {
+  data: {
+    exists: boolean;
+  };
+};
+
 export type VerifyIamUserResponse = {
   id: string;
   createdTimestamp: number;

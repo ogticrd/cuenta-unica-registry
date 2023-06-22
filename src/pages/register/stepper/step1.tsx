@@ -1,25 +1,62 @@
-import { useCallback, useState } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { CitizensBasicInformationResponse } from '@/pages/api/types';
 import axios from 'axios';
 import { useSnackbar } from '@/components/elements/alert';
-import {
-  Box,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-  Backdrop,
-  CircularProgress,
-  Tooltip,
-} from '@mui/material';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import { Box, TextField, Typography, Tooltip } from '@mui/material';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { ButtonApp } from '@/components/elements/button';
+import { IMaskInput } from 'react-imask';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { labels } from '@/constants/labels';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { TextBodyTiny } from '@/components/elements/typography';
+import Link from 'next/link';
 interface IFormInputs {
   cedula: string;
 }
 
+const schema = yup.object({
+  cedula: yup
+    .string()
+    .trim()
+    .required(labels.form.requiredField)
+    .min(11, 'Debe contener 11 dígitos')
+    .max(11, 'Debe contener 11 dígitos'),
+});
+
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+  function TextMaskCustom(props, ref: any) {
+    const { onChange, ...other } = props;
+    return (
+      <IMaskInput
+        {...other}
+        mask="000-0000000-0"
+        // definitions={{
+        //   '#': /[1-9]/,
+        // }}
+        inputRef={ref}
+        onAccept={(value: any) =>
+          onChange({ target: { name: props.name, value } })
+        }
+        overwrite
+      />
+    );
+  }
+);
+
 export default function Step1({ setInfoCedula, handleNext }: any) {
   const [loading, setLoading] = useState(false);
+
+  const [valueCedula, setValueCedula] = useState('');
 
   const luhnCheck = (num: string) => {
     const arr = (num + '')
@@ -28,7 +65,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       .map((x) => parseInt(x));
     const lastDigit = arr.splice(0, 1)[0];
     let sum = arr.reduce(
-      (acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((2 * val) % 9) || 9),
+      (acc, val, i) => (i % 2 !== 0 ? acc + val : acc + (val * 2 > 9 ? val * 2 - 9 : val * 2)),
       0
     );
     sum += lastDigit;
@@ -36,16 +73,22 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   };
 
   const {
-    register,
     handleSubmit: handleFormSubmit,
     formState: { errors },
+    setValue,
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
-    shouldFocusError: false,
+    // shouldFocusError: false,
+    resolver: yupResolver(schema),
   });
 
   const { executeRecaptcha } = useReCaptcha();
   const { AlertError, AlertWarning } = useSnackbar();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('cedula', event.target.value.replace(/-/g, ''));
+    setValueCedula(event.target.value);
+  };
 
   const handleSubmit = useCallback(
     async (data: IFormInputs) => {
@@ -71,6 +114,15 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           token,
         });
         if (response.data && response.data.isHuman === true) {
+          const responseCedula = await fetch(`/api/iam/${cleanCedula}`);
+          if (responseCedula.status !== 200) {
+            throw new Error('Failed to fetch iam data');
+          }
+          const { exists } = await responseCedula.json();
+          if (exists) {
+            console.log(exists);
+            return AlertWarning('Su Cédula ya se encuentra registrada.');
+          }
           const response = await fetch(`/api/citizens/${cleanCedula}`);
           if (response.status !== 200) {
             throw new Error('Failed to fetch citizen data');
@@ -87,7 +139,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
       } catch (err) {
         console.error(err);
-        AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
+        // AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
+        AlertError('No hemos podido validar su Cédula');
       } finally {
         setLoading(false);
       }
@@ -96,8 +149,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   );
 
   return (
+    // TODO: Validate this loading approach with Backdrop
     <>
-      <div>
+      {/* <div>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
@@ -105,7 +159,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <CircularProgress color="inherit" />
           <Typography variant="subtitle1">Validando cédula...</Typography>
         </Backdrop>
-      </div>
+      </div> */}
+      {loading && <LoadingBackdrop text="Validando cédula..." />}
+
       <Typography component="div" color="primary" textAlign="center" p={2}>
         <Box sx={{ fontWeight: 'bold' }}>
           Este es el primer paso para poder verificar tu identidad y crear tu
@@ -114,27 +170,46 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       </Typography>
 
       <form onSubmit={handleFormSubmit(handleSubmit)}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <GridContainer>
+          <GridItem lg={12} md={12}>
             <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
               <TextField
-                {...register('cedula', { required: true })}
                 required
+                value={valueCedula}
+                onChange={handleChange}
                 label="Número de Cédula"
                 placeholder="***-**00000-0"
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
-                helperText={errors.cedula && 'Debe contener 11 dígitos'}
+                helperText={errors?.cedula?.message}
+                InputProps={{
+                  inputComponent: TextMaskCustom as any,
+                }}
                 fullWidth
               />
             </Tooltip>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" fullWidth>
+          </GridItem>
+          <GridItem lg={12} md={12}>
+            <ButtonApp submit endIcon={<ArrowCircleRightOutlinedIcon />}>
               CONFIRMAR
-            </Button>
-          </Grid>
-        </Grid>
+            </ButtonApp>
+          </GridItem>
+        </GridContainer>
+
+        <br />
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+            <TextBodyTiny textCenter>
+              <Link
+                href={'https://beta.auth.digital.gob.do/realms/master/account'}
+                style={{ textDecoration: 'none' }}
+              >
+                <span className="text-secondary">¿Ya tienes una cuenta?</span>{' '}
+                Inicia sesión aquí.
+              </Link>
+            </TextBodyTiny>
+          </GridItem>
+        </GridContainer>
       </form>
     </>
   );

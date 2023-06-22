@@ -1,5 +1,5 @@
-import Grid from "@mui/material/Grid";
-import React from "react";
+import Grid from '@mui/material/Grid';
+import React from 'react';
 
 interface IPropsContainer {
   children: React.ReactNode;
@@ -18,10 +18,10 @@ export const GridContainer = ({
 }: IPropsContainer) => (
   <Grid
     container
-    spacing={spacing ? spacing : 1}
+    spacing={spacing ? spacing : 2}
     direction="row"
-    justifyContent={justifyCenter ? "center" : "flex-start"}
-    marginY={marginY ? 1 : "none"}
+    justifyContent={justifyCenter ? 'center' : 'flex-start'}
+    marginY={marginY ? 1 : 'none'}
     flexDirection={flexDirection ? flexDirection : null}
   >
     {children}
