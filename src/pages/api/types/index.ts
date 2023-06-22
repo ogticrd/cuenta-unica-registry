@@ -33,10 +33,10 @@ export type ReCaptchaResponse = {
 export type VerifyIamUserNameResponse = {
   data: {
     exists: boolean;
-  }
-}
+  };
+};
 
-  export type VerifyIamUserResponse = {
+export type VerifyIamUserResponse = {
   id: string;
   createdTimestamp: number;
   username: string;

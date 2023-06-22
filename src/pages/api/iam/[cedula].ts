@@ -7,7 +7,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ exists: boolean } | void>
 ): Promise<void> {
-
   const { token } = req.cookies;
 
   if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
