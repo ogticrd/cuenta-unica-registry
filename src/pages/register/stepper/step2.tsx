@@ -131,7 +131,6 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 <Alert severity="warning">
                   Para continuar debe aceptar Términos y Políticas de Privacidad
                 </Alert>
-
               )}
             </FormGroup>
           </GridItem>

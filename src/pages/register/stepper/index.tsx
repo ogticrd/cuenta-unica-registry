@@ -16,7 +16,7 @@ import Step2 from './step2';
 import Step3 from './step3';
 
 const steps = ['Identificación', 'Verificación', 'Registro'];
-const optionalLabels = ['NDI del usuario', 'Prueba de vida', 'Cuenta de usuario'];
+const optionalLabels = ['DNI del usuario', 'Prueba de vida', 'Cuenta de usuario'];
 
 export async function getServerSideProps() {
   await axios.get(`/api/auth`);
