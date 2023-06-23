@@ -5,11 +5,9 @@ import { useCallback, useState } from 'react';
 
 import {
   Box,
-  Button,
   FormControlLabel,
   FormGroup,
   Checkbox,
-  Grid,
   Typography,
 } from '@mui/material';
 import Step2Modal from './step2Modal';
