@@ -154,7 +154,7 @@ body {
 .amplify-alert__heading,
 .amplify-alert__body,
 .amplify-icon {
-  color: #003876;
+  color: var(--primary-color);
 }
 
 .amplify-text {
@@ -164,27 +164,27 @@ body {
 .amplify-button {
   background: white;
   border: 1px solid #003876;
-  color: #003876;
+  color: var(--primary-color);
 }
 
 .amplify-button:hover {
   background: #e3e3e3;
-  color: #003876;
+  color: var(--primary-color);
   border: 1px solid #003876;
 }
 
 [data-amplify-theme] {
-  /* --amplify-colors-background-primary: #003876; */
+  /* --amplify-colors-background-primary: var(--primary-color); */
   --amplify-colors-font-primary: white;
-  /* --amplify-colors-brand-primary-10: #003876; */
-  /* --amplify-colors-brand-primary-80: #003876;
-  --amplify-colors-brand-primary-90: #003876;
-  --amplify-colors-brand-primary-100: #003876; */
+  /* --amplify-colors-brand-primary-10: var(--primary-color); */
+  /* --amplify-colors-brand-primary-80: var(--primary-color);
+  --amplify-colors-brand-primary-90: var(--primary-color);
+  --amplify-colors-brand-primary-100: var(--primary-color); */
 }
 
 .amplify-liveness-instruction-overlay div .amplify-liveness-toast {
   background: white;
-  color: #003876;
+  color: var(--primary-color);
 }
 
 .amplify-liveness-toast__message div p {
