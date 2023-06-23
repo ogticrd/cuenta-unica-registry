@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { LivenessQuickStartReact } from '@/components/biometric/face-liveness-detector';
 import { ButtonApp } from '@/components/elements/button';
 import Logo from '../../../../public/assets/logo.png';
+import { theme } from '@/themes';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -33,6 +34,11 @@ export default function Step2Modal({
         open={true}
         onClose={handleClick}
         TransitionComponent={Transition}
+        PaperProps={{
+          style: {
+            backgroundColor: theme.palette.primary.main,
+          },
+        }}
       >
         <AppBar elevation={0} sx={{ position: 'absolute' }}>
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
@@ -54,7 +60,7 @@ export default function Step2Modal({
         </AppBar>
         <div
           className="bg-primary"
-          style={{ minHeight: '100vh', paddingTop: '100px' }}
+          style={{ paddingTop: '100px' }}
         >
           <div
             style={{
