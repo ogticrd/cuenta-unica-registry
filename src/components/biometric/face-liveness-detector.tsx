@@ -73,59 +73,6 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               onAnalysisComplete={handleAnalysisComplete}
               disableInstructionScreen={false}
               displayText={defaultLivenessDisplayText}
-              // components={{
-              //   Header: () => {
-              //     return (
-              //       <View flex="1">
-              //         <Heading>Verificación de vida</Heading>
-              //         <Text>
-              //           Pasará por un proceso de verificación facial para demostrar que es una persona real.
-              //         </Text>
-              //       </View>
-              //     );
-              //   },
-              //   PhotosensitiveWarning: (): JSX.Element => {
-              //     return (
-              //       <Alert
-              //         variation="info"
-              //         isDismissible={false}
-              //         hasIcon={true}
-              //         heading="Advertencia de fotosensibilidad"
-              //       >
-              //         Esta verificación muestra luces de colores. Tenga cuidado si es fotosensible.
-              //       </Alert>
-              //     );
-              //   },
-              //   Instructions: (): JSX.Element => {
-              //     return (
-              //       <Card color="white">
-              //         Siga las instrucciones para completar la verificación:
-              //         <ol>
-              //           <li>
-              //             Cuando aparezca un óvalo, rellena el óvalo con tu cara en 7 segundos.
-              //           </li>
-              //           <li>
-              //             Maximiza el brillo de tu pantalla.
-              //           </li>
-              //           <li>
-              //             Asegúrese de que su cara no esté cubierta con gafas de sol o una máscara.
-              //           </li>
-              //           <li>
-              //             Muévase a un lugar bien iluminado que no esté expuesto a la luz solar directa.
-              //           </li>
-              //         </ol>
-              //       </Card>
-              //     );
-              //   },
-              //   // ErrorView: ({ children }) => {
-              //   //   return (
-              //   //     <View flex="1" backgroundColor="white">
-              //   //       <Heading color="black">Error</Heading>
-              //   //       {children}
-              //   //     </View>
-              //   //   );
-              //   // },
-              // }}
             />
           )
         )}
