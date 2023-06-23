@@ -4,6 +4,8 @@ import Stepper from '@mui/material/Stepper';
 import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 import axios from 'axios';
 
@@ -26,6 +28,9 @@ export async function getServerSideProps() {
 
 export default function StepperRegister() {
   const router = useRouter();
+
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -70,6 +75,7 @@ export default function StepperRegister() {
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper
+        alternativeLabel={!matches}
         sx={{ paddingBottom: '20px' }}
         activeStep={activeStep}
       >
