@@ -183,6 +183,10 @@ body {
   --amplify-colors-brand-primary-100: var(--primary-color); */
 }
 
+.amplify-flex.amplify-liveness-figures {
+  margin: 0 auto;
+}
+
 .amplify-liveness-instruction-overlay div .amplify-liveness-toast {
   background: white;
   color: var(--primary-color);
