@@ -59,7 +59,7 @@ export default function Step2Modal({
           <div
             style={{
               width: '100%',
-              maxWidth: '600px',
+              maxWidth: '700px',
               margin: 'auto',
               padding: '0 10px',
             }}
