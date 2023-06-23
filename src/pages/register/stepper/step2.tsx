@@ -9,6 +9,7 @@ import {
   FormGroup,
   Checkbox,
   Typography,
+  Alert,
 } from '@mui/material';
 import Step2Modal from './step2Modal';
 
@@ -111,6 +112,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
           <GridItem lg={12} md={12}>
             <FormGroup>
               <FormControlLabel
+                style={{display: "flex", justifyContent: "center"}}
                 control={
                   <Checkbox
                     color="error"
@@ -126,9 +128,10 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 }
               />
               {errors.acceptTermAndConditions && (
-                <Typography color="error">
+                <Alert severity="warning">
                   Para continuar debe aceptar Términos y Políticas de Privacidad
-                </Typography>
+                </Alert>
+
               )}
             </FormGroup>
           </GridItem>
