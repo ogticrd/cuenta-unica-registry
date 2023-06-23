@@ -40,7 +40,6 @@ interface IButtonApp {
 }
 
 export const ButtonApp = ({
-  outlined,
   disabled,
   variant = 'contained',
   submit,
