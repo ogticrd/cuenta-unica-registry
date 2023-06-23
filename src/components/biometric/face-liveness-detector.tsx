@@ -8,7 +8,6 @@ import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
-
   const next = handleNextForm;
   const id = cedula;
   const [loading, setLoading] = useState<boolean>(true);

@@ -1,61 +1,64 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap");
+/* Variables */
+:root {
+  --primary-color: #003876;
+  --success-color: #2ecc71;
+  --secondary-color: #0087ff;
+  --error-color: #ee2a24;
+  --info-color: #23c3df;
+}
 
+/* Global styles */
 body {
-  font-family: Poppins, sans-serif;
-  background-image: url("../../public/assets/forma.png") !important;
+  font-family: 'Poppins', sans-serif;
+  background-image: url('../../public/assets/forma.png');
   background-repeat: no-repeat;
   background-position: right;
   background-size: 300px;
 }
 
-.swal2-container {
-  z-index: 1600 !important;
-}
-
-.text-bold {
-  font-weight: bold;
-}
-
+/* Text utility classes */
 .text-primary {
-  color: #003876;
+  color: var(--primary-color);
 }
 
 .text-success {
-  color: #2ecc71;
+  color: var(--success-color);
 }
 
 .text-secondary {
-  color: #0087ff;
+  color: var(--secondary-color);
 }
 
 .text-error {
-  color: #ee2a24;
+  color: var(--error-color);
 }
 
 .text-info {
-  color: #23c3df;
+  color: var(--info-color);
 }
 
+/* Background utility classes */
 .bg-primary {
-  background: #003876;
+  background: var(--primary-color);
 }
 
 .bg-success {
-  background: #2ecc71;
+  background: var(--success-color);
 }
 
 .bg-secondary {
-  background: #0087ff;
+  background: var(--secondary-color);
 }
 
 .bg-error {
-  background: #ee2a24;
+  background: var(--error-color);
 }
 
 .bg-info {
-  background: #23c3df;
+  background: var(--info-color);
 }
 
+/* Padding utility classes */
 .p-1 {
   padding: 5px;
 }
@@ -148,7 +151,9 @@ body {
   background: #b8cef9 !important;
 }
 
-.amplify-alert__heading, .amplify-alert__body, .amplify-icon {
+.amplify-alert__heading,
+.amplify-alert__body,
+.amplify-icon {
   color: #003876;
 }
 
@@ -161,6 +166,7 @@ body {
   border: 1px solid #003876;
   color: #003876;
 }
+
 .amplify-button:hover {
   background: #e3e3e3;
   color: #003876;
