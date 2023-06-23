@@ -158,7 +158,8 @@ body {
 }
 
 .amplify-text {
-  color: white !important;
+  /* TODO: this is to fix regresive count, but this is not the right approach*/
+  color: rgb(211, 211, 211) !important;
 }
 
 .amplify-button {
