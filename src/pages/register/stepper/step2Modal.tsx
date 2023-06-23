@@ -58,10 +58,7 @@ export default function Step2Modal({
             </Toolbar>
           </div>
         </AppBar>
-        <div
-          className="bg-primary"
-          style={{ paddingTop: '100px' }}
-        >
+        <div className="bg-primary" style={{ paddingTop: '100px' }}>
           <div
             style={{
               width: '100%',

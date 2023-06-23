@@ -112,7 +112,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
           <GridItem lg={12} md={12}>
             <FormGroup>
               <FormControlLabel
-                style={{display: "flex", justifyContent: "center"}}
+                style={{ display: 'flex', justifyContent: 'center' }}
                 control={
                   <Checkbox
                     color="error"
