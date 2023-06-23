@@ -4,6 +4,8 @@ import Stepper from '@mui/material/Stepper';
 import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 import axios from 'axios';
 
@@ -14,7 +16,11 @@ import Step2 from './step2';
 import Step3 from './step3';
 
 const steps = ['Identificación', 'Verificación', 'Registro'];
-const optionalLabels = ['NDI del usuario', 'Prueba de vida', 'Cuenta de usuario'];
+const optionalLabels = [
+  'ID del usuario',
+  'Prueba de vida',
+  'Cuenta de usuario',
+];
 
 export async function getServerSideProps() {
   await axios.get(`/api/auth`);
@@ -26,6 +32,9 @@ export async function getServerSideProps() {
 
 export default function StepperRegister() {
   const router = useRouter();
+
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -70,13 +79,12 @@ export default function StepperRegister() {
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper
+        alternativeLabel={!matches}
         sx={{ paddingBottom: '20px' }}
         activeStep={activeStep}
       >
         {steps.map((label, index) => (
-          <Step
-            key={label}
-          >
+          <Step key={label}>
             <StepLabel
               optional={
                 <Typography variant="caption">
