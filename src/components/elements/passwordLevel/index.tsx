@@ -22,7 +22,7 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
   </div>
 );
 
-const PASSWORD_LEVELS = ['Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
+const PASSWORD_LEVELS = [' Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
 interface PasswordLevelProps {
   passwordLevel: {
     contains: string[];
