@@ -16,7 +16,7 @@ export default function Index({ children }: any) {
       <NavBar />
       <div style={{ padding: '50px 0px' }}>
         {children}
-          <Fab size={matches ? 'large' : 'small'} variant={matches ? 'extended' : 'circular'} sx={{ marginTop: '-140px', marginRight: '10px' , float: 'right', background: 'white', textTransform: 'none', fontWeight: 'bold', color: theme.palette.primary.main }}>
+          <Fab onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSexFmkoGsVbyRS90B1IwRoAjYg6R6mX8IAJiT1BExN9wT7yjA/viewform?usp=pp_url")} size={matches ? 'large' : 'small'} variant={matches ? 'extended' : 'circular'} sx={{ marginTop: '-140px', marginRight: '10px' , float: 'right', background: 'white', textTransform: 'none', fontWeight: 'bold', color: theme.palette.primary.main }}>
             <LiveHelpOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color='info' />
             {matches && 'Reportar'}
           </Fab>
