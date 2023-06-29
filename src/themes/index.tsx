@@ -20,7 +20,7 @@ export const theme = createTheme({
   typography: {
     fontFamily: ["Poppins", "sans-serif"].join(","),
   },
-
+  
   components: {
     MuiInputLabel: {
       defaultProps: {
@@ -56,6 +56,15 @@ export const theme = createTheme({
           },
         }
       }
+    },
+    MuiStepIcon: {
+      styleOverrides: {
+        root: {
+          '&.Mui-active': {
+            color: "#0087FF",
+          },
+        },
+      },
     }
   },
 });
