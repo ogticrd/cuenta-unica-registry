@@ -1,4 +1,3 @@
-import Container from '@mui/material/Container';
 import { Fab } from '@mui/material';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -16,10 +15,27 @@ export default function Index({ children }: any) {
       <NavBar />
       <div style={{ padding: '50px 0px' }}>
         {children}
-          <Fab onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSexFmkoGsVbyRS90B1IwRoAjYg6R6mX8IAJiT1BExN9wT7yjA/viewform?usp=pp_url")} size={matches ? 'large' : 'small'} variant={matches ? 'extended' : 'circular'} sx={{ marginTop: '-140px', marginRight: '10px' , float: 'right', background: 'white', textTransform: 'none', fontWeight: 'bold', color: theme.palette.primary.main }}>
-            <LiveHelpOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color='info' />
-            {matches && 'Reportar'}
-          </Fab>
+        <Fab
+          onClick={() =>
+            window.open(
+              'https://docs.google.com/forms/d/e/1FAIpQLSexFmkoGsVbyRS90B1IwRoAjYg6R6mX8IAJiT1BExN9wT7yjA/viewform?usp=pp_url'
+            )
+          }
+          size={matches ? 'large' : 'small'}
+          variant={matches ? 'extended' : 'circular'}
+          sx={{
+            position: 'fixed',
+            top: matches ? '40vh' : '80vh',
+            right: matches ? '40px' : '5px',
+            background: 'white',
+            textTransform: 'none',
+            fontWeight: 'bold',
+            color: theme.palette.primary.main,
+          }}
+        >
+          <LiveHelpOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color="info" />
+          {matches && 'Reportar'}
+        </Fab>
       </div>
       <Footer />
     </>
