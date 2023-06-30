@@ -121,7 +121,11 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 }
                 label={
                   // TODO: Add link to terms and conditions
-                  <a target="_blank" rel="noreferrer" href="">
+                  <a 
+                    // target="_blank" 
+                    // rel="noreferrer" 
+                    href="#"
+                  >
                     Aceptar Términos y Políticas de Privacidad{' '}
                     <span className="text-error">*</span>
                   </a>
