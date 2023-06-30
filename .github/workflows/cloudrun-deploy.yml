@@ -76,6 +76,7 @@ jobs:
             NEXT_PUBLIC_CRYPTO_KEY=${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }},
             RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
+            NEXT_PUBLIC_GOOGLE_ANALYTICS=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }},
 
       - name: Allow unauthenticated calls to the service
         run: |
