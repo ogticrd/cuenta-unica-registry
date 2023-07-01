@@ -9,12 +9,12 @@ export default async function handler(
 ): Promise<any> {
   const { token } = req.cookies;
 
-  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
+  if (token !== process.env.SITE_COOKIE_KEY) {
     return res.status(401).send(null);
   }
 
   const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_PHOTO_API,
+    baseURL: process.env.JCE_PHOTO_API,
   });
 
   const client = await getRekognitionClient(req);
@@ -44,7 +44,7 @@ export default async function handler(
     if (isLive && response.ReferenceImage && response.ReferenceImage.Bytes) {
       const { data } = await http.get(`/${cedula}/photo`, {
         params: {
-          'api-key': process.env.NEXT_PUBLIC_PHOTO_API_KEY,
+          'api-key': process.env.JCE_PHOTO_API_KEY,
         },
         responseType: 'arraybuffer',
       });
