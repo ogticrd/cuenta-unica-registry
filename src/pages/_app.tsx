@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
   // Google Tag Manager
   useEffect(() => {
     TagManager.initialize({
-      gtmId: `'${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}'`,
+      gtmId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS as string,
     });
   }, []);
   return (
