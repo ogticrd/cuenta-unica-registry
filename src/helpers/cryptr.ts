@@ -1,6 +1,6 @@
 import Cryptr from 'cryptr';
 
-const CRYPTO_KEY = process.env.ENCRYPTION_KEY;
+const CRYPTO_KEY = process.env.ENCRYPTION_KEY || 'default-secret-key';
 
 const cryptr = new Cryptr(CRYPTO_KEY as string, {
   pbkdf2Iterations: 10000,
