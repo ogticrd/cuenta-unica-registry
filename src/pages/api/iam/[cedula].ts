@@ -9,12 +9,12 @@ export default async function handler(
 ): Promise<void> {
   const { token } = req.cookies;
 
-  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
+  if (token !== process.env.SITE_COOKIE_KEY) {
     return res.status(401).send();
   }
 
   const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_IAM_API,
+    baseURL: process.env.IAM_API,
   });
 
   const { cedula } = req.query;

@@ -13,12 +13,12 @@ export default async function handler(
 ): Promise<any> {
   const { token } = req.cookies;
 
-  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
+  if (token !== process.env.SITE_COOKIE_KEY) {
     return res.status(401).send(null);
   }
 
   const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_IAM_API,
+    baseURL: process.env.IAM_API,
   });
 
   if (req.method === 'GET') {
@@ -37,7 +37,7 @@ export default async function handler(
     let statusCode = 201;
 
     const { data: citizen } = await axios.get<CitizensBasicInformationResponse>(
-      `${process.env.NEXT_PUBLIC_CEDULA_API}/${username}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
+      `${process.env.CEDULA_API}/${username}/info/basic?api-key=${process.env.CEDULA_API_KEY}`
     );
 
     try {

@@ -9,18 +9,18 @@ export default async function handler(
 ): Promise<void> {
   const { token } = req.cookies;
 
-  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
+  if (token !== process.env.SITE_COOKIE_KEY) {
     return res.status(401).send();
   }
 
   const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_CEDULA_API,
+    baseURL: process.env.CEDULA_API,
   });
 
   const { cedula } = req.query;
 
   const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
-    `/${cedula}/info/basic?api-key=${process.env.NEXT_PUBLIC_CEDULA_API_KEY}`
+    `/${cedula}/info/basic?api-key=${process.env.CEDULA_API_KEY}`
   );
 
   const { names, id } = citizen.payload;
