@@ -72,7 +72,7 @@ jobs:
             JCE_PHOTO_API=${{ secrets.JCE_PHOTO_API }},
             JCE_PHOTO_API_KEY=${{ secrets.JCE_PHOTO_API_KEY }},
             SITE_COOKIE_KEY=${{ secrets.SITE_COOKIE_KEY }},
-            PWNED_KEY=${{ secrets.PWNED_KEY }},
+            ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }},
             RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
 
