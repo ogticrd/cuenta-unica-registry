@@ -8,7 +8,7 @@ export default async function handler(
 ): Promise<void> {
   const { token } = req.cookies;
 
-  if (token !== process.env.NEXT_PUBLIC_COOKIE_KEY) {
+  if (token !== process.env.SITE_COOKIE_KEY) {
     return res.status(401).send();
   }
 
