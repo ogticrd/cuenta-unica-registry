@@ -66,17 +66,15 @@ jobs:
           service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           region: ${{ inputs.region }}
           env_vars: |
-            NEXT_PUBLIC_IAM_API=${{ secrets.NEXT_PUBLIC_IAM_API }},
-            NEXT_PUBLIC_CEDULA_API=${{ secrets.NEXT_PUBLIC_CEDULA_API }},
-            NEXT_PUBLIC_CEDULA_API_KEY=${{ secrets.NEXT_PUBLIC_CEDULA_API_KEY }},
-            NEXT_PUBLIC_SITE_KEY=${{ secrets.NEXT_PUBLIC_SITE_KEY }},
-            NEXT_PUBLIC_PHOTO_API=${{ secrets.NEXT_PUBLIC_PHOTO_API }},
-            NEXT_PUBLIC_PHOTO_API_KEY=${{ secrets.NEXT_PUBLIC_PHOTO_API_KEY }},
-            NEXT_PUBLIC_COOKIE_KEY=${{ secrets.NEXT_PUBLIC_COOKIE_KEY }},
-            NEXT_PUBLIC_CRYPTO_KEY=${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }},
+            IAM_API=${{ secrets.IAM_API }},
+            CEDULA_API=${{ secrets.CEDULA_API }},
+            CEDULA_API_KEY=${{ secrets.CEDULA_API_KEY }},
+            JCE_PHOTO_API=${{ secrets.JCE_PHOTO_API }},
+            JCE_PHOTO_API_KEY=${{ secrets.JCE_PHOTO_API_KEY }},
+            SITE_COOKIE_KEY=${{ secrets.SITE_COOKIE_KEY }},
+            PWNED_KEY=${{ secrets.PWNED_KEY }},
             RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
-            NEXT_PUBLIC_GOOGLE_ANALYTICS=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }},
 
       - name: Allow unauthenticated calls to the service
         run: |

@@ -7,7 +7,7 @@ export default async function handler(
 ): Promise<any> {
   res.setHeader(
     'Set-cookie',
-    cookie.serialize('token', process.env.NEXT_PUBLIC_COOKIE_KEY as string, {
+    cookie.serialize('token', process.env.SITE_COOKIE_KEY as string, {
       httpOnly: true,
       secure: true,
       maxAge: 60 * 60 * 10,
