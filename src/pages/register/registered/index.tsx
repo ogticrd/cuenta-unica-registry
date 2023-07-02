@@ -2,7 +2,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import { Typography } from "@mui/material";
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LandingChico from '../../../../public/assets/landingChico.png';
@@ -37,37 +38,47 @@ export default function Index() {
       <CardAuth
         title="Registro de Cuenta Exitoso"
         landing={LandingChico}
-        landingWidth={175}
+        landingWidth={214}
+        landingHeight={469}
         icon={
-          <CheckCircleOutlineOutlinedIcon
-            sx={{ fontSize: '103px', color: '#2ECC71' }}
+          <ThumbUpOutlinedIcon
+            sx={{ fontSize: '82px', color: '#2ECC71' }}
           />
         }
       >
         <GridContainer>
           <GridItem md={12} lg={12}>
             <br />
-            <TextBody textCenter>
-              Hemos enviado una confirmación a tu correo electrónico.
-            </TextBody>
+            <Typography
+              color='primary'
+              sx={{
+                fontSize: "24px",
+                fontWeight: '700',
+                textAlign: 'center',
+              }}
+            >
+              ¡Gracias por completar nuestra prueba beta!
+            </Typography>
             <br />
             <TextBody textCenter>
-              Revisa tu correo y haz clic en el enlace de confirmación, luego
-              realizar tramites y solicitar servicios gubernamentales
-              con una sola cuenta y contraseña.
+              Queremos expresar nuestro más sincero agradecimiento por tu participación y dedicación. Tu retroalimentación y experiencia nos son extremadamente valiosas para mejorar nuestro producto y brindar una experiencia excepcional a todos los ciudadanos.
             </TextBody>
             <br />
           </GridItem>
 
           <GridItem md={12} lg={12}>
+            <TextBody textCenter bold>
+              Ayúdanos a mejorar:
+            </TextBody>
+            <br />
             <ButtonApp
               onClick={() =>
                 window.open(
-                  'https://beta.auth.digital.gob.do/realms/master/account/'
+                  'https://forms.gle/cQnxx6UEpFHrLx2t7'
                 )
               }
             >
-              IR A MI CUENTA
+              ¡Comparte tu opinión!
             </ButtonApp>
           </GridItem>
         </GridContainer>
