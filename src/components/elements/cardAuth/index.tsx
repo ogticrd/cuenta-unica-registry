@@ -19,7 +19,7 @@ export const CardAuth = ({
     <div>
       {landing && (
         <div
-          style={{ position: "fixed", top: "40vh", left: "10vh", zIndex: "-1" }}
+          style={{ position: "fixed", top: "30vh", left: "10vh", zIndex: "-1" }}
         >
           <Image
             src={landing?.src}
