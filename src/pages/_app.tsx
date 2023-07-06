@@ -33,6 +33,10 @@ export default function App({ Component, pageProps }: AppProps) {
           content="Plataforma Única de Autenticación Ciudadana"
         />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
