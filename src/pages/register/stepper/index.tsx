@@ -68,7 +68,7 @@ export default function StepperRegister() {
       case 0:
         return <Step1 setInfoCedula={setInfoCedula} handleNext={handleNext} />;
       case 1:
-        return <Step2 infoCedula={infoCedula} handleNext={handleNext} />;
+        return <Step2 infoCedula={infoCedula} handleNext={handleNext} handleReset={handleReset} />;
       case 2:
         return <Step3 infoCedula={infoCedula} handleNext={handleNext} />;
       default:
@@ -80,7 +80,7 @@ export default function StepperRegister() {
     <Box sx={{ width: '100%' }}>
       <Stepper
         alternativeLabel={!matches}
-        sx={{ paddingBottom: '20px' }}
+        sx={{ paddingBottom: '20px', borderBottom: '1px solid #9FD0FD'}}
         activeStep={activeStep}
       >
         {steps.map((label, index) => (
