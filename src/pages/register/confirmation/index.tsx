@@ -7,7 +7,7 @@ import * as yup from "yup";
 import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
 import { GridContainer, GridItem } from "@/components/elements/grid";
 import BoxContentCenter from "@/components/elements/boxContentCenter";
-import LandingChico from "../../../../public/assets/landingChico.png";
+import LandingChico from "../../../../public/assets/landingChico.svg";
 import { CardAuth } from "@/components/elements/cardAuth";
 import { ButtonApp } from "@/components/elements/button";
 import { FormControlApp } from "@/components/form/input";
@@ -53,7 +53,8 @@ export default function Index() {
           title="Confirmación de Cuenta"
           subTitle="¡Gracias por completar tu registro! Revisa tu correo electrónico y haz clic en el enlace de confirmación."
           landing={LandingChico}
-          landingWidth={175}
+          landingWidth={214}
+          landingHeight={469}
           icon={
             <MarkEmailReadOutlinedIcon sx={{ fontSize: "58px" }} color="info" />
           }
