@@ -3,15 +3,25 @@ import Button from '@mui/material/Button';
 interface IButtonTextApp {
   onClick?: any;
   children: React.ReactNode;
+  startIcon?: any;
+  endIcon?: any;
 }
 
-export const ButtonTextApp = ({ onClick, children }: IButtonTextApp) => {
+export const ButtonTextApp = ({ onClick, children, startIcon = null, endIcon = null }: IButtonTextApp) => {
   return (
     <Button
       onClick={onClick}
       variant="text"
       size="small"
-      sx={{ textTransform: 'inherit' }}
+      startIcon={startIcon}
+      endIcon={endIcon}
+      sx={{
+        textTransform: 'inherit',
+        fontSize: "14px",
+        fontWeight: "400",
+        lineHeight: "21px",
+        color: "#707070"
+      }}
     >
       {children}
     </Button>
@@ -19,7 +29,6 @@ export const ButtonTextApp = ({ onClick, children }: IButtonTextApp) => {
 };
 
 interface IButtonApp {
-  outlined?: boolean;
   disabled?: boolean;
   submit?: boolean;
   onClick?: () => void;
@@ -29,13 +38,13 @@ interface IButtonApp {
   endIcon?: any;
   size?: 'small' | 'medium' | 'large' | undefined;
   color?:
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'error'
-    | 'info'
-    | 'warning';
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
   variant?: 'text' | 'outlined' | 'contained';
 }
 

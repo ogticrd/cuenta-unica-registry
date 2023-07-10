@@ -34,7 +34,7 @@ export default function Index({ children }: any) {
           }}
         >
           <LiveHelpOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color="info" />
-          {matches && 'Reportar'}
+          {matches && 'Reportar error'}
         </Fab>
       </div>
       <Footer />

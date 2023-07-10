@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 import { LivenessQuickStartReact } from '@/components/biometric/face-liveness-detector';
 import { ButtonApp } from '@/components/elements/button';
-import Logo from '../../../../public/assets/logo.png';
+import Logo from '../../../../public/assets/logo.svg';
 import { theme } from '@/themes';
 
 const Transition = forwardRef(function Transition(

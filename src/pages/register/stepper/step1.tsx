@@ -162,8 +162,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       </div> */}
       {loading && <LoadingBackdrop text="Validando cédula..." />}
 
-      <Typography component="div" color="primary" textAlign="center" p={2}>
-        <Box sx={{ fontWeight: 'bold' }}>
+      <Typography component="div" color="primary" textAlign="center">
+        <Box sx={{fontWeight: 500, fontSize: "16px", my: 4}}>
           Este es el primer paso para poder verificar tu identidad y crear tu
           cuenta ciudadana.
         </Box>
@@ -189,7 +189,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
               />
             </Tooltip>
           </GridItem>
+          
           <GridItem lg={12} md={12}>
+            <br />
             <ButtonApp submit endIcon={<ArrowCircleRightOutlinedIcon />}>
               CONFIRMAR
             </ButtonApp>
