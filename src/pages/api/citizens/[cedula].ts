@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
-import { CitizensBasicInformationResponse, CitizensTokenResponse } from '../types';
+import {
+  CitizensBasicInformationResponse,
+  CitizensTokenResponse,
+} from '../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,22 +25,22 @@ export default async function handler(
   const { data: citizensToken } = await http.post<CitizensTokenResponse>(
     `${process.env.CEDULA_TOKEN_API}`,
     {
-      grant_type: 'client_credentials'
+      grant_type: 'client_credentials',
     },
     {
       headers: {
         Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     }
-  )
+  );
 
   const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
     `/${cedula}/info/basic?api-key=${process.env.CEDULA_API_KEY}`,
     {
       headers: {
-        Authorization: `Bearer ${citizensToken.access_token}`
-      }
+        Authorization: `Bearer ${citizensToken.access_token}`,
+      },
     }
   );
 
