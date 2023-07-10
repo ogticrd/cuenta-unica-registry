@@ -1,5 +1,6 @@
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 
@@ -15,7 +16,7 @@ import Step2Modal from './step2Modal';
 
 import { useSnackbar } from '@/components/elements/alert';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { ButtonApp } from '@/components/elements/button';
+import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
 
 interface IFormInputs {
   acceptTermAndConditions: boolean;
@@ -24,9 +25,10 @@ interface IFormInputs {
 interface IStep2Props {
   infoCedula: { [key: string]: any };
   handleNext: () => void;
+  handleReset: () => void;
 }
 
-export default function Step2({ infoCedula, handleNext }: IStep2Props) {
+export default function Step2({ infoCedula, handleNext, handleReset }: IStep2Props) {
   const [open, setOpen] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -53,7 +55,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
 
   return (
     <>
-      <Typography component="div" color="primary" textAlign="center" p={2}>
+      <Typography component="div" color="primary" textAlign="center" sx={{ my: 4, fontSize: "16px" }}>
         <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
         <Box>
           {' '}
@@ -108,8 +110,8 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
             </div>
           </GridItem>
 
-          <br />
           <GridItem lg={12} md={12}>
+            <br />
             <FormGroup>
               <FormControlLabel
                 style={{ display: 'flex', justifyContent: 'center' }}
@@ -121,7 +123,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 }
                 label={
                   // TODO: Add link to terms and conditions
-                  <a 
+                  <a
                     // target="_blank" 
                     // rel="noreferrer" 
                     href="#"
@@ -138,10 +140,7 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
               )}
             </FormGroup>
           </GridItem>
-        </GridContainer>
-        <br />
 
-        <GridContainer spacing={3}>
           <GridItem lg={12} md={12}>
             <ButtonApp submit>INICIAR PROCESO</ButtonApp>
             {open && (
@@ -152,6 +151,20 @@ export default function Step2({ infoCedula, handleNext }: IStep2Props) {
                 identity={infoCedula.id}
               />
             )}
+          </GridItem>
+        </GridContainer>
+
+        <br />
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+            <Box textAlign='center'>
+              <ButtonTextApp
+                startIcon={<ArrowCircleLeftOutlinedIcon />}
+                onClick={() => handleReset()}
+              >
+                Volver paso anterior
+              </ButtonTextApp>
+            </Box>
           </GridItem>
         </GridContainer>
       </form>

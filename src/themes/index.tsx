@@ -52,7 +52,10 @@ export const theme = createTheme({
       defaultProps: {
         sx: {
           '& .MuiInputBase-root': {
-            background: '#F8F8F8',
+            background: '#ffffff',
+          },
+          '& fieldset': {
+            borderColor: '#E6E7E8',
           },
         }
       }

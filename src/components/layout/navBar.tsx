@@ -6,7 +6,7 @@ import Script from 'next/script';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Logo from '../../../public/assets/logo.png';
+import Logo from '../../../public/assets/logo.svg';
 
 export default function Index() {
   return (
