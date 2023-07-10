@@ -5,9 +5,9 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { IconButton, Typography } from "@mui/material";
 import Image from "next/image";
 
-import logoOGTIC from "../../../public/assets/logoOGTIC.png";
+import logoOGTIC from "../../../public/assets/logoOGTIC.svg";
 import { GridContainer, GridItem } from "../elements/grid";
-import logoGOB from "../../../public/assets/logoGOB.png";
+import logoGOB from "../../../public/assets/logoGOB.svg";
 import DivGrow from "../elements/divGrow";
 
 export default function Index() {
