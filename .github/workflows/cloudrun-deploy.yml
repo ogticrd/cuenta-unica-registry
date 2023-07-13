@@ -74,6 +74,8 @@ jobs:
             SITE_COOKIE_KEY=${{ secrets.SITE_COOKIE_KEY }},
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }},
             RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
+            CEDULA_TOKEN_API=${{ secrets.CEDULA_TOKEN_API }},
+            CITIZENS_API_AUTH_KEY=${{ secrets.CITIZENS_API_AUTH_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
 
       - name: Allow unauthenticated calls to the service
