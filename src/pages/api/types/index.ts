@@ -11,6 +11,12 @@ export type CitizensBasicInformationResponse = {
   payload: CitizenBasicInformation;
 };
 
+export type CitizensTokenResponse = {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+};
+
 export type ReCaptchaResponse = {
   tokenProperties: {
     valid: boolean;
