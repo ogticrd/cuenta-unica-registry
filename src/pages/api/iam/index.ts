@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next/types';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
-import {
-  CitizensBasicInformationResponse,
-  VerifyIamUserResponse,
-} from '../types';
-import { Crypto } from '@/helpers';
+import { Identity } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,50 +14,19 @@ export default async function handler(
   }
 
   const http = axios.create({
-    baseURL: process.env.IAM_API,
+    baseURL: process.env.ORY_SDK_URL,
+    headers: {
+      Authorization: 'Bearer ' + process.env.ORY_SDK_TOKEN,
+    },
   });
 
   if (req.method === 'GET') {
     const { cedula } = req.query;
-    const { data } = await http.get<VerifyIamUserResponse[]>(
-      `/auth/validations/users/existence?username=${cedula}`
+
+    const { data: identities } = await http.get<Identity[]>(
+      `/admin/identities?credentials_identifier=${cedula}`
     );
 
-    return res.status(200).json(data);
-  } else if (req.method === 'POST') {
-    const { body } = req;
-    const { username, email } = body;
-    const password = Crypto.decrypt(body.password);
-
-    let success = true;
-    let statusCode = 201;
-
-    const { data: citizen } = await axios.get<CitizensBasicInformationResponse>(
-      `${process.env.CEDULA_API}/${username}/info/basic?api-key=${process.env.CEDULA_API_KEY}`
-    );
-
-    try {
-      await http.post(`/auth/signup`, {
-        firstName: citizen.payload.names,
-        lastName: `${citizen.payload.firstSurname} ${citizen.payload.secondSurname}`,
-        username,
-        email,
-        password,
-      });
-
-      console.log(`Citizens ${username} created successfully on IAM`);
-    } catch (ex: unknown) {
-      console.log(`Error ocurred trying to create citizen ${username} on IAM`);
-      success = false;
-
-      if (ex instanceof AxiosError) {
-        const { response } = ex;
-        statusCode = response?.status ? response?.status : 500;
-      } else {
-        statusCode = 500;
-      }
-    }
-
-    return res.status(statusCode).json({ success });
+    return res.status(200).json(identities);
   }
 }

@@ -66,3 +66,5 @@ export type VerifyIamUserResponse = {
     manage: boolean;
   };
 };
+
+export type { Identity } from './iam.type';

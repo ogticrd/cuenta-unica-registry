@@ -1,12 +1,3 @@
-import { passwordStrength } from 'check-password-strength';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import * as yup from 'yup';
-import axios from 'axios';
-import { Crypto } from '@/helpers';
-import { useRouter } from 'next/router';
-
 import {
   Alert,
   Box,
@@ -17,22 +8,24 @@ import {
   Typography,
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-import PasswordLevel from '@/components/elements/passwordLevel';
-import { useSnackbar } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
+import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import PasswordLevel from '@/components/elements/passwordLevel';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { passwordStrength } from 'check-password-strength';
+import { useSnackbar } from '@/components/elements/alert';
+import Visibility from '@mui/icons-material/Visibility';
+import { ButtonApp } from '@/components/elements/button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect, useState } from 'react';
 import { labels } from '@/constants/labels';
-
-import {
-  RegistrationFlow,
-  UpdateRegistrationFlowBody
-} from "@ory/client"
-
-import ory from "../../../sdk"
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { Crypto } from '@/helpers';
+import ory from '../../../sdk';
+import * as yup from 'yup';
+import axios from 'axios';
 
 interface IFormInputs {
   email: string;
@@ -61,14 +54,9 @@ const schema = yup.object({
 
 export default function Step3({ handleNext, infoCedula }: any) {
   const router = useRouter();
-  console.log(infoCedula)
 
   const [flow, setFlow] = useState<RegistrationFlow>();
-  console.log(flow)
-
-  const { flow: flowId, return_to: returnTo } = router.query
-  console.log(router)
-
+  const { flow: flowId, return_to: returnTo } = router.query;
   const [loadingValidatingPassword, setLoadingValidatingPassword] =
     useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,14 +71,14 @@ export default function Step3({ handleNext, infoCedula }: any) {
       .createBrowserRegistrationFlow({
         returnTo: returnTo ? String(returnTo) : undefined,
       })
-      .then(({ data: flow }) => {
-        setFlow(flow)
+      .then(({ data: flow }: any) => {
+        setFlow(flow);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         // Couldn't create login flow
         // handle the error
-      })
-  }, [])
+      });
+  }, []);
 
   const {
     register,
@@ -126,28 +114,28 @@ export default function Step3({ handleNext, infoCedula }: any) {
       axios
         .get(`/api/pwned/${password}`)
         .then(async (res) => {
-          console.log(res);
           const isPwnedIncludes = res.data === 0 ? false : true;
           setIsPwned(isPwnedIncludes);
           if (!isPwnedIncludes) {
             setLoadingValidatingPassword(false);
             setLoading(true);
 
-            const node: any = flow?.ui.nodes.find((n: any) => n.attributes['name'] === "csrf_token");
+            const node: any = flow?.ui.nodes.find(
+              (n: any) => n.attributes['name'] === 'csrf_token'
+            );
             const csrf_token = node?.attributes.value as string;
 
             const obj: UpdateRegistrationFlowBody = {
               csrf_token: csrf_token,
-              method: "password",
+              method: 'password',
               password: data.password,
               traits: {
                 email: data.email,
-                // cedula: "00000000000",
                 cedula: infoCedula.id,
-                firstName: "ogtic",
-                lastName: "ogtic",
-              }
-            }
+                firstName: 'ogtic',
+                lastName: 'ogtic',
+              },
+            };
 
             ory
               .updateRegistrationFlow({
@@ -160,40 +148,46 @@ export default function Step3({ handleNext, infoCedula }: any) {
                 if (data.continue_with) {
                   for (const item of data?.continue_with) {
                     switch (item.action) {
-                      case "show_verification_ui":
+                      case 'show_verification_ui':
                         // await router.push("/verification?flow=" + item?.flow.id)
-                        return
+                        return;
                     }
                   }
                 }
               })
               .catch((err: any) => {
-                console.log("DATA ", err.response);
-
                 if (err.response.data) {
-                  console.log(err.response.data)
+                  console.log(err.response.data);
                   const messages = err.response.data.ui.messages;
                   const nodes = err.response.data.ui.nodes;
                   const errors = [];
 
                   if (messages && messages.length) {
-                    const e = messages.filter((m: any) => m.type === "error").map((e: any) => e.text);
+                    const e = messages
+                      .filter((m: any) => m.type === 'error')
+                      .map((e: any) => e.text);
                     errors.push(e);
                   }
 
                   if (nodes && nodes.length) {
-                    /// TODO: sacar los errores de los nodos retornados por ORY!!
-                    const e = nodes.filter((node: any) => node.messages.length && node.messages.filter((x: any) => x.type === "error")).map((a: any) => a.messages);//.map((b: any) => b.text);
+                    // TODO: sacar los errores de los nodos retornados por ORY!!
+                    const e = nodes
+                      .filter(
+                        (node: any) =>
+                          node.messages.length &&
+                          node.messages.filter((x: any) => x.type === 'error')
+                      )
+                      .map((a: any) => a.messages); //.map((b: any) => b.text);
                     errors.push(e);
                   }
-                  console.log("errores ORY ", errors)
+                  console.log('errores ORY ', errors);
                 }
                 // If the previous handler did not catch the error it's most likely a form validation error
                 if (err.response?.status === 400) {
-                  setFlow(err.response?.data)
-                  return
+                  setFlow(err.response?.data);
+                  return;
                 }
-                return Promise.reject(err)
+                return Promise.reject(err);
               })
               .finally(() => setLoading(false));
           }
