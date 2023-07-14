@@ -114,15 +114,15 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           token,
         });
         if (response.data && response.data.isHuman === true) {
-          const responseCedula = await fetch(`/api/iam/${cleanCedula}`);
-          if (responseCedula.status !== 200) {
-            throw new Error('Failed to fetch iam data');
-          }
-          const { exists } = await responseCedula.json();
-          if (exists) {
-            console.log(exists);
-            return AlertWarning('Su Cédula ya se encuentra registrada.');
-          }
+          // const responseCedula = await fetch(`/api/iam/${cleanCedula}`);
+          // if (responseCedula.status !== 200) {
+          //   throw new Error('Failed to fetch iam data');
+          // }
+          // const { exists } = await responseCedula.json();
+          // if (exists) {
+          //   console.log(exists);
+          //   return AlertWarning('Su Cédula ya se encuentra registrada.');
+          // }
           const response = await fetch(`/api/citizens/${cleanCedula}`);
           if (response.status !== 200) {
             throw new Error('Failed to fetch citizen data');
