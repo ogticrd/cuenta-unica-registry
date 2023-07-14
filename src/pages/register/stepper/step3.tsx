@@ -120,6 +120,17 @@ export default function Step3({ handleNext, infoCedula }: any) {
             setLoadingValidatingPassword(false);
             setLoading(true);
 
+            // Retrieve complete citizen information
+            const response = await fetch(
+              `/api/citizens/${infoCedula.id}?validated=true`
+            );
+            if (response.status !== 200) {
+              throw new Error('Failed to fetch citizen data');
+            }
+
+            // TODO: create an interface for the citizen properties retrieved instead 'any'
+            const citizen: any = await response.json();
+
             const node: any = flow?.ui.nodes.find(
               (n: any) => n.attributes['name'] === 'csrf_token'
             );
@@ -131,9 +142,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
               password: data.password,
               traits: {
                 email: data.email,
-                cedula: infoCedula.id,
-                firstName: 'ogtic',
-                lastName: 'ogtic',
+                cedula: citizen.id,
+                firstName: citizen.name,
+                lastName: `${citizen.firstSurname} ${citizen.secondSurname}`,
               },
             };
 
@@ -149,6 +160,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                   for (const item of data?.continue_with) {
                     switch (item.action) {
                       case 'show_verification_ui':
+                        // TODO: check more about this line
                         // await router.push("/verification?flow=" + item?.flow.id)
                         return;
                     }
