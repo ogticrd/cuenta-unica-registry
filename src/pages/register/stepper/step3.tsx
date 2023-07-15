@@ -219,8 +219,8 @@ export default function Step3({ handleNext, infoCedula }: any) {
       )}
       {loading && <LoadingBackdrop text="Creando usuario..." />}
 
-      <Typography component="div" color="primary" textAlign="center" p={2}>
-        <Box sx={{ fontWeight: 'bold' }}>
+      <Typography component="div" color="primary" textAlign="center" sx={{ my: 4, fontSize: "16px" }}>
+        <Box sx={{ fontWeight: 500 }}>
           Para finalizar tu registro completa los siguientes campos:
         </Box>
       </Typography>
@@ -336,6 +336,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           )}
 
           <GridItem lg={12} md={12}>
+            <br />
             <ButtonApp
               submit
               endIcon={<CheckCircleOutlineOutlinedIcon />}

@@ -6,7 +6,7 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import { Typography } from "@mui/material";
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import LandingChico from '../../../../public/assets/landingChico.png';
+import LandingChico from '../../../../public/assets/landingChico.svg';
 import { TextBody } from '@/components/elements/typography';
 import { CardAuth } from '@/components/elements/cardAuth';
 import { ButtonApp } from '@/components/elements/button';
