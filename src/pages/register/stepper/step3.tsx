@@ -9,75 +9,64 @@ import {
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { passwordStrength } from 'check-password-strength';
+import Visibility from '@mui/icons-material/Visibility';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+
+import {
+  CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
+  CREATE_IDENTITY_ERROR,
+  VALIDATE_PASSWORD_ERROR,
+} from '../../../constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import PasswordLevel from '@/components/elements/passwordLevel';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { passwordStrength } from 'check-password-strength';
+import { CitizenCompleteData, Step3Form } from './interfaces';
 import { useSnackbar } from '@/components/elements/alert';
-import Visibility from '@mui/icons-material/Visibility';
 import { ButtonApp } from '@/components/elements/button';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
-import { labels } from '@/constants/labels';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import { step3Schema } from './yup-schemas';
 import { Crypto } from '@/helpers';
-import ory from '../../../sdk';
-import * as yup from 'yup';
-import axios from 'axios';
-
-interface IFormInputs {
-  email: string;
-  emailConfirm: string;
-  password: string;
-  passwordConfirm: string;
-}
-
-const schema = yup.object({
-  email: yup
-    .string()
-    .trim()
-    .email(labels.form.invalidEmail)
-    .required(labels.form.requiredField),
-  emailConfirm: yup
-    .string()
-    .trim()
-    .required(labels.form.requiredField)
-    .oneOf([yup.ref('email')], 'Los correos no coinciden'),
-  password: yup.string().required(labels.form.requiredField),
-  passwordConfirm: yup
-    .string()
-    .required(labels.form.requiredField)
-    .oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
-});
+import { orySdk } from '@/sdk';
 
 export default function Step3({ handleNext, infoCedula }: any) {
   const router = useRouter();
 
   const [flow, setFlow] = useState<RegistrationFlow>();
-  const { flow: flowId, return_to: returnTo } = router.query;
+  // TODO: validate this flowId on account verification
+  // const { flow: flowId, return_to: returnTo } = router.query;
+
+  const { return_to: returnTo } = router.query;
   const [loadingValidatingPassword, setLoadingValidatingPassword] =
     useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
   const [isPwned, setIsPwned] = useState(false);
-  const { AlertError, AlertWarning } = useSnackbar();
+  const { AlertWarning, AlertError } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   useEffect(() => {
-    ory
-      .createBrowserRegistrationFlow({
-        returnTo: returnTo ? String(returnTo) : undefined,
-      })
-      .then(({ data: flow }: any) => {
+    const asyncEffect = async () => {
+      try {
+        const { data: flow } = await orySdk.createBrowserRegistrationFlow({
+          returnTo: returnTo ? String(returnTo) : undefined,
+        });
+
         setFlow(flow);
-      })
-      .catch((err: any) => {
-        // Couldn't create login flow
-        // handle the error
-      });
+      } catch (err: any) {
+        AlertWarning(CREATE_BROWSER_REGISTRATION_FLOW_ERROR);
+        console.error(err.message || err);
+      }
+    };
+
+    asyncEffect();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
@@ -85,9 +74,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<IFormInputs>({
+  } = useForm<Step3Form>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(step3Schema),
   });
 
   const handleMouseDownPassword = (
@@ -98,116 +87,125 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
   const handleChangePassword = (password: string) => {
     const level = passwordStrength(password);
+
     setPasswordLevel(level);
     setValue('password', password);
     setIsPwned(false);
   };
 
-  const onSubmit = (data: IFormInputs) => {
-    if (isPwned) return;
-    if (passwordLevel.id !== 3) return;
+  const onSubmitHandler = async (form: Step3Form) => {
+    if (isPwned || passwordLevel.id !== 3) {
+      return;
+    }
+
     setLoadingValidatingPassword(true);
 
-    const password = Crypto.encrypt(data.password);
+    const password = Crypto.encrypt(form.password);
 
-    if (!isPwned) {
-      axios
-        .get(`/api/pwned/${password}`)
-        .then(async (res) => {
-          const isPwnedIncludes = res.data === 0 ? false : true;
-          setIsPwned(isPwnedIncludes);
-          if (!isPwnedIncludes) {
-            setLoadingValidatingPassword(false);
-            setLoading(true);
+    try {
+      const { data } = await axios.get<number>(`/api/pwned/${password}`);
 
-            // Retrieve complete citizen information
-            const response = await fetch(
-              `/api/citizens/${infoCedula.id}?validated=true`
-            );
-            if (response.status !== 200) {
-              throw new Error('Failed to fetch citizen data');
-            }
+      const isValidPassword = data !== 0;
+      setIsPwned(isValidPassword);
+    } catch (err: any) {
+      AlertError(VALIDATE_PASSWORD_ERROR);
 
-            // TODO: create an interface for the citizen properties retrieved instead 'any'
-            const citizen: any = await response.json();
+      return;
+    } finally {
+      setLoadingValidatingPassword(false);
+    }
 
-            const node: any = flow?.ui.nodes.find(
-              (n: any) => n.attributes['name'] === 'csrf_token'
-            );
-            const csrf_token = node?.attributes.value as string;
+    try {
+      setLoading(true);
 
-            const obj: UpdateRegistrationFlowBody = {
-              csrf_token: csrf_token,
-              method: 'password',
-              password: data.password,
-              traits: {
-                email: data.email,
-                cedula: citizen.id,
-                firstName: citizen.name,
-                lastName: `${citizen.firstSurname} ${citizen.secondSurname}`,
-              },
-            };
+      const { data: citizen } = await axios.get<CitizenCompleteData>(
+        `/api/citizens/${infoCedula.id}?validated=true`
+      );
 
-            ory
-              .updateRegistrationFlow({
-                flow: String(flow?.id),
-                updateRegistrationFlowBody: obj,
-              })
-              .then(async ({ data }: any) => {
-                handleNext();
+      const node: any = flow?.ui.nodes.find(
+        (n: any) => n.attributes['name'] === 'csrf_token'
+      );
+      const csrf_token = node?.attributes.value as string;
+      const lastName = `${citizen.firstSurname} ${citizen.secondSurname}`;
+      const method = 'password';
 
-                if (data.continue_with) {
-                  for (const item of data?.continue_with) {
-                    switch (item.action) {
-                      case 'show_verification_ui':
-                        // TODO: check more about this line
-                        // await router.push("/verification?flow=" + item?.flow.id)
-                        return;
-                    }
-                  }
-                }
-              })
-              .catch((err: any) => {
-                if (err.response.data) {
-                  console.log(err.response.data);
-                  const messages = err.response.data.ui.messages;
-                  const nodes = err.response.data.ui.nodes;
-                  const errors = [];
+      const updateRegistrationFlowBody: UpdateRegistrationFlowBody = {
+        csrf_token,
+        method,
+        password: form.password,
+        traits: {
+          email: form.email,
+          cedula: citizen.id,
+          firstName: citizen.name,
+          lastName,
+        },
+      };
 
-                  if (messages && messages.length) {
-                    const e = messages
-                      .filter((m: any) => m.type === 'error')
-                      .map((e: any) => e.text);
-                    errors.push(e);
-                  }
+      const {
+        data: { continue_with },
+      } = await orySdk.updateRegistrationFlow({
+        flow: String(flow?.id),
+        updateRegistrationFlowBody,
+      });
 
-                  if (nodes && nodes.length) {
-                    // TODO: sacar los errores de los nodos retornados por ORY!!
-                    const e = nodes
-                      .filter(
-                        (node: any) =>
-                          node.messages.length &&
-                          node.messages.filter((x: any) => x.type === 'error')
-                      )
-                      .map((a: any) => a.messages); //.map((b: any) => b.text);
-                    errors.push(e);
-                  }
-                  console.log('errores ORY ', errors);
-                }
-                // If the previous handler did not catch the error it's most likely a form validation error
-                if (err.response?.status === 400) {
-                  setFlow(err.response?.data);
-                  return;
-                }
-                return Promise.reject(err);
-              })
-              .finally(() => setLoading(false));
+      handleNext();
+
+      if (continue_with) {
+        for (const item of continue_with) {
+          switch (item.action) {
+            case 'show_verification_ui':
+              // TODO: check more about this line
+              // await router.push("/verification?flow=" + item?.flow.id)
+              return;
           }
-        })
-        .catch(() => {
-          AlertWarning('No pudimos validar si la contraseña es segura.');
-        })
-        .finally(() => setLoadingValidatingPassword(false));
+        }
+      }
+    } catch (err: any) {
+      if (err.response && err.response.data) {
+        const errorData = err.response.data;
+
+        console.log('errorData', errorData);
+
+        const { ui } = errorData;
+
+        const messages = ui.messages;
+        const nodes = ui.nodes;
+
+        const errors = [];
+
+        if (messages && messages.length) {
+          const e = messages
+            .filter((m: any) => m.type === 'error')
+            .map((e: any) => e.text);
+          errors.push(e);
+        }
+
+        if (nodes && nodes.length) {
+          // TODO: sacar los errores de los nodos retornados por ORY!!
+          const e = nodes
+            .filter(
+              (node: any) =>
+                node.messages.length &&
+                node.messages.filter((x: any) => x.type === 'error')
+            )
+            .map((a: any) => a.messages);
+          errors.push(e);
+        }
+
+        console.log('errors', errors);
+      }
+
+      // If the previous handler did not catch the error it's most likely a form validation error
+      if (err.response && err.response.status && err.response.status === 400) {
+        setFlow(err.response?.data);
+
+        return;
+      }
+
+      AlertError(CREATE_IDENTITY_ERROR);
+      return;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -219,13 +217,18 @@ export default function Step3({ handleNext, infoCedula }: any) {
       )}
       {loading && <LoadingBackdrop text="Creando usuario..." />}
 
-      <Typography component="div" color="primary" textAlign="center" sx={{ my: 4, fontSize: "16px" }}>
+      <Typography
+        component="div"
+        color="primary"
+        textAlign="center"
+        sx={{ my: 4, fontSize: '16px' }}
+      >
         <Box sx={{ fontWeight: 500 }}>
           Para finalizar tu registro completa los siguientes campos:
         </Box>
       </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
         <GridContainer>
           <GridItem lg={12} md={12}>
             <Tooltip title="Correo personal">

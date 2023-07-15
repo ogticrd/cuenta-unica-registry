@@ -55,6 +55,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
       AlertError('No se ha podido validar correctamente la identidad.');
     }
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   return (

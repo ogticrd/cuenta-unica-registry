@@ -20,13 +20,11 @@ export default async function handler(
     },
   });
 
-  if (req.method === 'GET') {
-    const { cedula } = req.query;
+  const { cedula } = req.query;
 
-    const { data: identities } = await http.get<Identity[]>(
-      `/admin/identities?credentials_identifier=${cedula}`
-    );
+  const { data: identities } = await http.get<Identity[]>(
+    `/admin/identities?credentials_identifier=${cedula}`
+  );
 
-    return res.status(200).json(identities);
-  }
+  return res.status(200).json(identities);
 }

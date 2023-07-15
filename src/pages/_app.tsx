@@ -12,6 +12,7 @@ import Layout from '../components/layout';
 import awsExports from '../aws-exports';
 import { theme } from '../themes';
 
+import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
 import '@/styles/globals.css';
 
@@ -35,8 +36,15 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        {/* <link
+          rel="stylesheet"
+          href="/public/fonts/fonts.googleapis.com_css2_family=Poppins_wght@200;300;400;500;600&display=swap.css"
+        /> */}
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />

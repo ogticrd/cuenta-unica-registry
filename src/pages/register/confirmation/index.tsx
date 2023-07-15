@@ -1,19 +1,19 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import * as yup from "yup";
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import * as yup from 'yup';
 
-import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
-import { GridContainer, GridItem } from "@/components/elements/grid";
-import BoxContentCenter from "@/components/elements/boxContentCenter";
-import LandingChico from "../../../../public/assets/landingChico.svg";
-import { CardAuth } from "@/components/elements/cardAuth";
-import { ButtonApp } from "@/components/elements/button";
-import { FormControlApp } from "@/components/form/input";
-import { InputApp } from "@/themes/form/input";
-import { routes } from "@/constants/routes";
-import { labels } from "@/constants/labels";
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import BoxContentCenter from '@/components/elements/boxContentCenter';
+import LandingChico from '../../../../public/assets/landingChico.svg';
+import { CardAuth } from '@/components/elements/cardAuth';
+import { ButtonApp } from '@/components/elements/button';
+import { FormControlApp } from '@/components/form/input';
+import { InputApp } from '@/themes/form/input';
+import { routes } from '@/constants/routes';
+import { labels } from '@/constants/labels';
 
 interface IFormInputs {
   email: string;
@@ -37,7 +37,7 @@ export default function Index() {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInputs>({
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
     shouldFocusError: false,
     resolver: yupResolver(schema),
   });
@@ -56,7 +56,7 @@ export default function Index() {
           landingWidth={214}
           landingHeight={469}
           icon={
-            <MarkEmailReadOutlinedIcon sx={{ fontSize: "58px" }} color="info" />
+            <MarkEmailReadOutlinedIcon sx={{ fontSize: '58px' }} color="info" />
           }
         >
           <GridContainer>
@@ -68,7 +68,7 @@ export default function Index() {
                 <InputApp
                   defaultValue={dataItem.cedula}
                   placeholder="correo@confirmacion.com"
-                  {...register("email")}
+                  {...register('email')}
                 />
               </FormControlApp>
             </GridItem>

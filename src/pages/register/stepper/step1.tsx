@@ -1,37 +1,28 @@
-import { forwardRef, useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useReCaptcha } from 'next-recaptcha-v3';
-import { CitizensBasicInformationResponse } from '@/pages/api/types';
-import axios from 'axios';
-import { useSnackbar } from '@/components/elements/alert';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { Box, TextField, Typography, Tooltip } from '@mui/material';
-import { GridContainer, GridItem } from '@/components/elements/grid';
-import { ButtonApp } from '@/components/elements/button';
-import { IMaskInput } from 'react-imask';
+import { forwardRef, useCallback, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { labels } from '@/constants/labels';
+import { useReCaptcha } from 'next-recaptcha-v3';
+import { useForm } from 'react-hook-form';
+import { IMaskInput } from 'react-imask';
+import Link from 'next/link';
+import axios from 'axios';
+
+import {
+  IDENTITY_ALREADY_EXISTS_ERROR,
+  INVALID_CEDULA_ERROR,
+  INVALID_CEDULA_NUMBER_ERROR,
+  RECAPTCHA_ISSUES_ERROR,
+  RECAPTCHA_VALIDATION_ERROR,
+} from '@/constants';
+import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBodyTiny } from '@/components/elements/typography';
-import Link from 'next/link';
-interface IFormInputs {
-  cedula: string;
-}
-
-const schema = yup.object({
-  cedula: yup
-    .string()
-    .trim()
-    .required(labels.form.requiredField)
-    .min(11, 'Debe contener 11 dígitos')
-    .max(11, 'Debe contener 11 dígitos'),
-});
-
-interface CustomProps {
-  onChange: (event: { target: { name: string; value: string } }) => void;
-  name: string;
-}
+import { useSnackbar } from '@/components/elements/alert';
+import { ButtonApp } from '@/components/elements/button';
+import { CedulaInput, CustomProps } from './interfaces';
+import { cedulaSchema } from './yup-schemas';
+import { Validations } from '@/helpers';
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
   function TextMaskCustom(props, ref: any) {
@@ -40,9 +31,6 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
       <IMaskInput
         {...other}
         mask="000-0000000-0"
-        // definitions={{
-        //   '#': /[1-9]/,
-        // }}
         inputRef={ref}
         onAccept={(value: any) =>
           onChange({ target: { name: props.name, value } })
@@ -54,94 +42,82 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
 );
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
-  const [loading, setLoading] = useState(false);
-
   const [valueCedula, setValueCedula] = useState('');
-
-  const luhnCheck = (num: string) => {
-    const arr = (num + '')
-      .split('')
-      .reverse()
-      .map((x) => parseInt(x));
-    const lastDigit = arr.splice(0, 1)[0];
-    let sum = arr.reduce(
-      (acc, val, i) =>
-        i % 2 !== 0 ? acc + val : acc + (val * 2 > 9 ? val * 2 - 9 : val * 2),
-      0
-    );
-    sum += lastDigit;
-    return sum % 10 === 0;
-  };
+  const { AlertError, AlertWarning } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  const { executeRecaptcha } = useReCaptcha();
 
   const {
     handleSubmit: handleFormSubmit,
     formState: { errors },
     setValue,
-  } = useForm<IFormInputs>({
+  } = useForm<CedulaInput>({
     reValidateMode: 'onSubmit',
-    // shouldFocusError: false,
-    resolver: yupResolver(schema),
+    resolver: yupResolver(cedulaSchema),
   });
 
-  const { executeRecaptcha } = useReCaptcha();
-  const { AlertError, AlertWarning } = useSnackbar();
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onCedulaChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setValue('cedula', event.target.value.replace(/-/g, ''));
     setValueCedula(event.target.value);
   };
 
   const handleSubmit = useCallback(
-    async (data: IFormInputs) => {
+    async (data: CedulaInput) => {
       const cleanCedula = data?.cedula?.replace(/-/g, '');
-      if (cleanCedula?.length !== 11 || !luhnCheck(cleanCedula)) {
-        AlertError('Por favor introduzca un número de cédula válido.');
+      const luhnValidatedCedula = Validations.luhnCheck(cleanCedula);
+
+      if (cleanCedula?.length !== 11 || !luhnValidatedCedula) {
+        AlertError(INVALID_CEDULA_NUMBER_ERROR);
+
         return;
       }
+
       setLoading(true);
+
       // Generate ReCaptcha token
       const token = await executeRecaptcha('form_submit');
 
       if (!token) {
-        AlertWarning(
-          'Problemas con el reCaptcha, intente nuevamente más tarde'
-        );
+        AlertWarning(RECAPTCHA_ISSUES_ERROR);
         setLoading(false);
+
         return;
       }
 
       try {
-        const response = await axios.post('/api/recaptcha/assesments', {
-          token,
-        });
-        if (response.data && response.data.isHuman === true) {
-          const responseCedula = await fetch(`/api/iam/${cleanCedula}`);
-          if (responseCedula.status !== 200) {
-            throw new Error('Failed to fetch iam data');
+        const {
+          data: { isHuman },
+        } = await axios.post<{ isHuman: boolean }>(
+          '/api/recaptcha/assesments',
+          {
+            token,
           }
-          const { exists } = await responseCedula.json();
-          if (exists) {
-            console.log(exists);
-            return AlertWarning('Su Cédula ya se encuentra registrada.');
-          }
-          const response = await fetch(`/api/citizens/${cleanCedula}`);
-          if (response.status !== 200) {
-            throw new Error('Failed to fetch citizen data');
-          }
-          const citizen: CitizensBasicInformationResponse =
-            await response.json();
-          setInfoCedula(citizen);
-          handleNext();
+        );
+
+        if (!isHuman) {
+          return AlertError(RECAPTCHA_VALIDATION_ERROR);
         }
-        if (response.data && response.data.isHuman === false) {
-          AlertWarning(
-            'No podemos validar si eres un humano, intenta desde otro navegador o dispositivo.'
-          );
+
+        const {
+          data: { exists },
+        } = await axios.get<{ exists: boolean }>(`/api/iam/${cleanCedula}`);
+
+        if (exists) {
+          return AlertError(IDENTITY_ALREADY_EXISTS_ERROR);
         }
-      } catch (err) {
-        console.error(err);
-        // AlertError('Esta cédula es correcta, pero no hemos podido validarla.');
-        AlertError('No hemos podido validar su Cédula');
+
+        const { data: citizen } = await axios.get(
+          `/api/citizens/${cleanCedula}`
+        );
+
+        setInfoCedula(citizen);
+        handleNext();
+      } catch (err: any) {
+        console.error(err.message || err);
+
+        return AlertError(INVALID_CEDULA_ERROR);
       } finally {
         setLoading(false);
       }
@@ -150,21 +126,11 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   );
 
   return (
-    // TODO: Validate this loading approach with Backdrop
     <>
-      {/* <div>
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={loading}
-        >
-          <CircularProgress color="inherit" />
-          <Typography variant="subtitle1">Validando cédula...</Typography>
-        </Backdrop>
-      </div> */}
       {loading && <LoadingBackdrop text="Validando cédula..." />}
 
       <Typography component="div" color="primary" textAlign="center">
-        <Box sx={{fontWeight: 500, fontSize: "16px", my: 4}}>
+        <Box sx={{ fontWeight: 500, fontSize: '16px', my: 4 }}>
           Este es el primer paso para poder verificar tu identidad y crear tu
           cuenta ciudadana.
         </Box>
@@ -177,8 +143,8 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
               <TextField
                 required
                 value={valueCedula}
-                onChange={handleChange}
-                label="Número de Cédula"
+                onChange={onCedulaChangeHandler}
+                label="Número de cédula"
                 placeholder="***-**00000-0"
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
@@ -190,7 +156,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
               />
             </Tooltip>
           </GridItem>
-          
+
           <GridItem lg={12} md={12}>
             <br />
             <ButtonApp submit endIcon={<ArrowCircleRightOutlinedIcon />}>
