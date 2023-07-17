@@ -20,8 +20,8 @@ import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { useSnackbar } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { CedulaInput, CustomProps } from './interfaces';
-import { cedulaSchema } from './yup-schemas';
+import { CedulaInput, CustomProps } from '../../../common/interfaces';
+import { cedulaSchema } from '../../../common/yup-schemas';
 import { Validations } from '@/helpers';
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(

@@ -14,7 +14,10 @@ import { useCallback, useState } from 'react';
 
 import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { Step2Props, TermsAndConditionsInput } from './interfaces';
+import {
+  Step2Props,
+  TermsAndConditionsInput,
+} from '../../../common/interfaces';
 import { useSnackbar } from '@/components/elements/alert';
 import Step2Modal from './step2Modal';
 import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';

@@ -26,10 +26,10 @@ import {
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import PasswordLevel from '@/components/elements/passwordLevel';
-import { CitizenCompleteData, Step3Form } from './interfaces';
+import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackbar } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { step3Schema } from './yup-schemas';
+import { step3Schema } from '../../../common/yup-schemas';
 import { Crypto } from '@/helpers';
 import { orySdk } from '@/sdk';
 
