@@ -5,9 +5,9 @@
   "private": true,
   "author": "OGTIC",
   "scripts": {
-    "dev": "export ORY_SDK_URL=https://naughty-euclid-q27q8011k4.projects.oryapis.com && next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "export ORY_SDK_URL=https://naughty-euclid-q27q8011k4.projects.oryapis.com && next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
