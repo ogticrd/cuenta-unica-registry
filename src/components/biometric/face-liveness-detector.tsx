@@ -1,11 +1,10 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-
-import React from 'react';
 import { useState, useEffect } from 'react';
+import React from 'react';
 
-import { useSnackbar } from '@/components/elements/alert';
 import { defaultLivenessDisplayText } from './displayText';
+import { useSnackbar } from '@/components/elements/alert';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;

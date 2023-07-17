@@ -1,7 +1,7 @@
-import { Fab } from '@mui/material';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import { Fab } from '@mui/material';
 
 import NavBar from './navBar';
 import Footer from './footer';

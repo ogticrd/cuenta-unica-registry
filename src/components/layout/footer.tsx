@@ -1,30 +1,30 @@
-import InstagramIcon from "@mui/icons-material/Instagram";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import { IconButton, Typography } from "@mui/material";
-import Image from "next/image";
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import { IconButton, Typography } from '@mui/material';
+import Image from 'next/image';
 
-import logoOGTIC from "../../../public/assets/logoOGTIC.svg";
-import { GridContainer, GridItem } from "../elements/grid";
-import logoGOB from "../../../public/assets/logoGOB.svg";
-import DivGrow from "../elements/divGrow";
+import logoOGTIC from '../../../public/assets/logoOGTIC.svg';
+import { GridContainer, GridItem } from '../elements/grid';
+import logoGOB from '../../../public/assets/logoGOB.svg';
+import DivGrow from '../elements/divGrow';
 
 export default function Index() {
   return (
     <>
-      <div style={{ padding: "75px 25px" }} className="bg-primary">
+      <div style={{ padding: '75px 25px' }} className="bg-primary">
         <div
           style={{
-            width: "100%",
-            maxWidth: "1400px",
-            margin: "auto",
-            padding: "0px 24px",
+            width: '100%',
+            maxWidth: '1400px',
+            margin: 'auto',
+            padding: '0px 24px',
           }}
         >
           <GridContainer spacing={4}>
             <GridItem md={12} lg={3}>
-              <div style={{ display: "flex" }}>
+              <div style={{ display: 'flex' }}>
                 <Image src={logoGOB.src} alt="logo" width="241" height="90" />
               </div>
             </GridItem>
@@ -84,38 +84,42 @@ export default function Index() {
         </div>
       </div>
 
-      <div style={{ background: "white", padding: "12.5px 25px" }}>
+      <div style={{ background: 'white', padding: '12.5px 25px' }}>
         <div
           style={{
-            width: "100%",
-            maxWidth: "1400px",
-            margin: "auto",
-            padding: "0px 24px",
+            width: '100%',
+            maxWidth: '1400px',
+            margin: 'auto',
+            padding: '0px 24px',
           }}
         >
           <GridContainer>
             <GridItem md={6} lg={6}>
-              <div style={{ marginTop: "8px" }}>
+              <div style={{ marginTop: '8px' }}>
                 <Typography variant="caption" fontWeight="600" color="primary">
                   © {new Date().getFullYear()} Todos los Derechos Reservados.
                   Desarrollado por
                 </Typography>
                 <Image
-                  style={{ marginBottom: "-10px", marginLeft: "5px", cursor: "pointer" }}
+                  style={{
+                    marginBottom: '-10px',
+                    marginLeft: '5px',
+                    cursor: 'pointer',
+                  }}
                   src={logoOGTIC.src}
                   alt="logo ogtic"
                   width="55"
                   height="29"
-                  onClick={() => window.open("https://ogtic.gob.do/")}
+                  onClick={() => window.open('https://ogtic.gob.do/')}
                 />
               </div>
             </GridItem>
 
             <GridItem md={6} lg={6}>
               <DivGrow>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: 'flex' }}>
                   <Typography
-                    sx={{ margin: "auto", marginRight: "10px" }}
+                    sx={{ margin: 'auto', marginRight: '10px' }}
                     variant="body2"
                     fontWeight="bold"
                     color="primary"
