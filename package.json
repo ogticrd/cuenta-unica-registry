@@ -19,6 +19,8 @@
     "@hookform/resolvers": "2.9.7",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.13.5",
+    "@ory/client": "^1.1.41",
+    "@ory/integrations": "^1.1.4",
     "@types/react-gtm-module": "^2.0.1",
     "aws-amplify": "^5.2.7",
     "axios": "^1.4.0",
@@ -35,6 +37,7 @@
     "react-gtm-module": "^2.0.11",
     "react-hook-form": "7.34.0",
     "react-imask": "^7.0.0",
+    "react-router-dom": "^6.14.1",
     "typescript": "4.9.5",
     "yup": "^1.2.0"
   },
