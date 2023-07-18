@@ -36,6 +36,8 @@ interface IButtonApp {
   children: React.ReactNode;
   startIcon?: any;
   endIcon?: any;
+  name?: any;
+  value?: any;
   size?: 'small' | 'medium' | 'large' | undefined;
   color?:
   | 'inherit'
@@ -58,6 +60,8 @@ export const ButtonApp = ({
   size = 'medium',
   startIcon = null,
   endIcon = null,
+  name = null,
+  value = null,
   color,
 }: IButtonApp) => {
   return (
@@ -65,6 +69,8 @@ export const ButtonApp = ({
       size={size}
       variant={variant}
       disabled={disabled}
+      name={name}
+      value={value}
       type={submit ? 'submit' : 'button'}
       onClick={onClick}
       color={color ? color : 'primary'}

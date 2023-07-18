@@ -18,6 +18,9 @@ import { edgeConfig } from "@ory/integrations/next"
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { CardAuth } from '@/components/elements/cardAuth';
 import LandingChica2 from '../../../public/assets/landingChica.svg';
+import { Box, Button, TextField, Typography } from "@mui/material"
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { ButtonApp } from '@/components/elements/button';
 
 const frontend = new FrontendApi(
   new Configuration(edgeConfig)
@@ -110,7 +113,7 @@ export default function Login()  {
               name={attrs.name}
               value={attrs.value}
               key={key}
-            >{meta.label?.text}</button>
+            >Iniciar sesión</button>
           )
         default:
           return (
@@ -135,19 +138,59 @@ export default function Login()  {
   return flow ? (
     <BoxContentCenter>
       <CardAuth
-        title="Registrar Cuenta Única Ciudadana"
+        title="Inicio de sesión"
         landing={LandingChica2}
         landingWidth={450}
         landingHeight={400}
       >
+        <Typography component="div" color="primary" textAlign="center">
+          <Box sx={{fontWeight: 500, fontSize: "16px", my: 4}}>
+            Acceder a tu cuenta
+          </Box>
+        </Typography>
         <form action={flow.ui.action} method={flow.ui.method} onSubmit={submit}>
-          {filterNodesByGroups({
-            nodes: flow.ui.nodes,
-            // we will also map default fields here such as csrf_token
-            // this only maps the `password` method
-            // you can also map `oidc` or `webauhthn` here as well
-            groups: ["default", "password"],
-          }).map((node, key) => mapUINode(node, key))}
+          <GridContainer>
+            {filterNodesByGroups({
+              nodes: flow.ui.nodes,
+              attributes: ["hidden"],
+              // we will also map default fields here such as csrf_token
+              // this only maps the `password` method
+              // you can also map `oidc` or `webauhthn` here as well
+              groups: ["default"],
+            }).map((node, key) => mapUINode(node, key))}
+            <GridItem lg={12} md={12}>
+              <TextField
+                required
+                name="identifier"
+                label="Número de Cédula"
+                placeholder="***-**00000-0"
+                autoComplete="username"
+                fullWidth
+              />
+            </GridItem>
+            <GridItem lg={12} md={12}>
+              <TextField
+                required
+                name="password"
+                label="Contraseña"
+                placeholder="*********"
+                autoComplete="username"
+                fullWidth
+              />
+            </GridItem>
+            <GridItem lg={12} md={12}>
+            <br />
+            {/* <button type="submit" name="method" value="password">Iniciar sesión</button> */}
+            <ButtonApp
+              name="method"
+              value="password"
+              submit
+              disabled={false}
+            >
+              INICIAR SESIÓN
+            </ButtonApp>
+          </GridItem>
+          </GridContainer>
         </form>
       </CardAuth>
     </BoxContentCenter>
