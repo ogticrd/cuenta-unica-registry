@@ -1,12 +1,12 @@
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import { Typography } from "@mui/material";
+import LandingChico from '../../../../public/assets/landingChico.svg';
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import LandingChico from '../../../../public/assets/landingChico.svg';
 import { TextBody } from '@/components/elements/typography';
 import { CardAuth } from '@/components/elements/cardAuth';
 import { ButtonApp } from '@/components/elements/button';
@@ -26,7 +26,7 @@ const schema = yup.object({
 
 export default function Index() {
   const {
-    formState: { },
+    formState: {},
   } = useForm<IFormInputs>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
@@ -41,18 +41,16 @@ export default function Index() {
         landingWidth={214}
         landingHeight={469}
         icon={
-          <ThumbUpOutlinedIcon
-            sx={{ fontSize: '82px', color: '#2ECC71' }}
-          />
+          <ThumbUpOutlinedIcon sx={{ fontSize: '82px', color: '#2ECC71' }} />
         }
       >
         <GridContainer>
           <GridItem md={12} lg={12}>
             <br />
             <Typography
-              color='primary'
+              color="primary"
               sx={{
-                fontSize: "24px",
+                fontSize: '24px',
                 fontWeight: '700',
                 textAlign: 'center',
               }}
@@ -61,7 +59,10 @@ export default function Index() {
             </Typography>
             <br />
             <TextBody textCenter>
-              Queremos expresar nuestro más sincero agradecimiento por tu participación y dedicación. Tu retroalimentación y experiencia nos son extremadamente valiosas para mejorar nuestro producto y brindar una experiencia excepcional a todos los ciudadanos.
+              Queremos expresar nuestro más sincero agradecimiento por tu
+              participación y dedicación. Tu retroalimentación y experiencia nos
+              son extremadamente valiosas para mejorar nuestro producto y
+              brindar una experiencia excepcional a todos los ciudadanos.
             </TextBody>
             <br />
           </GridItem>
@@ -72,11 +73,7 @@ export default function Index() {
             </TextBody>
             <br />
             <ButtonApp
-              onClick={() =>
-                window.open(
-                  'https://forms.gle/cQnxx6UEpFHrLx2t7'
-                )
-              }
+              onClick={() => window.open('https://forms.gle/cQnxx6UEpFHrLx2t7')}
             >
               ¡Comparte tu opinión!
             </ButtonApp>
