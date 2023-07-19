@@ -1,36 +1,36 @@
-import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+import { createTheme } from '@mui/material/styles';
+import { red } from '@mui/material/colors';
 
 export const theme = createTheme({
   palette: {
     primary: {
-      main: "#003876",
+      main: '#003876',
     },
     secondary: {
-      main: "#EE2A24",
+      main: '#EE2A24',
     },
     info: {
-      main: "#0087FF",
+      main: '#0087FF',
     },
     background: {
-      default: "#EFF7FF",
+      default: '#EFF7FF',
     },
   },
 
   typography: {
-    fontFamily: ["Poppins", "sans-serif"].join(","),
+    fontFamily: ['Poppins', 'sans-serif'].join(','),
   },
-  
+
   components: {
     MuiInputLabel: {
       defaultProps: {
         sx: {
-          fontSize: "16px",
-          fontWeight: "400",
-          color: "#003579",
-          overflow: "unset",
+          fontSize: '16px',
+          fontWeight: '400',
+          color: '#003579',
+          overflow: 'unset',
 
-          "& span": {
+          '& span': {
             color: red[500],
           },
         },
@@ -39,10 +39,10 @@ export const theme = createTheme({
     MuiFormLabel: {
       defaultProps: {
         sx: {
-          fontSize: "16px",
-          fontWeight: "400",
+          fontSize: '16px',
+          fontWeight: '400',
 
-          "& span": {
+          '& span': {
             color: red[500],
           },
         },
@@ -57,17 +57,17 @@ export const theme = createTheme({
           '& fieldset': {
             borderColor: '#E6E7E8',
           },
-        }
-      }
+        },
+      },
     },
     MuiStepIcon: {
       styleOverrides: {
         root: {
           '&.Mui-active': {
-            color: "#0087FF",
+            color: '#0087FF',
           },
         },
       },
-    }
+    },
   },
 });

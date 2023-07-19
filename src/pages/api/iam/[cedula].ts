@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
-import { VerifyIamUserNameResponse } from '../types';
+import { Identity } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,16 +14,19 @@ export default async function handler(
   }
 
   const http = axios.create({
-    baseURL: process.env.IAM_API,
+    baseURL: process.env.ORY_SDK_URL,
+    headers: {
+      Authorization: 'Bearer ' + process.env.ORY_SDK_TOKEN,
+    },
   });
 
   const { cedula } = req.query;
 
-  const { data } = await http.get<VerifyIamUserNameResponse>(
-    `auth/validations/users/existence?username=${cedula}`
+  const { data: identity } = await http.get<Identity[]>(
+    `/admin/identities?credentials_identifier=${cedula}`
   );
 
-  const { exists } = data.data;
+  const exists = identity.length !== 0;
 
   res.status(200).json({ exists });
 }

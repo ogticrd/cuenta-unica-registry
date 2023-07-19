@@ -1,7 +1,7 @@
+import BoxContentCenter from '@/components/elements/boxContentCenter';
 import LandingChica2 from '../../../public/assets/landingChica.svg';
 import { CardAuth } from '@/components/elements/cardAuth';
 import StepperRegister from './stepper';
-import BoxContentCenter from '@/components/elements/boxContentCenter';
 
 export default function Index() {
   return (

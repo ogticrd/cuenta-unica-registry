@@ -8,7 +8,12 @@ import {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ name: string; id: string } | void>
+  res: NextApiResponse<{
+    name: string;
+    id: string;
+    firstSurname?: string;
+    secondSurname?: string;
+  } | void>
 ): Promise<void> {
   const { token } = req.cookies;
 
@@ -20,7 +25,7 @@ export default async function handler(
     baseURL: process.env.CEDULA_API,
   });
 
-  const { cedula } = req.query;
+  const { cedula, validated } = req.query;
 
   const { data: citizensToken } = await http.post<CitizensTokenResponse>(
     `${process.env.CEDULA_TOKEN_API}`,
@@ -44,8 +49,15 @@ export default async function handler(
     }
   );
 
-  const { names, id } = citizen.payload;
+  const { names, id, firstSurname, secondSurname } = citizen.payload;
+
+  if (validated) {
+    return res
+      .status(200)
+      .json({ name: names, id, firstSurname, secondSurname });
+  }
+
   const name = names.split(' ')[0];
 
-  res.status(200).json({ name, id });
+  return res.status(200).json({ name, id });
 }

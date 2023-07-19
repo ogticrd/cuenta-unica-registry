@@ -21,11 +21,7 @@ export default function Index() {
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar sx={{ padding: '0px', height: '72px' }}>
               <div style={{ flexGrow: 1, paddingTop: '8px' }}>
-                <Link
-                  href={
-                    '/'
-                  }
-                >
+                <Link href={'/'}>
                   <Image src={Logo.src} alt="logo" width="200" height="48" />
                 </Link>
               </div>
