@@ -1,9 +1,3 @@
-import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-import { useForm } from 'react-hook-form';
-import { useCallback, useState } from 'react';
-
 import {
   Box,
   FormControlLabel,
@@ -12,55 +6,61 @@ import {
   Typography,
   Alert,
 } from '@mui/material';
-import Step2Modal from './step2Modal';
+import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import { useForm } from 'react-hook-form';
+import { useCallback, useState } from 'react';
 
-import { useSnackbar } from '@/components/elements/alert';
-import { GridContainer, GridItem } from '@/components/elements/grid';
 import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import {
+  Step2Props,
+  TermsAndConditionsInput,
+} from '../../../common/interfaces';
+import { useSnackbar } from '@/components/elements/alert';
+import Step2Modal from './step2Modal';
+import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
 
-interface IFormInputs {
-  acceptTermAndConditions: boolean;
-}
-
-interface IStep2Props {
-  infoCedula: { [key: string]: any };
-  handleNext: () => void;
-  handleReset: () => void;
-}
-
-export default function Step2({ infoCedula, handleNext, handleReset }: IStep2Props) {
+export default function Step2({
+  infoCedula,
+  handleNext,
+  handleReset,
+}: Step2Props) {
   const [open, setOpen] = useState(false);
-
   const handleClick = useCallback(() => {
     setOpen((prevOpen) => !prevOpen);
   }, []);
-
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<IFormInputs>();
+  } = useForm<TermsAndConditionsInput>();
+  const { AlertWarning } = useSnackbar();
 
-  const { AlertError } = useSnackbar();
-
-  const onSubmit = (data: IFormInputs) => {
+  const onSubmit = (data: TermsAndConditionsInput) => {
     if (!data.acceptTermAndConditions) {
-      AlertError(
-        'Para continuar debe aceptar Términos y Políticas de Privacidad'
-      );
+      AlertWarning(NON_ACCEPTED_TERMS_AND_CONDS_ERROR);
       return;
     }
+
     handleClick();
   };
 
   return (
     <>
-      <Typography component="div" color="primary" textAlign="center" sx={{ my: 4, fontSize: "16px" }}>
+      <Typography
+        component="div"
+        color="primary"
+        textAlign="center"
+        sx={{ my: 4, fontSize: '16px' }}
+      >
         <Box sx={{ fontWeight: 'bold' }}>¡Hola {infoCedula?.name}!</Box>
         <Box>
           {' '}
-          Ahora vamos a validar tu identidad mediante una verificación facial y
-          una prueba de vida. Asegúrate de cumplir con lo siguiente:
+          A continuación validaremos tu identidad mediante una verificación
+          facial y prueba de vida. Asegúrate de cumplir con las siguientes
+          condiciones:
         </Box>
       </Typography>
 
@@ -123,19 +123,21 @@ export default function Step2({ infoCedula, handleNext, handleReset }: IStep2Pro
                 }
                 label={
                   // TODO: Add link to terms and conditions
-                  <a
-                    // target="_blank" 
-                    // rel="noreferrer" 
-                    href="#"
-                  >
-                    Aceptar Términos y Políticas de Privacidad{' '}
+                  <>
+                    <a
+                      // target="_blank"
+                      // rel="noreferrer"
+                      href="#"
+                    >
+                      Aceptar términos y políticas de privacidad
+                    </a>{' '}
                     <span className="text-error">*</span>
-                  </a>
+                  </>
                 }
               />
               {errors.acceptTermAndConditions && (
                 <Alert severity="warning">
-                  Para continuar debe aceptar Términos y Políticas de Privacidad
+                  {NON_ACCEPTED_TERMS_AND_CONDS_ERROR}
                 </Alert>
               )}
             </FormGroup>
@@ -157,12 +159,12 @@ export default function Step2({ infoCedula, handleNext, handleReset }: IStep2Pro
         <br />
         <GridContainer>
           <GridItem md={12} lg={12}>
-            <Box textAlign='center'>
+            <Box textAlign="center">
               <ButtonTextApp
                 startIcon={<ArrowCircleLeftOutlinedIcon />}
                 onClick={() => handleReset()}
               >
-                Volver paso anterior
+                Volver al paso anterior
               </ButtonTextApp>
             </Box>
           </GridItem>
