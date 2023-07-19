@@ -41,10 +41,6 @@ export default function App({ Component, pageProps }: AppProps) {
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* <link
-          rel="stylesheet"
-          href="/public/fonts/fonts.googleapis.com_css2_family=Poppins_wght@200;300;400;500;600&display=swap.css"
-        /> */}
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />

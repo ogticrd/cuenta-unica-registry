@@ -17,9 +17,9 @@ import Step3 from './step3';
 
 const steps = ['Identificación', 'Verificación', 'Registro'];
 const optionalLabels = [
-  'ID del ciudadano',
-  'Prueba de vida del ciudadano',
-  'Cuenta del ciudadano',
+  'ID del usuario',
+  'Prueba de vida',
+  'Cuenta de usuario',
 ];
 
 export async function getServerSideProps() {
