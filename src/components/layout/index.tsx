@@ -1,4 +1,4 @@
-import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { Fab } from '@mui/material';
@@ -33,8 +33,8 @@ export default function Index({ children }: any) {
             color: theme.palette.primary.main,
           }}
         >
-          <LiveHelpOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color="info" />
-          {matches && 'Reportar error'}
+          <BugReportOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color="info" />
+          {matches && 'Reportar'}
         </Fab>
       </div>
       <Footer />
