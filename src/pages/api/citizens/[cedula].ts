@@ -11,6 +11,7 @@ export default async function handler(
   res: NextApiResponse<{
     name: string;
     id: string;
+    names?: string;
     firstSurname?: string;
     secondSurname?: string;
   } | void>
@@ -50,14 +51,13 @@ export default async function handler(
   );
 
   const { names, id, firstSurname, secondSurname } = citizen.payload;
+  const name = names.split(' ')[0];
 
   if (validated) {
     return res
       .status(200)
-      .json({ name: names, id, firstSurname, secondSurname });
+      .json({ name, names, id, firstSurname, secondSurname });
   }
-
-  const name = names.split(' ')[0];
 
   return res.status(200).json({ name, id });
 }
