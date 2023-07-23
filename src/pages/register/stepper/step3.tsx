@@ -126,7 +126,8 @@ export default function Step3({ handleNext, infoCedula }: any) {
         (n: any) => n.attributes['name'] === 'csrf_token'
       );
       const csrf_token = node?.attributes.value as string;
-      const surname = `${citizen.firstSurname} ${citizen.secondSurname}`;
+      // TODO: We need this later for `metadata_public` object
+      // const surname = `${citizen.firstSurname} ${citizen.secondSurname}`;
       const method = 'password';
 
       const updateRegistrationFlowBody: UpdateRegistrationFlowBody = {
@@ -137,7 +138,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           emails: [form.email],
           cedula: citizen.id,
           shortName: {
-            firstName: citizen.firstName,
+            firstName: citizen.name,
             firstSurname: citizen.firstSurname,
           },
         },
