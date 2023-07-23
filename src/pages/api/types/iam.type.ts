@@ -38,8 +38,12 @@ export interface Webauthn {
 export interface Traits {
   cedula: string;
   shortName: shortName;
-  email: string;
+  emails: Emails;
   phone: string;
+}
+
+export interface Emails {
+  email: string;
 }
 
 export interface shortName {

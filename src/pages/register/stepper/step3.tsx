@@ -134,11 +134,13 @@ export default function Step3({ handleNext, infoCedula }: any) {
         method,
         password: form.password,
         traits: {
-          email: form.email,
+          emails: {
+            form.email,
+          },
           cedula: citizen.id,
           shortName: {
-            first: citizen.firstName,
-            last: citizen.firstSurname,
+            firstName: citizen.firstName,
+            firstSurname: citizen.firstSurname,
           },
         },
       };
