@@ -7,7 +7,12 @@ interface IButtonTextApp {
   endIcon?: any;
 }
 
-export const ButtonTextApp = ({ onClick, children, startIcon = null, endIcon = null }: IButtonTextApp) => {
+export const ButtonTextApp = ({
+  onClick,
+  children,
+  startIcon = null,
+  endIcon = null,
+}: IButtonTextApp) => {
   return (
     <Button
       onClick={onClick}
@@ -17,10 +22,10 @@ export const ButtonTextApp = ({ onClick, children, startIcon = null, endIcon = n
       endIcon={endIcon}
       sx={{
         textTransform: 'inherit',
-        fontSize: "14px",
-        fontWeight: "400",
-        lineHeight: "21px",
-        color: "#707070"
+        fontSize: '14px',
+        fontWeight: '400',
+        lineHeight: '21px',
+        color: '#707070',
       }}
     >
       {children}
@@ -40,13 +45,13 @@ interface IButtonApp {
   value?: any;
   size?: 'small' | 'medium' | 'large' | undefined;
   color?:
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'error'
-  | 'info'
-  | 'warning';
+    | 'inherit'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'error'
+    | 'info'
+    | 'warning';
   variant?: 'text' | 'outlined' | 'contained';
 }
 

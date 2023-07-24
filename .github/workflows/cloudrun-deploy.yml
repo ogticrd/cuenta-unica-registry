@@ -66,7 +66,8 @@ jobs:
           service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           region: ${{ inputs.region }}
           env_vars: |
-            IAM_API=${{ secrets.IAM_API }},
+            ORY_SDK_URL=${{ secrets.ORY_SDK_URL }},
+            ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN }},
             CEDULA_API=${{ secrets.CEDULA_API }},
             CEDULA_API_KEY=${{ secrets.CEDULA_API_KEY }},
             JCE_PHOTO_API=${{ secrets.JCE_PHOTO_API }},
@@ -74,6 +75,8 @@ jobs:
             SITE_COOKIE_KEY=${{ secrets.SITE_COOKIE_KEY }},
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }},
             RECAPTHA_API_KEY=${{ secrets.RECAPTHA_API_KEY }},
+            CEDULA_TOKEN_API=${{ secrets.CEDULA_TOKEN_API }},
+            CITIZENS_API_AUTH_KEY=${{ secrets.CITIZENS_API_AUTH_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
 
       - name: Allow unauthenticated calls to the service

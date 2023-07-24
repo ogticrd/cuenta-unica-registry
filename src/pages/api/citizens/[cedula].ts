@@ -1,11 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
-import { CitizensBasicInformationResponse } from '../types';
+import {
+  CitizensBasicInformationResponse,
+  CitizensTokenResponse,
+} from '../types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ name: string; id: string } | void>
+  res: NextApiResponse<{
+    name: string;
+    id: string;
+    firstSurname?: string;
+    secondSurname?: string;
+  } | void>
 ): Promise<void> {
   const { token } = req.cookies;
 
@@ -17,14 +25,39 @@ export default async function handler(
     baseURL: process.env.CEDULA_API,
   });
 
-  const { cedula } = req.query;
+  const { cedula, validated } = req.query;
 
-  const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
-    `/${cedula}/info/basic?api-key=${process.env.CEDULA_API_KEY}`
+  const { data: citizensToken } = await http.post<CitizensTokenResponse>(
+    `${process.env.CEDULA_TOKEN_API}`,
+    {
+      grant_type: 'client_credentials',
+    },
+    {
+      headers: {
+        Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }
   );
 
-  const { names, id } = citizen.payload;
+  const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
+    `/${cedula}/info/basic?api-key=${process.env.CEDULA_API_KEY}`,
+    {
+      headers: {
+        Authorization: `Bearer ${citizensToken.access_token}`,
+      },
+    }
+  );
+
+  const { names, id, firstSurname, secondSurname } = citizen.payload;
+
+  if (validated) {
+    return res
+      .status(200)
+      .json({ name: names, id, firstSurname, secondSurname });
+  }
+
   const name = names.split(' ')[0];
 
-  res.status(200).json({ name, id });
+  return res.status(200).json({ name, id });
 }

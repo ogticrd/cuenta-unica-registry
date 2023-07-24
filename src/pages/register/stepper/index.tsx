@@ -1,16 +1,16 @@
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Button from '@mui/material/Button';
+import { useRouter } from 'next/router';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 import axios from 'axios';
 
 import { routes } from '@/constants/routes';
-import { useRouter } from 'next/router';
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
@@ -32,18 +32,15 @@ export async function getServerSideProps() {
 
 export default function StepperRegister() {
   const router = useRouter();
-
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
-
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [infoCedula, setInfoCedula] = React.useState({});
 
   React.useEffect(() => {
     axios.get(`/api/auth`).then().catch();
   }, []);
-
-  const [infoCedula, setInfoCedula] = React.useState({});
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
@@ -68,7 +65,13 @@ export default function StepperRegister() {
       case 0:
         return <Step1 setInfoCedula={setInfoCedula} handleNext={handleNext} />;
       case 1:
-        return <Step2 infoCedula={infoCedula} handleNext={handleNext} handleReset={handleReset} />;
+        return (
+          <Step2
+            infoCedula={infoCedula}
+            handleNext={handleNext}
+            handleReset={handleReset}
+          />
+        );
       case 2:
         return <Step3 infoCedula={infoCedula} handleNext={handleNext} />;
       default:
@@ -80,7 +83,7 @@ export default function StepperRegister() {
     <Box sx={{ width: '100%' }}>
       <Stepper
         alternativeLabel={!matches}
-        sx={{ paddingBottom: '20px', borderBottom: '1px solid #9FD0FD'}}
+        sx={{ paddingBottom: '20px', borderBottom: '1px solid #9FD0FD' }}
         activeStep={activeStep}
       >
         {steps.map((label, index) => (
