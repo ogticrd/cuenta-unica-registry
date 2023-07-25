@@ -172,6 +172,7 @@ export default function Login()  {
               <TextField
                 required
                 name="password"
+                type="password"
                 label="Contraseña"
                 placeholder="*********"
                 autoComplete="username"
