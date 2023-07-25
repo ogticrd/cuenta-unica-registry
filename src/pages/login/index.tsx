@@ -18,9 +18,10 @@ import { edgeConfig } from "@ory/integrations/next"
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { CardAuth } from '@/components/elements/cardAuth';
 import LandingChica2 from '../../../public/assets/landingChica.svg';
-import { Box, Button, TextField, Typography } from "@mui/material"
+import { Box, Button, Link, TextField, Typography } from "@mui/material"
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { ButtonApp } from '@/components/elements/button';
+import { TextBodyTiny } from '@/components/elements/typography';
 
 const frontend = new FrontendApi(
   new Configuration(edgeConfig)
@@ -193,6 +194,20 @@ export default function Login()  {
           </GridItem>
           </GridContainer>
         </form>
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+            <br />
+            <TextBodyTiny textCenter>
+              <span className="text-secondary">¿No tienes una cuenta?</span>{' '}
+              <Link
+                href={'./register'}
+                style={{ textDecoration: 'none' }}
+              >
+                Registrate aquí.
+              </Link>
+            </TextBodyTiny>
+          </GridItem>
+        </GridContainer>
       </CardAuth>
     </BoxContentCenter>
   ) : (
