@@ -8,7 +8,7 @@ export interface Identity {
   traits: Traits;
   verifiable_addresses: VerifiableAddress[];
   recovery_addresses: RecoveryAddress[];
-  metadata_public: any;
+  metadata_public: MetadataPublic;
   metadata_admin: any;
   created_at: string;
   updated_at: string;
@@ -37,9 +37,23 @@ export interface Webauthn {
 
 export interface Traits {
   cedula: string;
+  shortName: shortName;
   email: string;
+  phone: string;
+}
+
+export interface shortName {
   firstName: string;
-  lastName: string;
+  firstSurname: string;
+}
+
+export interface MetadataPublic {
+  fullName: fullName;
+}
+
+export interface fullName {
+  givenName: string;
+  surname: string;
 }
 
 export interface VerifiableAddress {

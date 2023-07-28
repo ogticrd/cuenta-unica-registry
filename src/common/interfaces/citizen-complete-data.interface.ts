@@ -1,6 +1,8 @@
 export interface CitizenCompleteData {
   id: string;
-  name: string;
+  names: string;
   firstSurname: string;
   secondSurname: string;
+  gender: string;
+  birthDate: string;
 }
