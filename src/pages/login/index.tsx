@@ -1,6 +1,4 @@
 import {
-  Configuration,
-  FrontendApi,
   LoginFlow,
   UiNode,
   UiNodeMeta,
@@ -22,10 +20,7 @@ import { Box, Button, Link, TextField, Typography } from "@mui/material"
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { ButtonApp } from '@/components/elements/button';
 import { TextBodyTiny } from '@/components/elements/typography';
-
-const frontend = new FrontendApi(
-  new Configuration(edgeConfig)
-)
+import { orySdk } from '@/sdk';
 
 export default function Login()  {
   const [flow, setFlow] = useState<LoginFlow>()
@@ -37,9 +32,9 @@ export default function Login()  {
     const aal2 = searchParams.get("aal2")
     // we can redirect the user back to the page they were on before login
     const returnTo = searchParams.get("return_to")
-    frontend
+    orySdk
       .createBrowserLoginFlow({
-        returnTo: returnTo || "", // redirect to the root path after login
+        returnTo: returnTo || "",
         // if the user has a session, refresh it
         refresh: true,
         // if the aal2 query parameter is set, we get the two factor login flow UI nodes
@@ -76,13 +71,13 @@ export default function Login()  {
       }
     }
 
-    frontend
+    orySdk
       .updateLoginFlow({
         flow: flow!.id,
         updateLoginFlowBody: body,
       })
       .then(() => {
-        router.replace("/")
+        router.replace("/login/result")
       })
       .catch((err) => {
         // handle the error
