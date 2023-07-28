@@ -3,16 +3,20 @@ import axios from 'axios';
 
 import {
   CitizensBasicInformationResponse,
+  CitizensBirthInformationResponse,
   CitizensTokenResponse,
 } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{
-    name: string;
     id: string;
+    name?: string;
+    names?: string;
     firstSurname?: string;
     secondSurname?: string;
+    gender?: string;
+    birthDate?: string;
   } | void>
 ): Promise<void> {
   const { token } = req.cookies;
@@ -49,15 +53,32 @@ export default async function handler(
     }
   );
 
-  const { names, id, firstSurname, secondSurname } = citizen.payload;
+  const { names, id, firstSurname, secondSurname, gender } = citizen.payload;
+  const name = names.split(' ')[0];
 
   if (validated) {
-    return res
-      .status(200)
-      .json({ name: names, id, firstSurname, secondSurname });
-  }
+    const { data: citizensBirthData } =
+      await http.get<CitizensBirthInformationResponse>(
+        `/${cedula}/info/birth?api-key=${process.env.CEDULA_API_KEY}`,
+        {
+          headers: {
+            Authorization: `Bearer ${citizensToken.access_token}`,
+          },
+        }
+      );
 
-  const name = names.split(' ')[0];
+    let { birthDate } = citizensBirthData.payload;
+    birthDate = birthDate.split('T')[0];
+
+    return res.status(200).json({
+      names,
+      id,
+      firstSurname,
+      secondSurname,
+      gender,
+      birthDate,
+    });
+  }
 
   return res.status(200).json({ name, id });
 }
