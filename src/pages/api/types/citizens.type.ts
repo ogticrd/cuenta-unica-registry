@@ -5,10 +5,21 @@ export type CitizenBasicInformation = {
   secondSurname: string;
   gender: 'M' | 'F';
 };
+export type CitizenBirthInformation = {
+  id: string;
+  birthPlace: string;
+  birthDate: string;
+  nationality: string;
+};
 
 export type CitizensBasicInformationResponse = {
   valid: boolean;
   payload: CitizenBasicInformation;
+};
+
+export type CitizensBirthInformationResponse = {
+  valid: boolean;
+  payload: CitizenBirthInformation;
 };
 
 export type CitizensTokenResponse = {
