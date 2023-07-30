@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
 import { getRekognitionClient } from '@/helpers';
+import logger from '@/lib/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,11 +29,13 @@ export default async function handler(
     });
 
     let isLive = false;
+    const confidence = response.Confidence;
 
-    if (response.Confidence && response.Confidence > 85) {
-      isLive = true; // Confidence threshold for live face
+    // Threshold for face liveness
+    if (confidence && confidence > 85) {
+      isLive = true;
     } else {
-      console.log(`Low confidence for citizen ${cedula}`);
+      logger.info(`Low confidence (${confidence}%) for citizen ${cedula}`);
       return res.status(200).end(
         JSON.stringify({
           error: 'Low Confidence',
@@ -58,16 +61,16 @@ export default async function handler(
         TargetImage: {
           Bytes: buffer2,
         },
+        // Threshold for face match
         SimilarityThreshold: 95,
       };
 
       try {
         const compare = await client.compareFaces(params);
         if (compare.FaceMatches && compare.FaceMatches.length) {
-          console.log(`Citizen ${cedula} matched`);
           return res.status(200).end(JSON.stringify({ isMatch: true }));
         } else {
-          console.log(`Citizen ${cedula} didn't match`);
+          logger.warn(`Citizen ${cedula} didn't match`);
           return res
             .status(200)
             .end(JSON.stringify({ error: 'No Match', isMatch: false }));

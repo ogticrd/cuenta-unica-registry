@@ -23,6 +23,7 @@ import { ButtonApp } from '@/components/elements/button';
 import { CedulaInput, CustomProps } from '../../../common/interfaces';
 import { cedulaSchema } from '../../../common/yup-schemas';
 import { Validations } from '@/helpers';
+import logger from '@/lib/logger';
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
   function TextMaskCustom(props, ref: any) {
@@ -115,7 +116,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         setInfoCedula(citizen);
         handleNext();
       } catch (err: any) {
-        console.error(err.message || err);
+        logger.error(err.message || err);
 
         return AlertError(INVALID_CEDULA_ERROR);
       } finally {

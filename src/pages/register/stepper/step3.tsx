@@ -32,6 +32,7 @@ import { ButtonApp } from '@/components/elements/button';
 import { step3Schema } from '../../../common/yup-schemas';
 import { Crypto } from '@/helpers';
 import { orySdk } from '@/sdk';
+import logger from '@/lib/logger';
 
 export default function Step3({ handleNext, infoCedula }: any) {
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
         setFlow(flow);
       } catch (err: any) {
         AlertWarning(CREATE_BROWSER_REGISTRATION_FLOW_ERROR);
-        console.error(err.message || err);
+        logger.error(err.message || err);
       }
     };
 
@@ -168,7 +169,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
 
-        console.log('errorData', errorData);
+        logger.error('errorData', errorData);
 
         const { ui } = errorData;
 
@@ -196,7 +197,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           errors.push(e);
         }
 
-        console.log('errors', errors);
+        logger.error('errors', errors);
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error
