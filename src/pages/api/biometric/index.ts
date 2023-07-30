@@ -33,6 +33,7 @@ export default async function handler(
 
     // Threshold for face liveness
     if (confidence && confidence > 85) {
+      logger.info(`High confidence (${confidence}%) for citizen ${cedula}`);
       isLive = true;
     } else {
       logger.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
@@ -66,11 +67,13 @@ export default async function handler(
       };
 
       try {
-        const compare = await client.compareFaces(params);
-        if (compare.FaceMatches && compare.FaceMatches.length) {
+        const response = await client.compareFaces(params);
+        if (response.FaceMatches && response.FaceMatches.length) {
+          const similarity = response.FaceMatches[0].Similarity;
+          logger.info(`High similarity (${similarity}%) for citizen ${cedula}`);
           return res.status(200).end(JSON.stringify({ isMatch: true }));
         } else {
-          logger.warn(`Citizen ${cedula} didn't match`);
+          logger.warn(`Low similarity for citizen ${cedula}`);
           return res
             .status(200)
             .end(JSON.stringify({ error: 'No Match', isMatch: false }));
