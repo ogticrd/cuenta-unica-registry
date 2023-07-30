@@ -19,7 +19,7 @@ export async function getRekognitionClient(
   const credentials = await SSR.Credentials.get();
 
   const rekognitionClient = new Rekognition({
-    region: process.env.AWS_REGION,
+    region: awsConfig.aws_project_region,
     credentials,
   });
 
