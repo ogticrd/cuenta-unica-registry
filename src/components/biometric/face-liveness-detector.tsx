@@ -53,7 +53,8 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   useEffect(() => {
     if (error) {
-      AlertError('No se ha podido validar correctamente la identidad.');
+      console.error(error);
+      AlertError('No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE');
     }
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line
