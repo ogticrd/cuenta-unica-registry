@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
+import { Amplify } from 'aws-amplify';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import TagManager from 'react-gtm-module';
 
@@ -13,6 +14,16 @@ import { theme } from '../themes';
 import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
 import '@/styles/globals.css';
+
+const awsConfig = {
+  aws_project_region: process.env.AWS_REGION,
+  aws_cognito_identity_pool_id: process.env.AMPLIFY_IDENTITYPOOL_ID,
+  aws_cognito_region: process.env.AWS_REGION, // This could also be a separate environment variable if needed
+  aws_user_pools_id: process.env.AMPLIFY_USERPOOL_ID,
+  aws_user_pools_web_client_id: process.env.AMPLIFY_WEBCLIENT_ID,
+};
+
+Amplify.configure(awsConfig);
 
 export default function App({ Component, pageProps }: AppProps) {
   // Google Tag Manager
