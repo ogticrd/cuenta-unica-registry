@@ -3,20 +3,16 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
-import { Amplify } from 'aws-amplify';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import TagManager from 'react-gtm-module';
 
 import { SnackbarProvider } from '../components/elements/alert';
 import Layout from '../components/layout';
-import awsExports from '../aws-exports';
 import { theme } from '../themes';
 
 import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
 import '@/styles/globals.css';
-
-Amplify.configure(awsExports);
 
 export default function App({ Component, pageProps }: AppProps) {
   // Google Tag Manager
