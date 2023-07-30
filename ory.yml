@@ -1,0 +1,353 @@
+id: cc8ee210-f897-4c48-bb93-a69df6b918e9
+name: Plataforma única de autenticación
+revision_id: 87ccd833-5ad8-4f62-a0dc-e46842d36ec3
+services:
+  identity:
+    config:
+      cookies:
+        domain: naughty-euclid-q27q8011k4.projects.oryapis.com
+        path: /
+        same_site: Lax
+      courier:
+        smtp:
+          connection_uri: smtp://OGTIC:md-1SvqeRSP1HU5Z2YQN60S8Q@smtp.mandrillapp.com:587
+          from_address: noreply@ogtic.gob.do
+          from_name: Cuenta Unica Ciudadana
+          headers:
+            X-MC-Subaccount: Autenticacion
+            X-MC-Tags: ory
+            X-MC-Track: opens, clicks_htmlonly
+            X-MC-TrackingDomain: cuenta.digital.gob.do
+        templates:
+          recovery:
+            invalid:
+              email:
+                body: {}
+            valid:
+              email:
+                body: {}
+          recovery_code:
+            invalid:
+              email:
+                body: {}
+            valid:
+              email:
+                body: {}
+          verification:
+            invalid:
+              email:
+                body: {}
+            valid:
+              email:
+                body: {}
+          verification_code:
+            invalid:
+              email:
+                body: {}
+            valid:
+              email:
+                body:
+                  html: https://storage.googleapis.com/bac-gcs-production/ad88737ddcd726137f7b28e56aec5815b69c17eaf44502a8ad083c580f3ea7f265be883e92548224f5f6a8a307db1d7650e142d7b5e99cc5cdb2b68bfba4e047.html
+                subject: https://storage.googleapis.com/bac-gcs-production/89fdebf7b70de240f81a032c83b81f65ee1e2536c94b384cbf49964c92a2e55b2351b8df8843a56ee11143493964121cce48c602312a8b14fbe189018596f17d.bin
+      feature_flags:
+        cacheable_sessions: false
+      identity:
+        default_schema_id: 8ec0d804ad6185b7657a689223f93702f76abcaa9396867021a97373f167a4f1fca26b1b8614184eba0c96b3039d254c28ecde2249dfdeed845042b864073d96
+        schemas:
+        - id: preset://email
+          url: base64://ewogICIkaWQiOiAiaHR0cHM6Ly9zY2hlbWFzLm9yeS5zaC9wcmVzZXRzL2tyYXRvcy9pZGVudGl0eS5lbWFpbC5zY2hlbWEuanNvbiIsCiAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAidGl0bGUiOiAiUGVyc29uIiwKICAidHlwZSI6ICJvYmplY3QiLAogICJwcm9wZXJ0aWVzIjogewogICAgInRyYWl0cyI6IHsKICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgImVtYWlsIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgICAgICJmb3JtYXQiOiAiZW1haWwiLAogICAgICAgICAgInRpdGxlIjogIkUtTWFpbCIsCiAgICAgICAgICAib3J5LnNoL2tyYXRvcyI6IHsKICAgICAgICAgICAgImNyZWRlbnRpYWxzIjogewogICAgICAgICAgICAgICJwYXNzd29yZCI6IHsKICAgICAgICAgICAgICAgICJpZGVudGlmaWVyIjogdHJ1ZQogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgIndlYmF1dGhuIjogewogICAgICAgICAgICAgICAgImlkZW50aWZpZXIiOiB0cnVlCiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAidG90cCI6IHsKICAgICAgICAgICAgICAgICJhY2NvdW50X25hbWUiOiB0cnVlCiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAicmVjb3ZlcnkiOiB7CiAgICAgICAgICAgICAgInZpYSI6ICJlbWFpbCIKICAgICAgICAgICAgfSwKICAgICAgICAgICAgInZlcmlmaWNhdGlvbiI6IHsKICAgICAgICAgICAgICAidmlhIjogImVtYWlsIgogICAgICAgICAgICB9CiAgICAgICAgICB9LAogICAgICAgICAgIm1heExlbmd0aCI6IDMyMAogICAgICAgIH0KICAgICAgfSwKICAgICAgInJlcXVpcmVkIjogWwogICAgICAgICJlbWFpbCIKICAgICAgXSwKICAgICAgImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjogZmFsc2UKICAgIH0KICB9Cn0K
+        - id: a7f1c9794d1acd3acd036f59de31a6251ad727e36ce174d6baee4417faee118ca9228fbc9da328e7c720b5ce314fd5d82048a7c085e227e1b6cd46235b75d429
+          url: https://storage.googleapis.com/bac-gcs-production/a7f1c9794d1acd3acd036f59de31a6251ad727e36ce174d6baee4417faee118ca9228fbc9da328e7c720b5ce314fd5d82048a7c085e227e1b6cd46235b75d429.json
+        - id: a444027d062ddf88f4840e4621d0ec5f1adc3b313bb29c02e0ba1d362a711750dd436fed7755a766ba35f735207eae37907e8e1ecd4a7bec2cd44b5a8c8db48f
+          url: https://storage.googleapis.com/bac-gcs-production/a444027d062ddf88f4840e4621d0ec5f1adc3b313bb29c02e0ba1d362a711750dd436fed7755a766ba35f735207eae37907e8e1ecd4a7bec2cd44b5a8c8db48f.json
+        - id: ef11f162bbaab644a22ce839c89185ea2744145f019f8646cb584f22eb1794f8799525c61774cd56dfc3184c5cfeab6ec1e91ce22c729758bafae7613742035a
+          url: https://storage.googleapis.com/bac-gcs-production/ef11f162bbaab644a22ce839c89185ea2744145f019f8646cb584f22eb1794f8799525c61774cd56dfc3184c5cfeab6ec1e91ce22c729758bafae7613742035a.json
+        - id: 43fe52b3cdb99bbf3e7df0cfd65ceef014a5d3dc160de63d10ab71cf77b07517479e601a1801366dc9afe894f6dbf3edab767d4cfae6a685ec25b0697d400a7c
+          url: https://storage.googleapis.com/bac-gcs-production/43fe52b3cdb99bbf3e7df0cfd65ceef014a5d3dc160de63d10ab71cf77b07517479e601a1801366dc9afe894f6dbf3edab767d4cfae6a685ec25b0697d400a7c.json
+        - id: 2508d39b31df810dea5ad7b604c1a038d58792750b61bb1435025cc48d1c8b02e1e55b248a4e6b44acb6eae6eaaa9adcc62470864d934491fae2fb2e4700b7be
+          url: https://storage.googleapis.com/bac-gcs-production/2508d39b31df810dea5ad7b604c1a038d58792750b61bb1435025cc48d1c8b02e1e55b248a4e6b44acb6eae6eaaa9adcc62470864d934491fae2fb2e4700b7be.json
+        - id: 6e0d408dfedd4dac56bf9d059296ee687e0acef4d4330a2760534a916148a5ad37b366f0492e710b18c5e70abb971b985c8b033c1b922aaff90e66a950efb60a
+          url: https://storage.googleapis.com/bac-gcs-production/6e0d408dfedd4dac56bf9d059296ee687e0acef4d4330a2760534a916148a5ad37b366f0492e710b18c5e70abb971b985c8b033c1b922aaff90e66a950efb60a.json
+        - id: 7dd3aa65a6fd8785b80eefa2c7d8b93743b6f8ebad270d685b75c9a30969b59d0eeb5f295c3a164d49eb49287826b6131c50b65d22c2a909b52a7616424b04d4
+          url: https://storage.googleapis.com/bac-gcs-production/7dd3aa65a6fd8785b80eefa2c7d8b93743b6f8ebad270d685b75c9a30969b59d0eeb5f295c3a164d49eb49287826b6131c50b65d22c2a909b52a7616424b04d4.json
+        - id: 03ade72b0c4783d62a2420f08917c978ca01bf45fbd733d810484b406354443134a121c9cec2bfd8212c9686dd4dd1a30144381a40271a795678f7d47f23196f
+          url: https://storage.googleapis.com/bac-gcs-production/03ade72b0c4783d62a2420f08917c978ca01bf45fbd733d810484b406354443134a121c9cec2bfd8212c9686dd4dd1a30144381a40271a795678f7d47f23196f.json
+        - id: 6d51d005e773af64fb177f93d462461a62a87464a03adcb898a91e6390799d20cbf8038fe7ad5ae276295fa0bd716579cc77ebea81c7a3e4d9ccb380ec763fde
+          url: https://storage.googleapis.com/bac-gcs-production/6d51d005e773af64fb177f93d462461a62a87464a03adcb898a91e6390799d20cbf8038fe7ad5ae276295fa0bd716579cc77ebea81c7a3e4d9ccb380ec763fde.json
+        - id: 78e4a8f312923348874a31ffba0b034dc5f2fa05abf09497045e55a29613967dc7370834c6c8da6eeaa0f3cc2c0edf21d452eadf8adabd70ede8f7a6d5dd0aaf
+          url: https://storage.googleapis.com/bac-gcs-production/78e4a8f312923348874a31ffba0b034dc5f2fa05abf09497045e55a29613967dc7370834c6c8da6eeaa0f3cc2c0edf21d452eadf8adabd70ede8f7a6d5dd0aaf.json
+        - id: 6ed79fe1e668e7b1d59b576f62a69d0ff734e05d02f2d531667236b7bc03ec7b01840422658ee2c598fea4cf25389bef849f7215ffbe4e2fd0ff47f1304440ed
+          url: https://storage.googleapis.com/bac-gcs-production/6ed79fe1e668e7b1d59b576f62a69d0ff734e05d02f2d531667236b7bc03ec7b01840422658ee2c598fea4cf25389bef849f7215ffbe4e2fd0ff47f1304440ed.json
+        - id: 725f5a5169ec99ed7c1a815eee58631600d2070e6f903ea13cf373fa83af13a3807a9fb405aeae2ad9fbdd27834b861208de0e110655ffec89cdbc12a112e162
+          url: https://storage.googleapis.com/bac-gcs-production/725f5a5169ec99ed7c1a815eee58631600d2070e6f903ea13cf373fa83af13a3807a9fb405aeae2ad9fbdd27834b861208de0e110655ffec89cdbc12a112e162.json
+        - id: 06cad73797fc9c1c59ec358e304834ce260b872fe2e939eb05f89c009ae3349c912bbdf45f45aeda78b760692e87bf46b9e7b7ec05355b77cad05e2d175398e8
+          url: https://storage.googleapis.com/bac-gcs-production/06cad73797fc9c1c59ec358e304834ce260b872fe2e939eb05f89c009ae3349c912bbdf45f45aeda78b760692e87bf46b9e7b7ec05355b77cad05e2d175398e8.json
+        - id: 28bb6c2344cefbe2325482b08c5803714c62e784bbb583c7ce538faa8f518c61c1268e75d7c87d725ac9db1a005f846a60964499a3863aea3d3705ad21ecaef2
+          url: https://storage.googleapis.com/bac-gcs-production/28bb6c2344cefbe2325482b08c5803714c62e784bbb583c7ce538faa8f518c61c1268e75d7c87d725ac9db1a005f846a60964499a3863aea3d3705ad21ecaef2.json
+        - id: 31f76246cb99583df911e89d70fb99781a821f385bd9d362f089420526237055ee1de0b544a4f0e3964046e5212a6fc8533e18bb06d60170ad00f3ea20d2d23c
+          url: https://storage.googleapis.com/bac-gcs-production/31f76246cb99583df911e89d70fb99781a821f385bd9d362f089420526237055ee1de0b544a4f0e3964046e5212a6fc8533e18bb06d60170ad00f3ea20d2d23c.json
+        - id: 8ec0d804ad6185b7657a689223f93702f76abcaa9396867021a97373f167a4f1fca26b1b8614184eba0c96b3039d254c28ecde2249dfdeed845042b864073d96
+          url: https://storage.googleapis.com/bac-gcs-production/8ec0d804ad6185b7657a689223f93702f76abcaa9396867021a97373f167a4f1fca26b1b8614184eba0c96b3039d254c28ecde2249dfdeed845042b864073d96.json
+      oauth2_provider:
+        override_return_to: true
+      selfservice:
+        allowed_return_urls:
+        - https://naughty-euclid-q27q8011k4.projects.oryapis.com
+        - https://cuenta.digital.gob.do
+        - http://localhost:3000/login/result
+        - https://cuenta.digital.gob.do/
+        - https://beta.registro.digital.gob.do/
+        - http://localhost:3000
+        - /login/result
+        default_browser_return_url: /ui/settings
+        flows:
+          error:
+            ui_url: /ui/error
+          login:
+            after:
+              default_browser_return_url: https://cuenta.digita.gob.do/login/result
+              hooks: []
+              oidc:
+                hooks: []
+              password:
+                hooks:
+                - hook: require_verified_address
+              webauthn:
+                hooks: []
+            before:
+              hooks: []
+            ui_url: /ui/login
+          logout:
+            after: {}
+          recovery:
+            after:
+              hooks: []
+            before:
+              hooks: []
+            enabled: true
+            notify_unknown_recipients: false
+            ui_url: /ui/recovery
+            use: code
+          registration:
+            after:
+              hooks: []
+              oidc:
+                hooks:
+                - hook: session
+              password:
+                hooks:
+                - hook: session
+              webauthn:
+                hooks:
+                - hook: session
+            before:
+              hooks: []
+            enabled: true
+            ui_url: /ui/registration
+          settings:
+            after:
+              hooks: []
+              password:
+                hooks: []
+              profile:
+                hooks: []
+            before:
+              hooks: []
+            privileged_session_max_age: 15m0s
+            required_aal: highest_available
+            ui_url: /ui/settings
+          verification:
+            after:
+              hooks: []
+            before:
+              hooks: []
+            enabled: true
+            notify_unknown_recipients: false
+            ui_url: /ui/verification
+            use: code
+        methods:
+          code:
+            config: {}
+          link:
+            config:
+              base_url: https://cuenta.digital.gob.do/
+            enabled: true
+          lookup_secret:
+            enabled: true
+          oidc:
+            config:
+              providers: []
+            enabled: true
+          password:
+            config: {}
+          profile:
+            enabled: false
+          totp:
+            config:
+              issuer: Cuenta Única
+            enabled: true
+          webauthn:
+            config:
+              passwordless: true
+              rp:
+                display_name: Cuenta Única
+                id: cuenta.digital.gob.do
+                origin: https://cuenta.digital.gob.do
+            enabled: true
+      serve:
+        admin:
+          base_url: https://naughty-euclid-q27q8011k4.projects.oryapis.com/
+          request_log:
+            disable_for_health: true
+        public:
+          base_url: https://naughty-euclid-q27q8011k4.projects.oryapis.com/
+          cors:
+            enabled: false
+          request_log:
+            disable_for_health: true
+      session:
+        cookie:
+          domain: naughty-euclid-q27q8011k4.projects.oryapis.com
+          name: ory_session_naughtyeuclidq27q8011k4
+          path: /
+          same_site: Lax
+        lifespan: 72h0m0s
+        whoami:
+          required_aal: highest_available
+  oauth2:
+    config:
+      clients:
+        http:
+          disallow_private_ip_ranges: true
+      dev: true
+      hsm:
+        enabled: false
+      oauth2:
+        client_credentials:
+          default_grant_allowed_scope: false
+        exclude_not_before_claim: false
+        expose_internal_errors: true
+        grant:
+          jwt:
+            iat_optional: false
+            jti_optional: false
+            max_ttl: 720h0m0s
+        hashers:
+          algorithm: pbkdf2
+          pbkdf2:
+            iterations: 10000
+        pkce:
+          enforced: false
+          enforced_for_public_clients: false
+        session:
+          encrypt_at_rest: true
+      oidc:
+        dynamic_client_registration:
+          enabled: false
+        subject_identifiers: {}
+      serve:
+        admin:
+          cors:
+            allow_credentials: true
+            allowed_headers:
+            - Accept
+            - Content-Type
+            - Content-Length
+            - Accept-Language
+            - Content-Language
+            - Authorization
+            allowed_methods:
+            - POST
+            - GET
+            - PUT
+            - PATCH
+            - DELETE
+            - CONNECT
+            - HEAD
+            - OPTIONS
+            - TRACE
+            debug: false
+            enabled: false
+            exposed_headers:
+            - Cache-Control
+            - Expires
+            - Last-Modified
+            - Pragma
+            - Content-Length
+            - Content-Language
+            - Content-Type
+            max_age: 0
+          tls:
+            enabled: false
+        cookies:
+          domain: naughty-euclid-q27q8011k4.projects.oryapis.com
+          names:
+            consent_csrf: ory_oauth2_consent_csrf_naughtyeuclidq27q8011k4
+            login_csrf: ory_oauth2_login_csrf_naughtyeuclidq27q8011k4
+            session_csrf: ory_oauth2_session_csrf_naughtyeuclidq27q8011k4
+          same_site_legacy_workaround: false
+          same_site_mode: Lax
+          secure: true
+        public:
+          cors:
+            allow_credentials: true
+            allowed_headers:
+            - Accept
+            - Content-Type
+            - Content-Length
+            - Accept-Language
+            - Content-Language
+            - Authorization
+            allowed_methods:
+            - POST
+            - GET
+            - PUT
+            - PATCH
+            - DELETE
+            - CONNECT
+            - HEAD
+            - OPTIONS
+            - TRACE
+            debug: false
+            enabled: false
+            exposed_headers:
+            - Cache-Control
+            - Expires
+            - Last-Modified
+            - Pragma
+            - Content-Length
+            - Content-Language
+            - Content-Type
+            max_age: 0
+          tls:
+            enabled: false
+        tls:
+          enabled: false
+      strategies:
+        access_token: opaque
+        scope: wildcard
+      ttl:
+        access_token: 1h0m0s
+        auth_code: 30m0s
+        id_token: 1h0m0s
+        login_consent_request: 30m0s
+        refresh_token: 720h0m0s
+      urls:
+        consent: /ui/consent
+        error: /ui/error
+        login: /ui/login
+        logout: /ui/logout
+        post_logout_redirect: /oauth2/fallbacks/logout/callback
+        self:
+          admin: https://naughty-euclid-q27q8011k4.projects.oryapis.com/admin
+          issuer: https://naughty-euclid-q27q8011k4.projects.oryapis.com
+          public: https://naughty-euclid-q27q8011k4.projects.oryapis.com
+      webfinger:
+        jwks: {}
+        oidc_discovery: {}
+  permission:
+    config:
+      limit: {}
+      namespaces: []
+slug: naughty-euclid-q27q8011k4
+state: running
