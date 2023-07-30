@@ -76,6 +76,7 @@ export default async function handler(
             .end(JSON.stringify({ error: 'No Match', isMatch: false }));
         }
       } catch (error) {
+        logger.error(error);
         return res.status(500).end();
       }
     }
