@@ -1,8 +1,6 @@
-import {
-  FaceLivenessDetector,
-} from '@aws-amplify/ui-react-liveness';
+import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import React from 'react';
 
 import { defaultLivenessDisplayText } from './displayText';
@@ -12,17 +10,21 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
   const id = cedula;
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackbar();
 
-  const fetchCreateLiveness = async () => {
-    const response = await fetch(`/api/biometric`, { method: 'POST' });
-    const { sessionId } = await response.json();
+  const fetchCreateLiveness = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/biometric`, { method: 'POST' });
+      const { sessionId } = await response.json();
 
-    setSessionId(sessionId);
-    setLoading(false);
-  };
+      setSessionId(sessionId);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      AlertError('Error fetching biometric data');
+    }
+  }, [AlertError]);
 
   const onUserCancel = () => {
     setSessionId(null);
@@ -30,35 +32,31 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   };
 
   const handleAnalysisComplete = async () => {
-    const response = await fetch(
-      `/api/biometric?sessionId=${sessionId}&cedula=${id}`
-    );
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        `/api/biometric?sessionId=${sessionId}&cedula=${id}`
+      );
+      const data = await response.json();
 
-    if (data.isMatch === true) {
-      next();
-    } else {
-      setError(data.error);
-      setSessionId(null);
-      fetchCreateLiveness();
+      if (data.isMatch === true) {
+        next();
+      } else {
+        // TODO: Validate if this was a confidence or a similarity error, to show the correct message
+        AlertError(
+          'No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE'
+        );
+        setSessionId(null);
+        fetchCreateLiveness();
+      }
+    } catch (error) {
+      console.error(error);
+      AlertError('Error during analysis');
     }
   };
 
   useEffect(() => {
-    fetchCreateLiveness().catch((error) => {
-      console.error(error);
-      setError(error);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-      AlertError('No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE');
-    }
-    // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
-    // eslint-disable-next-line
-  }, [error]);
+    fetchCreateLiveness();
+  }, [fetchCreateLiveness]);
 
   return (
     <>
