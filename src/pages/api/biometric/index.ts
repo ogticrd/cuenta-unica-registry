@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next/types';
 import axios from 'axios';
 
 import { getRekognitionClient } from '@/helpers';
+import logger from '@/lib/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,11 +29,14 @@ export default async function handler(
     });
 
     let isLive = false;
+    const confidence = response.Confidence;
 
-    if (response.Confidence && response.Confidence > 85) {
-      isLive = true; // Confidence threshold for live face
+    // Threshold for face liveness
+    if (confidence && confidence > 85) {
+      logger.info(`High confidence (${confidence}%) for citizen ${cedula}`);
+      isLive = true;
     } else {
-      console.log(`Low confidence for citizen ${cedula}`);
+      logger.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
       return res.status(200).end(
         JSON.stringify({
           error: 'Low Confidence',
@@ -58,21 +62,24 @@ export default async function handler(
         TargetImage: {
           Bytes: buffer2,
         },
+        // Threshold for face match
         SimilarityThreshold: 95,
       };
 
       try {
-        const compare = await client.compareFaces(params);
-        if (compare.FaceMatches && compare.FaceMatches.length) {
-          console.log(`Citizen ${cedula} matched`);
+        const response = await client.compareFaces(params);
+        if (response.FaceMatches && response.FaceMatches.length) {
+          const similarity = response.FaceMatches[0].Similarity;
+          logger.info(`High similarity (${similarity}%) for citizen ${cedula}`);
           return res.status(200).end(JSON.stringify({ isMatch: true }));
         } else {
-          console.log(`Citizen ${cedula} didn't match`);
+          logger.warn(`Low similarity for citizen ${cedula}`);
           return res
             .status(200)
             .end(JSON.stringify({ error: 'No Match', isMatch: false }));
         }
       } catch (error) {
+        logger.error(error);
         return res.status(500).end();
       }
     }
