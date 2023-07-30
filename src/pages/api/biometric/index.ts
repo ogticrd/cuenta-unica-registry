@@ -35,7 +35,7 @@ export default async function handler(
     if (confidence && confidence > 85) {
       isLive = true;
     } else {
-      logger.info(`Low confidence (${confidence}%) for citizen ${cedula}`);
+      logger.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
       return res.status(200).end(
         JSON.stringify({
           error: 'Low Confidence',
