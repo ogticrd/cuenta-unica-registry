@@ -2,6 +2,8 @@ import { ReCaptchaResponse } from '../types';
 import axios, { AxiosResponse } from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
 
+import logger from '@/lib/logger';
+
 type ReCaptchaEvent = {
   event: {
     token: string;
@@ -74,7 +76,7 @@ export default async function handler(
       });
     }
   } catch (error) {
-    console.log('Google ReCaptcha crashed', error);
+    logger.error('Google ReCaptcha crashed', error);
     res.status(500).json({
       status: 'Failure',
       message: 'Something went wrong, please try again.',

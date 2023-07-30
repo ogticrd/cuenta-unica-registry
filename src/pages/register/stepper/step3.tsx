@@ -168,7 +168,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
 
-        console.log('errorData', errorData);
+        console.error('errorData', errorData);
 
         const { ui } = errorData;
 
@@ -196,7 +196,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           errors.push(e);
         }
 
-        console.log('errors', errors);
+        console.error('errors', errors);
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error

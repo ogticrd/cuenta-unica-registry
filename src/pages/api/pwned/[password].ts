@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next/types';
 import { pwnedPassword } from 'hibp';
 
 import { Crypto } from '@/helpers';
+import logger from '@/lib/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,7 +24,7 @@ export default async function handler(
 
       res.status(200).json(data);
     } catch (error) {
-      console.log('Decryption Error: ', error);
+      logger.error('Decryption Error: ', error);
 
       res.status(500).send();
     }
