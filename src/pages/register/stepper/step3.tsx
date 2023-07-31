@@ -126,7 +126,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
         (n: any) => n.attributes['name'] === 'csrf_token'
       );
       const csrf_token = node?.attributes.value as string;
-      const lastName = `${citizen.firstSurname} ${citizen.secondSurname}`;
+      const surname = `${citizen.firstSurname} ${citizen.secondSurname}`;
       const method = 'password';
 
       const updateRegistrationFlowBody: UpdateRegistrationFlowBody = {
@@ -136,8 +136,12 @@ export default function Step3({ handleNext, infoCedula }: any) {
         traits: {
           email: form.email,
           cedula: citizen.id,
-          firstName: citizen.name,
-          lastName,
+          fullName: {
+            givenName: citizen.names,
+            surname,
+          },
+          birthDate: citizen.birthDate,
+          gender: citizen.gender,
         },
       };
 
@@ -164,7 +168,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
 
-        console.log('errorData', errorData);
+        console.error('errorData', errorData);
 
         const { ui } = errorData;
 
@@ -192,7 +196,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
           errors.push(e);
         }
 
-        console.log('errors', errors);
+        console.error('errors', errors);
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error

@@ -1,4 +1,6 @@
-import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
+import {
+  FaceLivenessDetector,
+} from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -51,7 +53,8 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   useEffect(() => {
     if (error) {
-      AlertError('No se ha podido validar correctamente la identidad.');
+      console.error(error);
+      AlertError('No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE');
     }
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line
@@ -69,7 +72,12 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               sessionId={sessionId}
               region="us-east-1"
               onUserCancel={onUserCancel}
-              onError={(error) => setError(error)}
+              onError={(livenessError) => {
+                console.error({
+                  state: livenessError.state,
+                  error: livenessError.error,
+                });
+              }}
               onAnalysisComplete={handleAnalysisComplete}
               disableInstructionScreen={false}
               displayText={defaultLivenessDisplayText}
