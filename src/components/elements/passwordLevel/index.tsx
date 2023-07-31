@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { passwordStrength, DiversityType } from 'check-password-strength';
+import { passwordStrength, DiversityType, Result } from 'check-password-strength';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 interface PasswordRequirementProps {
   met: boolean;
@@ -12,24 +12,30 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
   met,
   text,
 }) => (
-  <div>
+  <Box display="flex" alignItems="center">
     <CheckCircleIcon
       color={met ? 'success' : 'disabled'}
-      style={{ fontSize: '20px', marginBottom: '-4px', marginRight: '3px' }}
+      style={{ fontSize: '20px', marginRight: '3px' }}
     />
     <Typography variant="caption" color="gray">
       {text}
     </Typography>
-  </div>
+  </Box>
 );
 
 const PASSWORD_LEVELS = [' Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
+
 interface PasswordLevelProps {
   password: string;
 }
 
+export const calculatePasswordStrength = (password: string): Result<string> => {
+  return passwordStrength(password);
+}
+
 const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
-  const passwordStrengthResult = passwordStrength(password);
+  const passwordStrengthResult = calculatePasswordStrength(password);
+
   const containsRequirementsMet = passwordStrengthResult.contains || [];
   const lengthRequirementMet = passwordStrengthResult.length >= 10;
 
@@ -40,8 +46,10 @@ const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
     number: 'Un número',
   };
 
-  return password.length > 0 ? (
-    <div style={{ marginTop: '10px' }}>
+  if (!password) return null;
+
+  return (
+    <Box mt={2}>
       {Object.entries(requirements).map(([key, text], index) => (
         <PasswordRequirement
           key={index}
@@ -59,8 +67,8 @@ const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
         Nivel de contraseña
         {PASSWORD_LEVELS[passwordStrengthResult.id]}
       </Typography>
-    </div>
-  ) : null;
+    </Box>
+  );
 };
 
 export default PasswordLevel;

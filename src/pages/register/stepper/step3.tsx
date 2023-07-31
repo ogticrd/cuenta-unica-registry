@@ -24,7 +24,7 @@ import {
 } from '../../../constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import PasswordLevel from '@/components/elements/passwordLevel';
+import PasswordLevel, { calculatePasswordStrength } from '@/components/elements/passwordLevel';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackbar } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
@@ -44,6 +44,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
+  const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
@@ -85,10 +86,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
   };
 
   const handleChangePassword = (password: string) => {
-    setPasswordLevel(password);
+    setPasswordString(password);
+    setPasswordLevel(calculatePasswordStrength(password));
     setValue('password', password);
     setIsPwned(false);
-  };
+};
 
   const onSubmitHandler = async (form: Step3Form) => {
     if (isPwned || passwordLevel.id !== 3) {
@@ -298,7 +300,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                 ),
               }}
             />
-            <PasswordLevel password={passwordLevel} />
+            <PasswordLevel password={passwordString} />
           </GridItem>
 
           <GridItem lg={12} md={12}>
