@@ -10,7 +10,6 @@ import {
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { passwordStrength } from 'check-password-strength';
 import Visibility from '@mui/icons-material/Visibility';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
@@ -80,15 +79,13 @@ export default function Step3({ handleNext, infoCedula }: any) {
   });
 
   const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
   };
 
   const handleChangePassword = (password: string) => {
-    const level = passwordStrength(password);
-
-    setPasswordLevel(level);
+    setPasswordLevel(password);
     setValue('password', password);
     setIsPwned(false);
   };
@@ -119,11 +116,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
       setLoading(true);
 
       const { data: citizen } = await axios.get<CitizenCompleteData>(
-        `/api/citizens/${infoCedula.id}?validated=true`
+        `/api/citizens/${infoCedula.id}?validated=true`,
       );
 
       const node: any = flow?.ui.nodes.find(
-        (n: any) => n.attributes['name'] === 'csrf_token'
+        (n: any) => n.attributes['name'] === 'csrf_token',
       );
       const csrf_token = node?.attributes.value as string;
       const surname = `${citizen.firstSurname} ${citizen.secondSurname}`;
@@ -190,7 +187,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             .filter(
               (node: any) =>
                 node.messages.length &&
-                node.messages.filter((x: any) => x.type === 'error')
+                node.messages.filter((x: any) => x.type === 'error'),
             )
             .map((a: any) => a.messages);
           errors.push(e);
@@ -301,7 +298,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                 ),
               }}
             />
-            <PasswordLevel passwordLevel={passwordLevel} />
+            <PasswordLevel password={passwordLevel} />
           </GridItem>
 
           <GridItem lg={12} md={12}>

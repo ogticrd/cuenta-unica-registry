@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { passwordStrength, DiversityType } from 'check-password-strength';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Typography } from '@mui/material';
 
@@ -24,39 +25,39 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
 
 const PASSWORD_LEVELS = [' Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
 interface PasswordLevelProps {
-  passwordLevel: {
-    contains: string[];
-    id: number;
-    length: number;
-  };
+  password: string;
 }
 
-const PasswordLevel: React.FC<PasswordLevelProps> = ({ passwordLevel }) => {
-  const requirements = [
-    ['lowercase', 'Una letra minúscula'],
-    ['uppercase', 'Una letra mayúscula'],
-    ['number', 'Un número'],
-    ['symbol', 'Un caracter especial'],
-  ];
+const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
+  const passwordStrengthResult = passwordStrength(password);
+  const containsRequirementsMet = passwordStrengthResult.contains || [];
+  const lengthRequirementMet = passwordStrengthResult.length >= 10;
 
-  return passwordLevel?.length > 0 ? (
+  const requirements: { [key in DiversityType]: string } = {
+    lowercase: 'Una letra minúscula',
+    uppercase: 'Una letra mayúscula',
+    symbol: 'Un caracter especial',
+    number: 'Un número',
+  };
+
+  return password.length > 0 ? (
     <div style={{ marginTop: '10px' }}>
-      {requirements.map(([key, text], index) => (
+      {Object.entries(requirements).map(([key, text], index) => (
         <PasswordRequirement
           key={index}
-          met={passwordLevel.contains?.includes(key)}
+          met={containsRequirementsMet.includes(key as DiversityType)}
           text={text}
         />
       ))}
       <PasswordRequirement
-        met={passwordLevel.length >= 8}
-        text="8 caracteres como mínimo"
+        met={lengthRequirementMet}
+        text="10 caracteres como mínimo"
       />
       <Typography
         sx={{ fontWeight: '400', fontSize: '14px', color: '#707070' }}
       >
         Nivel de contraseña
-        {PASSWORD_LEVELS[passwordLevel.id]}
+        {PASSWORD_LEVELS[passwordStrengthResult.id]}
       </Typography>
     </div>
   ) : null;
