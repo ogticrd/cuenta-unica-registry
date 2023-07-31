@@ -23,8 +23,6 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
   </Box>
 );
 
-const PASSWORD_LEVELS = [' Muy Bajo', ' Bajo', ' Medio', ' Fuerte'];
-
 interface PasswordLevelProps {
   password: string;
 }
@@ -61,12 +59,6 @@ const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
         met={lengthRequirementMet}
         text="10 caracteres como mínimo"
       />
-      <Typography
-        sx={{ fontWeight: '400', fontSize: '14px', color: '#707070' }}
-      >
-        Nivel de contraseña
-        {PASSWORD_LEVELS[passwordStrengthResult.id]}
-      </Typography>
     </Box>
   );
 };
