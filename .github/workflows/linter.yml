@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 0
 
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v5.2.0
+        uses: super-linter/super-linter/slim@v5.1.1
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_SHELL_SHFMT: false
@@ -52,7 +52,7 @@ jobs:
           TYPESCRIPT_DEFAULT_STYLE: prettier
           TYPESCRIPT_ES_LINTER_RULES: .eslintrc.json
           TYPESCRIPT_STANDARD_TSCONFIG_LINTER_RULES: tsconfig.json
-          LOG_LEVEL: DEBUG
+          LOG_LEVEL: INFO
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # ACTIONS_RUNNER_DEBUG: true
