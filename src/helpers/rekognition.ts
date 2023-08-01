@@ -9,7 +9,7 @@ export async function getRekognitionClient(
   const credentials = await SSR.Credentials.get();
 
   const rekognitionClient = new Rekognition({
-    region: 'us-east1',
+    region: 'us-east-1',
     credentials,
   });
 
