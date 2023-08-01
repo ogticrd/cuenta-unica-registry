@@ -52,7 +52,7 @@ jobs:
           TYPESCRIPT_DEFAULT_STYLE: prettier
           TYPESCRIPT_ES_LINTER_RULES: .eslintrc.json
           TYPESCRIPT_STANDARD_TSCONFIG_LINTER_RULES: tsconfig.json
-          LOG_LEVEL: INFO
+          LOG_LEVEL: DEBUG
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # ACTIONS_RUNNER_DEBUG: true
