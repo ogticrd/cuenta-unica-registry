@@ -8,6 +8,10 @@ import React from 'react';
 import { defaultLivenessDisplayText } from './displayText';
 import { useSnackbar } from '@/components/elements/alert';
 
+import {
+  UNIDENTIFIED_ERROR,
+} from '@/constants';
+
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
   const id = cedula;
@@ -38,7 +42,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     if (data.isMatch === true) {
       next();
     } else {
-      setError(data.error);
+      setError(data);
       setSessionId(null);
       fetchCreateLiveness();
     }
@@ -53,8 +57,10 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   useEffect(() => {
     if (error) {
-      console.error(error);
-      AlertError('No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE');
+      AlertError(error.message || UNIDENTIFIED_ERROR);
+      if (!error.message) {
+        console.error(error);
+      }
     }
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line
