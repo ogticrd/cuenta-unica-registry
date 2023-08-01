@@ -11,7 +11,7 @@ import {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any | void>
+  res: NextApiResponse<any | void>,
 ): Promise<any> {
   const { token } = req.cookies;
 
@@ -46,7 +46,7 @@ export default async function handler(
         JSON.stringify({
           message: LIVENESS_LOW_CONFIDENCE_ERROR,
           isLive: isLive,
-        })
+        }),
       );
     }
 
@@ -83,7 +83,7 @@ export default async function handler(
             JSON.stringify({
               message: LIVENESS_NO_MATCH_ERROR,
               isMatch: false,
-            })
+            }),
           );
         }
       } catch (error) {
