@@ -116,7 +116,10 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         handleNext();
       } catch (err: any) {
         console.error(err.message || err);
-
+        // TODO: Catch different errors and show different messages:
+        // 1. Cedula service can't be reach. Try again later.
+        // 2. Cedula does not comply with the luhn algorithm.
+        // 3. This cedula could not be validated with JCE. <-- This should log an error!
         return AlertError(INVALID_CEDULA_ERROR);
       } finally {
         setLoading(false);
