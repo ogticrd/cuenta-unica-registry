@@ -24,7 +24,9 @@ import {
 } from '../../../constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import PasswordLevel, { calculatePasswordStrength } from '@/components/elements/passwordLevel';
+import PasswordLevel, {
+  calculatePasswordStrength,
+} from '@/components/elements/passwordLevel';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackbar } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
@@ -90,7 +92,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     setPasswordLevel(calculatePasswordStrength(password));
     setValue('password', password);
     setIsPwned(false);
-};
+  };
 
   const onSubmitHandler = async (form: Step3Form) => {
     if (isPwned || passwordLevel.id !== 3) {
