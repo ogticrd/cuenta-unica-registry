@@ -6,7 +6,7 @@ import logger from '@/lib/logger';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any | void>
+  res: NextApiResponse<any | void>,
 ): Promise<any> {
   const { token } = req.cookies;
 
@@ -41,7 +41,7 @@ export default async function handler(
         JSON.stringify({
           error: 'Low Confidence',
           isLive: isLive,
-        })
+        }),
       );
     }
 

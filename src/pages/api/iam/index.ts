@@ -5,7 +5,7 @@ import { Identity } from '../types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<any>,
 ): Promise<any> {
   const { token } = req.cookies;
 
@@ -23,7 +23,7 @@ export default async function handler(
   const { cedula } = req.query;
 
   const { data: identities } = await http.get<Identity[]>(
-    `/admin/identities?credentials_identifier=${cedula}`
+    `/admin/identities?credentials_identifier=${cedula}`,
   );
 
   return res.status(200).json(identities);

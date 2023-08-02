@@ -13,7 +13,7 @@ type ReCaptchaEvent = {
 };
 
 const verifyRecaptcha = async (
-  recaptchaEvent: ReCaptchaEvent
+  recaptchaEvent: ReCaptchaEvent,
 ): Promise<ReCaptchaResponse> => {
   const apiKey = process.env.RECAPTHA_API_KEY;
   const projectId = process.env.RECAPTHA_PROJECT_ID;
@@ -21,7 +21,7 @@ const verifyRecaptcha = async (
   const assesmentUrl = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${apiKey}`;
   const response: AxiosResponse<ReCaptchaResponse> = await axios.post(
     assesmentUrl,
-    recaptchaEvent
+    recaptchaEvent,
   );
 
   return response.data;
@@ -29,11 +29,11 @@ const verifyRecaptcha = async (
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any | void>
+  res: NextApiResponse<any | void>,
 ) {
   if (!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
     throw new Error(
-      'NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found in environment variables'
+      'NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found in environment variables',
     );
   }
 
@@ -48,7 +48,7 @@ export default async function handler(
 
     // Recaptcha response
     const response = (await verifyRecaptcha(
-      recaptchaEvent
+      recaptchaEvent,
     )) as ReCaptchaResponse;
 
     // Checking if the reponse sent by reCaptcha success or not and if the score is above 0.5
