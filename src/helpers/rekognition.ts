@@ -1,10 +1,6 @@
-import { Amplify, withSSRContext } from 'aws-amplify';
+import { withSSRContext } from 'aws-amplify';
 import { Rekognition } from '@aws-sdk/client-rekognition';
 import { NextApiRequest } from 'next/types';
-
-import awsExports from '../aws-exports';
-
-Amplify.configure({ ...awsExports, ssr: true });
 
 export async function getRekognitionClient(
   req: NextApiRequest,
@@ -13,7 +9,7 @@ export async function getRekognitionClient(
   const credentials = await SSR.Credentials.get();
 
   const rekognitionClient = new Rekognition({
-    region: awsExports.aws_project_region,
+    region: 'us-east-1',
     credentials,
   });
 
