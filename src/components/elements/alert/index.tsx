@@ -8,7 +8,7 @@ interface SnackbarContextProps {
 
 // Create context with default undefined value
 const SnackbarContext = createContext<SnackbarContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 interface SnackbarProviderProps {
@@ -65,7 +65,7 @@ export const useSnackbar = () => {
     AlertError: (text?: string) =>
       openSnackbar(
         text || 'Ocurrió un error al procesar la solicitud',
-        'error'
+        'error',
       ),
     AlertWarning: (text: string) => openSnackbar(text, 'warning'),
     AlertSuccess: (text: string) =>

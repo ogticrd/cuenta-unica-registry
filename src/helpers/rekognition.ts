@@ -7,7 +7,7 @@ import awsExports from '../aws-exports';
 Amplify.configure({ ...awsExports, ssr: true });
 
 export async function getRekognitionClient(
-  req: NextApiRequest
+  req: NextApiRequest,
 ): Promise<Rekognition> {
   const SSR = withSSRContext({ req });
   const credentials = await SSR.Credentials.get();
