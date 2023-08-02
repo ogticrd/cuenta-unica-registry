@@ -48,8 +48,11 @@ jobs:
           VALIDATE_MARKDOWN: false
           # TODO: hadolint can be activated after this PR is accepted, merged and a new version is tagged https://github.com/github/super-linter/pull/3500
           VALIDATE_DOCKERFILE_HADOLINT: false
+          LINTER_RULES_PATH: /
           JAVASCRIPT_DEFAULT_STYLE: prettier
           TYPESCRIPT_DEFAULT_STYLE: prettier
+          TYPESCRIPT_ES_LINTER_RULES: .eslintrc.json
+          TYPESCRIPT_STANDARD_TSCONFIG_LINTER_RULES: tsconfig.json
           LOG_LEVEL: ERROR
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
