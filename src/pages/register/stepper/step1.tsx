@@ -38,7 +38,7 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
         overwrite
       />
     );
-  }
+  },
 );
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
@@ -57,7 +57,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   });
 
   const onCedulaChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setValue('cedula', event.target.value.replace(/-/g, ''));
     setValueCedula(event.target.value);
@@ -93,7 +93,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           '/api/recaptcha/assesments',
           {
             token,
-          }
+          },
         );
 
         if (!isHuman) {
@@ -109,7 +109,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
 
         const { data: citizen } = await axios.get(
-          `/api/citizens/${cleanCedula}`
+          `/api/citizens/${cleanCedula}`,
         );
 
         setInfoCedula(citizen);
@@ -122,7 +122,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         setLoading(false);
       }
     },
-    [executeRecaptcha, handleNext, setInfoCedula, AlertWarning, AlertError]
+    [executeRecaptcha, handleNext, setInfoCedula, AlertWarning, AlertError],
   );
 
   return (

@@ -1,6 +1,4 @@
-import {
-  FaceLivenessDetector,
-} from '@aws-amplify/ui-react-liveness';
+import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -31,7 +29,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   const handleAnalysisComplete = async () => {
     const response = await fetch(
-      `/api/biometric?sessionId=${sessionId}&cedula=${id}`
+      `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
     );
     const data = await response.json();
 
@@ -54,7 +52,9 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   useEffect(() => {
     if (error) {
       console.error(error);
-      AlertError('No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE');
+      AlertError(
+        'No se ha podido validar su identidad. Si ha intentado varias veces, posiblemente tenga que actualizar su foto en la JCE',
+      );
     }
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line

@@ -18,7 +18,7 @@ export default function Index({ children }: any) {
         <Fab
           onClick={() =>
             window.open(
-              'https://docs.google.com/forms/d/e/1FAIpQLSexFmkoGsVbyRS90B1IwRoAjYg6R6mX8IAJiT1BExN9wT7yjA/viewform?usp=pp_url'
+              'https://docs.google.com/forms/d/e/1FAIpQLSexFmkoGsVbyRS90B1IwRoAjYg6R6mX8IAJiT1BExN9wT7yjA/viewform?usp=pp_url',
             )
           }
           size={matches ? 'large' : 'small'}

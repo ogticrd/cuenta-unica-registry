@@ -17,7 +17,7 @@ export default async function handler(
     secondSurname?: string;
     gender?: string;
     birthDate?: string;
-  } | void>
+  } | void>,
 ): Promise<void> {
   const { token } = req.cookies;
 
@@ -41,7 +41,7 @@ export default async function handler(
         Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-    }
+    },
   );
 
   const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
@@ -50,7 +50,7 @@ export default async function handler(
       headers: {
         Authorization: `Bearer ${citizensToken.access_token}`,
       },
-    }
+    },
   );
 
   const { names, id, firstSurname, secondSurname, gender } = citizen.payload;
@@ -64,7 +64,7 @@ export default async function handler(
           headers: {
             Authorization: `Bearer ${citizensToken.access_token}`,
           },
-        }
+        },
       );
 
     let { birthDate } = citizensBirthData.payload;
