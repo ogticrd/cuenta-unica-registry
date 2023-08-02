@@ -10,7 +10,7 @@ export class Validations {
     let sum = arr.reduce(
       (acc, val, i) =>
         i % 2 !== 0 ? acc + val : acc + (val * 2 > 9 ? val * 2 - 9 : val * 2),
-      0
+      0,
     );
 
     sum += lastDigit;

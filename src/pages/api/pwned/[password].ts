@@ -6,7 +6,7 @@ import logger from '@/lib/logger';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<number | void>
+  res: NextApiResponse<number | void>,
 ): Promise<void> {
   const { token } = req.cookies;
 

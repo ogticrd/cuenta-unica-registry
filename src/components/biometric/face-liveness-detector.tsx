@@ -1,6 +1,4 @@
-import {
-  FaceLivenessDetector,
-} from '@aws-amplify/ui-react-liveness';
+import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -8,9 +6,7 @@ import React from 'react';
 import { defaultLivenessDisplayText } from './displayText';
 import { useSnackbar } from '@/components/elements/alert';
 
-import {
-  UNIDENTIFIED_ERROR,
-} from '@/constants';
+import { UNIDENTIFIED_ERROR } from '@/constants';
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
@@ -35,7 +31,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
 
   const handleAnalysisComplete = async () => {
     const response = await fetch(
-      `/api/biometric?sessionId=${sessionId}&cedula=${id}`
+      `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
     );
     const data = await response.json();
 

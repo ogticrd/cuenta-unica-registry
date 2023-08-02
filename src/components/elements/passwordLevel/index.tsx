@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { passwordStrength, DiversityType, Result } from 'check-password-strength';
+import {
+  passwordStrength,
+  DiversityType,
+  Result,
+} from 'check-password-strength';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Typography, Box } from '@mui/material';
 
@@ -29,7 +33,7 @@ interface PasswordLevelProps {
 
 export const calculatePasswordStrength = (password: string): Result<string> => {
   return passwordStrength(password);
-}
+};
 
 const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
   const passwordStrengthResult = calculatePasswordStrength(password);

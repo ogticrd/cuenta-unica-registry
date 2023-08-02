@@ -1,5 +1,5 @@
 declare namespace JSX {
   interface IntrinsicElements {
-    "official-header": any;
+    'official-header': any;
   }
 }
