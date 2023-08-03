@@ -47,7 +47,6 @@ export default function Login() {
         // Couldn't create login flow
         // handle the error
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
