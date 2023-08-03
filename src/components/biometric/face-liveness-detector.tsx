@@ -3,7 +3,7 @@ import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
 
-import { defaultLivenessDisplayText } from './displayText';
+import { displayText } from './displayText';
 import { useSnackbar } from '@/components/elements/alert';
 
 import { UNIDENTIFIED_ERROR } from '@/constants';
@@ -82,7 +82,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
               }}
               onAnalysisComplete={handleAnalysisComplete}
               disableInstructionScreen={false}
-              displayText={defaultLivenessDisplayText}
+              displayText={displayText}
             />
           )
         )}
