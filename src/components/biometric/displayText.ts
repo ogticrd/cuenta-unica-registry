@@ -7,8 +7,6 @@ import {
   ErrorDisplayText,
 } from '@aws-amplify/ui-react-liveness/dist/types/components/FaceLivenessDetector/displayText';
 
-import { getDisplayText } from '@aws-amplify/ui-react-liveness/dist/types/components/FaceLivenessDetector/utils/getDisplayText';
-
 export const defaultHintDisplayText: Required<HintDisplayText> = {
   hintMoveFaceFrontOfCameraText: 'Posicione la cara frente a la cámara',
   hintTooManyFacesText: 'Asegúrese que solo una cara esté frente a la cámara',
@@ -89,7 +87,7 @@ export const defaultErrorDisplayText: Required<ErrorDisplayText> = {
   tryAgainText: 'Intentar otra vez',
 };
 
-const defaultLivenessDisplayText: Required<LivenessDisplayText> = {
+const spanishLivenessDisplayText: Required<LivenessDisplayText> = {
   ...defaultHintDisplayText,
   ...defaultCameraDisplayText,
   ...defaultInstructionDisplayText,
@@ -97,4 +95,10 @@ const defaultLivenessDisplayText: Required<LivenessDisplayText> = {
   ...defaultErrorDisplayText,
 };
 
-export const displayText = getDisplayText(defaultLivenessDisplayText);
+export const displayText: Required<LivenessDisplayText> = {
+  ...defaultHintDisplayText,
+  ...defaultCameraDisplayText,
+  ...defaultInstructionDisplayText,
+  ...defaultStreamDisplayText,
+  ...defaultErrorDisplayText,
+};
