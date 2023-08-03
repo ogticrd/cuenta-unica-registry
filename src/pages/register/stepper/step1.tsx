@@ -172,10 +172,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         <GridContainer>
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
-              <Link
-                href="/login"
-                style={{ textDecoration: 'none' }}
-              >
+              <Link href="/login" style={{ textDecoration: 'none' }}>
                 <span className="text-secondary">¿Ya tienes una cuenta?</span>{' '}
                 Inicia sesión aquí.
               </Link>
