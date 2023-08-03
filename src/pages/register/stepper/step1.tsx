@@ -38,7 +38,7 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
         overwrite
       />
     );
-  }
+  },
 );
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
@@ -57,7 +57,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
   });
 
   const onCedulaChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setValue('cedula', event.target.value.replace(/-/g, ''));
     setValueCedula(event.target.value);
@@ -93,7 +93,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           '/api/recaptcha/assesments',
           {
             token,
-          }
+          },
         );
 
         if (!isHuman) {
@@ -109,20 +109,23 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
         }
 
         const { data: citizen } = await axios.get(
-          `/api/citizens/${cleanCedula}`
+          `/api/citizens/${cleanCedula}`,
         );
 
         setInfoCedula(citizen);
         handleNext();
       } catch (err: any) {
         console.error(err.message || err);
-
+        // TODO: Catch different errors and show different messages:
+        // 1. Cedula service can't be reach. Try again later.
+        // 2. Cedula does not comply with the luhn algorithm.
+        // 3. This cedula could not be validated with JCE. <-- This should log an error!
         return AlertError(INVALID_CEDULA_ERROR);
       } finally {
         setLoading(false);
       }
     },
-    [executeRecaptcha, handleNext, setInfoCedula, AlertWarning, AlertError]
+    [executeRecaptcha, handleNext, setInfoCedula, AlertWarning, AlertError],
   );
 
   return (

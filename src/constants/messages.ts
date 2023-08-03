@@ -1,3 +1,5 @@
+export const UNIDENTIFIED_ERROR =
+  'Ha ocurrido un error inesperado, por favor inténtelo más tarde.';
 export const CREATE_BROWSER_REGISTRATION_FLOW_ERROR =
   '¡Ups! Ha ocurrido un error, por favor inténtelo más tarde.';
 export const INVALID_CEDULA_ERROR =
@@ -16,3 +18,7 @@ export const CREATE_IDENTITY_ERROR =
   'Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.';
 export const NON_ACCEPTED_TERMS_AND_CONDS_ERROR =
   'Para continuar, debe leer y aceptar los términos y políticas de privacidad.';
+export const LIVENESS_LOW_CONFIDENCE_ERROR =
+  'La prueba de vida no ha sido exitosa. Verifique las instrucciones e intente nuevamente.';
+export const LIVENESS_NO_MATCH_ERROR =
+  'No se ha podido validar su identidad con la JCE. Intente nuevamente o actualice su foto en la JCE.';

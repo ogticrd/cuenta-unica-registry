@@ -4,9 +4,14 @@ import axios from 'axios';
 import { getRekognitionClient } from '@/helpers';
 import logger from '@/lib/logger';
 
+import {
+  LIVENESS_LOW_CONFIDENCE_ERROR,
+  LIVENESS_NO_MATCH_ERROR,
+} from '@/constants';
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any | void>
+  res: NextApiResponse<any | void>,
 ): Promise<any> {
   const { token } = req.cookies;
 
@@ -39,9 +44,9 @@ export default async function handler(
       logger.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
       return res.status(200).end(
         JSON.stringify({
-          error: 'Low Confidence',
+          message: LIVENESS_LOW_CONFIDENCE_ERROR,
           isLive: isLive,
-        })
+        }),
       );
     }
 
@@ -74,9 +79,12 @@ export default async function handler(
           return res.status(200).end(JSON.stringify({ isMatch: true }));
         } else {
           logger.warn(`Low similarity for citizen ${cedula}`);
-          return res
-            .status(200)
-            .end(JSON.stringify({ error: 'No Match', isMatch: false }));
+          return res.status(200).end(
+            JSON.stringify({
+              message: LIVENESS_NO_MATCH_ERROR,
+              isMatch: false,
+            }),
+          );
         }
       } catch (error) {
         logger.error(error);

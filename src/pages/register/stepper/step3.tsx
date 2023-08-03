@@ -10,7 +10,6 @@ import {
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { passwordStrength } from 'check-password-strength';
 import Visibility from '@mui/icons-material/Visibility';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
@@ -25,7 +24,9 @@ import {
 } from '../../../constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import PasswordLevel from '@/components/elements/passwordLevel';
+import PasswordLevel, {
+  calculatePasswordStrength,
+} from '@/components/elements/passwordLevel';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackbar } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
@@ -45,6 +46,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
+  const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
@@ -80,15 +82,14 @@ export default function Step3({ handleNext, infoCedula }: any) {
   });
 
   const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
   };
 
   const handleChangePassword = (password: string) => {
-    const level = passwordStrength(password);
-
-    setPasswordLevel(level);
+    setPasswordString(password);
+    setPasswordLevel(calculatePasswordStrength(password));
     setValue('password', password);
     setIsPwned(false);
   };
@@ -119,11 +120,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
       setLoading(true);
 
       const { data: citizen } = await axios.get<CitizenCompleteData>(
-        `/api/citizens/${infoCedula.id}?validated=true`
+        `/api/citizens/${infoCedula.id}?validated=true`,
       );
 
       const node: any = flow?.ui.nodes.find(
-        (n: any) => n.attributes['name'] === 'csrf_token'
+        (n: any) => n.attributes['name'] === 'csrf_token',
       );
       const csrf_token = node?.attributes.value as string;
       const surname = `${citizen.firstSurname} ${citizen.secondSurname}`;
@@ -190,7 +191,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
             .filter(
               (node: any) =>
                 node.messages.length &&
-                node.messages.filter((x: any) => x.type === 'error')
+                node.messages.filter((x: any) => x.type === 'error'),
             )
             .map((a: any) => a.messages);
           errors.push(e);
@@ -301,7 +302,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
                 ),
               }}
             />
-            <PasswordLevel passwordLevel={passwordLevel} />
+            <PasswordLevel password={passwordString} />
           </GridItem>
 
           <GridItem lg={12} md={12}>
