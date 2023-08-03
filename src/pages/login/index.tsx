@@ -47,7 +47,7 @@ export default function Login() {
         // Couldn't create login flow
         // handle the error
       });
-  }, []);
+  }, [searchParams]);
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
