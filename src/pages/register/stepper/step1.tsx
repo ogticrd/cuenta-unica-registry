@@ -170,7 +170,7 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
               <Link
-                href={'https://beta.auth.digital.gob.do/realms/master/account'}
+                href="/login"
                 style={{ textDecoration: 'none' }}
               >
                 <span className="text-secondary">¿Ya tienes una cuenta?</span>{' '}
