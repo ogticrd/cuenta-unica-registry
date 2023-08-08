@@ -40,7 +40,6 @@ COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
 RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
-    ls -la src/ && \
     yarn build
 
 # ===================== App Runner Stage =====================
