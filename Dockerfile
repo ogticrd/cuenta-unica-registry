@@ -39,9 +39,9 @@ FROM base as build
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
-# RUN mv .env.${NODE_ENV} .env
-
-RUN yarn build
+RUN --mount=type=secret,id=AWS_EXPORTS_JSON,uid=1000,target=./src/aws-exports.encoded \
+  base64 -d ./src/aws-exports.encoded > ./src/aws-exports.json && \
+  yarn build
 
 # ===================== App Runner Stage =====================
 FROM base as runner

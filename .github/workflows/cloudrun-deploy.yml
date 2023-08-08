@@ -78,6 +78,8 @@ jobs:
             CEDULA_TOKEN_API=${{ secrets.CEDULA_TOKEN_API }},
             CITIZENS_API_AUTH_KEY=${{ secrets.CITIZENS_API_AUTH_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
+          secrets: |
+            "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON }}"
 
       - name: Allow unauthenticated calls to the service
         run: |
