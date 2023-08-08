@@ -39,7 +39,8 @@ FROM base as build
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
-RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.json \
+RUN --mount=type=secret,id=AWS_EXPORTS_JSON \
+    base64 -d /run/secrets/AWS_EXPORTS_JSON > ./src/aws-exports.json && \
     ls -la ./src && cat ./src/aws-exports.json \
     yarn build
 
