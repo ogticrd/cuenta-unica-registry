@@ -1,4 +1,4 @@
-
+# syntax=docker/dockerfile:1
 # ===================== Create base stage =====================
 ARG NODE_VERSION=lts
 ARG ALPINE_VERSION=3.16
@@ -39,9 +39,8 @@ FROM base as build
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
-# RUN mv .env.${NODE_ENV} .env
-
-RUN yarn build
+RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
+    yarn build
 
 # ===================== App Runner Stage =====================
 FROM base as runner
