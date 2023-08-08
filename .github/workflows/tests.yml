@@ -52,6 +52,11 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v3.5.3
 
+      - run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
+        shell: bash
+        env:
+          AWS_EXPORTS_JSON: ${{secrets.AWS_EXPORTS_JSON}}
+
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3.7.0
         with:

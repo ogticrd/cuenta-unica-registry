@@ -11,8 +11,7 @@ amplify/backend/awscloudformation
 build/
 dist/
 node_modules/
-# TODO: we need to remove this file from our commits
-# aws-exports.js
+aws-exports.js
 awsconfiguration.json
 amplifyconfiguration.json
 amplify-build-config.json
