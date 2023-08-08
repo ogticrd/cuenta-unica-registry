@@ -1,4 +1,4 @@
-
+# syntax=docker/dockerfile:1
 # ===================== Create base stage =====================
 ARG NODE_VERSION=lts
 ARG ALPINE_VERSION=3.16
