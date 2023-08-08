@@ -41,7 +41,6 @@ COPY . .
 
 RUN --mount=type=secret,id=AWS_EXPORTS_JSON \
     base64 -d /run/secrets/AWS_EXPORTS_JSON > ./src/aws-exports.json && \
-    ls -la ./src && cat ./src/aws-exports.json \
     yarn build
 
 # ===================== App Runner Stage =====================
