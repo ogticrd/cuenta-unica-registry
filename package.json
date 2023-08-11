@@ -1,9 +1,18 @@
 {
-  "name": "auth-registry-frontend",
-  "description": "Registry App for IAM users",
-  "version": "0.0.2",
-  "private": true,
+  "name": "cuenta-unica-registry",
+  "description": "Portal de registro de Cuenta Única",
+  "version": "v0.2.0-beta",
+  "private": false,
   "author": "OGTIC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/opticrd/cuenta-unica-registry/issues"
+  },
+  "homepage": "https://github.com/opticrd/cuenta-unica-registry#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opticrd/cuenta-unica-registry.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
