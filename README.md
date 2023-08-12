@@ -1,15 +1,13 @@
+![logo-cuenta-unica.svg](public/assets/logo-cuenta-unica.svg)
+
 # Portal de Registro de Cuenta Única
 
 [![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml)
-[![Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml)
-[![GiHub top language](https://img.shields.io/github/languages/top/opticrd/cuenta-unica-registry?style&color=blue)](https://www.typescriptlang.org/)
+[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml)
+[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml)
 [![License](https://img.shields.io/github/license/opticrd/cuenta-unica-registry?style&color=blue)](LICENSE)
 
-![logo-cuenta-unica.svg](public/assets/logo-cuenta-unica.svg)
-
 ## Tabla de contenidos
-
----
 
 - [Portal de Registro de Cuenta Única](#portal-de-registro-de-cuenta-única)
   - [Tabla de contenidos](#tabla-de-contenidos)
@@ -24,13 +22,9 @@
 
 ## Descripción y contexto
 
----
-
 Esta es la plataforma de registro para la creación de una **Cuenta Única** ciudadana, la cual tiene como finalidad simplificar la obtención de Servicios Gubernamentales, permitiendo a los ciudadanos el acceso a los portales, trámites y servicios que las instituciones ofrezcan de forma digital, con una única cuenta. El proceso de registro consiste en identificarse con su número de cédula, realizar una prueba de vida y crear su cuenta seleccionando un correo y contraseña.
 
 ## Guía de usuario
-
----
 
 - El usuario **se identifica** con su número de cédula
   - Se consulta el API de la JCE para obtener la información de la misma
@@ -45,8 +39,6 @@ Esta es la plataforma de registro para la creación de una **Cuenta Única** ciu
 - Se habilita la cuenta en la plataforma de Gestión de Identidades y Accesos (IAM)
 
 ## Guía de instalación
-
----
 
 La forma más fácil de poder ejecutar el aplicativo es utilizando `Docker`:
 
@@ -82,8 +74,6 @@ Este proyecto depende de las siguientes recursos externos:
 
 ## Tecnologías
 
----
-
 - Framework: [Next.js](https://nextjs.org/)
 - Lenguaje: [TypeScript](https://www.typescriptlang.org/)
 - UI Framework: [Material UI](https://material-ui.com/)
@@ -97,8 +87,6 @@ Este proyecto depende de las siguientes recursos externos:
 
 ## Autor/es
 
----
-
 - **Gustavo Valverde** - *Product Manager* - [@gustavovalverde](https://github.com/gustavovalverde)
 - **Marluan Espiritusanto** - *Technical Lead* - [@marluanespiritusanto](https://github.com/marluanespiritusanto)
 - **José Álvarez** - *Developer* - [@JE1999](https://github.com/JE1999)
@@ -107,13 +95,9 @@ Este proyecto depende de las siguientes recursos externos:
 
 ## Información adicional
 
----
-
 Próximamente podrás tener más información sobre el proyecto en [https://cuentaunica.gob.do/](https://cuentaunica.gob.do/)
 
 ## Agradecimientos
-
----
 
 - [Junta Central Electoral](https://jce.gob.do/)
 - [Superintendencia de Bancos](https://www.sib.gob.do/)
