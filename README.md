@@ -1,38 +1,105 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![logo-cuenta-unica.svg](public/assets/logo-cuenta-unica.svg)
 
-## Getting Started
+# Portal de Registro de Cuenta Única
 
-First, run the development server:
+[![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml)
+[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml)
+[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml)
+[![License](https://img.shields.io/github/license/opticrd/cuenta-unica-registry?style&color=blue)](LICENSE)
+
+## Tabla de contenidos
+
+- [Portal de Registro de Cuenta Única](#portal-de-registro-de-cuenta-única)
+  - [Tabla de contenidos](#tabla-de-contenidos)
+  - [Descripción y contexto](#descripción-y-contexto)
+  - [Guía de usuario](#guía-de-usuario)
+  - [Guía de instalación](#guía-de-instalación)
+    - [Dependencias](#dependencias)
+  - [Tecnologías](#tecnologías)
+  - [Autor/es](#autores)
+  - [Información adicional](#información-adicional)
+  - [Agradecimientos](#agradecimientos)
+
+## Descripción y contexto
+
+Esta es la plataforma de registro para la creación de una **Cuenta Única** ciudadana, la cual tiene como finalidad simplificar la obtención de Servicios Gubernamentales, permitiendo a los ciudadanos el acceso a los portales, trámites y servicios que las instituciones ofrezcan de forma digital, con una única cuenta. El proceso de registro consiste en identificarse con su número de cédula, realizar una prueba de vida y crear su cuenta seleccionando un correo y contraseña.
+
+## Guía de usuario
+
+- El usuario **se identifica** con su número de cédula
+  - Se consulta el API de la JCE para obtener la información de la misma
+- Acepta t**érminos y condiciones** (en proceso de revisión)
+- Realiza una **prueba de vida**:
+  - Se toman fotos y se hace una validación con tecnología de **anti-spoofing** (validar que no sea una grabación, deepfake, etc.)
+  - Si la prueba de vida es exitosa se valida de las fotos capturadas contra la foto de la cédula de identidad de la Junta Central Electoral (**JCE**).
+- El ciudadano selecciona un correo y una contraseña para la creación de su cuenta
+  - La contraseña debe cumplir con el estándar de **NIST 800-63B**
+  - Como parte del estándar NIST también se evalúa que la contraseña no se encuentre en **filtraciones de datos** en Internet.
+- Se envía un correo de verificación
+- Se habilita la cuenta en la plataforma de Gestión de Identidades y Accesos (IAM)
+
+## Guía de instalación
+
+La forma más fácil de poder ejecutar el aplicativo es utilizando `Docker`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+git clone --depth 1 [https://github.com/opticrd/cuenta-unica-registry.git](https://github.com/opticrd/cuenta-unica-registry.git)
+cd cuenta-unica-registry
+docker build --target runner --tag cuenta-unica:latest .
+docker run --detach cuenta-unica:latest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O `yarn`:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+git clone [https://github.com/opticrd/cuenta-unica-registry.git](https://github.com/opticrd/cuenta-unica-registry.git)
+cd cuenta-unica-registry
+yarn install
+yarn start
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Dependencias
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+> [!WARNING]
+> Actualmente este aplicativo depende de múltiple servicios externos para su funcionamiento, por lo que puede ser complejo replicar el proyecto en su totalidad en un ambiente local.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Confirma que tengas todas las variables de entorno configuradas como actualmente se establecen en el archivo de ejemplo `.env.example`.
 
-## Learn More
+Este proyecto depende de las siguientes recursos externos:
 
-To learn more about Next.js, take a look at the following resources:
+- El API de consulta de cédulas de la [Junta Central Electoral](https://jce.gob.do/)
+- [reCAPTCHA Enterprise](https://cloud.google.com/recaptcha-enterprise)
+- [Amazon Rekognition Face Liveness](https://aws.amazon.com/rekognition/face-liveness/)
+- [Ory Kratos](https://www.ory.sh/kratos/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tecnologías
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Framework: [Next.js](https://nextjs.org/)
+- Lenguaje: [TypeScript](https://www.typescriptlang.org/)
+- UI Framework: [Material UI](https://material-ui.com/)
+- Liveness Detection: [Amazon Rekognition Face Liveness](https://aws.amazon.com/rekognition/face-liveness/)
+- IAM: [Ory Kratos](https://www.ory.sh/kratos/)
+- Case Management: [Ballerine](https://ballerine.com/) (en proceso de implementación)
+- CI/CD: [GitHub Actions](https://github.com/features/actions)
+- Interoperabilidad: [X-Road](https://x-road.global/)
+- Hosting: [Google Cloud Platform](https://cloud.google.com/)
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Autor/es
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Gustavo Valverde** - *Product Manager* - [@gustavovalverde](https://github.com/gustavovalverde)
+- **Marluan Espiritusanto** - *Technical Lead* - [@marluanespiritusanto](https://github.com/marluanespiritusanto)
+- **José Álvarez** - *Developer* - [@JE1999](https://github.com/JE1999)
+- **Deyvison García** - *UI/UX Designer* - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
+
+
+## Información adicional
+
+Próximamente podrás tener más información sobre el proyecto en [https://cuentaunica.gob.do/](https://cuentaunica.gob.do/)
+
+## Agradecimientos
+
+- [Junta Central Electoral](https://jce.gob.do/)
+- [Superintendencia de Bancos](https://www.sib.gob.do/)
+- [Ministerio de Hacienda](https://www.hacienda.gob.do/)
+- [Centro Nacional de Ciberseguridad](https://cncs.gob.do/)
