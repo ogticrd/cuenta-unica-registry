@@ -73,7 +73,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
   // const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
   };
@@ -154,7 +154,12 @@ export default function Step3({ handleNext, infoCedula }: any) {
       )}
       {loading && <LoadingBackdrop text="Creando usuario..." />}
 
-      <Typography component="div" color="primary" textAlign="center" sx={{ my: 4, fontSize: "16px" }}>
+      <Typography
+        component="div"
+        color="primary"
+        textAlign="center"
+        sx={{ my: 4, fontSize: '16px' }}
+      >
         <Box sx={{ fontWeight: 500 }}>
           Para finalizar tu registro completa los siguientes campos:
         </Box>
