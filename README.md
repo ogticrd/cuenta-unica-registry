@@ -26,33 +26,34 @@ Esta es la plataforma de registro para la creación de una **Cuenta Única** ciu
 
 ## Guía de usuario
 
-- El usuario **se identifica** con su número de cédula
+- El usuario se **identifica** con su número de cédula:
   - Se consulta el API de la JCE para obtener la información de la misma
-- Acepta t**érminos y condiciones** (en proceso de revisión)
+- Acepta **términos y condiciones** (en proceso de revisión)
 - Realiza una **prueba de vida**:
   - Se toman fotos y se hace una validación con tecnología de **anti-spoofing** (validar que no sea una grabación, deepfake, etc.)
-  - Si la prueba de vida es exitosa se valida de las fotos capturadas contra la foto de la cédula de identidad de la Junta Central Electoral (**JCE**).
-- El ciudadano selecciona un correo y una contraseña para la creación de su cuenta
-  - La contraseña debe cumplir con el estándar de **NIST 800-63B**
-  - Como parte del estándar NIST también se evalúa que la contraseña no se encuentre en **filtraciones de datos** en Internet.
-- Se envía un correo de verificación
+  - Si la prueba de vida es exitosa se validan las fotos capturadas contra la foto de la cédula de identidad de la Junta Central Electoral (**JCE**).
+- El ciudadano selecciona un correo y una contraseña para la creación de su cuenta:
+  - La contraseña debe cumplir con el estándar de [**NIST 800-63B**](https://pages.nist.gov/800-63-3/sp800-63b.html)
+  - Como parte del estándar [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html) también se evalúa que la contraseña no se encuentre en **filtraciones de datos** en Internet.
+- Se envía un correo de verificación con un enlace que debe clickear
 - Se habilita la cuenta en la plataforma de Gestión de Identidades y Accesos (IAM)
+- Ya está listo para usar su cuenta en los portales del Estado Dominicano
 
 ## Guía de instalación
 
-La forma más fácil de poder ejecutar el aplicativo es utilizando `Docker`:
+Existen 2 formas de instalar la aplicación en su máquina o servidor. La forma más fácil y recomendada es utilizando `Docker`:
 
 ```bash
-git clone --depth 1 [https://github.com/opticrd/cuenta-unica-registry.git](https://github.com/opticrd/cuenta-unica-registry.git)
+git clone --depth 1 https://github.com/opticrd/cuenta-unica-registry.git
 cd cuenta-unica-registry
-docker build --target runner --tag cuenta-unica:latest .
-docker run --detach cuenta-unica:latest
+docker build --tag cuenta-unica:latest .
+docker run -d cuenta-unica:latest
 ```
 
-O `yarn`:
+La segunda es utilizando `yarn`:
 
 ```bash
-git clone [https://github.com/opticrd/cuenta-unica-registry.git](https://github.com/opticrd/cuenta-unica-registry.git)
+git clone https://github.com/opticrd/cuenta-unica-registry.git
 cd cuenta-unica-registry
 yarn install
 yarn start
