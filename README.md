@@ -46,8 +46,8 @@ Existen 2 formas de instalar la aplicación en su máquina o servidor. La forma 
 ```bash
 git clone --depth 1 https://github.com/opticrd/cuenta-unica-registry.git
 cd cuenta-unica-registry
-docker build --tag cuenta-unica:latest .
-docker run -d cuenta-unica:latest
+docker build -t cuenta-unica .
+docker run -d cuenta-unica
 ```
 
 La segunda es utilizando `yarn`:
