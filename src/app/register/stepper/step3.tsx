@@ -14,7 +14,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 
 import {
@@ -35,13 +35,8 @@ import { Crypto } from '@/helpers';
 import { orySdk } from '@/sdk';
 
 export default function Step3({ handleNext, infoCedula }: any) {
-  const router = useRouter();
-
   const [flow, setFlow] = useState<RegistrationFlow>();
   // TODO: validate this flowId on account verification
-  // const { flow: flowId, return_to: returnTo } = router.query;
-
-  const { return_to: returnTo } = router.query;
   const [loadingValidatingPassword, setLoadingValidatingPassword] =
     useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,6 +46,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
   const { AlertWarning, AlertError } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  let returnTo = searchParams?.get('return_to');
 
   useEffect(() => {
     const asyncEffect = async () => {

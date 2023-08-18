@@ -89,12 +89,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       try {
         const {
           data: { isHuman },
-        } = await axios.post<{ isHuman: boolean }>(
-          '/api/recaptcha/assesments',
-          {
-            token,
-          },
-        );
+        } = await axios.post<{ isHuman: boolean }>('/api/recaptcha', {
+          token,
+        });
 
         if (!isHuman) {
           return AlertError(RECAPTCHA_VALIDATION_ERROR);

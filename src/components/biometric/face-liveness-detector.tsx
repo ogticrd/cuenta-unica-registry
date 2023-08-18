@@ -1,12 +1,20 @@
+'use client';
+
+import React from 'react';
+import { useState, useEffect } from 'react';
+
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-import { useState, useEffect } from 'react';
-import React from 'react';
+import { Amplify } from 'aws-amplify';
+import '@aws-amplify/ui-react/styles.css';
+import awsExports from '@/aws-exports';
 
 import { displayText } from './displayText';
 import { useSnackbar } from '@/components/elements/alert';
 
 import { UNIDENTIFIED_ERROR } from '@/constants';
+
+Amplify.configure(awsExports);
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
@@ -16,8 +24,9 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackbar();
 
-  const fetchCreateLiveness = async () => {
+  const fetchCreateLiveness: () => Promise<void> = async () => {
     const response = await fetch(`/api/biometric`, { method: 'POST' });
+    await new Promise((r) => setTimeout(r, 2000));
     const { sessionId } = await response.json();
 
     setSessionId(sessionId);
@@ -29,7 +38,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     fetchCreateLiveness();
   };
 
-  const handleAnalysisComplete = async () => {
+  const handleAnalysisComplete: () => Promise<void> = async () => {
     const response = await fetch(
       `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
     );
@@ -63,30 +72,27 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   }, [error]);
 
   return (
-    <>
-      <br />
-      <ThemeProvider>
-        {loading ? (
-          <Loader />
-        ) : (
-          sessionId && (
-            <FaceLivenessDetector
-              sessionId={sessionId}
-              region="us-east-1"
-              onUserCancel={onUserCancel}
-              onError={(livenessError) => {
-                console.error({
-                  state: livenessError.state,
-                  error: livenessError.error,
-                });
-              }}
-              onAnalysisComplete={handleAnalysisComplete}
-              disableInstructionScreen={false}
-              displayText={displayText}
-            />
-          )
-        )}
-      </ThemeProvider>
-    </>
+    <ThemeProvider>
+      {loading ? (
+        <Loader />
+      ) : (
+        sessionId && (
+          <FaceLivenessDetector
+            sessionId={sessionId}
+            region="us-east-1"
+            onUserCancel={onUserCancel}
+            onError={(livenessError) => {
+              console.error({
+                state: livenessError.state,
+                error: livenessError.error,
+              });
+            }}
+            onAnalysisComplete={handleAnalysisComplete}
+            disableInstructionScreen={false}
+            displayText={displayText}
+          />
+        )
+      )}
+    </ThemeProvider>
   );
 }

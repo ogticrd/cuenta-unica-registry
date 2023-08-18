@@ -1,6 +1,7 @@
 import { ReCaptchaResponse } from '../types';
 import axios, { AxiosResponse } from 'axios';
-import type { NextApiRequest, NextApiResponse } from 'next/types';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import logger from '@/lib/logger';
 
@@ -27,10 +28,7 @@ const verifyRecaptcha = async (
   return response.data;
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<any | void>,
-) {
+export async function POST(req: NextRequest, res: NextResponse<any | void>) {
   if (!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
     throw new Error(
       'NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found in environment variables',
@@ -38,9 +36,10 @@ export default async function handler(
   }
 
   try {
+    const body = await req.json();
     const recaptchaEvent: ReCaptchaEvent = {
       event: {
-        token: req.body.token,
+        token: body.token,
         siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
         expectedAction: 'form_submit',
       },
@@ -62,24 +61,24 @@ export default async function handler(
     //     "hostname": string,         // the hostname of the site where the reCAPTCHA was solved
     //     "error-codes": [...]        // optional
     //   }
-    if (response.riskAnalysis && response.riskAnalysis.score >= 0.5) {
-      return res.status(200).json({
+    if (response.riskAnalysis && response.riskAnalysis.score >= 0.3) {
+      return NextResponse.json({
         isHuman: true,
-        status: 'Success',
         message: 'Thank you human',
+        status: 200,
       });
     } else {
-      return res.status(200).json({
+      return NextResponse.json({
         isHuman: false,
-        status: 'Failure',
         message: 'Google ReCaptcha Failure',
+        status: 200,
       });
     }
   } catch (error) {
     logger.error('Google ReCaptcha crashed', error);
-    res.status(500).json({
-      status: 'Failure',
-      message: 'Something went wrong, please try again.',
+    NextResponse.json({
+      error: 'Something went wrong, please try again.',
+      status: 500,
     });
   }
 }

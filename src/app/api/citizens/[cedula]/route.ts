@@ -1,15 +1,17 @@
-import { NextApiRequest, NextApiResponse } from 'next/types';
+import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 import {
   CitizensBasicInformationResponse,
   CitizensBirthInformationResponse,
   CitizensTokenResponse,
-} from '../types';
+} from '../../types';
+import { boolean } from 'yup';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<{
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { cedula: string; validated: boolean } },
+  res: NextResponse<{
     id: string;
     name?: string;
     names?: string;
@@ -18,18 +20,12 @@ export default async function handler(
     gender?: string;
     birthDate?: string;
   } | void>,
-): Promise<void> {
-  const { token } = req.cookies;
-
-  if (token !== process.env.SITE_COOKIE_KEY) {
-    return res.status(401).send();
-  }
-
+): Promise<NextResponse> {
   const http = axios.create({
     baseURL: process.env.CEDULA_API,
   });
 
-  const { cedula, validated } = req.query;
+  const { validated, cedula } = params;
 
   const { data: citizensToken } = await http.post<CitizensTokenResponse>(
     `${process.env.CEDULA_TOKEN_API}`,
@@ -70,7 +66,7 @@ export default async function handler(
     let { birthDate } = citizensBirthData.payload;
     birthDate = birthDate.split('T')[0];
 
-    return res.status(200).json({
+    return NextResponse.json({
       names,
       id,
       firstSurname,
@@ -80,5 +76,8 @@ export default async function handler(
     });
   }
 
-  return res.status(200).json({ name, id });
+  return NextResponse.json({
+    name,
+    id,
+  });
 }

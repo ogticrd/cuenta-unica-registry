@@ -1,10 +1,13 @@
+'use client';
+
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Button from '@mui/material/Button';
-import { useRouter } from 'next/router';
+// TODO: Use the <Link> component for navigation unless we have a specific requirement for using useRouter
+import { useRouter } from 'next/navigation';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
 import * as React from 'react';
@@ -22,14 +25,6 @@ const optionalLabels = [
   'Cuenta de usuario',
 ];
 
-export async function getServerSideProps() {
-  await axios.get(`/api/auth`);
-
-  return {
-    props: { data: {} },
-  };
-}
-
 export default function StepperRegister() {
   const router = useRouter();
   const theme = useTheme();
@@ -37,10 +32,6 @@ export default function StepperRegister() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [infoCedula, setInfoCedula] = React.useState({});
-
-  React.useEffect(() => {
-    axios.get(`/api/auth`).then().catch();
-  }, []);
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
