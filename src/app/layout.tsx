@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
@@ -6,11 +7,12 @@ import { ThemeProvider } from '@mui/material/styles';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 
-import { SnackbarProvider } from '../components/elements/alert';
 import Layout from '../components/layout';
 import { theme } from '../themes';
+import SnackAlert from '@/components/elements/alert';
 
 import '../../public/fonts/poppins_wght.css';
+import '@aws-amplify/ui-react/styles.css';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -39,14 +41,12 @@ export default function RootLayout({
         <body>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <SnackbarProvider>
-              <Layout>
-                <ReCaptchaProvider useEnterprise>
-                  {children}
-                  {GoogleTagManagerBody}
-                </ReCaptchaProvider>
-              </Layout>
-            </SnackbarProvider>
+            <Layout>
+              <ReCaptchaProvider useEnterprise>
+                <SnackAlert>{children}</SnackAlert>
+                {GoogleTagManagerBody}
+              </ReCaptchaProvider>
+            </Layout>
           </ThemeProvider>
         </body>
       </html>

@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { cedula: string } },
 ): Promise<NextResponse> {
   const http = axios.create({
-    baseURL: process.env.ORY_SDK_URL,
+    baseURL: process.env.NEXT_PUBLIC_ORY_SDK_URL,
     headers: {
       Authorization: 'Bearer ' + process.env.ORY_SDK_TOKEN,
     },

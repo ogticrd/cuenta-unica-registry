@@ -18,7 +18,7 @@ import {
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBodyTiny } from '@/components/elements/typography';
-import { useSnackbar } from '@/components/elements/alert';
+import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { CedulaInput, CustomProps } from '../../../common/interfaces';
 import { cedulaSchema } from '../../../common/yup-schemas';
@@ -42,8 +42,7 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
 );
 
 export default function Step1({ setInfoCedula, handleNext }: any) {
-  const [valueCedula, setValueCedula] = useState('');
-  const { AlertError, AlertWarning } = useSnackbar();
+  const { AlertError, AlertWarning } = useSnackAlert();
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useReCaptcha();
 
@@ -51,16 +50,18 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     handleSubmit: handleFormSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<CedulaInput>({
     reValidateMode: 'onSubmit',
     resolver: yupResolver(cedulaSchema),
   });
 
+  const valueCedula = watch('cedula', '');
   const onCedulaChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setValue('cedula', event.target.value.replace(/-/g, ''));
-    setValueCedula(event.target.value);
+    const valueWithoutHyphens = event.target.value.replace(/-/g, '');
+    setValue('cedula', valueWithoutHyphens);
   };
 
   const handleSubmit = useCallback(

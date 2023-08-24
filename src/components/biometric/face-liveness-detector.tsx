@@ -6,11 +6,10 @@ import { useState, useEffect } from 'react';
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
-import '@aws-amplify/ui-react/styles.css';
 import awsExports from '@/aws-exports';
 
 import { displayText } from './displayText';
-import { useSnackbar } from '@/components/elements/alert';
+import { useSnackAlert } from '@/components/elements/alert';
 
 import { UNIDENTIFIED_ERROR } from '@/constants';
 
@@ -22,7 +21,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const { AlertError } = useSnackbar();
+  const { AlertError } = useSnackAlert();
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
     const response = await fetch(`/api/biometric`, { method: 'POST' });

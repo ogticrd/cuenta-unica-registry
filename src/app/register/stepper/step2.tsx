@@ -18,7 +18,7 @@ import {
   Step2Props,
   TermsAndConditionsInput,
 } from '../../../common/interfaces';
-import { useSnackbar } from '@/components/elements/alert';
+import { useSnackAlert } from '@/components/elements/alert';
 import Step2Modal from './step2Modal';
 import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
 
@@ -36,7 +36,7 @@ export default function Step2({
     register,
     formState: { errors },
   } = useForm<TermsAndConditionsInput>();
-  const { AlertWarning } = useSnackbar();
+  const { AlertWarning } = useSnackAlert();
 
   const onSubmit = (data: TermsAndConditionsInput) => {
     if (!data.acceptTermAndConditions) {

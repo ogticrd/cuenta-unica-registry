@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
 import * as React from 'react';
-import axios from 'axios';
+import { useState, Fragment } from 'react';
 
 import { routes } from '@/constants/routes';
 import Step1 from './step1';
@@ -29,9 +29,9 @@ export default function StepperRegister() {
   const router = useRouter();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
-  const [infoCedula, setInfoCedula] = React.useState({});
+  const [activeStep, setActiveStep] = useState(0);
+  const [skipped, setSkipped] = useState(new Set<number>());
+  const [infoCedula, setInfoCedula] = useState({});
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
@@ -92,7 +92,7 @@ export default function StepperRegister() {
         ))}
       </Stepper>
       {activeStep === steps.length ? (
-        <React.Fragment>
+        <Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
@@ -100,7 +100,7 @@ export default function StepperRegister() {
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
-        </React.Fragment>
+        </Fragment>
       ) : (
         <div style={{ margin: '0px 25px' }}>{getStepComponent()}</div>
       )}

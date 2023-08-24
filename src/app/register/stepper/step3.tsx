@@ -1,3 +1,4 @@
+'use client';
 import {
   Alert,
   Box,
@@ -14,7 +15,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 
 import {
@@ -23,39 +24,34 @@ import {
   VALIDATE_PASSWORD_ERROR,
 } from '../../../constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import PasswordLevel, {
   calculatePasswordStrength,
 } from '@/components/elements/passwordLevel';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
-import { useSnackbar } from '@/components/elements/alert';
+import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { step3Schema } from '../../../common/yup-schemas';
 import { Crypto } from '@/helpers';
-import { orySdk } from '@/sdk';
+import { ory } from '@/lib/ory';
+import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 
 export default function Step3({ handleNext, infoCedula }: any) {
   const [flow, setFlow] = useState<RegistrationFlow>();
   // TODO: validate this flowId on account verification
-  const [loadingValidatingPassword, setLoadingValidatingPassword] =
-    useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [passwordLevel, setPasswordLevel] = useState<any>({});
   const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
-  const { AlertWarning, AlertError } = useSnackbar();
+  const { AlertWarning, AlertError } = useSnackAlert();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
-  const router = useRouter();
   const searchParams = useSearchParams();
-
   let returnTo = searchParams?.get('return_to');
 
   useEffect(() => {
-    const asyncEffect = async () => {
+    const fetchFlow = async () => {
       try {
-        const { data: flow } = await orySdk.createBrowserRegistrationFlow({
+        const { data: flow } = await ory.createBrowserRegistrationFlow({
           returnTo: returnTo ? String(returnTo) : undefined,
         });
 
@@ -66,10 +62,8 @@ export default function Step3({ handleNext, infoCedula }: any) {
       }
     };
 
-    asyncEffect();
-
-    // eslint-disable-next-line
-  }, []);
+    fetchFlow();
+  }, [returnTo]);
 
   const {
     register,
@@ -99,8 +93,6 @@ export default function Step3({ handleNext, infoCedula }: any) {
       return;
     }
 
-    setLoadingValidatingPassword(true);
-
     const password = Crypto.encrypt(form.password);
 
     try {
@@ -112,34 +104,36 @@ export default function Step3({ handleNext, infoCedula }: any) {
       AlertError(VALIDATE_PASSWORD_ERROR);
 
       return;
-    } finally {
-      setLoadingValidatingPassword(false);
     }
 
     try {
-      setLoading(true);
-
       const { data: citizen } = await axios.get<CitizenCompleteData>(
         `/api/citizens/${infoCedula.id}?validated=true`,
       );
 
-      const node: any = flow?.ui.nodes.find(
-        (n: any) => n.attributes['name'] === 'csrf_token',
-      );
-      const csrf_token = node?.attributes.value as string;
-      const last = `${citizen.firstSurname} ${citizen.secondSurname}`;
-      const method = 'password';
+      let csrfToken = '';
+      if (flow && flow.ui && Array.isArray(flow.ui.nodes)) {
+        const csrfNode = flow.ui.nodes.find(
+          (node) =>
+            isUiNodeInputAttributes(node.attributes) &&
+            node.attributes.name === 'csrf_token',
+        );
+
+        if (csrfNode) {
+          csrfToken = (csrfNode.attributes as any).value;
+        }
+      }
 
       const updateRegistrationFlowBody: UpdateRegistrationFlowBody = {
-        csrf_token,
-        method,
+        csrf_token: csrfToken,
+        method: 'password',
         password: form.password,
         traits: {
           email: form.email,
           username: citizen.id,
           name: {
             first: citizen.names,
-            last,
+            last: `${citizen.firstSurname} ${citizen.secondSurname}`,
           },
           birthdate: citizen.birthDate,
           gender: citizen.gender,
@@ -148,7 +142,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
       const {
         data: { continue_with },
-      } = await orySdk.updateRegistrationFlow({
+      } = await ory.updateRegistrationFlow({
         flow: String(flow?.id),
         updateRegistrationFlowBody,
       });
@@ -209,19 +203,12 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
       AlertError(CREATE_IDENTITY_ERROR);
       return;
-    } finally {
-      setLoading(false);
     }
   };
 
   // TODO: Use this Password UI approach https://stackblitz.com/edit/material-password-strength?file=Icons.js
   return (
     <>
-      {loadingValidatingPassword && (
-        <LoadingBackdrop text="Validando contraseña..." />
-      )}
-      {loading && <LoadingBackdrop text="Creando usuario..." />}
-
       <Typography
         component="div"
         color="primary"
