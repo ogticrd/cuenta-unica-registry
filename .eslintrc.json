@@ -3,5 +3,9 @@
     "next/core-web-vitals",
     "next",
     "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "react",
+    "react-hooks"
   ]
 }
