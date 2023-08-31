@@ -64,6 +64,6 @@ USER nextjs
 EXPOSE ${PORT}
 
 ENV PORT ${PORT}
-ENV HOSTNAME localhost
+ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "server.js"]

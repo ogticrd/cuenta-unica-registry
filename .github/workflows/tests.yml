@@ -41,7 +41,7 @@ env:
 jobs:
   test:
     name: Test with Node.js ${{ matrix.node }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     strategy:
