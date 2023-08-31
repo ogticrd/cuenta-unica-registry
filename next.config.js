@@ -8,6 +8,12 @@ const nextConfig = {
       config.plugins.push(
         new webpack.IgnorePlugin({ resourceRegExp: /^aws-crt$/ }),
       );
+    if (!isServer) {
+      config.node = {
+        fs: 'empty',
+      };
+      config.externals = ['dtrace-provider', 'fs'];
+    }
     return config;
   },
 };
