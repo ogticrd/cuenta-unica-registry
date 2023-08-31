@@ -9,10 +9,7 @@ const nextConfig = {
         new webpack.IgnorePlugin({ resourceRegExp: /^aws-crt$/ }),
       );
     if (!isServer) {
-      config.node = {
-        fs: 'empty',
-      };
-      config.externals = ['dtrace-provider', 'fs'];
+      config.externals = ['dtrace-provider'];
     }
     return config;
   },
