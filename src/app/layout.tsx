@@ -1,14 +1,11 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
 
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 
 import Layout from '../components/layout';
-import { theme } from '../themes';
+import ThemeRegistry from '@/components/themes/ThemeRegistry';
 import SnackAlert from '@/components/elements/alert';
 
 import '../../public/fonts/poppins_wght.css';
@@ -23,12 +20,6 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
 };
 
-const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-});
-
 export default function RootLayout({
   children,
 }: {
@@ -36,18 +27,17 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <html lang="es" className={roboto.className}>
+      <html lang="es">
         <head>{GoogleTagManagerHead}</head>
         <body>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
+          <ThemeRegistry>
             <Layout>
               <ReCaptchaProvider useEnterprise>
                 <SnackAlert>{children}</SnackAlert>
                 {GoogleTagManagerBody}
               </ReCaptchaProvider>
             </Layout>
-          </ThemeProvider>
+          </ThemeRegistry>
         </body>
       </html>
     </>

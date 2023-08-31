@@ -1,10 +1,16 @@
-'use client';
-
+import { Roboto } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 
-export const theme = createTheme({
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
       main: '#003876',
     },
@@ -20,7 +26,7 @@ export const theme = createTheme({
   },
 
   typography: {
-    fontFamily: ['Poppins', 'sans-serif'].join(','),
+    fontFamily: roboto.style.fontFamily,
   },
 
   components: {
@@ -73,3 +79,5 @@ export const theme = createTheme({
     },
   },
 });
+
+export default theme;

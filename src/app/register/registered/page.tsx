@@ -1,3 +1,5 @@
+'use client';
+
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Typography } from '@mui/material';

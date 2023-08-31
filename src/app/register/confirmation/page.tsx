@@ -1,8 +1,9 @@
+'use client';
+
 import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -11,7 +12,7 @@ import LandingChico from '../../../../public/assets/landingChico.svg';
 import { CardAuth } from '@/components/elements/cardAuth';
 import { ButtonApp } from '@/components/elements/button';
 import { FormControlApp } from '@/components/form/input';
-import { InputApp } from '@/themes/form/input';
+import { InputApp } from '@/components/themes/form/input';
 import { routes } from '@/constants/routes';
 import { labels } from '@/constants/labels';
 
@@ -30,7 +31,9 @@ const schema = yup.object({
 export default function Index() {
   const router = useRouter();
 
-  const [dataItem] = useState<any>({});
+  const dataItem = {
+    cedula: '',
+  };
 
   const {
     register,
