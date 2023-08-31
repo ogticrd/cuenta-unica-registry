@@ -8,7 +8,7 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS base
 ARG WORK_DIR
 ARG APP_ENV=production
 
-ENV PORT=3000
+ARG PORT=3000
 ENV WORK_DIR=${WORK_DIR}
 ENV NODE_ENV=${APP_ENV}
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -62,5 +62,8 @@ COPY --from=build --chown=nextjs:nodejs ${WORK_DIR}/.next/static ./.next/static
 USER nextjs
 
 EXPOSE ${PORT}
+
+ENV PORT ${PORT}
+ENV HOSTNAME localhost
 
 CMD ["node", "server.js"]
