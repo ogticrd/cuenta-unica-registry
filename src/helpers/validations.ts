@@ -17,4 +17,8 @@ export class Validations {
 
     return sum % 10 === 0;
   }
+
+  static get isProduction(): boolean {
+    return process.env.NODE_ENV === 'production';
+  }
 }

@@ -21,6 +21,7 @@ import {
 import { useSnackAlert } from '@/components/elements/alert';
 import Step2Modal from './step2Modal';
 import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
+import { Validations } from '@/helpers';
 
 export default function Step2({
   infoCedula,
@@ -42,6 +43,10 @@ export default function Step2({
     if (!data.acceptTermAndConditions) {
       AlertWarning(NON_ACCEPTED_TERMS_AND_CONDS_ERROR);
       return;
+    }
+
+    if (!Validations.isProduction) {
+      return handleNext();
     }
 
     handleClick();

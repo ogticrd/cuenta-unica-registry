@@ -74,6 +74,7 @@
     "husky": "^8.0.3",
     "install-peers": "^1.0.4",
     "lint-staged": "^14.0.0",
+    "miragejs": "^0.1.47",
     "prettier": ">=3.0.0"
   }
 }

@@ -31,7 +31,7 @@ import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { step3Schema } from '../../../common/yup-schemas';
-import { Crypto } from '@/helpers';
+import { Crypto, Validations } from '@/helpers';
 import { ory } from '@/lib/ory';
 import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 
@@ -49,6 +49,10 @@ export default function Step3({ handleNext, infoCedula }: any) {
   let returnTo = searchParams?.get('return_to');
 
   useEffect(() => {
+    if (!Validations.isProduction) {
+      return;
+    }
+
     const fetchFlow = async () => {
       try {
         const { data: flow } = await ory.createBrowserRegistrationFlow({
@@ -97,14 +101,21 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const password = Crypto.encrypt(form.password);
 
     try {
-      const { data } = await axios.get<number>(`/api/pwned/${password}`);
+      const {
+        data: { data },
+      } = await axios.get<{ data: number; status: number }>(
+        `/api/pwned/${password}`,
+      );
 
       const isValidPassword = data !== 0;
       setIsPwned(isValidPassword);
     } catch (err: any) {
       AlertError(VALIDATE_PASSWORD_ERROR);
-
       return;
+    }
+
+    if (!Validations.isProduction) {
+      return handleNext();
     }
 
     try {

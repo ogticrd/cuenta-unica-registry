@@ -25,7 +25,9 @@ export async function GET(
     baseURL: process.env.CEDULA_API,
   });
 
-  const { validated, cedula } = params;
+  const { searchParams } = new URL(req.url);
+  const { cedula } = params;
+  const validated = searchParams.get('validated') === 'true';
 
   const { data: citizensToken } = await http.post<CitizensTokenResponse>(
     `${process.env.CEDULA_TOKEN_API}`,
