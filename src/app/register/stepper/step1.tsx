@@ -150,6 +150,9 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
                 helperText={errors?.cedula?.message}
+                inputProps={{
+                  inputMode: 'numeric',
+                }}
                 InputProps={{
                   inputComponent: TextMaskCustom as any,
                 }}
