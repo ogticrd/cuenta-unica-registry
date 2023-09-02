@@ -73,25 +73,28 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   return (
     <ThemeProvider>
       {loading ? (
-        <Loader />
-      ) : (
-        sessionId && (
-          <FaceLivenessDetector
-            sessionId={sessionId}
-            region="us-east-1"
-            onUserCancel={onUserCancel}
-            onError={(livenessError) => {
-              console.error({
-                state: livenessError.state,
-                error: livenessError.error,
-              });
-            }}
-            onAnalysisComplete={handleAnalysisComplete}
-            disableInstructionScreen={false}
-            displayText={displayText}
-          />
-        )
-      )}
+        <div
+          style={{
+            width: '100%',
+            height: '55vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Loader />
+        </div>
+      ) : sessionId ? (
+        <FaceLivenessDetector
+          sessionId={sessionId}
+          region="us-east-1"
+          onUserCancel={onUserCancel}
+          onError={console.error}
+          onAnalysisComplete={handleAnalysisComplete}
+          disableInstructionScreen={false}
+          displayText={displayText}
+        />
+      ) : null}
     </ThemeProvider>
   );
 }
