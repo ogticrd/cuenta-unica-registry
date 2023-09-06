@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import csrf from 'edge-csrf';
 
 const csrfProtect = csrf({
