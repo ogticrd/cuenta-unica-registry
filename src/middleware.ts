@@ -1,22 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import csrf from 'edge-csrf';
-
-const csrfProtect = csrf({
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 10,
-  },
-});
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
+  const token = request.cookies.get('token');
 
-  // csrf protection
-  const csrfError = await csrfProtect(request, response);
-
-  // check result
-  if (csrfError) {
-    return new NextResponse('invalid csrf token', { status: 403 });
+  if (!token || token.value !== process.env.SITE_COOKIE_KEY) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   return response;
