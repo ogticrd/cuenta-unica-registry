@@ -6,26 +6,21 @@ import {
   CitizensBirthInformationResponse,
   CitizensTokenResponse,
 } from '../../types';
-import { boolean } from 'yup';
+import { CitizensDataFlow } from '../../types/citizens.type';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { cedula: string; validated: boolean } },
-  res: NextResponse<{
-    id: string;
-    name?: string;
-    names?: string;
-    firstSurname?: string;
-    secondSurname?: string;
-    gender?: string;
-    birthDate?: string;
-  } | void>,
+  { params }: { params: { cedula: string } },
+  res: NextResponse<CitizensDataFlow | void>,
 ): Promise<NextResponse> {
   const http = axios.create({
     baseURL: process.env.CEDULA_API,
   });
+  const url = new URL(req.url);
 
-  const { validated, cedula } = params;
+  const { cedula } = params;
+  const validatedQueryParam = url.searchParams.get('validated');
+  const validated = validatedQueryParam && validatedQueryParam === 'true';
 
   const { data: citizensToken } = await http.post<CitizensTokenResponse>(
     `${process.env.CEDULA_TOKEN_API}`,

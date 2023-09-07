@@ -27,3 +27,13 @@ export type CitizensTokenResponse = {
   token_type: string;
   expires_in: number;
 };
+
+export type CitizensDataFlow = {
+  id: string;
+  name?: string;
+  names?: string;
+  firstSurname?: string;
+  secondSurname?: string;
+  gender?: string;
+  birthDate?: string;
+};
