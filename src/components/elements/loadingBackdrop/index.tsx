@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from '@mui/material';
@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export default function LoadingBackdrop({ text }: IProps) {
-  const [open] = React.useState(true);
+  const [open] = useState(true);
 
   return (
     <Backdrop

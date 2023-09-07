@@ -87,7 +87,8 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ secrets.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
-            NEXT_PUBLIC_GOOGLE_ANALYTICS=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }}
+            NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }}
+            NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}
           secrets: |
             "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON }}"
 

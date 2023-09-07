@@ -1,3 +1,5 @@
+'use client';
+
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';

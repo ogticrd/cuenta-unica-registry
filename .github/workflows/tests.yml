@@ -41,7 +41,7 @@ env:
 jobs:
   test:
     name: Test with Node.js ${{ matrix.node }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     strategy:
@@ -61,6 +61,7 @@ jobs:
         uses: actions/setup-node@v3.7.0
         with:
           node-version: ${{ matrix.node }}
+          cache: yarn
 
       - name: Audit for vulnerabilities
         run: npx audit-ci@^6 --config ./audit-ci.jsonc
