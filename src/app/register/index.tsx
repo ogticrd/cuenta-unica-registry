@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 export default function Index() {
   useEffect(() => {
     setCookie();
-  }, [setCookie]);
+  }, []);
 
   return (
     <BoxContentCenter>
