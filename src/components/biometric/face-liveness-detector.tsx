@@ -1,12 +1,19 @@
+'use client';
+
+import React from 'react';
+import { useState, useEffect } from 'react';
+
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-import { useState, useEffect } from 'react';
-import React from 'react';
+import { Amplify } from 'aws-amplify';
+import awsExports from '@/aws-exports';
 
 import { displayText } from './displayText';
-import { useSnackbar } from '@/components/elements/alert';
+import { useSnackAlert } from '@/components/elements/alert';
 
 import { UNIDENTIFIED_ERROR } from '@/constants';
+
+Amplify.configure(awsExports);
 
 export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const next = handleNextForm;
@@ -14,10 +21,11 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const { AlertError } = useSnackbar();
+  const { AlertError } = useSnackAlert();
 
-  const fetchCreateLiveness = async () => {
+  const fetchCreateLiveness: () => Promise<void> = async () => {
     const response = await fetch(`/api/biometric`, { method: 'POST' });
+    await new Promise((r) => setTimeout(r, 2000));
     const { sessionId } = await response.json();
 
     setSessionId(sessionId);
@@ -29,7 +37,7 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
     fetchCreateLiveness();
   };
 
-  const handleAnalysisComplete = async () => {
+  const handleAnalysisComplete: () => Promise<void> = async () => {
     const response = await fetch(
       `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
     );
@@ -63,30 +71,30 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   }, [error]);
 
   return (
-    <>
-      <br />
-      <ThemeProvider>
-        {loading ? (
+    <ThemeProvider>
+      {loading ? (
+        <div
+          style={{
+            width: '100%',
+            height: '55vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Loader />
-        ) : (
-          sessionId && (
-            <FaceLivenessDetector
-              sessionId={sessionId}
-              region="us-east-1"
-              onUserCancel={onUserCancel}
-              onError={(livenessError) => {
-                console.error({
-                  state: livenessError.state,
-                  error: livenessError.error,
-                });
-              }}
-              onAnalysisComplete={handleAnalysisComplete}
-              disableInstructionScreen={false}
-              displayText={displayText}
-            />
-          )
-        )}
-      </ThemeProvider>
-    </>
+        </div>
+      ) : sessionId ? (
+        <FaceLivenessDetector
+          sessionId={sessionId}
+          region="us-east-1"
+          onUserCancel={onUserCancel}
+          onError={console.error}
+          onAnalysisComplete={handleAnalysisComplete}
+          disableInstructionScreen={false}
+          displayText={displayText}
+        />
+      ) : null}
+    </ThemeProvider>
   );
 }
