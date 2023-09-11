@@ -55,7 +55,7 @@ jobs:
       - run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
         shell: bash
         env:
-          AWS_EXPORTS_JSON: ${{secrets.AWS_EXPORTS_JSON}}
+          AWS_EXPORTS_JSON: ${{ secrets.AWS_EXPORTS_JSON }}
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3.7.0
@@ -67,4 +67,4 @@ jobs:
         run: npx audit-ci@^6 --config ./audit-ci.jsonc
 
       - run: yarn install --check-files --frozen-lockfile
-      - run: yarn build
+      - run: yarn test:ci
