@@ -7,6 +7,5 @@ describe('Index', () => {
     render(<Register />);
 
     expect(screen.getByRole('index')).toBeDefined();
-    expect(12 * 12).toBe(144);
   });
 });
