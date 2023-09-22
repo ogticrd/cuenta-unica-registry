@@ -15,9 +15,7 @@ import { UNIDENTIFIED_ERROR } from '@/constants';
 
 Amplify.configure(awsExports);
 
-export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
-  const next = handleNextForm;
-  const id = cedula;
+export function LivenessQuickStartReact({ handleNextForm: next, cedula }: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -38,9 +36,9 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   };
 
   const handleAnalysisComplete: () => Promise<void> = async () => {
-    const data = await fetch(
-      `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
-    ).then((res) => res.json());
+    const data = await fetch(`/api/biometric/${sessionId}/${cedula}`).then(
+      (res) => res.json(),
+    );
 
     if (data?.isMatch === true) {
       next();
