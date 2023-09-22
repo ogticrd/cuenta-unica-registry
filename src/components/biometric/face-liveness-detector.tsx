@@ -38,12 +38,11 @@ export function LivenessQuickStartReact({ handleNextForm, cedula }: any) {
   };
 
   const handleAnalysisComplete: () => Promise<void> = async () => {
-    const response = await fetch(
+    const data = await fetch(
       `/api/biometric?sessionId=${sessionId}&cedula=${id}`,
-    );
-    const data = await response.json();
+    ).then((res) => res.json());
 
-    if (data.isMatch === true) {
+    if (data?.isMatch === true) {
       next();
     } else {
       setError(data);

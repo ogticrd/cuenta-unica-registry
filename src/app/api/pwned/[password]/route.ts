@@ -4,32 +4,37 @@ import { pwnedPassword } from 'hibp';
 import { Crypto } from '@/helpers';
 import logger from '@/lib/logger';
 
-export async function GET(
-  req: NextRequest,
-  params: { params: { password: string } },
-  res: NextResponse<number | void>,
-): Promise<NextResponse> {
-  const { password } = params.params;
+export async function GET(req: NextRequest, { params: { password } }: Props) {
+  if (!password) {
+    return NextResponse.json(
+      {
+        error: intl.error.emptyPasswd,
+      },
+      { status: 400 },
+    );
+  }
 
-  if (typeof password !== 'undefined') {
-    const passwordKey = Array.isArray(password) ? password[0] : password;
+  try {
+    const data = await pwnedPassword(Crypto.decrypt(password));
 
-    try {
-      const data = await pwnedPassword(Crypto.decrypt(passwordKey));
-      return NextResponse.json({
-        data,
-        status: 200,
-      });
-    } catch (error) {
-      logger.error('Decryption Error: ', error);
+    return NextResponse.json({ data });
+  } catch (error) {
+    logger.error(intl.error.crypto, error);
 
-      return NextResponse.json({
-        status: 500,
-      });
-    }
-  } else {
-    return NextResponse.json({
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        error: intl.error.crypto,
+      },
+      { status: 500 },
+    );
   }
 }
+
+type Props = { params: { password: string } };
+
+const intl = {
+  error: {
+    emptyPasswd: "Password can't be empty",
+    crypto: 'Decryption Error:',
+  },
+};
