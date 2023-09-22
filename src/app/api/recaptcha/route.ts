@@ -23,9 +23,7 @@ export async function POST(req: NextRequest) {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   if (!siteKey) {
-    throw new Error(
-      'NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found in environment variables',
-    );
+    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${intl.error.noEnv}`);
   }
 
   try {
@@ -44,13 +42,21 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ isHuman });
   } catch (error) {
-    logger.error('Google ReCaptcha crashed', error);
+    logger.error(intl.error.reCaptcha, error);
 
     return NextResponse.json(
       {
-        error: 'Something went wrong, please try again.',
+        error: intl.error.server,
       },
       { status: 500 },
     );
   }
 }
+
+const intl = {
+  error: {
+    server: 'Something went wrong, please try again',
+    reCaptcha: 'Google ReCaptcha crashed',
+    noEnv: 'variable invalid or undefined',
+  },
+};
