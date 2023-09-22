@@ -11,15 +11,11 @@ export async function GET(
   req: NextRequest,
   { params: { cedula } }: Props,
   res: NextResponse<CitizensDataFlow | void>,
-): Promise<NextResponse> {
+) {
   const baseURL = process.env.CEDULA_API!;
   const apiKey = process.env.CEDULA_API_KEY!;
 
-  const { access_token } = await fetchAccessToken();
-
-  const headers = {
-    Authorization: `Bearer ${access_token}`,
-  };
+  const headers = await fetchAuthHeaders();
 
   const citizenUrl = new URL(`${baseURL}/${cedula}/info/basic`);
   citizenUrl.searchParams.append('api-key', apiKey);
@@ -57,7 +53,7 @@ export async function GET(
   });
 }
 
-const fetchAccessToken = async () => {
+const fetchAuthHeaders = async () => {
   return fetch(process.env.CEDULA_TOKEN_API!, {
     method: 'POST',
     body: 'grant_type=client_credentials',
@@ -65,7 +61,11 @@ const fetchAccessToken = async () => {
       Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-  }).then<CitizensTokenResponse>((res) => res.json());
+  })
+    .then<CitizensTokenResponse>((res) => res.json())
+    .then(({ access_token }) => ({
+      Authorization: `Bearer ${access_token}`,
+    }));
 };
 
 type Props = { params: { cedula: string } };
