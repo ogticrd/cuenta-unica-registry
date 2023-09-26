@@ -6,7 +6,6 @@ import { useReCaptcha } from 'next-recaptcha-v3';
 import { useForm } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
 import Link from 'next/link';
-import axios from 'axios';
 
 import {
   IDENTITY_ALREADY_EXISTS_ERROR,
@@ -22,7 +21,8 @@ import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { CedulaInput, CustomProps } from '../../../common/interfaces';
 import { cedulaSchema } from '../../../common/yup-schemas';
-import { Validations } from '@/helpers';
+import { Validations, unwrap } from '@/helpers';
+import { CitizensDataFlow } from '@/app/api/types/citizens.type';
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
   function TextMaskCustom(props, ref: any) {
@@ -41,7 +41,7 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
   },
 );
 
-export default function Step1({ setInfoCedula, handleNext }: any) {
+export default function Step1({ setInfoCedula, handleNext }: Props) {
   const { AlertError, AlertWarning } = useSnackAlert();
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useReCaptcha();
@@ -88,29 +88,27 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
       }
 
       try {
-        const {
-          data: { isHuman },
-        } = await axios.post<{ isHuman: boolean }>('/api/recaptcha', {
-          token,
-        });
+        const { isHuman } = await fetch('/api/recaptcha', {
+          method: 'POST',
+          body: JSON.stringify({ token }),
+        }).then<Human>(unwrap);
 
         if (!isHuman) {
           return AlertError(RECAPTCHA_VALIDATION_ERROR);
         }
 
-        const {
-          data: { exists },
-        } = await axios.get<{ exists: boolean }>(`/api/iam/${cleanCedula}`);
+        const { exists } = await fetch(`/api/iam/${cleanCedula}`).then<Exists>(
+          unwrap,
+        );
 
         if (exists) {
           return AlertError(IDENTITY_ALREADY_EXISTS_ERROR);
         }
 
-        const { data: citizen } = await axios.get(
-          `/api/citizens/${cleanCedula}`,
-        );
+        await fetch(`/api/citizens/${cleanCedula}`)
+          .then<CitizensDataFlow>(unwrap)
+          .then(setInfoCedula);
 
-        setInfoCedula(citizen);
         handleNext();
       } catch (err: any) {
         console.error(err.message || err);
@@ -187,3 +185,11 @@ export default function Step1({ setInfoCedula, handleNext }: any) {
     </>
   );
 }
+
+type Props = {
+  setInfoCedula: (info: CitizensDataFlow) => void;
+  handleNext: () => void;
+};
+
+type Exists = { exists: boolean };
+type Human = { isHuman: boolean };

@@ -1,5 +1,7 @@
+import type { CitizensDataFlow } from '@/app/api/types/citizens.type';
+
 export interface Step2Props {
-  infoCedula: { [key: string]: any };
+  infoCedula: CitizensDataFlow;
   handleNext: () => void;
   handleReset: () => void;
 }
