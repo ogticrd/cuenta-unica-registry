@@ -15,13 +15,13 @@ import {
   RECAPTCHA_ISSUES_ERROR,
   RECAPTCHA_VALIDATION_ERROR,
 } from '@/constants';
+import { CedulaInput, CustomProps } from '../../../common/interfaces';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { useSnackAlert } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
-import { CedulaInput, CustomProps } from '../../../common/interfaces';
 import { cedulaSchema } from '../../../common/yup-schemas';
+import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/helpers';
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
