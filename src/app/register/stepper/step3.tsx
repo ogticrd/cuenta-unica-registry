@@ -10,12 +10,13 @@ import {
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
+import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 
 import {
@@ -29,11 +30,10 @@ import PasswordLevel, {
 } from '@/components/elements/passwordLevel';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
 import { step3Schema } from '../../../common/yup-schemas';
+import { ButtonApp } from '@/components/elements/button';
 import { Crypto } from '@/helpers';
 import { ory } from '@/lib/ory';
-import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 
 export default function Step3({ handleNext, infoCedula }: any) {
   const [flow, setFlow] = useState<RegistrationFlow>();
@@ -46,7 +46,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const searchParams = useSearchParams();
-  let returnTo = searchParams?.get('return_to');
+  const returnTo = searchParams?.get('return_to');
 
   useEffect(() => {
     const fetchFlow = async () => {
@@ -147,6 +147,11 @@ export default function Step3({ handleNext, infoCedula }: any) {
         flow: String(flow?.id),
         updateRegistrationFlowBody,
       });
+
+      if (returnTo) {
+        window.location.href = returnTo;
+        return;
+      }
 
       handleNext();
 

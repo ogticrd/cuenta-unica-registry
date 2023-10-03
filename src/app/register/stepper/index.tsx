@@ -2,16 +2,15 @@
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
+import React, { useState, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
-import Button from '@mui/material/Button';
 // TODO: Use the <Link> component for navigation unless we have a specific requirement for using useRouter
 import { useRouter } from 'next/navigation';
+import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
-import * as React from 'react';
-import { useState, Fragment } from 'react';
 
 import { routes } from '@/constants/routes';
 import Step1 from './step1';

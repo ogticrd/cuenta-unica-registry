@@ -1,12 +1,11 @@
-import React from 'react';
-import type { Metadata } from 'next';
-
-import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
+import { ReCaptchaProvider } from 'next-recaptcha-v3';
+import type { Metadata } from 'next';
+import React from 'react';
 
-import Layout from '../components/layout';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';
 import SnackAlert from '@/components/elements/alert';
+import Layout from '../components/layout';
 
 import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
