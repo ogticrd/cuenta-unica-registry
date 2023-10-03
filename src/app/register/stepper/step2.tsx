@@ -21,6 +21,7 @@ import { GridContainer, GridItem } from '@/components/elements/grid';
 import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
 import { useSnackAlert } from '@/components/elements/alert';
 import Step2Modal from './step2Modal';
+import Link from 'next/link';
 
 export default function Step2({
   infoCedula,
@@ -122,15 +123,10 @@ export default function Step2({
                   />
                 }
                 label={
-                  // TODO: Add link to terms and conditions
                   <>
-                    <a
-                      // target="_blank"
-                      // rel="noreferrer"
-                      href="#"
-                    >
+                    <Link target="_blank" href="/terms">
                       Aceptar términos y políticas de privacidad
-                    </a>{' '}
+                    </Link>{' '}
                     <span className="text-error">*</span>
                   </>
                 }
