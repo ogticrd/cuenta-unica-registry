@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import type { Identity } from '../../types';
+import { unwrap } from '@/helpers';
 
 export const dynamicParams = true;
 
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest, { params: { cedula } }: Props) {
     headers: {
       Authorization: `Bearer ${process.env.ORY_SDK_TOKEN}`,
     },
-  }).then<Identity[]>((res) => res.json());
+  }).then<Identity[]>(unwrap);
 
   return NextResponse.json({
     exists: identity.length !== 0,

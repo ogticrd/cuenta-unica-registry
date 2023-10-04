@@ -12,21 +12,26 @@ import { displayText } from './displayText';
 import { useSnackAlert } from '@/components/elements/alert';
 
 import { UNIDENTIFIED_ERROR } from '@/constants';
+import { unwrap } from '@/helpers';
 
 Amplify.configure(awsExports);
 
-export function LivenessQuickStartReact({ handleNextForm: next, cedula }: any) {
+type Props = { handleNextForm: () => void; cedula: string };
+
+export function LivenessQuickStartReact({
+  handleNextForm: next,
+  cedula,
+}: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackAlert();
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
-    const response = await fetch(`/api/biometric`, { method: 'POST' });
-    await new Promise((r) => setTimeout(r, 2000));
-    const { sessionId } = await response.json();
+    await fetch(`/api/biometric`, { method: 'POST' })
+      .then(unwrap)
+      .then(({ sessionId }) => setSessionId(sessionId));
 
-    setSessionId(sessionId);
     setLoading(false);
   };
 
@@ -37,7 +42,7 @@ export function LivenessQuickStartReact({ handleNextForm: next, cedula }: any) {
 
   const handleAnalysisComplete: () => Promise<void> = async () => {
     const data = await fetch(`/api/biometric/${sessionId}/${cedula}`).then(
-      (res) => res.json(),
+      unwrap,
     );
 
     if (data?.isMatch === true) {

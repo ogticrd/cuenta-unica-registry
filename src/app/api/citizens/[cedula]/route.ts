@@ -6,11 +6,12 @@ import {
   CitizensTokenResponse,
 } from '../../types';
 import { CitizensDataFlow } from '../../types/citizens.type';
+import { unwrap } from '@/helpers';
 
 export async function GET(
   req: NextRequest,
   { params: { cedula } }: Props,
-  res: NextResponse<CitizensDataFlow | void>,
+  res: NextResponse<CitizensDataFlow | Pick<CitizensDataFlow, 'id' | 'name'>>,
 ) {
   const baseURL = process.env.CEDULA_API!;
   const apiKey = process.env.CEDULA_API_KEY!;
@@ -21,19 +22,19 @@ export async function GET(
   citizenUrl.searchParams.append('api-key', apiKey);
   const { payload: citizen } = await fetch(citizenUrl, {
     headers,
-  }).then<CitizensBasicInformationResponse>((res) => res.json());
+  }).then<CitizensBasicInformationResponse>(unwrap);
 
   const { names, id, firstSurname, secondSurname, gender } = citizen;
 
   const validated = new URL(req.url).searchParams.get('validated') === 'true';
 
   if (validated) {
-    const birthUrl = new URL(`${baseURL}/${cedula}/info/birth`, baseURL);
+    const headers = await fetchAuthHeaders();
+    const birthUrl = new URL(`${baseURL}/${cedula}/info/birth`);
     birthUrl.searchParams.append('api-key', apiKey);
-
     const { payload: birth } = await fetch(birthUrl, {
       headers,
-    }).then<CitizensBirthInformationResponse>((r) => r.json());
+    }).then<CitizensBirthInformationResponse>(unwrap);
 
     const [birthDate] = birth.birthDate.split('T');
 
@@ -53,8 +54,8 @@ export async function GET(
   });
 }
 
-const fetchAuthHeaders = async () => {
-  return fetch(process.env.CEDULA_TOKEN_API!, {
+const fetchAuthHeaders = async () =>
+  fetch(process.env.CEDULA_TOKEN_API!, {
     method: 'POST',
     body: 'grant_type=client_credentials',
     headers: {
@@ -62,10 +63,9 @@ const fetchAuthHeaders = async () => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
-    .then<CitizensTokenResponse>((res) => res.json())
+    .then<CitizensTokenResponse>(unwrap)
     .then(({ access_token }) => ({
       Authorization: `Bearer ${access_token}`,
     }));
-};
 
 type Props = { params: { cedula: string } };
