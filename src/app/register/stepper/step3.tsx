@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Alert,
   Box,
@@ -17,22 +18,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 
 import {
   CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
   CREATE_IDENTITY_ERROR,
   VALIDATE_PASSWORD_ERROR,
 } from '../../../constants';
-import { GridContainer, GridItem } from '@/components/elements/grid';
 import PasswordLevel, {
   calculatePasswordStrength,
 } from '@/components/elements/passwordLevel';
+import { GridContainer, GridItem } from '@/components/elements/grid';
 import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
 import { step3Schema } from '../../../common/yup-schemas';
 import { ButtonApp } from '@/components/elements/button';
-import { Crypto } from '@/helpers';
+import { Crypto, unwrap } from '@/helpers';
 import { ory } from '@/lib/ory';
 
 export default function Step3({ handleNext, infoCedula }: any) {
@@ -97,7 +97,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const password = Crypto.encrypt(form.password);
 
     try {
-      const { data } = await axios.get<number>(`/api/pwned/${password}`);
+      const data = await fetch(`/api/pwned/${password}`).then<number>(unwrap);
 
       const isValidPassword = data !== 0;
       setIsPwned(isValidPassword);
@@ -108,9 +108,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
     }
 
     try {
-      const { data: citizen } = await axios.get<CitizenCompleteData>(
+      const citizen = await fetch(
         `/api/citizens/${infoCedula.id}?validated=true`,
-      );
+      ).then<CitizenCompleteData>(unwrap);
 
       let csrfToken = '';
       if (flow && flow.ui && Array.isArray(flow.ui.nodes)) {

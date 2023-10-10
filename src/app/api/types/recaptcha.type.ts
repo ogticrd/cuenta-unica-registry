@@ -16,3 +16,11 @@ export type ReCaptchaResponse = {
   };
   name: string;
 };
+
+export type ReCaptchaEvent = {
+  event: {
+    token: string;
+    siteKey: string;
+    expectedAction: string;
+  };
+};
