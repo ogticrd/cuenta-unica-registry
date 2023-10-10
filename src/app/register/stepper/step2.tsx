@@ -9,18 +9,19 @@ import {
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import { useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
-import { GridContainer, GridItem } from '@/components/elements/grid';
 import {
   Step2Props,
   TermsAndConditionsInput,
 } from '../../../common/interfaces';
+import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
 import { useSnackAlert } from '@/components/elements/alert';
 import Step2Modal from './step2Modal';
-import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
+import Link from 'next/link';
 
 export default function Step2({
   infoCedula,
@@ -122,15 +123,10 @@ export default function Step2({
                   />
                 }
                 label={
-                  // TODO: Add link to terms and conditions
                   <>
-                    <a
-                      // target="_blank"
-                      // rel="noreferrer"
-                      href="#"
-                    >
+                    <Link target="_blank" href="/terms">
                       Aceptar términos y políticas de privacidad
-                    </a>{' '}
+                    </Link>{' '}
                     <span className="text-error">*</span>
                   </>
                 }
