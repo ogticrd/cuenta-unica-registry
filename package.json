@@ -36,7 +36,6 @@
     "@types/bunyan": "^1.8.8",
     "@types/react-gtm-module": "^2.0.1",
     "aws-amplify": "^5.3.5",
-    "axios": "^1.4.0",
     "bunyan": "^1.8.15",
     "check-password-strength": "^2.0.7",
     "cryptr": "^6.2.0",
