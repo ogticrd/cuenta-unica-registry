@@ -1,31 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 
-import { Identity } from '../../types';
+import type { Identity } from '../../types';
+import { unwrap } from '@/helpers';
 
 export const dynamicParams = true;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { cedula: string } },
-): Promise<NextResponse> {
-  const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_ORY_SDK_URL,
+export async function GET(req: NextRequest, { params: { cedula } }: Props) {
+  const url = new URL('admin/identities', process.env.NEXT_PUBLIC_ORY_SDK_URL);
+  url.searchParams.append('credentials_identifier', cedula);
+
+  const identity = await fetch(url, {
     headers: {
-      Authorization: 'Bearer ' + process.env.ORY_SDK_TOKEN,
+      Authorization: `Bearer ${process.env.ORY_SDK_TOKEN}`,
     },
-  });
-
-  const cedula = params.cedula;
-
-  const { data: identity } = await http.get<Identity[]>(
-    `/admin/identities?credentials_identifier=${cedula}`,
-  );
-
-  const exists = identity.length !== 0;
+  }).then<Identity[]>(unwrap);
 
   return NextResponse.json({
-    exists: exists,
-    status: 200,
+    exists: identity.length !== 0,
   });
 }
+
+type Props = { params: { cedula: string } };

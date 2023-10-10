@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 
 import {
   CitizensBasicInformationResponse,
@@ -7,59 +6,37 @@ import {
   CitizensTokenResponse,
 } from '../../types';
 import { CitizensDataFlow } from '../../types/citizens.type';
+import { unwrap } from '@/helpers';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { cedula: string } },
-  res: NextResponse<CitizensDataFlow | void>,
-): Promise<NextResponse> {
-  const http = axios.create({
-    baseURL: process.env.CEDULA_API,
-  });
-  const url = new URL(req.url);
+  { params: { cedula } }: Props,
+  res: NextResponse<CitizensDataFlow | Pick<CitizensDataFlow, 'id' | 'name'>>,
+) {
+  const baseURL = process.env.CEDULA_API!;
+  const apiKey = process.env.CEDULA_API_KEY!;
 
-  const { cedula } = params;
-  const validatedQueryParam = url.searchParams.get('validated');
-  const validated = validatedQueryParam && validatedQueryParam === 'true';
+  const headers = await fetchAuthHeaders();
 
-  const { data: citizensToken } = await http.post<CitizensTokenResponse>(
-    `${process.env.CEDULA_TOKEN_API}`,
-    {
-      grant_type: 'client_credentials',
-    },
-    {
-      headers: {
-        Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    },
-  );
+  const citizenUrl = new URL(`${baseURL}/${cedula}/info/basic`);
+  citizenUrl.searchParams.append('api-key', apiKey);
+  const { payload: citizen } = await fetch(citizenUrl, {
+    headers,
+  }).then<CitizensBasicInformationResponse>(unwrap);
 
-  const { data: citizen } = await http.get<CitizensBasicInformationResponse>(
-    `/${cedula}/info/basic?api-key=${process.env.CEDULA_API_KEY}`,
-    {
-      headers: {
-        Authorization: `Bearer ${citizensToken.access_token}`,
-      },
-    },
-  );
+  const { names, id, firstSurname, secondSurname, gender } = citizen;
 
-  const { names, id, firstSurname, secondSurname, gender } = citizen.payload;
-  const name = names.split(' ')[0];
+  const validated = new URL(req.url).searchParams.get('validated') === 'true';
 
   if (validated) {
-    const { data: citizensBirthData } =
-      await http.get<CitizensBirthInformationResponse>(
-        `/${cedula}/info/birth?api-key=${process.env.CEDULA_API_KEY}`,
-        {
-          headers: {
-            Authorization: `Bearer ${citizensToken.access_token}`,
-          },
-        },
-      );
+    const headers = await fetchAuthHeaders();
+    const birthUrl = new URL(`${baseURL}/${cedula}/info/birth`);
+    birthUrl.searchParams.append('api-key', apiKey);
+    const { payload: birth } = await fetch(birthUrl, {
+      headers,
+    }).then<CitizensBirthInformationResponse>(unwrap);
 
-    let { birthDate } = citizensBirthData.payload;
-    birthDate = birthDate.split('T')[0];
+    const [birthDate] = birth.birthDate.split('T');
 
     return NextResponse.json({
       names,
@@ -72,7 +49,23 @@ export async function GET(
   }
 
   return NextResponse.json({
-    name,
+    name: names.split(' ')[0],
     id,
   });
 }
+
+const fetchAuthHeaders = async () =>
+  fetch(process.env.CEDULA_TOKEN_API!, {
+    method: 'POST',
+    body: 'grant_type=client_credentials',
+    headers: {
+      Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+    .then<CitizensTokenResponse>(unwrap)
+    .then(({ access_token }) => ({
+      Authorization: `Bearer ${access_token}`,
+    }));
+
+type Props = { params: { cedula: string } };
