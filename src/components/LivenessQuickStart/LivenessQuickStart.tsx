@@ -1,31 +1,27 @@
 'use client';
 
-import React from 'react';
-import { useState, useEffect } from 'react';
-
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
-import { Amplify } from 'aws-amplify';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import awsExports from '@/aws-exports';
+import { Amplify } from 'aws-amplify';
 
-import { displayText } from './displayText';
 import { useSnackAlert } from '@/components/elements/alert';
-
 import { UNIDENTIFIED_ERROR } from '@/constants';
+import { displayText } from './displayText';
 import { unwrap } from '@/helpers';
 
 Amplify.configure(awsExports);
 
-type Props = { handleNextForm: () => void; cedula: string };
+type Props = { cedula: string };
 
-export function LivenessQuickStartReact({
-  handleNextForm: next,
-  cedula,
-}: Props) {
+export function LivenessQuickStart({ cedula }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackAlert();
+  const router = useRouter();
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })
@@ -46,7 +42,7 @@ export function LivenessQuickStartReact({
     );
 
     if (data?.isMatch === true) {
-      next();
+      router.push('register');
     } else {
       setError(data);
       setSessionId(null);

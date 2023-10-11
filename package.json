@@ -52,7 +52,8 @@
     "sharp": "^0.32.4",
     "source-map-support": "^0.5.21",
     "typescript": "5.1.6",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",

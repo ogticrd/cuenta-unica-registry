@@ -2,22 +2,21 @@
 
 import {
   Alert,
-  Box,
   IconButton,
   InputAdornment,
   TextField,
   Tooltip,
-  Typography,
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
 import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Visibility from '@mui/icons-material/Visibility';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useSearchParams } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import {
   CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
@@ -27,24 +26,28 @@ import {
 import PasswordLevel, {
   calculatePasswordStrength,
 } from '@/components/elements/passwordLevel';
+import { RegisterValidationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { CitizenCompleteData, Step3Form } from '../../common/interfaces';
+import { CitizenCompleteData } from '../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
-import { step3Schema } from '../../common/yup-schemas';
 import { ButtonApp } from '@/components/elements/button';
 import { Crypto, unwrap } from '@/helpers';
 import { ory } from '@/lib/ory';
 
-export default function Step3({ handleNext, infoCedula }: any) {
+type RegisterForm = z.infer<typeof RegisterValidationSchema>;
+type Props = {
+  cedula: string;
+};
+
+export function Form({ cedula }: Props) {
   const [flow, setFlow] = useState<RegistrationFlow>();
-  // TODO: validate this flowId on account verification
   const [passwordLevel, setPasswordLevel] = useState<any>({});
   const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackAlert();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-
+  const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams?.get('return_to');
 
@@ -71,9 +74,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<Step3Form>({
+  } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: yupResolver(step3Schema),
+    resolver: zodResolver(RegisterValidationSchema),
   });
 
   const handleMouseDownPassword = (
@@ -89,7 +92,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
     setIsPwned(false);
   };
 
-  const onSubmitHandler = async (form: Step3Form) => {
+  const onSubmitHandler = async (form: RegisterForm) => {
     if (isPwned || passwordLevel.id !== 3) {
       return;
     }
@@ -111,7 +114,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
     try {
       const citizen = await fetch(
-        `/api/citizens/${infoCedula.id}?validated=true`,
+        `/api/citizens/${cedula}?validated=true`,
       ).then<CitizenCompleteData>(unwrap);
 
       let csrfToken = '';
@@ -143,9 +146,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
         },
       };
 
-      const {
-        data: { continue_with },
-      } = await ory.updateRegistrationFlow({
+      await ory.updateRegistrationFlow({
         flow: String(flow?.id),
         updateRegistrationFlowBody,
       });
@@ -155,18 +156,7 @@ export default function Step3({ handleNext, infoCedula }: any) {
         return;
       }
 
-      handleNext();
-
-      if (continue_with) {
-        for (const item of continue_with) {
-          switch (item.action) {
-            case 'show_verification_ui':
-              // TODO: check more about this line
-              // await router.push("/verification?flow=" + item?.flow.id)
-              return;
-          }
-        }
-      }
+      router.push('confirmation');
     } catch (err: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
@@ -216,49 +206,16 @@ export default function Step3({ handleNext, infoCedula }: any) {
 
   // TODO: Use this Password UI approach https://stackblitz.com/edit/material-password-strength?file=Icons.js
   return (
-    <>
-      <Typography
-        component="div"
-        color="primary"
-        textAlign="center"
-        sx={{ my: 4, fontSize: '16px' }}
-      >
-        <Box sx={{ fontWeight: 500 }}>
-          Para finalizar tu registro completa los siguientes campos:
-        </Box>
-      </Typography>
-
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <GridContainer>
-          <GridItem lg={12} md={12}>
-            <Tooltip title="Correo personal">
-              <TextField
-                {...register('email')}
-                required
-                type="email"
-                label="Correo Electrónico"
-                helperText={errors.email?.message}
-                autoComplete="off"
-                fullWidth
-                onPaste={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-                onCopy={(e) => {
-                  e.preventDefault();
-                  return false;
-                }}
-              />
-            </Tooltip>
-          </GridItem>
-
-          <GridItem lg={12} md={12}>
+    <form onSubmit={handleSubmit(onSubmitHandler)}>
+      <GridContainer>
+        <GridItem lg={12} md={12}>
+          <Tooltip title="Correo personal">
             <TextField
-              {...register('emailConfirm')}
+              {...register('email')}
               required
               type="email"
-              label="Confirma tu Correo Electrónico"
-              helperText={errors.emailConfirm?.message}
+              label="Correo Electrónico"
+              helperText={errors.email?.message}
               autoComplete="off"
               fullWidth
               onPaste={(e) => {
@@ -270,86 +227,104 @@ export default function Step3({ handleNext, infoCedula }: any) {
                 return false;
               }}
             />
-          </GridItem>
+          </Tooltip>
+        </GridItem>
 
+        <GridItem lg={12} md={12}>
+          <TextField
+            {...register('emailConfirm')}
+            required
+            type="email"
+            label="Confirma tu Correo Electrónico"
+            helperText={errors.emailConfirm?.message}
+            autoComplete="off"
+            fullWidth
+            onPaste={(e) => {
+              e.preventDefault();
+              return false;
+            }}
+            onCopy={(e) => {
+              e.preventDefault();
+              return false;
+            }}
+          />
+        </GridItem>
+
+        <GridItem lg={12} md={12}>
+          <TextField
+            required
+            type={showPassword ? 'text' : 'password'}
+            label="Contraseña"
+            placeholder="*********"
+            helperText={errors.password?.message}
+            fullWidth
+            {...register('password')}
+            onChange={(e) => handleChangePassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <PasswordLevel password={passwordString} />
+        </GridItem>
+
+        <GridItem lg={12} md={12}>
+          <TextField
+            required
+            type={showPasswordConfirm ? 'text' : 'password'}
+            label="Confirma tu Contraseña"
+            placeholder="*********"
+            disabled={passwordLevel.id === 3 ? false : true}
+            helperText={errors.passwordConfirm?.message}
+            fullWidth
+            {...register('passwordConfirm')}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </GridItem>
+
+        {isPwned && (
           <GridItem lg={12} md={12}>
-            <TextField
-              required
-              type={showPassword ? 'text' : 'password'}
-              label="Contraseña"
-              placeholder="*********"
-              helperText={errors.password?.message}
-              fullWidth
-              {...register('password')}
-              onChange={(e) => handleChangePassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <PasswordLevel password={passwordString} />
+            <Alert severity="warning">
+              Esta contraseña ha estado en filtraciones de datos, por eso no se
+              considera segura. Te recomendamos eligir otra contraseña.
+            </Alert>
           </GridItem>
+        )}
 
-          <GridItem lg={12} md={12}>
-            <TextField
-              required
-              type={showPasswordConfirm ? 'text' : 'password'}
-              label="Confirma tu Contraseña"
-              placeholder="*********"
-              disabled={passwordLevel.id === 3 ? false : true}
-              helperText={errors.passwordConfirm?.message}
-              fullWidth
-              {...register('passwordConfirm')}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() =>
-                        setShowPasswordConfirm(!showPasswordConfirm)
-                      }
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </GridItem>
-
-          {isPwned && (
-            <GridItem lg={12} md={12}>
-              <Alert severity="warning">
-                Esta contraseña ha estado en filtraciones de datos, por eso no
-                se considera segura. Te recomendamos eligir otra contraseña.
-              </Alert>
-            </GridItem>
-          )}
-
-          <GridItem lg={12} md={12}>
-            <br />
-            <ButtonApp
-              submit
-              endIcon={<CheckCircleOutlineOutlinedIcon />}
-              disabled={isPwned}
-            >
-              CREAR CUENTA ÚNICA
-            </ButtonApp>
-          </GridItem>
-        </GridContainer>
-      </form>
-    </>
+        <GridItem lg={12} md={12}>
+          <br />
+          <ButtonApp
+            submit
+            endIcon={<CheckCircleOutlineOutlinedIcon />}
+            disabled={isPwned}
+          >
+            CREAR CUENTA ÚNICA
+          </ButtonApp>
+        </GridItem>
+      </GridContainer>
+    </form>
   );
 }

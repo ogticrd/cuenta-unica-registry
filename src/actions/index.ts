@@ -1,1 +1,1 @@
-export { setCookie } from './set-cookie';
+export { setCookie, getCookie } from './cookie.action';

@@ -1,38 +1,32 @@
-import { TransitionProps } from '@mui/material/transitions';
+'use client';
+
 import LogoutIcon from '@mui/icons-material/Logout';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
 import Dialog from '@mui/material/Dialog';
-import Slide from '@mui/material/Slide';
 import { Box } from '@mui/material';
-import { forwardRef } from 'react';
 import Image from 'next/image';
 
-import { LivenessQuickStartReact } from '@/components/biometric/face-liveness-detector';
+import { LivenessQuickStart } from '@/components/LivenessQuickStart';
 import { ButtonApp } from '@/components/elements/button';
 import Logo from '../../../public/assets/logo.svg';
 import theme from '@/components/themes/theme';
+import { Transition } from './Transition';
 
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+type Props = {
+  cedula: string;
+  setOpen: (isOpen: boolean) => void;
+};
 
-export default function Step2Modal({
-  handleClick,
-  handleNextForm,
-  identity,
-}: any) {
+export function LivenessModal({ cedula, setOpen }: Props) {
+  const closeModal = () => setOpen(false);
+
   return (
     <div>
       <Dialog
         fullScreen
         open={true}
-        onClose={handleClick}
+        onClose={closeModal}
         TransitionComponent={Transition}
         PaperProps={{
           style: {
@@ -51,7 +45,7 @@ export default function Step2Modal({
                 startIcon={<LogoutIcon />}
                 variant="text"
                 color="inherit"
-                onClick={handleClick}
+                onClick={closeModal}
               >
                 Salir
               </ButtonApp>
@@ -67,10 +61,7 @@ export default function Step2Modal({
               padding: '0 10px',
             }}
           >
-            <LivenessQuickStartReact
-              handleNextForm={handleNextForm}
-              cedula={identity}
-            />
+            <LivenessQuickStart cedula={cedula} />
           </div>
         </div>
       </Dialog>

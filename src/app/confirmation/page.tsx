@@ -1,87 +1,48 @@
-'use client';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import { Typography } from '@mui/material';
+import Link from 'next/link';
 
-import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import * as yup from 'yup';
-
-import { GridContainer, GridItem } from '@/components/elements/grid';
 import BoxContentCenter from '@/components/elements/boxContentCenter';
+import { GridContainer, GridItem } from '@/components/elements/grid';
 import LandingChico from '../../../public/assets/landingChico.svg';
+import { TextBody } from '@/components/elements/typography';
 import { CardAuth } from '@/components/elements/cardAuth';
 import { ButtonApp } from '@/components/elements/button';
-import { FormControlApp } from '@/components/form/input';
-import { InputApp } from '@/components/themes/form/input';
-import { routes } from '@/constants/routes';
-import { labels } from '@/constants/labels';
 
-interface IFormInputs {
-  email: string;
-}
-
-const schema = yup.object({
-  email: yup
-    .string()
-    .trim()
-    .email(labels.form.invalidEmail)
-    .required(labels.form.requiredField),
-});
-
-export default function Index() {
-  const router = useRouter();
-
-  const dataItem = {
-    cedula: '',
-  };
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInputs>({
-    reValidateMode: 'onSubmit',
-    shouldFocusError: false,
-    resolver: yupResolver(schema),
-  });
-
-  const onSubmit = () => {
-    router.push(routes.register.registered);
-  };
-
+export default async function ConfirmationPage() {
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <BoxContentCenter>
-        <CardAuth
-          title="Confirmación de Cuenta"
-          subTitle="¡Gracias por completar tu registro! Revisa tu correo electrónico y haz clic en el enlace de confirmación."
-          landing={LandingChico}
-          landingWidth={214}
-          landingHeight={469}
-          icon={
-            <MarkEmailReadOutlinedIcon sx={{ fontSize: '58px' }} color="info" />
-          }
+    <GridContainer>
+      <GridItem md={12} lg={12}>
+        <br />
+        <Typography
+          color="primary"
+          sx={{
+            fontSize: '24px',
+            fontWeight: '700',
+            textAlign: 'center',
+          }}
         >
-          <GridContainer>
-            <GridItem md={12} lg={12}>
-              <FormControlApp
-                label="Hemos enviado una confirmación al siguiente correo:"
-                msg={errors.email?.message}
-              >
-                <InputApp
-                  defaultValue={dataItem.cedula}
-                  placeholder="correo@confirmacion.com"
-                  {...register('email')}
-                />
-              </FormControlApp>
-            </GridItem>
+          ¡Gracias por completar nuestra prueba beta!
+        </Typography>
+        <br />
+        <TextBody textCenter>
+          Queremos expresar nuestro más sincero agradecimiento por tu
+          participación y dedicación. Tu retroalimentación y experiencia nos son
+          extremadamente valiosas para mejorar nuestro producto y brindar una
+          experiencia excepcional a todos los ciudadanos.
+        </TextBody>
+        <br />
+      </GridItem>
 
-            <GridItem md={12} lg={12}>
-              <ButtonApp submit>REENVIAR CORREO</ButtonApp>
-            </GridItem>
-          </GridContainer>
-        </CardAuth>
-      </BoxContentCenter>
-    </form>
+      <GridItem md={12} lg={12}>
+        <TextBody textCenter bold>
+          Ayúdanos a mejorar:
+        </TextBody>
+        <br />
+        <Link href="https://forms.gle/cQnxx6UEpFHrLx2t7'">
+          <ButtonApp>¡Comparte tu opinión!</ButtonApp>
+        </Link>
+      </GridItem>
+    </GridContainer>
   );
 }
