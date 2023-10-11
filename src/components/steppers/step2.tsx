@@ -12,10 +12,7 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import {
-  Step2Props,
-  TermsAndConditionsInput,
-} from '../../../common/interfaces';
+import { Step2Props, TermsAndConditionsInput } from '../../common/interfaces';
 import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';

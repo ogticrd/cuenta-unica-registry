@@ -23,14 +23,14 @@ import {
   CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
   CREATE_IDENTITY_ERROR,
   VALIDATE_PASSWORD_ERROR,
-} from '../../../constants';
+} from '../../constants';
 import PasswordLevel, {
   calculatePasswordStrength,
 } from '@/components/elements/passwordLevel';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { CitizenCompleteData, Step3Form } from '../../../common/interfaces';
+import { CitizenCompleteData, Step3Form } from '../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
-import { step3Schema } from '../../../common/yup-schemas';
+import { step3Schema } from '../../common/yup-schemas';
 import { ButtonApp } from '@/components/elements/button';
 import { Crypto, unwrap } from '@/helpers';
 import { ory } from '@/lib/ory';
@@ -97,7 +97,9 @@ export default function Step3({ handleNext, infoCedula }: any) {
     const password = Crypto.encrypt(form.password);
 
     try {
-      const data = await fetch(`/api/pwned/${password}`).then<number>(unwrap);
+      const { data } = await fetch(`/api/pwned/${password}`).then<{
+        data: number;
+      }>(unwrap);
 
       const isValidPassword = data !== 0;
       setIsPwned(isValidPassword);

@@ -6,7 +6,7 @@ import { Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import LandingChico from '../../../../public/assets/landingChico.svg';
+import LandingChico from '../../../public/assets/landingChico.svg';
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';

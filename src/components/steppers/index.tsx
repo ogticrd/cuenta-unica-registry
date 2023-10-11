@@ -1,8 +1,8 @@
 'use client';
 
+import React, { useState, Fragment, useEffect } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
-import React, { useState, Fragment } from 'react';
 import { useTheme } from '@mui/material/styles';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
@@ -12,11 +12,12 @@ import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Box from '@mui/material/Box';
 
+import { CitizensDataFlow } from '@/app/api/types/citizens.type';
 import { routes } from '@/constants/routes';
+import { setCookie } from '@/actions';
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
-import { CitizensDataFlow } from '@/app/api/types/citizens.type';
 
 const steps = ['Identificación', 'Verificación', 'Registro'];
 const optionalLabels = [
@@ -32,6 +33,10 @@ export default function StepperRegister() {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   const [infoCedula, setInfoCedula] = useState({} as CitizensDataFlow);
+
+  useEffect(() => {
+    setCookie();
+  }, []);
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ export default function RootLayout({
     <>
       <html lang="es">
         <head>{GoogleTagManagerHead}</head>
-        <body>
+        <body suppressHydrationWarning={true}>
           <ThemeRegistry>
             <Layout>
               <ReCaptchaProvider useEnterprise>

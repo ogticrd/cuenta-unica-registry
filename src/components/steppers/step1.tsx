@@ -14,13 +14,13 @@ import {
   RECAPTCHA_ISSUES_ERROR,
   RECAPTCHA_VALIDATION_ERROR,
 } from '@/constants';
-import { CedulaInput, CustomProps } from '../../../common/interfaces';
+import { CedulaInput, CustomProps } from '../../common/interfaces';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { CitizensDataFlow } from '@/app/api/types/citizens.type';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { useSnackAlert } from '@/components/elements/alert';
-import { cedulaSchema } from '../../../common/yup-schemas';
+import { cedulaSchema } from '../../common/yup-schemas';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations, unwrap } from '@/helpers';
 

@@ -5,8 +5,8 @@ export const routes = {
     method: 'method',
   },
   register: {
-    home: 'register',
-    confirmation: 'register/confirmation',
-    registered: 'register/registered',
+    home: '/',
+    confirmation: 'confirmation',
+    registered: 'registered',
   },
 };

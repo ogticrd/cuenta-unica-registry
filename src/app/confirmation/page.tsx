@@ -8,7 +8,7 @@ import * as yup from 'yup';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import BoxContentCenter from '@/components/elements/boxContentCenter';
-import LandingChico from '../../../../public/assets/landingChico.svg';
+import LandingChico from '../../../public/assets/landingChico.svg';
 import { CardAuth } from '@/components/elements/cardAuth';
 import { ButtonApp } from '@/components/elements/button';
 import { FormControlApp } from '@/components/form/input';

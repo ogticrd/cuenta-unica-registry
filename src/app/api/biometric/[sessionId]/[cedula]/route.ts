@@ -2,7 +2,7 @@ import type { CompareFacesCommandInput } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getRekognitionClient } from '@/helpers';
-import logger from '@/lib/logger';
+// import logger from '@/lib/logger';
 import {
   LIVENESS_LOW_CONFIDENCE_ERROR,
   LIVENESS_NO_MATCH_ERROR,
@@ -24,7 +24,7 @@ export async function GET(
   const isLive = confidence > 85;
 
   if (!isLive) {
-    logger.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
+    console.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
 
     return NextResponse.json(
       {
@@ -35,7 +35,7 @@ export async function GET(
     );
   }
 
-  logger.info(`High confidence (${confidence}%) for citizen ${cedula}`);
+  console.info(`High confidence (${confidence}%) for citizen ${cedula}`);
 
   if (response?.ReferenceImage?.Bytes) {
     const targetImageBuffer = await fetchPhotoBuffer(cedula);
@@ -55,7 +55,7 @@ export async function GET(
       const { FaceMatches } = await client.compareFaces(params);
 
       if (!FaceMatches?.length) {
-        logger.warn(`Low similarity for citizen ${cedula}`);
+        console.warn(`Low similarity for citizen ${cedula}`);
 
         return NextResponse.json(
           {
@@ -70,11 +70,11 @@ export async function GET(
 
       const similarity = FaceMatches[0].Similarity;
 
-      logger.info(`High similarity (${similarity}%) for citizen ${cedula}`);
+      console.info(`High similarity (${similarity}%) for citizen ${cedula}`);
 
       return NextResponse.json({ isMatch: true });
     } catch (error) {
-      logger.error(error);
+      console.error(error);
 
       return NextResponse.json(
         {
