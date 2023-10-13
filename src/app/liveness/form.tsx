@@ -20,7 +20,7 @@ import { z } from 'zod';
 import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TermsValidationSchema } from '@/common/validation-schemas';
-import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/constants';
+import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/common/constants';
 import { LivenessModal } from '@/components/LivenessModal';
 
 type TermsForm = z.infer<typeof TermsValidationSchema>;

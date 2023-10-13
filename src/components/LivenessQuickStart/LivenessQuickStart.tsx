@@ -8,9 +8,9 @@ import awsExports from '@/aws-exports';
 import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
-import { UNIDENTIFIED_ERROR } from '@/constants';
+import { UNIDENTIFIED_ERROR } from '@/common/constants';
 import { displayText } from './displayText';
-import { unwrap } from '@/helpers';
+import { unwrap } from '@/common/helpers';
 
 Amplify.configure(awsExports);
 

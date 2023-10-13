@@ -1,8 +1,16 @@
-import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+'use server';
 
-import logger from '@/lib/logger';
+import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
+
+import logger from '@/common/lib/logger';
+
+const intl = {
+  error: {
+    server: 'Something went wrong, please try again',
+    reCaptcha: 'Google ReCaptcha crashed',
+    noEnv: 'variable invalid or undefined',
+  },
+};
 
 const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
   const projectId = process.env.RECAPTHA_PROJECT_ID;
@@ -19,7 +27,7 @@ const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
   return fetch(assesment, options).then<ReCaptchaResponse>((res) => res.json());
 };
 
-export async function POST(req: NextRequest) {
+export async function validateRecaptcha(token: string) {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   if (!siteKey) {
@@ -27,9 +35,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { token }: { token: string } = await req.json();
-
-    // For more info check, https://developers.google.com/recaptcha/docs/v3
     const { riskAnalysis } = await verifyRecaptcha({
       event: {
         token,
@@ -40,23 +45,12 @@ export async function POST(req: NextRequest) {
 
     const isHuman = riskAnalysis && riskAnalysis.score >= 0.3;
 
-    return NextResponse.json({ isHuman });
+    return { isHuman };
   } catch (error) {
     logger.error(intl.error.reCaptcha, error);
 
-    return NextResponse.json(
-      {
-        error: intl.error.server,
-      },
-      { status: 500 },
-    );
+    return {
+      error: intl.error.server,
+    };
   }
 }
-
-const intl = {
-  error: {
-    server: 'Something went wrong, please try again',
-    reCaptcha: 'Google ReCaptcha crashed',
-    noEnv: 'variable invalid or undefined',
-  },
-};

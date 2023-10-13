@@ -1,7 +1,7 @@
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import type { Metadata } from 'next';
-import React from 'react';
+import { PropsWithChildren } from 'react';
 
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';
@@ -23,11 +23,7 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <>
       <html lang="es">
@@ -39,7 +35,7 @@ export default async function RootLayout({
                 <SnackAlert>
                   <BoxContentCenter>
                     <CardAuth
-                      title="Registrar Cuenta Única Ciudadana"
+                      title="Cuenta Única Ciudadana"
                       landing={LandingChica2}
                       landingWidth={450}
                       landingHeight={400}

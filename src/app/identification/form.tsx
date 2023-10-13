@@ -16,17 +16,21 @@ import {
   INVALID_CEDULA_NUMBER_ERROR,
   RECAPTCHA_ISSUES_ERROR,
   RECAPTCHA_VALIDATION_ERROR,
-} from '@/constants';
+} from '@/common/constants';
+import {
+  findCitizen,
+  findIamCitizen,
+  setCookie,
+  validateRecaptcha,
+} from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { CedulaValidationSchema } from '@/common/validation-schemas';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBodyTiny } from '@/components/elements/typography';
-import { CitizensDataFlow } from '../api/types/citizens.type';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { Validations, unwrap } from '@/helpers';
-import { setCookie } from '@/actions';
+import { Validations, unwrap } from '@/common/helpers';
 
 type CedulaForm = z.infer<typeof CedulaValidationSchema>;
 
@@ -76,27 +80,21 @@ export function Form() {
     }
 
     try {
-      const { isHuman } = await fetch('/api/recaptcha', {
-        method: 'POST',
-        body: JSON.stringify({ token: reCaptchaToken }),
-      }).then<{ isHuman: boolean }>(unwrap);
+      const { isHuman } = await validateRecaptcha(reCaptchaToken);
 
       if (!isHuman) {
         return AlertError(RECAPTCHA_VALIDATION_ERROR);
       }
 
-      const { exists } = await fetch(`/api/iam/${cedula}`).then<{
-        exists: boolean;
-      }>(unwrap);
+      const { exists } = await findIamCitizen(cedula);
 
       if (exists) {
         return AlertError(IDENTITY_ALREADY_EXISTS_ERROR);
       }
 
-      await fetch(`/api/citizens/${cedula}`)
-        .then<CitizensDataFlow>(unwrap)
-        .then((citizen) => setCookie('citizen', citizen))
-        .then(() => router.push('liveness'));
+      const citizen = await findCitizen(cedula);
+      await setCookie('citizen', citizen);
+      router.push('liveness');
     } catch (err: any) {
       console.error(err.message || err);
 
@@ -161,4 +159,9 @@ export function Form() {
       </form>
     </>
   );
+}
+function verifyReCaptcha(
+  reCaptchaToken: string,
+): { isHuman: any } | PromiseLike<{ isHuman: any }> {
+  throw new Error('Function not implemented.');
 }

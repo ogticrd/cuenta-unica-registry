@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getRekognitionClient } from '@/helpers';
+import { getRekognitionClient } from '@/common/helpers';
 
 export async function POST(req: NextRequest) {
   const client = await getRekognitionClient(req);

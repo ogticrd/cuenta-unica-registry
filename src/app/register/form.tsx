@@ -22,17 +22,17 @@ import {
   CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
   CREATE_IDENTITY_ERROR,
   VALIDATE_PASSWORD_ERROR,
-} from '../../constants';
+} from '../../common/constants';
 import PasswordLevel, {
   calculatePasswordStrength,
 } from '@/components/elements/passwordLevel';
 import { RegisterValidationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { CitizenCompleteData } from '../../common/interfaces';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { Crypto, unwrap } from '@/helpers';
-import { ory } from '@/lib/ory';
+import { findCitizen, verifyPassword } from '@/actions';
+import { Crypto, unwrap } from '@/common/helpers';
+import { ory } from '@/common/lib/ory';
 
 type RegisterForm = z.infer<typeof RegisterValidationSchema>;
 type Props = {
@@ -100,11 +100,9 @@ export function Form({ cedula }: Props) {
     const password = Crypto.encrypt(form.password);
 
     try {
-      const { data } = await fetch(`/api/pwned/${password}`).then<{
-        data: number;
-      }>(unwrap);
-
+      const { data } = await verifyPassword(password);
       const isValidPassword = data !== 0;
+
       setIsPwned(isValidPassword);
     } catch (err: any) {
       AlertError(VALIDATE_PASSWORD_ERROR);
@@ -113,11 +111,9 @@ export function Form({ cedula }: Props) {
     }
 
     try {
-      const citizen = await fetch(
-        `/api/citizens/${cedula}?validated=true`,
-      ).then<CitizenCompleteData>(unwrap);
-
+      const citizen = await findCitizen(cedula, true);
       let csrfToken = '';
+
       if (flow && flow.ui && Array.isArray(flow.ui.nodes)) {
         const csrfNode = flow.ui.nodes.find(
           (node) =>

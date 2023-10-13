@@ -1,12 +1,12 @@
 import type { CompareFacesCommandInput } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getRekognitionClient } from '@/helpers';
+import { getRekognitionClient } from '@/common/helpers';
 // import logger from '@/lib/logger';
 import {
   LIVENESS_LOW_CONFIDENCE_ERROR,
   LIVENESS_NO_MATCH_ERROR,
-} from '@/constants';
+} from '@/common/constants';
 
 type Props = { params: { sessionId: string; cedula: string } };
 

@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+'use server';
 
-import type { Identity } from '../../types';
-import { unwrap } from '@/helpers';
+import { unwrap } from '@/common/helpers';
+import type { Identity } from '../types';
 
-export const dynamicParams = true;
-
-export async function GET(req: NextRequest, { params: { cedula } }: Props) {
+export async function findIamCitizen(cedula: string) {
   const url = new URL('admin/identities', process.env.NEXT_PUBLIC_ORY_SDK_URL);
   url.searchParams.append('credentials_identifier', cedula);
 
@@ -15,9 +13,7 @@ export async function GET(req: NextRequest, { params: { cedula } }: Props) {
     },
   }).then<Identity[]>(unwrap);
 
-  return NextResponse.json({
+  return {
     exists: identity.length !== 0,
-  });
+  };
 }
-
-type Props = { params: { cedula: string } };
