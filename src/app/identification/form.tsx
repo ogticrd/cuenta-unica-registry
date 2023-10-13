@@ -30,7 +30,7 @@ import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { Validations, unwrap } from '@/common/helpers';
+import { Validations } from '@/common/helpers';
 
 type CedulaForm = z.infer<typeof CedulaValidationSchema>;
 

@@ -31,7 +31,6 @@ import { GridContainer, GridItem } from '@/components/elements/grid';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { findCitizen, verifyPassword } from '@/actions';
-import { Crypto, unwrap } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
 
 type RegisterForm = z.infer<typeof RegisterValidationSchema>;
@@ -97,7 +96,7 @@ export function Form({ cedula }: Props) {
       return;
     }
 
-    const password = Crypto.encrypt(form.password);
+    const password = form.password;
 
     try {
       const { data } = await verifyPassword(password);

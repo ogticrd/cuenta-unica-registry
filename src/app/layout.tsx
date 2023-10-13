@@ -1,7 +1,7 @@
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
-import type { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
+import type { Metadata } from 'next';
 
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';

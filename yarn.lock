@@ -4785,7 +4785,7 @@
 
 "@thgh/next-gtm@^0.1.4":
   version "0.1.4"
-  resolved "https://registry.npmjs.org/@thgh/next-gtm/-/next-gtm-0.1.4.tgz"
+  resolved "https://registry.yarnpkg.com/@thgh/next-gtm/-/next-gtm-0.1.4.tgz#7c2e5813ad2960ee35ae7649f7bb79c5f1b89b51"
   integrity sha512-LjAlzzPJ7xcp/cwQE9gFnh9wnqEaOWrYimjaUdyQDsm3w1V24dXywBC6HaUmEUKYmq+GtIuVNdhUK2SxGANmFQ==
 
 "@tootallnate/once@2":
