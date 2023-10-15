@@ -21,6 +21,7 @@
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^5.3.1",
     "@aws-amplify/ui-react-liveness": "^2.0.1",
     "@aws-sdk/client-rekognition": "^3.379.1",
     "@babel/core": "^7.22.11",
