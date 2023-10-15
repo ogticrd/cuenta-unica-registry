@@ -18,16 +18,22 @@ jobs:
     with:
       dockerfile_path: ./Dockerfile
       dockerfile_target: runner
-      app_name: auth-registry-frontend
-      registry: us-docker.pkg.dev/auth-do/auth-frontend
+      app_name: ${{ vars.APP_NAME }}
+      registry: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}
+      build_args: '{"NEXT_PUBLIC_RECAPTCHA_SITE_KEY": "${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}", "NEXT_PUBLIC_GTM_ID": "${{ vars.NEXT_PUBLIC_GTM_ID }}", "NEXT_PUBLIC_ORY_SDK_URL": "${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}"}'
     secrets: inherit
 
   deploy:
-    needs: ['build']
+    needs: [build]
     uses: ./.github/workflows/cloudrun-deploy.yml
     with:
       environment: production
-      project: auth-do
-      region: us-east1
-      image: us-docker.pkg.dev/auth-do/auth-frontend/auth-registry-frontend@${{ needs.build.outputs.image_digest }}
+      project_id: ${{ vars.GOOGLE_PROJECT_ID }}
+      region: ${{ vars.GOOGLE_CLOUD_REGION }}
+      app_name: ${{ vars.APP_NAME }}
+      image_digest: ${{ needs.build.outputs.image_digest }}
+      min_instances: '1'
+      max_instances: '300'
+      cpu: '2'
+      memory: 1Gi
     secrets: inherit
