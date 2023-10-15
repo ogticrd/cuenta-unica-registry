@@ -6,10 +6,6 @@ on:
       app_name:
         required: true
         type: string
-      build_args:
-        required: false
-        default: '{}'  # Default value for build-args (empty JSON object)
-        type: string
       dockerfile_path:
         required: true
         type: string
@@ -89,7 +85,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: true
-          build-args: ${{ inputs.build_args }}
+          build-args: |
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}
+            NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}
           secrets: |
             "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON || ''}}"
 

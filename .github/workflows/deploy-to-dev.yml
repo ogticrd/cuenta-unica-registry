@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - "master"
+      - master
     paths:
-      - "**.js*"
-      - "**.ts*"
-      - "package*.json"
-      - "Dockerfile"
-      - "entrypoint.sh"
-      - ".github/workflows/deploy-to-dev.yml"
+      - '**.js*'
+      - '**.ts*'
+      - package*.json
+      - Dockerfile
+      - entrypoint.sh
+      - .github/workflows/deploy-to-dev.yml
 
 concurrency:
   # Ensures that only one workflow task will run at a time. Previous builds, if
@@ -28,7 +28,6 @@ jobs:
       dockerfile_target: runner
       app_name: ${{ vars.APP_NAME }}
       registry: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}
-      build_args: '{"NEXT_PUBLIC_RECAPTCHA_SITE_KEY": "${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}", "NEXT_PUBLIC_GTM_ID": "${{ vars.NEXT_PUBLIC_GTM_ID }}", "NEXT_PUBLIC_ORY_SDK_URL": "${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}"}'
     secrets: inherit
 
   deploy:
