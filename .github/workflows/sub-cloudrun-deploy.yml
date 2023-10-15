@@ -3,18 +3,45 @@ name: Deploy to Cloud Run
 on:
   workflow_call:
     inputs:
-      image:
+      app_name:
         required: true
         type: string
+      image_digest:
+        required: true
+        type: string
+        description: The image digest to deploy
+      project_id:
+        required: true
+        type: string
+        description: The project to deploy to
       region:
         required: true
         type: string
-      project:
-        required: true
-        type: string
+        description: The region to deploy to
       environment:
         required: false
         type: string
+        description: The environment to deploy to
+      min_instances:
+        required: false
+        type: string
+        description: The minimum number of instances to deploy
+        default: '0'
+      max_instances:
+        required: false
+        type: string
+        description: The maximum number of instances to deploy
+        default: '100'
+      cpu:
+        required: false
+        type: string
+        description: The number of CPUs to use for the service
+        default: '1'
+      memory:
+        required: false
+        type: string
+        description: The amount of memory to use for the service
+        default: 256Mi
 
 jobs:
   versioning:
@@ -36,7 +63,7 @@ jobs:
 
   deploy:
     name: Deploy to Cloud Run
-    needs: ['versioning']
+    needs: [versioning]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
@@ -53,6 +80,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v1.1.1
         with:
+          project_id: ${{ vars.GOOGLE_PROJECT_ID || inputs.project_id }}
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
 
       - name: Set up Cloud SDK
@@ -62,8 +90,8 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.2
         with:
-          image: ${{ inputs.image }}
-          service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          image: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ inputs.app_name }}@${{ inputs.image_digest }}
+          service: ${{ inputs.app_name }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
           region: ${{ inputs.region }}
           env_vars: |
             ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN }},
@@ -77,10 +105,15 @@ jobs:
             CEDULA_TOKEN_API=${{ secrets.CEDULA_TOKEN_API }},
             CITIZENS_API_AUTH_KEY=${{ secrets.CITIZENS_API_AUTH_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
+          flags: |
+            --min-instances=${{ inputs.min_instances }}
+            --max-instances=${{ inputs.max_instances }}
+            --cpu=${{ inputs.cpu }}
+            --memory=${{ inputs.memory }}
 
       - name: Allow unauthenticated calls to the service
         run: |
-          gcloud run services add-iam-policy-binding ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{  needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG  }} \
+          gcloud run services add-iam-policy-binding ${{ inputs.app_name }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }} \
           --region=${{ inputs.region }} --member=allUsers --role=roles/run.invoker --quiet
 
       - name: Test service with cURL

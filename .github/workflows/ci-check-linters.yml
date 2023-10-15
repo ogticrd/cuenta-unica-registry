@@ -2,22 +2,22 @@ name: Lint Code Base
 
 on:
   pull_request:
-    branches: ['master']
+    branches: [master]
     paths:
       - '**.js*'
       - '**.ts*'
-      - "Dockerfile"
-      - 'package*.json'
-      - '.github/workflows/linter.yml'
+      - Dockerfile
+      - package*.json
+      - .github/workflows/ci-check-linters.yml
 
   push:
-    branches: ['master']
+    branches: [master]
     paths:
       - '**.js*'
       - '**.ts*'
-      - "Dockerfile"
-      - 'package*.json'
-      - '.github/workflows/linter.yml'
+      - Dockerfile
+      - package*.json
+      - .github/workflows/ci-check-linters.yml
 
 concurrency:
   # Ensures that only one workflow task will run at a time. Previous builds, if
