@@ -26,13 +26,13 @@ ENV NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
 ARG NEXT_PUBLIC_ORY_SDK_URL
 ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
 
-# ===================== Install Deps =====================
-FROM base AS deps
-
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+
+# ===================== Install Deps =====================
+FROM base AS deps
 
 COPY package.json pnpm-lock.yaml ./
 # By caching the content-addressable store we stop downloading the same packages again and again
@@ -48,7 +48,7 @@ COPY . .
 COPY . ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile \
-    --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js && \
+    --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
     pnpm run build
 
 # ===================== App Runner Stage =====================
