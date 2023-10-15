@@ -50,13 +50,13 @@ docker build --target runner -t cuenta-unica .
 docker run -d cuenta-unica
 ```
 
-La segunda es utilizando `yarn`:
+La segunda es utilizando `pnpm`:
 
 ```bash
 git clone https://github.com/opticrd/cuenta-unica-registry.git
 cd cuenta-unica-registry
-yarn install
-yarn start
+pnpm install
+pnpm start
 ```
 
 ### Dependencias
