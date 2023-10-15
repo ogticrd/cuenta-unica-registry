@@ -17,7 +17,7 @@ on:
         type: string
     outputs:
       image_digest:
-        description: 'The image digest to be used on a caller workflow'
+        description: The image digest to be used on a caller workflow
         value: ${{ jobs.build.outputs.image_digest }}
 
 jobs:
@@ -28,8 +28,8 @@ jobs:
     outputs:
       image_digest: ${{ steps.docker_build.outputs.digest }}
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4.1.0
         with:
@@ -65,7 +65,7 @@ jobs:
       # Setup Docker Buildx to allow use of docker cache layers from GH
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.0.0
 
       - name: Login to Google Artifact Registry
         uses: docker/login-action@v3.0.0
@@ -86,11 +86,11 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           build-args: |
-            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ secrets.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
-            NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }}
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}
             NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}
           secrets: |
-            "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON }}"
+            "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON || ''}}"
 
           # To improve build speeds, for each branch we push an additional image to the registry,
           # to be used as the caching layer, using the `max` caching mode.
