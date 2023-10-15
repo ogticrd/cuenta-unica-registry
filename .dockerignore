@@ -21,3 +21,4 @@
 !*.json
 !*.lock
 !*.env
+!pnpm-lock.yaml
