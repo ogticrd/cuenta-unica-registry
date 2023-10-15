@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 # ===================== Create base stage =====================
-ARG NODE_VERSION=lts
+ARG NODE_VERSION=20
 ARG ALPINE_VERSION=3.16
 ARG WORK_DIR=/app
-FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS base
+FROM node:${NODE_VERSION}-slim AS base
 
 ARG WORK_DIR
 ARG APP_ENV=production
@@ -26,30 +26,36 @@ ENV NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
 ARG NEXT_PUBLIC_ORY_SDK_URL
 ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
 
+# Install corepack and set pnpm as default package manager
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 # ===================== Install Deps =====================
-FROM base as deps
+FROM base AS deps
 
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-
-COPY package.json yarn.lock ./
-RUN yarn install --production=true --frozen-lockfile --non-interactive
+COPY package.json pnpm-lock.yaml ./
+# By caching the content-addressable store we stop downloading the same packages again and again
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 # ===================== Build Stage =====================
 # Rebuild the source code only when needed
-FROM base as build
+FROM base AS build
 
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
+COPY . ./
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
-    yarn build
+    pnpm run build
 
 # ===================== App Runner Stage =====================
-FROM base as runner
+FROM base AS runner
 
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+RUN addgroup --gid 1001 --system nodejs && \
+    adduser --system --no-create-home --uid 1001 nextjs
 
 # Copy all necessary files
 COPY --from=build ${WORK_DIR}/public ./public
@@ -65,5 +71,7 @@ EXPOSE ${PORT}
 
 ENV PORT ${PORT}
 ENV HOSTNAME 0.0.0.0
+
+HEALTHCHECK CMD wget -q localhost:3000
 
 CMD ["node", "server.js"]
