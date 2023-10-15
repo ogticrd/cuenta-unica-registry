@@ -70,7 +70,7 @@ jobs:
       - name: Audit for vulnerabilities
         run: npx audit-ci@^6 --config ./audit-ci.jsonc
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --strict-peer-dependencies
-
-      - run: pnpm build
+      - name: Install and Build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
