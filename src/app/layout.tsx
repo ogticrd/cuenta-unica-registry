@@ -1,11 +1,15 @@
 import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
+import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
-import React from 'react';
 
+import BoxContentCenter from '@/components/elements/boxContentCenter';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';
+import { CardAuth } from '@/components/elements/cardAuth';
 import SnackAlert from '@/components/elements/alert';
 import Layout from '../components/layout';
+
+import LandingChica2 from '../../public/assets/landingChica.svg';
 
 import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
@@ -19,20 +23,27 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <>
       <html lang="es">
         <head>{GoogleTagManagerHead}</head>
-        <body>
+        <body suppressHydrationWarning={true}>
           <ThemeRegistry>
             <Layout>
               <ReCaptchaProvider useEnterprise>
-                <SnackAlert>{children}</SnackAlert>
+                <SnackAlert>
+                  <BoxContentCenter>
+                    <CardAuth
+                      title="Cuenta Única Ciudadana"
+                      landing={LandingChica2}
+                      landingWidth={450}
+                      landingHeight={400}
+                    >
+                      {children}
+                    </CardAuth>
+                  </BoxContentCenter>
+                </SnackAlert>
                 {GoogleTagManagerBody}
               </ReCaptchaProvider>
             </Layout>
