@@ -8,7 +8,7 @@ on:
       - '**.ts*'
       - Dockerfile
       - package*.json
-      - .github/workflows/linter.yml
+      - .github/workflows/ci-check-linters.yml
 
   push:
     branches: [master]
@@ -17,7 +17,7 @@ on:
       - '**.ts*'
       - Dockerfile
       - package*.json
-      - .github/workflows/linter.yml
+      - .github/workflows/ci-check-linters.yml
 
 concurrency:
   # Ensures that only one workflow task will run at a time. Previous builds, if

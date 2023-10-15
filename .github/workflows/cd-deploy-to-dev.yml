@@ -11,7 +11,7 @@ on:
       - package*.json
       - Dockerfile
       - entrypoint.sh
-      - .github/workflows/deploy-to-dev.yml
+      - .github/workflows/cd-deploy-to-dev.yml
 
 concurrency:
   # Ensures that only one workflow task will run at a time. Previous builds, if
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build:
-    uses: ./.github/workflows/build-docker-image.yml
+    uses: ./.github/workflows/sub-build-push-image.yml
     with:
       dockerfile_path: ./Dockerfile
       dockerfile_target: runner
@@ -32,7 +32,7 @@ jobs:
 
   deploy:
     needs: [build]
-    uses: ./.github/workflows/cloudrun-deploy.yml
+    uses: ./.github/workflows/sub-cloudrun-deploy.yml
     with:
       environment: development
       project_id: ${{ vars.GOOGLE_PROJECT_ID }}
