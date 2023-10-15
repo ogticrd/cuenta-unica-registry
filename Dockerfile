@@ -35,7 +35,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml ./
- #By caching the content-addressable store we stop downloading the same packages again and again
+# By caching the content-addressable store we stop downloading the same packages again and again
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 # ===================== Build Stage =====================
