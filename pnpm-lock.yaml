@@ -9,10 +9,10 @@ dependencies:
     specifier: ^5.3.1
     version: 5.3.1(@types/react@18.2.28)(aws-amplify@5.3.11)(react-dom@18.2.0)(react@18.2.0)(xstate@4.38.2)
   '@aws-amplify/ui-react-liveness':
-    specifier: ^2.0.1
+    specifier: ^2.0.10
     version: 2.0.10(@types/react@18.2.28)(aws-amplify@5.3.11)(aws-crt@1.18.0)(encoding@0.1.13)(react-dom@18.2.0)(react@18.2.0)
   '@aws-sdk/client-rekognition':
-    specifier: ^3.379.1
+    specifier: ^3.428.0
     version: 3.428.0(aws-crt@1.18.0)
   '@emotion/cache':
     specifier: ^11.11.0
@@ -27,31 +27,31 @@ dependencies:
     specifier: ^5.0.0
     version: 5.0.0(bunyan@1.8.15)(encoding@0.1.13)
   '@hookform/resolvers':
-    specifier: ^3.3.1
-    version: 3.3.2(react-hook-form@7.45.4)
+    specifier: ^3.3.2
+    version: 3.3.2(react-hook-form@7.47.0)
   '@mui/icons-material':
-    specifier: ^5.14.3
+    specifier: ^5.14.13
     version: 5.14.13(@mui/material@5.14.13)(@types/react@18.2.28)(react@18.2.0)
   '@mui/material':
-    specifier: ^5.14.5
+    specifier: ^5.14.13
     version: 5.14.13(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.28)(react-dom@18.2.0)(react@18.2.0)
   '@ory/client':
-    specifier: ^1.1.41
+    specifier: ^1.2.11
     version: 1.2.11
   '@ory/integrations':
-    specifier: ^1.1.4
+    specifier: ^1.1.5
     version: 1.1.5(@ory/client@1.2.11)(next@13.5.4)
   '@thgh/next-gtm':
     specifier: ^0.1.4
     version: 0.1.4(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
   '@types/bunyan':
-    specifier: ^1.8.8
+    specifier: ^1.8.9
     version: 1.8.9
   '@types/react-gtm-module':
     specifier: ^2.0.1
     version: 2.0.1
   aws-amplify:
-    specifier: ^5.3.5
+    specifier: ^5.3.11
     version: 5.3.11(aws-crt@1.18.0)(encoding@0.1.13)(react-native@0.72.6)
   bunyan:
     specifier: ^1.8.15
@@ -60,7 +60,7 @@ dependencies:
     specifier: ^2.0.7
     version: 2.0.7
   eslint:
-    specifier: ^8.46.0
+    specifier: ^8.51.0
     version: 8.51.0
   eslint-config-next:
     specifier: ^13.5.4
@@ -81,8 +81,8 @@ dependencies:
     specifier: ^2.0.11
     version: 2.0.11
   react-hook-form:
-    specifier: 7.45.4
-    version: 7.45.4(react@18.2.0)
+    specifier: 7.47.0
+    version: 7.47.0(react@18.2.0)
   react-imask:
     specifier: ^7.1.3
     version: 7.1.3(react@18.2.0)
@@ -98,31 +98,31 @@ dependencies:
 
 devDependencies:
   '@commitlint/cli':
-    specifier: ^17.7.2
+    specifier: ^17.8.0
     version: 17.8.0
   '@commitlint/config-conventional':
-    specifier: ^17.7.0
+    specifier: ^17.8.0
     version: 17.8.0
   '@types/cookie':
-    specifier: ^0.5.1
+    specifier: ^0.5.2
     version: 0.5.2
   '@types/node':
-    specifier: ^20.8.1
+    specifier: ^20.8.6
     version: 20.8.6
   '@types/react':
-    specifier: ^18.2.17
+    specifier: ^18.2.28
     version: 18.2.28
   '@types/react-dom':
-    specifier: ^18.2.7
+    specifier: ^18.2.13
     version: 18.2.13
   '@types/react-google-recaptcha':
-    specifier: ^2.1.5
+    specifier: ^2.1.6
     version: 2.1.6
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.2.0
+    specifier: ^6.7.5
     version: 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
   '@typescript-eslint/parser':
-    specifier: ^6.2.0
+    specifier: ^6.7.5
     version: 6.7.5(eslint@8.51.0)(typescript@5.2.2)
   aws-crt:
     specifier: ^1.18.0
@@ -134,13 +134,13 @@ devDependencies:
     specifier: ^9.0.0
     version: 9.0.0(eslint@8.51.0)
   eslint-import-resolver-typescript:
-    specifier: ^3.5.5
+    specifier: ^3.6.1
     version: 3.6.1(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.28.1)(eslint@8.51.0)
   eslint-plugin-import:
-    specifier: ^2.28.0
+    specifier: ^2.28.1
     version: 2.28.1(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint@8.51.0)
   eslint-plugin-prettier:
-    specifier: ^5.0.0
+    specifier: ^5.0.1
     version: 5.0.1(eslint-config-prettier@9.0.0)(eslint@8.51.0)(prettier@3.0.3)
   husky:
     specifier: ^8.0.3
@@ -149,10 +149,10 @@ devDependencies:
     specifier: ^1.0.4
     version: 1.0.4
   lint-staged:
-    specifier: ^14.0.0
-    version: 14.0.1
+    specifier: ^15.0.1
+    version: 15.0.1
   prettier:
-    specifier: '>=3.0.0'
+    specifier: ^3.0.3
     version: 3.0.3
 
 packages:
@@ -4870,12 +4870,12 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
-  /@hookform/resolvers@3.3.2(react-hook-form@7.45.4):
+  /@hookform/resolvers@3.3.2(react-hook-form@7.47.0):
     resolution: {integrity: sha512-Tw+GGPnBp+5DOsSg4ek3LCPgkBOuOgS5DsDV7qsWNH9LZc433kgsWICjlsh2J9p04H2K66hsXPPb9qn9ILdUtA==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.45.4(react@18.2.0)
+      react-hook-form: 7.47.0(react@18.2.0)
     dev: false
 
   /@httptoolkit/websocket-stream@6.0.1:
@@ -7882,8 +7882,8 @@ packages:
     resolution: {integrity: sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==}
     dev: false
 
-  /commander@11.0.0:
-    resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
+  /commander@11.1.0:
+    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
     dev: true
 
@@ -8937,6 +8937,21 @@ packages:
       strip-final-newline: 3.0.0
     dev: true
 
+  /execa@8.0.1:
+    resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
+    engines: {node: '>=16.17'}
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 8.0.1
+      human-signals: 5.0.0
+      is-stream: 3.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 5.1.0
+      onetime: 6.0.0
+      signal-exit: 4.1.0
+      strip-final-newline: 3.0.0
+    dev: true
+
   /executioner@2.0.1:
     resolution: {integrity: sha512-idZAlKsxEZASjaIqP4PQ1txyS1bOcDwWCHy/8p5oMmLGV0XNCQPD6WWAOwJCUVsWItWzAN2BEash5N78PliaIw==}
     dependencies:
@@ -9303,6 +9318,11 @@ packages:
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
+
+  /get-stream@8.0.1:
+    resolution: {integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==}
+    engines: {node: '>=16'}
+    dev: true
 
   /get-symbol-description@1.0.0:
     resolution: {integrity: sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==}
@@ -9705,6 +9725,11 @@ packages:
   /human-signals@4.3.1:
     resolution: {integrity: sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==}
     engines: {node: '>=14.18.0'}
+    dev: true
+
+  /human-signals@5.0.0:
+    resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
+    engines: {node: '>=16.17.0'}
     dev: true
 
   /husky@8.0.3:
@@ -10495,34 +10520,28 @@ packages:
       uc.micro: 1.0.6
     dev: false
 
-  /lint-staged@14.0.1:
-    resolution: {integrity: sha512-Mw0cL6HXnHN1ag0mN/Dg4g6sr8uf8sn98w2Oc1ECtFto9tvRF7nkXGJRbx8gPlHyoR0pLyBr2lQHbWwmUHe1Sw==}
-    engines: {node: ^16.14.0 || >=18.0.0}
+  /lint-staged@15.0.1:
+    resolution: {integrity: sha512-2IU5OWmCaxch0X0+IBF4/v7sutpB+F3qoXbro43pYjQTOo5wumckjxoxn47pQBqqBsCWrD5HnI2uG/zJA7isew==}
+    engines: {node: '>=18.12.0'}
     hasBin: true
     dependencies:
       chalk: 5.3.0
-      commander: 11.0.0
+      commander: 11.1.0
       debug: 4.3.4
-      execa: 7.2.0
+      execa: 8.0.1
       lilconfig: 2.1.0
-      listr2: 6.6.1
+      listr2: 7.0.1
       micromatch: 4.0.5
       pidtree: 0.6.0
       string-argv: 0.3.2
-      yaml: 2.3.1
+      yaml: 2.3.2
     transitivePeerDependencies:
-      - enquirer
       - supports-color
     dev: true
 
-  /listr2@6.6.1:
-    resolution: {integrity: sha512-+rAXGHh0fkEWdXBmX+L6mmfmXmXvDGEKzkjxO+8mP3+nI/r/CWznVBvsibXdxda9Zz0OW2e2ikphN3OwCT/jSg==}
+  /listr2@7.0.1:
+    resolution: {integrity: sha512-nz+7hwgbDp8eWNoDgzdl4hA/xDSLrNRzPu1TLgOYs6l5Y+Ma6zVWWy9Oyt9TQFONwKoSPoka3H50D3vD5EuNwg==}
     engines: {node: '>=16.0.0'}
-    peerDependencies:
-      enquirer: '>= 2.3.0 < 3'
-    peerDependenciesMeta:
-      enquirer:
-        optional: true
     dependencies:
       cli-truncate: 3.1.0
       colorette: 2.0.20
@@ -12045,8 +12064,8 @@ packages:
     resolution: {integrity: sha512-8gyj4TTxeP7eEyc2QKawEuQoAZdjKvMY4pgWfycGmqGByhs17fR+zEBs0JUDq4US/l+vbTl+6zvUIx27iDo/Vw==}
     dev: false
 
-  /react-hook-form@7.45.4(react@18.2.0):
-    resolution: {integrity: sha512-HGDV1JOOBPZj10LB3+OZgfDBTn+IeEsNOKiq/cxbQAIbKaiJUe/KV8DBUzsx0Gx/7IG/orWqRRm736JwOfUSWQ==}
+  /react-hook-form@7.47.0(react@18.2.0):
+    resolution: {integrity: sha512-F/TroLjTICipmHeFlMrLtNLceO2xr1jU3CyiNla5zdwsGUGu2UOxxR4UyJgLlhMwLW/Wzp4cpJ7CPfgJIeKdSg==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -12690,6 +12709,11 @@ packages:
 
   /signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+
+  /signal-exit@4.1.0:
+    resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
+    engines: {node: '>=14'}
+    dev: true
 
   /simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
@@ -13867,8 +13891,8 @@ packages:
     engines: {node: '>= 6'}
     dev: false
 
-  /yaml@2.3.1:
-    resolution: {integrity: sha512-2eHWfjaoXgTBC2jNM1LRef62VQa0umtvRiDSk6HSzW7RvS5YtkabJrwYLLEKWBc8a5U2PTSCs+dJjUTJdlHsWQ==}
+  /yaml@2.3.2:
+    resolution: {integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg==}
     engines: {node: '>= 14'}
     dev: true
 
