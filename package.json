@@ -25,6 +25,7 @@
     "@aws-amplify/ui-react-liveness": "^2.0.1",
     "@aws-sdk/client-rekognition": "^3.379.1",
     "@babel/core": "^7.22.11",
+    "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.6",
     "@google-cloud/logging-bunyan": "^5.0.0",
