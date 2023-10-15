@@ -2,5 +2,4 @@
 # shellcheck disable=SC1091
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn lint-staged
-yarn install --check-files --frozen-lockfile
+npm run commitlint "$1"

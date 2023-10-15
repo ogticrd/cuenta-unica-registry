@@ -1,5 +1,5 @@
-import Register from './register';
+import { redirect } from 'next/navigation';
 
-export default function Page() {
-  return <Register />;
+export default async function Page() {
+  return redirect('identification');
 }

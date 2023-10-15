@@ -46,7 +46,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['lts/*', 'latest']
+        node: ['20.8.1', 'latest']
 
     steps:
       - name: Checkout Code Repository
