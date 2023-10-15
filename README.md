@@ -34,7 +34,7 @@ Esta es la plataforma de registro para la creación de una **Cuenta Única** ciu
   - Si la prueba de vida es exitosa se validan las fotos capturadas contra la foto de la cédula de identidad de la Junta Central Electoral (**JCE**).
 - El ciudadano selecciona un correo y una contraseña para la creación de su cuenta:
   - La contraseña debe cumplir con el estándar de [**NIST 800-63B**](https://pages.nist.gov/800-63-3/sp800-63b.html)
-  - Como parte del estándar [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html) también se evalúa que la contraseña no se encuentre en **filtraciones de datos** en Internet.
+  - Como parte del estándar [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html) también se evalúa que la contraseña no se encuentre en **filtraciones de datos** en internet.
 - Se envía un correo de verificación con un enlace que debe clickear
 - Se habilita la cuenta en la plataforma de Gestión de Identidades y Accesos (IAM)
 - Ya está listo para usar su cuenta en los portales del Estado Dominicano
