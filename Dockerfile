@@ -54,8 +54,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # ===================== App Runner Stage =====================
 FROM base AS runner
 
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+RUN addgroup --gid 1001 --system nodejs && \
+    adduser --system --no-create-home --uid 1001 nextjs
 
 # Copy all necessary files
 COPY --from=build ${WORK_DIR}/public ./public
