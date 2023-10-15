@@ -48,7 +48,7 @@ COPY . .
 COPY . ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile \
-    --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
+    --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js && \
     pnpm run build
 
 # ===================== App Runner Stage =====================
