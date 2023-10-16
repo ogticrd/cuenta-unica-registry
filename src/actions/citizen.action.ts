@@ -16,6 +16,7 @@ const fetchAuthHeaders = async () =>
       Authorization: `Basic ${process.env.CITIZENS_API_AUTH_KEY}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
+    cache: 'no-cache',
   })
     .then<CitizensTokenResponse>(unwrap)
     .then(({ access_token }) => ({

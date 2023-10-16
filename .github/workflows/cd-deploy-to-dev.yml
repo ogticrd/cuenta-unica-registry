@@ -24,6 +24,7 @@ jobs:
   build:
     uses: ./.github/workflows/sub-build-push-image.yml
     with:
+      environment: development
       dockerfile_path: ./Dockerfile
       dockerfile_target: runner
       app_name: ${{ vars.APP_NAME }}
