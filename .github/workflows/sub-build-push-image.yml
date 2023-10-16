@@ -15,6 +15,10 @@ on:
       registry:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
+        description: The environment to deploy to
     outputs:
       image_digest:
         description: The image digest to be used on a caller workflow
@@ -30,6 +34,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    environment:
+      name: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4.1.0
         with:
