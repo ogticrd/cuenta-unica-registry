@@ -1,3 +1,3 @@
-export { RegisterValidationSchema } from './register.schema';
-export { CedulaValidationSchema } from './cedula.schema';
-export { TermsValidationSchema } from './terms.schema';
+export { createRegisterSchema } from './register.schema';
+export { createCedulaSchema } from './cedula.schema';
+export { createTermsSchema } from './terms.schema';

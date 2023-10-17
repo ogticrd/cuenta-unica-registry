@@ -12,6 +12,7 @@ import { ButtonApp } from '@/components/elements/button';
 import Logo from '../../../public/assets/logo.svg';
 import theme from '@/components/themes/theme';
 import { Transition } from './Transition';
+import { useLanguage } from '@/app/[lang]/provider';
 
 type Props = {
   cedula: string;
@@ -20,6 +21,7 @@ type Props = {
 
 export function LivenessModal({ cedula, setOpen }: Props) {
   const closeModal = () => setOpen(false);
+  const { intl } = useLanguage();
 
   return (
     <div>
@@ -47,7 +49,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
                 color="inherit"
                 onClick={closeModal}
               >
-                Salir
+                {intl.stepper.exit}
               </ButtonApp>
             </Toolbar>
           </div>

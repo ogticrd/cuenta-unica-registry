@@ -1,0 +1,221 @@
+{
+    "common": {
+        "title": "Register for Cuenta Única account",
+        "hello": "Hello",
+        "terms": "Terms of use",
+        "policy": "Privacy policy",
+        "faq": "Frequently Asked Questions"
+    },
+    "confirmation": {
+        "title": "Account Confirmation",
+        "subtitle": "Thank you for completing your registration! Check your email and click on the confirmation link.",
+        "emailSentTo": "We have sent a confirmation to the following email:"
+    },
+    "step1": {
+        "title": "Identification",
+        "subtitle": "User ID",
+        "description": "This is the first step to verify your identity and create your citizen account.",
+        "cedula": "ID Number",
+        "cedulaTooltip": "To start the process of validating your identity, your ID number is required."
+    },
+    "step2": {
+        "title": "Verification",
+        "subtitle": "Proof of Life",
+        "description": "Next, we will validate your identity through facial verification and a proof of life. Make sure to meet the following conditions:",
+        "camera": "Use a device with an integrated <b>camera</b>.",
+        "face": "Allow us to take captures of <b>your face.</b>"
+    },
+    "step3": {
+        "title": "Registration",
+        "subtitle": "User Account",
+        "completeForm": "To complete your registration, fill in the following fields:",
+        "email": {
+            "label": "Email",
+            "tooltip": "Your email address.",
+            "confirm": "Confirm your email address"
+        },
+        "password": {
+            "label": "Password",
+            "toggleVisibility": "Toggle password visibility",
+            "confirm": "Confirm your password",
+            "strength": "Password strength:",
+            "levels": {
+                "too-weak": "too weak",
+                "weak": "weak",
+                "medium": "medium",
+                "strong": "strong",
+                "secure": "secure"
+            }
+        }
+    },
+    "stepper": {
+        "back": "Go back to the previous step",
+        "exit": "Exit"
+    },
+    "alreadyRegistered": "Already have an account?",
+    "actions": {
+        "confirm": "CONFIRM",
+        "start": "START PROCESS",
+        "login": "Log in here.",
+        "create": "CREATE ACCOUNT",
+        "resendEmail": "RESEND EMAIL"
+    },
+    "loader": {
+        "cedula": "Validating ID..."
+    },
+    "bug": {
+        "report": "Report"
+    },
+    "errors": {
+        "cedula": {
+            "invalid": "It appears you've entered an invalid ID number.",
+            "exists": "This ID has already been registered."
+        },
+        "password": {
+            "validation": "It appears an error has occurred while trying to validate your password, try again later."
+        },
+        "registration": {
+            "flow": "Oops! An error has occurred, please try again later."
+        },
+        "unknown": "An unexpected error occurred, please try again later.",
+        "liveness": {
+            "noMatch": "We couldn't validate your identity with the JCE. Try again or update your photo at the JCE.",
+            "lowConfidence": "The proof of life was not successful. Check the instructions and try again."
+        },
+        "recaptcha": {
+            "issues": "It appears reCaptcha has not correctly validated your request, refresh and try again",
+            "validation": "We can't validate the security of your browser, check for pending updates or try with another device."
+        },
+        "createIdentity": "An error occurred while trying to create the citizen account. Please try again later.",
+        "decryption": "Decryption Error",
+        "noEnv": "Invalid or undefined variable"
+    },
+    "terms": {
+        "accept": "Accept terms and privacy policies",
+        "check": "To continue, you must read and accept the terms and privacy policies."
+    },
+    "liveness": {
+        "camera": {
+            "minSpecifications": {
+                "heading": "The camera does not meet the minimum specifications",
+                "message": "The camera must support a resolution of at least 320 * 240 and 15 frames per second."
+            },
+            "notFound": {
+                "heading": "Camera not accessible",
+                "message": "Check that the camera is connected and that camera permissions are enabled in the settings before trying again."
+            },
+            "permissions": "Process again"
+        },
+        "error": {
+            "timeout": {
+                "heading": "Time is up",
+                "message": "The face did not fill the oval within the time limit. Try again and fill the entire oval with your face in 7 seconds."
+            },
+            "faceDistance": {
+                "heading": "Face movement detected",
+                "message": "Avoid moving closer during the connection."
+            },
+            "multipleFaces": {
+                "heading": "Multiple faces detected",
+                "message": "Only one face should be present in the oval."
+            },
+            "client": {
+                "heading": "Client error",
+                "message": "Verification failed due to a problem with the client"
+            },
+            "server": {
+                "heading": "Server issue",
+                "message": "Verification cannot be completed due to a server issue."
+            },
+            "landscape": {
+                "heading": "Landscape orientation not supported",
+                "message": "Turn your device to portrait orientation."
+            },
+            "portrait": "Make sure your device remains in portrait orientation during the verification.",
+            "tryAgain": "Try again"
+        },
+        "hints": {
+            "moveFaceFrontOfCamera": "Position your face in front of the camera",
+            "tooManyFaces": "Make sure only one face is in front of the camera",
+            "faceDetected": "Face detected",
+            "canNotIdentify": "We cannot identify your face in front of the camera",
+            "tooClose": "Move a little further away",
+            "tooFar": "Move a little closer",
+            "holdFacePositionCountdown": "Hold your face in position",
+            "connecting": "Connecting...",
+            "verifying": "Verifying...",
+            "illuminationTooBright": "The area is too bright",
+            "illuminationTooDark": "The area is too dark",
+            "illuminationNormal": "Correct lighting conditions",
+            "holdFaceForFreshness": "Stay still"
+        },
+        "instructions": {
+            "header": {
+                "heading": "Facial verification",
+                "body": "You are now going to go through a facial verification process to prove you are a real person."
+            },
+            "begin": "Start verification",
+            "photosensitivyWarning": {
+                "heading": "Photosensitivity alert",
+                "body": "This verification displays colored lights. Be careful if you are photosensitive.",
+                "info": "A small percentage of people may experience epileptic seizures when exposed to colored lights. Be careful if you or someone in your family has an epileptic condition."
+            },
+            "list": {
+                "heading": "Follow the instructions to complete the verification:",
+                "stepOne": "When the oval appears, fill it with your face in 7 seconds.",
+                "stepTwo": "Maximize the brightness of your screen.",
+                "stepThree": "Make sure your face is not covered with sunglasses or a mask.",
+                "stepFour": "Move to a well-lit place that is not exposed to direct sunlight."
+            },
+            "goodFit": {
+                "caption": "Well fitted",
+                "alt": "Illustration of a person's face, fitting perfectly within an oval."
+            },
+            "tooFar": {
+                "caption": "Too far",
+                "alt": "Illustration of a person's face inside an oval; there is space between the perimeter of the face and the limits of the oval."
+            }
+        },
+        "stream": {
+            "recording": "Recording",
+            "cancel": "Cancel"
+        }
+    },
+    "footer": {
+        "knowUs": "KNOW US",
+        "contact": "CONTACT US",
+        "findUs": "FIND US",
+        "info": "INFORM YOURSELF",
+        "followUs": "FOLLOW US",
+        "developedBy": "Developed by",
+        "rightsReserved": "All rights reserved."
+    },
+    "registered": {
+        "success": "Your account has been successfully created!",
+        "header": "Thank you for completing our beta test!",
+        "body": "We want to express our deepest gratitude for your participation and dedication. Your feedback and experience are extremely valuable to us for improving our product and providing an exceptional experience to all citizens.",
+        "feedback": {
+            "title": "Help us improve:",
+            "link": "Share your opinion!"
+        }
+    },
+    "validations": {
+        "cedula": {
+            "min": "The ID number must contain at least 11 digits",
+            "max": "The ID number must contain a maximum of 11 digits"
+        },
+        "email": {
+            "required": "Email is required",
+            "invalid": "Email is not valid",
+            "noMatch": "Emails do not match"
+        },
+        "password": {
+            "empty": "Password can't be empty",
+            "noMatch": "Passwords do not match"
+        },
+        "required": "Field required"
+    },
+    "warnings": {
+        "breachedPassword": "This password has been involved in data leaks, so it is not considered secure. We recommend choosing another password."
+    }
+}

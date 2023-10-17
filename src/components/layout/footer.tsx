@@ -2,17 +2,21 @@
 
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import { IconButton, Typography } from '@mui/material';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { IconButton, Typography } from '@mui/material';
 import Image from 'next/image';
 
-import logoOGTIC from '../../../public/assets/logoOGTIC.svg';
-import { GridContainer, GridItem } from '../elements/grid';
-import logoGOB from '../../../public/assets/logoGOB.svg';
-import DivGrow from '../elements/divGrow';
+import { GridContainer, GridItem } from '@/components/elements/grid';
+import DivGrow from '@/components/elements/divGrow';
+import { useLanguage } from '@/app/[lang]/provider';
+
+import logoOGTIC from '@public/assets/logoOGTIC.svg';
+import logoGOB from '@public/assets/logoGOB.svg';
 
 export default function Index() {
+  const { intl } = useLanguage();
+
   return (
     <>
       <div style={{ padding: '75px 25px' }} className="bg-primary">
@@ -34,7 +38,7 @@ export default function Index() {
               <GridContainer>
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    CONÓCENOS
+                    {intl.footer.knowUs}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
@@ -45,7 +49,7 @@ export default function Index() {
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    CONTÁCTANOS
+                    {intl.footer.contact}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
@@ -61,23 +65,28 @@ export default function Index() {
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    BÚSCANOS
+                    {intl.footer.findUs}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Oficina Gubernamental de Tecnologías de la Información y
-                    Comunicación (OGTIC) Av. Rómulo Betancourt #311, Edificio
-                    Corporativo Vista 311, Santo Domingo, República Dominicana.
+                    Ave. Rómulo Betancourt #311, Edificio Corporativo Vista 311,
+                    Santo Domingo, República Dominicana.
                   </Typography>
                 </GridItem>
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    INFÓRMATE
+                    {intl.footer.info}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Términos de Uso Política de Privacidad Preguntas Frecuentes
+                    {intl.common.terms}
+                  </Typography>
+                  <Typography color="white" fontWeight="400" fontSize="16">
+                    {intl.common.policy}
+                  </Typography>
+                  <Typography color="white" fontWeight="400" fontSize="16">
+                    {intl.common.faq}
                   </Typography>
                 </GridItem>
               </GridContainer>
@@ -99,8 +108,8 @@ export default function Index() {
             <GridItem md={6} lg={6}>
               <div style={{ marginTop: '8px' }}>
                 <Typography variant="caption" fontWeight="600" color="primary">
-                  © {new Date().getFullYear()} Todos los Derechos Reservados.
-                  Desarrollado por
+                  © {new Date().getFullYear()} {intl.footer.rightsReserved}{' '}
+                  {intl.footer.developedBy}
                 </Typography>
                 <Image
                   style={{
@@ -126,7 +135,7 @@ export default function Index() {
                     fontWeight="bold"
                     color="primary"
                   >
-                    SÍGUENOS
+                    {intl.footer.followUs}
                   </Typography>
 
                   <IconButton color="primary">

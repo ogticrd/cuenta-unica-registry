@@ -1,4 +1,3 @@
-import { passwordStrength } from 'check-password-strength';
 import { Typography, Box } from '@mui/material';
 
 import { useLanguage } from '@/app/[lang]/provider';

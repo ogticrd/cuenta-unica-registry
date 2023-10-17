@@ -18,12 +18,15 @@ import Link from 'next/link';
 import { z } from 'zod';
 
 import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
-import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/common/constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { TermsValidationSchema } from '@/common/validation-schemas';
+import { createTermsSchema } from '@/common/validation-schemas';
 import { LivenessModal } from '@/components/LivenessModal';
+import { useLanguage } from '../provider';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSnackAlert } from '@/components/elements/alert';
 
-type TermsForm = z.infer<typeof TermsValidationSchema>;
+type TermsForm = z.infer<ReturnType<typeof createTermsSchema>>;
+
 type Props = {
   cedula: string;
 };
@@ -31,12 +34,16 @@ type Props = {
 export function Form({ cedula }: Props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { intl } = useLanguage();
 
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<TermsForm>();
+  } = useForm<TermsForm>({
+    // esto no iba
+    resolver: zodResolver(createTermsSchema({ intl })),
+  });
 
   const onSubmit = handleSubmit(() => setOpen(true));
 
@@ -58,10 +65,13 @@ export function Form({ cedula }: Props) {
               sx={{ fontSize: '45px', marginRight: '12px' }}
               color="info"
             />
-            <Typography variant="body2" color="primary">
-              Utilizar un dispositivo que posea{' '}
-              <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
-            </Typography>
+            <Typography
+              variant="body2"
+              color="primary"
+              dangerouslySetInnerHTML={{
+                __html: intl.step2.camera,
+              }}
+            />
           </div>
         </GridItem>
 
@@ -80,10 +90,13 @@ export function Form({ cedula }: Props) {
               sx={{ fontSize: '45px', marginRight: '12px' }}
               color="info"
             />
-            <Typography variant="body2" color="primary">
-              Permitir que tomemos capturas de{' '}
-              <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
-            </Typography>
+            <Typography
+              variant="body2"
+              color="primary"
+              dangerouslySetInnerHTML={{
+                __html: intl.step2.face,
+              }}
+            />
           </div>
         </GridItem>
 
@@ -91,6 +104,7 @@ export function Form({ cedula }: Props) {
           <br />
           <FormGroup>
             <FormControlLabel
+              color="error"
               style={{ display: 'flex', justifyContent: 'center' }}
               control={
                 <Checkbox
@@ -101,22 +115,20 @@ export function Form({ cedula }: Props) {
               label={
                 <>
                   <Link target="_blank" href="/terms">
-                    Aceptar términos y políticas de privacidad
-                  </Link>{' '}
-                  <span className="text-error">*</span>
+                    {intl.terms.accept}
+                  </Link>
+                  <span className="text-error"> *</span>
                 </>
               }
             />
-            {errors.accepted && (
-              <Alert severity="warning">
-                {NON_ACCEPTED_TERMS_AND_CONDS_ERROR}
-              </Alert>
-            )}
+            {errors.accepted ? (
+              <Alert severity="info">{intl.terms.check}</Alert>
+            ) : null}
           </FormGroup>
         </GridItem>
 
         <GridItem lg={12} md={12}>
-          <ButtonApp submit>INICIAR PROCESO</ButtonApp>
+          <ButtonApp submit>{intl.actions.start}</ButtonApp>
           {open && <LivenessModal cedula={cedula} setOpen={setOpen} />}
         </GridItem>
       </GridContainer>
@@ -129,7 +141,7 @@ export function Form({ cedula }: Props) {
               startIcon={<ArrowCircleLeftOutlinedIcon />}
               onClick={router.back}
             >
-              Volver al paso anterior
+              {intl.stepper.back}
             </ButtonTextApp>
           </Box>
         </GridItem>

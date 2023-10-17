@@ -8,9 +8,9 @@ import awsExports from '@/aws-exports';
 import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
-import { UNIDENTIFIED_ERROR } from '@/common/constants';
-import { displayText } from './displayText';
+import { useLocalizedText } from './localizedText';
 import { unwrap } from '@/common/helpers';
+import { useLanguage } from '@/app/[lang]/provider';
 
 Amplify.configure(awsExports);
 
@@ -22,6 +22,10 @@ export function LivenessQuickStart({ cedula }: Props) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackAlert();
   const router = useRouter();
+
+  const { intl } = useLanguage();
+
+  const displayText = useLocalizedText({ intl });
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })
@@ -59,7 +63,7 @@ export function LivenessQuickStart({ cedula }: Props) {
 
   useEffect(() => {
     if (error) {
-      AlertError(error.message || UNIDENTIFIED_ERROR);
+      AlertError(error.message || intl.errors.unknown);
       if (!error.message) {
         console.error(error);
       }

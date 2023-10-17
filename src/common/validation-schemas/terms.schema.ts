@@ -1,7 +1,9 @@
+import { Context } from '@/app/[lang]/provider';
 import { z } from 'zod';
 
-export const TermsValidationSchema = z.object({
-  accepted: z.boolean({
-    required_error: 'Debe aceptar los términos y políticas de privacidad.',
-  }),
-});
+export const createTermsSchema = ({ intl }: Context) =>
+  z.object({
+    accepted: z.literal(true, {
+      required_error: intl.terms.check,
+    }),
+  });
