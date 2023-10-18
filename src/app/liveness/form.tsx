@@ -7,6 +7,7 @@ import {
   Checkbox,
   Alert,
   Box,
+  Divider,
 } from '@mui/material';
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
@@ -22,6 +23,7 @@ import { NON_ACCEPTED_TERMS_AND_CONDS_ERROR } from '@/common/constants';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TermsValidationSchema } from '@/common/validation-schemas';
 import { LivenessModal } from '@/components/LivenessModal';
+import theme from '@/components/themes/theme';
 
 type TermsForm = z.infer<typeof TermsValidationSchema>;
 type Props = {
@@ -43,7 +45,7 @@ export function Form({ cedula }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <GridContainer>
-        <GridItem lg={6} md={6}>
+        <GridItem lg={12} md={12}>
           <div
             style={{
               background: '#EFF7FF',
@@ -55,9 +57,9 @@ export function Form({ cedula }: Props) {
             }}
           >
             <CameraAltOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px' }}
-              color="info"
+              sx={{ fontSize: '45px', marginRight: '12px', color: theme.palette.info.contrastText }}
             />
+            <Divider orientation="vertical" flexItem style={{ marginRight: '14px' }} />
             <Typography variant="body2" color="primary">
               Utilizar un dispositivo que posea{' '}
               <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
@@ -65,7 +67,7 @@ export function Form({ cedula }: Props) {
           </div>
         </GridItem>
 
-        <GridItem lg={6} md={6}>
+        <GridItem lg={12} md={12}>
           <div
             style={{
               background: '#EFF7FF',
@@ -77,9 +79,9 @@ export function Form({ cedula }: Props) {
             }}
           >
             <SentimentSatisfiedOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px' }}
-              color="info"
+              sx={{ fontSize: '45px', marginRight: '12px', color: theme.palette.info.contrastText }}
             />
+            <Divider orientation="vertical" flexItem style={{ marginRight: '14px' }} />
             <Typography variant="body2" color="primary">
               Permitir que tomemos capturas de{' '}
               <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
@@ -88,7 +90,6 @@ export function Form({ cedula }: Props) {
         </GridItem>
 
         <GridItem lg={12} md={12}>
-          <br />
           <FormGroup>
             <FormControlLabel
               style={{ display: 'flex', justifyContent: 'center' }}
@@ -101,9 +102,11 @@ export function Form({ cedula }: Props) {
               label={
                 <>
                   <Link target="_blank" href="/terms">
-                    Aceptar términos y políticas de privacidad
+                    <span style={{ color: theme.palette.primary.main, textDecoration: 'underline', fontSize: '14px' }}>
+                      Aceptar términos y políticas de privacidad
+                    </span>
                   </Link>{' '}
-                  <span className="text-error">*</span>
+                  <span style={{ color: theme.palette.secondary.main }}>*</span>
                 </>
               }
             />

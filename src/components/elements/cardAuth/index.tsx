@@ -2,8 +2,8 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { Typography } from '@mui/material';
 import Image from 'next/image';
 
-import LogoDedo from '../../../../public/assets/logoDedo.png';
 import { TextBody, TextBodyTiny } from '../typography';
+import SmallLogo from '../../../../public/assets/smallLogo.svg';
 
 export const CardAuth = ({
   title,
@@ -19,7 +19,7 @@ export const CardAuth = ({
     <div>
       {landing && (
         <div
-          style={{ position: 'fixed', top: '30vh', left: '10vh', zIndex: '-1' }}
+          style={{ position: 'fixed', top: '35vh', left: '10vh', zIndex: '-1' }}
         >
           <Image
             src={landing?.src}
@@ -33,24 +33,26 @@ export const CardAuth = ({
         style={{
           background: 'white',
           border: '1px solid #E2E2E2',
-          borderRadius: '4px 4px 0 0',
+          borderRadius: '10px',
         }}
       >
         <div
           style={{
             display: 'flex',
+            alignItems: 'center',
+            height: "95px",
             background: '#F8F8F8',
-            borderRadius: '4px 4px 0 0',
+            borderRadius: '10px 10px 0 0',
+            borderBottom: "1px solid #DFDFDF",
             padding: '13px 25px 0px 25px',
-            boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.161)',
           }}
         >
           <div style={{ marginRight: '15px', marginTop: '-3px' }}>
-            <Image src={LogoDedo.src} alt="Logo" width="40" height="40" />
+            <Image src={SmallLogo.src} alt="Logo" width="47" height="47" />
           </div>
           <Typography
             color="primary"
-            sx={{ fontWeight: '700', fontSize: '24px' }}
+            sx={{ fontWeight: '500', fontSize: '21px' }}
           >
             {title}
           </Typography>
@@ -101,17 +103,3 @@ export const CardAuth = ({
   );
 };
 
-export const CardAuthFooter = ({ children }: any) => {
-  return (
-    <div
-      style={{
-        padding: '25px 45px 35px 45px',
-        border: '1px solid #E2E2E2',
-        borderRadius: '0px 0px 4px 4px',
-        background: '#F8F8F8',
-      }}
-    >
-      {children}
-    </div>
-  );
-};

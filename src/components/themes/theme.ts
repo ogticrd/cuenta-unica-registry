@@ -19,6 +19,7 @@ const theme = createTheme({
     },
     info: {
       main: '#0087FF',
+      contrastText: '#6DB0E2',
     },
     background: {
       default: '#EFF7FF',
@@ -30,6 +31,14 @@ const theme = createTheme({
   },
 
   components: {
+    MuiButton: {
+      defaultProps: {
+        sx: {
+          borderRadius: '60px',
+          height: '40px',
+        },
+      },
+    },
     MuiInputLabel: {
       defaultProps: {
         sx: {
@@ -72,7 +81,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&.Mui-active': {
-            color: '#0087FF',
+            color: '#6DB0E2',
           },
         },
       },

@@ -1,14 +1,25 @@
-import { Typography } from '@mui/material';
-import Link from 'next/link';
+import { TextField, Tooltip, Typography } from '@mui/material';
+
+import Image from 'next/image';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
 
+import Confirmation from '../../../public/assets/confirmation.svg';
+
 export default async function ConfirmationPage() {
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Image
+            src={Confirmation?.src}
+            alt="imagen de confirmación"
+            width="259"
+            height="225"
+          />
+        </div>
         <br />
         <Typography
           color="primary"
@@ -17,27 +28,39 @@ export default async function ConfirmationPage() {
             fontWeight: '700',
             textAlign: 'center',
           }}
+          gutterBottom
         >
-          ¡Gracias por completar nuestra prueba beta!
+          Te hemos enviado un correo
         </Typography>
-        <br />
-        <TextBody textCenter>
-          Queremos expresar nuestro más sincero agradecimiento por tu
-          participación y dedicación. Tu retroalimentación y experiencia nos son
-          extremadamente valiosas para mejorar nuestro producto y brindar una
-          experiencia excepcional a todos los ciudadanos.
+        <TextBody textCenter gutterBottom>
+          Revisa tu <span>correo electrónico</span> y haz clic en el enlace de confirmación o utiliza el código de confirmación.
         </TextBody>
-        <br />
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <TextBody textCenter bold>
-          Ayúdanos a mejorar:
-        </TextBody>
+        <Typography
+          sx={{
+            fontSize: '14px',
+            fontWeight: '500',
+            textAlign: 'center',
+            color: "#ABAFB3"
+          }}
+          gutterBottom
+        >
+          Hemos enviado una confirmación al siguiente correo:
+        </Typography>
+        <Tooltip title="Correo personal">
+          <TextField
+            required
+            type="email"
+            defaultValue="correo@confirmacion.com"
+            autoComplete="off"
+            fullWidth
+          />
+        </Tooltip>
         <br />
-        <Link href="https://forms.gle/cQnxx6UEpFHrLx2t7'">
-          <ButtonApp>¡Comparte tu opinión!</ButtonApp>
-        </Link>
+        <br />
+        <ButtonApp>REENVIAR CORREO</ButtonApp>
       </GridItem>
     </GridContainer>
   );

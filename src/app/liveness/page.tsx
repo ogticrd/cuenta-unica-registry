@@ -1,8 +1,12 @@
+import Image from 'next/image';
+
 import { Typography, Box } from '@mui/material';
 
 import { Steps } from '@/components/Steps';
 import { getCookie } from '@/actions';
 import { Form } from './form';
+
+import Verification from '../../../public/assets/verification.svg';
 
 export default async function LivenessPage() {
   const citizen = await getCookie('citizen');
@@ -10,13 +14,17 @@ export default async function LivenessPage() {
   return (
     <div>
       <Steps step={1} />
+      <br />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Image src={Verification.src} alt="Logo" width="190" height="162" />
+      </div>
       <Typography
         component="div"
         color="primary"
         textAlign="center"
-        sx={{ my: 4, fontSize: '16px' }}
+        sx={{ my: 4, fontWeight: 500, fontSize: '14px' }}
       >
-        <Box sx={{ fontWeight: 'bold' }}>¡Hola {citizen.name}!</Box>
+        <Box sx={{ fontWeight: 'bold' }}>¡Hola {citizen?.name}!</Box>
         <Box>
           {' '}
           A continuación validaremos tu identidad mediante una verificación
@@ -24,7 +32,7 @@ export default async function LivenessPage() {
           condiciones:
         </Box>
       </Typography>
-      <Form cedula={citizen.id} />
+      <Form cedula={citizen?.id} />
     </div>
   );
 }

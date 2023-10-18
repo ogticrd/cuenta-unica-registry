@@ -6,6 +6,7 @@ interface IProps {
   required?: boolean;
   notBold?: boolean;
   notGutterBottom?: boolean;
+  gutterBottom?: boolean;
   noWrap?: boolean;
   textCenter?: boolean;
   colorPrimary?: boolean;
@@ -50,15 +51,16 @@ export const TextSubTitleBody = ({ children }: IProps) => {
   );
 };
 
-export const TextBody = ({ children, textCenter, bold }: IProps) => {
+export const TextBody = ({ children, textCenter, bold, gutterBottom }: IProps) => {
   return (
     <Typography
       color="primary"
       sx={{
-        fontSize: '16px',
+        fontSize: '14px',
         fontWeight: `${bold ? '600' : '500'}`,
         textAlign: `${textCenter ? 'center' : 'left'}`,
       }}
+      gutterBottom={gutterBottom ? true : false}
     >
       {children}
     </Typography>
