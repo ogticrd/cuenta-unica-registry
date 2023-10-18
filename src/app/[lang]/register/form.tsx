@@ -15,6 +15,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Collapse from '@mui/material/Collapse';
+import type { Result } from 'check-password-strength';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -35,7 +37,7 @@ type Props = {
 
 export function Form({ cedula }: Props) {
   const [flow, setFlow] = useState<RegistrationFlow>();
-  const [passwordLevel, setPasswordLevel] = useState<any>({});
+  const [passwordLevel, setPasswordLevel] = useState(initialLevel);
   const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackAlert();
@@ -75,17 +77,15 @@ export function Form({ cedula }: Props) {
     resolver: zodResolver(createRegisterSchema({ intl })),
   });
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
-
   const handleChangePassword = (password: string) => {
     setPasswordString(password);
     setPasswordLevel(getPasswordStrength(password));
     setValue('password', password);
     setIsPwned(false);
+
+    if (!password) {
+      setValue('passwordConfirm', '');
+    }
   };
 
   const onSubmitHandler = async (form: RegisterForm) => {
@@ -110,7 +110,7 @@ export function Form({ cedula }: Props) {
       const citizen = await findCitizen(cedula, true);
       let csrfToken = '';
 
-      if (flow && flow.ui && Array.isArray(flow.ui.nodes)) {
+      if (flow?.ui && Array.isArray(flow.ui.nodes)) {
         const csrfNode = flow.ui.nodes.find(
           (node) =>
             isUiNodeInputAttributes(node.attributes) &&
@@ -248,7 +248,7 @@ export function Form({ cedula }: Props) {
                   <IconButton
                     aria-label={intl.step3.password.toggleVisibility}
                     onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={handleMouseDownPassword}
+                    onMouseDown={doNothing}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -267,7 +267,7 @@ export function Form({ cedula }: Props) {
             label={intl.step3.password.confirm}
             color={errors.passwordConfirm ? 'error' : 'primary'}
             placeholder="*********"
-            disabled={passwordLevel.id === 3 ? false : true}
+            disabled={passwordLevel.id < 3}
             helperText={errors.passwordConfirm?.message}
             fullWidth
             {...register('passwordConfirm')}
@@ -277,7 +277,7 @@ export function Form({ cedula }: Props) {
                   <IconButton
                     aria-label={intl.step3.password.toggleVisibility}
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    onMouseDown={handleMouseDownPassword}
+                    onMouseDown={doNothing}
                     edge="end"
                   >
                     {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
@@ -288,14 +288,13 @@ export function Form({ cedula }: Props) {
           />
         </GridItem>
 
-        {isPwned && (
-          <GridItem lg={12} md={12}>
+        <GridItem lg={12} md={12}>
+          <Collapse in={isPwned}>
             <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
-          </GridItem>
-        )}
+          </Collapse>
+        </GridItem>
 
         <GridItem lg={12} md={12}>
-          <br />
           <ButtonApp
             submit
             endIcon={<CheckCircleOutlineOutlinedIcon />}
@@ -308,6 +307,8 @@ export function Form({ cedula }: Props) {
     </form>
   );
 }
+
+const initialLevel = { id: 0 } as Result<string>;
 
 function doNothing<T extends SyntheticEvent<HTMLElement>>(e: T) {
   e.preventDefault();

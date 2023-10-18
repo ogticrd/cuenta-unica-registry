@@ -25,15 +25,14 @@ export default function PasswordLevel({ password }: Props) {
         }}
       >
         {colors.map((color, index) => (
-          <>
-            <Box
-              bgcolor={index > strength.id ? '#e4e4e7' : color}
-              sx={{
-                height: '.5rem',
-                borderRadius: 2,
-              }}
-            />
-          </>
+          <Box
+            key={index}
+            bgcolor={index > strength.id ? '#e4e4e7' : color}
+            sx={{
+              height: '.5rem',
+              borderRadius: 2,
+            }}
+          ></Box>
         ))}
       </Box>
       <Typography variant="caption" color="gray" mt={1} px={1}>
