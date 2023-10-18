@@ -4,8 +4,14 @@ import Link from 'next/link';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
+import { getDictionary } from '@/dictionaries';
+import { Locale } from '@/i18n-config';
 
-export default async function ConfirmationPage() {
+type Props = { params: { lang: Locale } };
+
+export default async function ConfirmationPage({ params: { lang } }: Props) {
+  const intl = await getDictionary(lang);
+
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
@@ -18,25 +24,20 @@ export default async function ConfirmationPage() {
             textAlign: 'center',
           }}
         >
-          ¡Gracias por completar nuestra prueba beta!
+          {intl.registered.header}
         </Typography>
         <br />
-        <TextBody textCenter>
-          Queremos expresar nuestro más sincero agradecimiento por tu
-          participación y dedicación. Tu retroalimentación y experiencia nos son
-          extremadamente valiosas para mejorar nuestro producto y brindar una
-          experiencia excepcional a todos los ciudadanos.
-        </TextBody>
+        <TextBody textCenter>{intl.registered.body}</TextBody>
         <br />
       </GridItem>
 
       <GridItem md={12} lg={12}>
         <TextBody textCenter bold>
-          Ayúdanos a mejorar:
+          {intl.registered.feedback.title}
         </TextBody>
         <br />
         <Link href="https://forms.gle/cQnxx6UEpFHrLx2t7'">
-          <ButtonApp>¡Comparte tu opinión!</ButtonApp>
+          <ButtonApp>{intl.registered.feedback.link}</ButtonApp>
         </Link>
       </GridItem>
     </GridContainer>

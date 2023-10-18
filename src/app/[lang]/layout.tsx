@@ -34,33 +34,31 @@ export default async function RootLayout({
   const intl = await getDictionary(lang);
 
   return (
-    <>
-      <html lang="es">
-        <head>{GoogleTagManagerHead}</head>
-        <body suppressHydrationWarning={true}>
-          <ThemeRegistry>
-            <LanguageProvider intl={intl}>
-              <Layout>
-                <ReCaptchaProvider useEnterprise>
-                  <SnackAlert>
-                    <BoxContentCenter>
-                      <CardAuth
-                        title="Cuenta Única Ciudadana"
-                        landing={LandingChica2}
-                        landingWidth={450}
-                        landingHeight={400}
-                      >
-                        {children}
-                      </CardAuth>
-                    </BoxContentCenter>
-                  </SnackAlert>
-                  {GoogleTagManagerBody}
-                </ReCaptchaProvider>
-              </Layout>
-            </LanguageProvider>
-          </ThemeRegistry>
-        </body>
-      </html>
-    </>
+    <html lang={lang}>
+      <head>{GoogleTagManagerHead}</head>
+      <body suppressHydrationWarning={true}>
+        <ThemeRegistry>
+          <LanguageProvider intl={intl}>
+            <Layout>
+              <ReCaptchaProvider useEnterprise>
+                <SnackAlert>
+                  <BoxContentCenter>
+                    <CardAuth
+                      title={intl.common.title}
+                      landing={LandingChica2}
+                      landingWidth={450}
+                      landingHeight={400}
+                    >
+                      {children}
+                    </CardAuth>
+                  </BoxContentCenter>
+                </SnackAlert>
+                {GoogleTagManagerBody}
+              </ReCaptchaProvider>
+            </Layout>
+          </LanguageProvider>
+        </ThemeRegistry>
+      </body>
+    </html>
   );
 }
