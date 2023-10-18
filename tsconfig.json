@@ -16,11 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@components/*": ["components/*"],
-      "@utils/*": ["utils/*"],
-      "@helpers/*": ["helpers/*"],
-      "@lib/*": ["lib/*"],
-      "@services/*": ["services/*"],
       "@public/*": ["public/*"]
     },
     "plugins": [

@@ -11,9 +11,7 @@ import { useTheme } from '@mui/material/styles';
 
 import { useLanguage } from '@/app/[lang]/provider';
 
-type Props = {
-  step: number;
-};
+type Props = { step: number };
 
 export function Steps({ step }: Props) {
   const {

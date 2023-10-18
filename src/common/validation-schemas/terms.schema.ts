@@ -1,5 +1,6 @@
-import { Context } from '@/app/[lang]/provider';
 import { z } from 'zod';
+
+import { Context } from '@/app/[lang]/provider';
 
 export const createTermsSchema = ({ intl }: Context) =>
   z.object({

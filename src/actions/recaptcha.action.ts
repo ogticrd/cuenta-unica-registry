@@ -1,16 +1,7 @@
 'use server';
 
 import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
-
 import logger from '@/common/lib/logger';
-
-const intl = {
-  error: {
-    server: 'Something went wrong, please try again',
-    reCaptcha: 'Google ReCaptcha crashed',
-    noEnv: 'variable invalid or undefined',
-  },
-};
 
 const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
   const projectId = process.env.RECAPTHA_PROJECT_ID;
@@ -31,7 +22,7 @@ export async function validateRecaptcha(token: string) {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   if (!siteKey) {
-    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${intl.error.noEnv}`);
+    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${'intl.errors.noEnv'}`);
   }
 
   try {
@@ -47,10 +38,10 @@ export async function validateRecaptcha(token: string) {
 
     return { isHuman };
   } catch (error) {
-    logger.error(intl.error.reCaptcha, error);
+    logger.error('intl.errors.recaptcha.issues', error);
 
     return {
-      error: intl.error.server,
+      error: 'intl.errors.unknown',
     };
   }
 }

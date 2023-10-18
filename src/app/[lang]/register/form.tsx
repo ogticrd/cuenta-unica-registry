@@ -15,20 +15,20 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Collapse from '@mui/material/Collapse';
 import type { Result } from 'check-password-strength';
+import Collapse from '@mui/material/Collapse';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import PasswordLevel from '@/components/elements/passwordLevel';
-import { createRegisterSchema } from '@/common/validation-schemas';
+import { getPasswordStrength } from '@/components/elements/passwordLevel/options';
 import { GridContainer, GridItem } from '@/components/elements/grid';
+import { createRegisterSchema } from '@/common/validation-schemas';
+import PasswordLevel from '@/components/elements/passwordLevel';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { findCitizen, verifyPassword } from '@/actions';
-import { ory } from '@/common/lib/ory';
 import { useLanguage } from '../provider';
-import { getPasswordStrength } from '@/components/elements/passwordLevel/options';
+import { ory } from '@/common/lib/ory';
 
 type RegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
 type Props = {

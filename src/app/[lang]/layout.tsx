@@ -2,6 +2,11 @@ import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import type { Metadata } from 'next';
 
+import LandingChica from '@public/assets/landingChica.svg';
+import '@public/fonts/poppins_wght.css';
+import '@aws-amplify/ui-react/styles.css';
+import '@/styles/globals.css';
+
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';
 import { CardAuth } from '@/components/elements/cardAuth';
@@ -10,12 +15,6 @@ import { getDictionary } from '@/dictionaries';
 import { LanguageProvider } from './provider';
 import Layout from '@/components/layout';
 import { Locale } from '@/i18n-config';
-
-import LandingChica from '@public/assets/landingChica.svg';
-
-import '@public/fonts/poppins_wght.css';
-import '@aws-amplify/ui-react/styles.css';
-import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: 'Cuenta Única - Registro',

@@ -7,8 +7,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Image from 'next/image';
 
-import logoOGTIC from '@public/assets/logoOGTIC.svg';
 import logoWhite from '@public/assets/logo-white.svg';
+import logoOGTIC from '@public/assets/logoOGTIC.svg';
 import logoGOB from '@public/assets/logoGOB.svg';
 
 import { GridContainer, GridItem } from '../elements/grid';

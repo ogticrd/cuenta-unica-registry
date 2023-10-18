@@ -24,7 +24,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        message: 'errors.liveness.lowConfidence',
+        message: 'intl.errors.liveness.lowConfidence',
         isLive,
       },
       { status: 403 },
@@ -55,7 +55,7 @@ export async function GET(
 
         return NextResponse.json(
           {
-            message: 'errors.liveness.noMatch',
+            message: 'intl.errors.liveness.noMatch',
             isMatch: false,
           },
           {
@@ -74,7 +74,7 @@ export async function GET(
 
       return NextResponse.json(
         {
-          message: 'errors.liveness.noMatch',
+          message: 'intl.errors.liveness.noMatch',
           isMatch: false,
         },
         { status: 500 },
