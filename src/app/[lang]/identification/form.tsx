@@ -17,15 +17,15 @@ import {
   validateRecaptcha,
 } from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { createCedulaSchema } from '@/common/validation-schemas';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { createCedulaSchema } from '@/common/validation-schemas';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
-import { useLanguage } from '../provider';
 import theme from '@/components/themes/theme';
+import { useLanguage } from '../provider';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
