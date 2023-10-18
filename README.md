@@ -1,10 +1,10 @@
-![logo-cuenta-unica.svg](public/assets/logo-cuenta-unica.svg)
+![logo-cuenta-unica.svg](public/assets/logo.svg)
 
 # Portal de Registro de Cuenta Única
 
-[![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml)
-[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml)
-[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml)
+[![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml)
+[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml)
+[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml)
 [![License](https://img.shields.io/github/license/opticrd/cuenta-unica-registry?style&color=blue)](LICENSE)
 
 ## Tabla de contenidos
@@ -85,14 +85,13 @@ Este proyecto depende de las siguientes recursos externos:
 - Interoperabilidad: [X-Road](https://x-road.global/)
 - Hosting: [Google Cloud Platform](https://cloud.google.com/)
 
-
 ## Autor/es
 
-- **Gustavo Valverde** - *Product Manager* - [@gustavovalverde](https://github.com/gustavovalverde)
+- **Gustavo Valverde** - _Product Manager_ - [@gustavovalverde](https://github.com/gustavovalverde)
 - **Marluan Espiritusanto** - *Technical Lead* - [@marluanespiritusanto](https://github.com/marluanespiritusanto)
 - **José Álvarez** - *Developer* - [@JE1999](https://github.com/JE1999)
-- **Deyvison García** - *UI/UX Designer* - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
-
+- **Jeffrey Mesa** - *Developer* - [@JeffreyArt1](https://github.com/jeffreyart1)
+- **Deyvison García** - _UI/UX Designer_ - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
 
 ## Información adicional
 

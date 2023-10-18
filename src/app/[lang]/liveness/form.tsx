@@ -7,10 +7,12 @@ import {
   Checkbox,
   Alert,
   Box,
+  Divider,
 } from '@mui/material';
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -22,10 +24,9 @@ import { GridContainer, GridItem } from '@/components/elements/grid';
 import { createTermsSchema } from '@/common/validation-schemas';
 import { LivenessModal } from '@/components/LivenessModal';
 import { useLanguage } from '../provider';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useSnackAlert } from '@/components/elements/alert';
 
 type TermsForm = z.infer<ReturnType<typeof createTermsSchema>>;
+import theme from '@/components/themes/theme';
 
 type Props = {
   cedula: string;
@@ -41,7 +42,6 @@ export function Form({ cedula }: Props) {
     register,
     formState: { errors },
   } = useForm<TermsForm>({
-    // esto no iba
     resolver: zodResolver(createTermsSchema({ intl })),
   });
 
@@ -50,7 +50,7 @@ export function Form({ cedula }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <GridContainer>
-        <GridItem lg={6} md={6}>
+        <GridItem lg={12} md={12}>
           <div
             style={{
               background: '#EFF7FF',
@@ -62,8 +62,16 @@ export function Form({ cedula }: Props) {
             }}
           >
             <CameraAltOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px' }}
-              color="info"
+              sx={{
+                fontSize: '45px',
+                marginRight: '12px',
+                color: theme.palette.info.contrastText,
+              }}
+            />
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{ marginRight: '14px' }}
             />
             <Typography
               variant="body2"
@@ -75,7 +83,7 @@ export function Form({ cedula }: Props) {
           </div>
         </GridItem>
 
-        <GridItem lg={6} md={6}>
+        <GridItem lg={12} md={12}>
           <div
             style={{
               background: '#EFF7FF',
@@ -87,8 +95,16 @@ export function Form({ cedula }: Props) {
             }}
           >
             <SentimentSatisfiedOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px' }}
-              color="info"
+              sx={{
+                fontSize: '45px',
+                marginRight: '12px',
+                color: theme.palette.info.contrastText,
+              }}
+            />
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{ marginRight: '14px' }}
             />
             <Typography
               variant="body2"
@@ -101,7 +117,6 @@ export function Form({ cedula }: Props) {
         </GridItem>
 
         <GridItem lg={12} md={12}>
-          <br />
           <FormGroup>
             <FormControlLabel
               color="error"
@@ -115,9 +130,17 @@ export function Form({ cedula }: Props) {
               label={
                 <>
                   <Link target="_blank" href="/terms">
-                    {intl.terms.accept}
-                  </Link>
-                  <span className="text-error"> *</span>
+                    <span
+                      style={{
+                        color: theme.palette.primary.main,
+                        textDecoration: 'underline',
+                        fontSize: '14px',
+                      }}
+                    >
+                      {intl.terms.accept}
+                    </span>
+                  </Link>{' '}
+                  <span style={{ color: theme.palette.secondary.main }}>*</span>
                 </>
               }
             />

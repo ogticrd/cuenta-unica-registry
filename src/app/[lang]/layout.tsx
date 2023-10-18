@@ -11,7 +11,7 @@ import { LanguageProvider } from './provider';
 import Layout from '@/components/layout';
 import { Locale } from '@/i18n-config';
 
-import LandingChica2 from '@public/assets/landingChica.svg';
+import LandingChica from '@public/assets/landingChica.svg';
 
 import '@public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
@@ -45,9 +45,9 @@ export default async function RootLayout({
                   <BoxContentCenter>
                     <CardAuth
                       title={intl.common.title}
-                      landing={LandingChica2}
-                      landingWidth={450}
-                      landingHeight={400}
+                      landing={LandingChica}
+                      landingWidth={312}
+                      landingHeight={267}
                     >
                       {children}
                     </CardAuth>

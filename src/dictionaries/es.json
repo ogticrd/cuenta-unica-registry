@@ -7,13 +7,19 @@
     "faq": "Preguntas frecuentes"
   },
   "confirmation": {
-    "title": "Confirmación de Cuenta",
-    "subtitle": "¡Gracias por completar tu registro! Revisa tu correo electrónico y haz clic en el enlace de confirmación.",
-    "emailSentTo": "Hemos enviado una confirmación al siguiente correo:"
+    "title": "Te hemos enviado un correo",
+    "subtitle": "Revisa tu correo electrónico y haz clic en el enlace de confirmación o utiliza el código de confirmación.",
+    "emailSent": "Hemos enviado una confirmación al siguiente correo:"
+  },
+  "code": {
+    "tooltip": "Código",
+    "title": "Ingresa tu código de confirmación",
+    "body": "Ingresa el código suministrado a tu correo electrónico, si no haz recibido ningún código confirma debajo tu correo electrónico.",
+    "sent": "Hemos enviado el código al siguiente correo:"
   },
   "step1": {
     "title": "Identificación",
-    "subtitle": "ID del usuario",
+    "subtitle": "DNI del usuario",
     "description": "Este es el primer paso para poder verificar tu identidad y crear tu cuenta ciudadana.",
     "cedula": "Número de cédula",
     "cedulaTooltip": "Para iniciar el proceso de validar tu identidad es necesario tu número de cédula."
@@ -58,7 +64,8 @@
     "start": "INICIAR PROCESO",
     "login": "Inicia sesión aquí.",
     "create": "CREAR CUENTA ÚNICA",
-    "resendEmail": "REENVIAR CORREO"
+    "resendEmail": "REENVIAR CORREO",
+    "myAccount": "IR A MI CUENTA"
   },
   "loader": {
     "cedula": "Validando cédula..."
@@ -192,8 +199,8 @@
   },
   "registered": {
     "success": "Registro de Cuenta Exitoso",
-    "header": "¡Gracias por completar nuestra prueba beta!",
-    "body": "Queremos expresar nuestro más sincero agradecimiento por tu participación y dedicación. Tu retroalimentación y experiencia nos son extremadamente valiosas para mejorar nuestro producto y brindar una experiencia excepcional a todos los ciudadanos.",
+    "header": "¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!",
+    "body": "Ahora puedes ver y realizar tramites y solicitar servicios gubernamentales con una sola cuenta y contraseña.",
     "feedback": {
       "title": "Ayúdanos a mejorar:",
       "link": "¡Comparte tu opinión!"

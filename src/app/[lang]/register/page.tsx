@@ -22,12 +22,11 @@ export default async function RegisterPage({ params: { lang } }: Props) {
         component="div"
         color="primary"
         textAlign="center"
-        sx={{ my: 4, fontSize: '16px' }}
+        sx={{ my: 4, fontSize: '14px' }}
       >
         <Box sx={{ fontWeight: 500 }}>{intl.step3.completeForm}</Box>
       </Typography>
-
-      <Form cedula={citizen.id} />
+      <Form cedula={citizen?.id} />
     </div>
   );
 }

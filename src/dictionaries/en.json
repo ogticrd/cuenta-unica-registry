@@ -7,9 +7,15 @@
     "faq": "Frequently Asked Questions"
   },
   "confirmation": {
-    "title": "Account Confirmation",
-    "subtitle": "Thank you for completing your registration! Check your email and click on the confirmation link.",
-    "emailSentTo": "We have sent a confirmation to the following email:"
+    "title": "We have sent you an email",
+    "subtitle": "Check your email and click the confirmation link or use the confirmation code.",
+    "emailSent": "We have sent a confirmation to the following email:"
+  },
+  "code": {
+    "tooltip": "Code",
+    "title": "Enter your confirmation code",
+    "body": "Enter the code provided to your email. If you haven't received any code, please confirm your email below.",
+    "sent": "We have sent the code to the following email:"
   },
   "step1": {
     "title": "Identification",
@@ -58,7 +64,8 @@
     "start": "START PROCESS",
     "login": "Log in here.",
     "create": "CREATE ACCOUNT",
-    "resendEmail": "RESEND EMAIL"
+    "resendEmail": "RESEND EMAIL",
+    "myAccount": "GO TO MY ACCOUNT"
   },
   "loader": {
     "cedula": "Validating ID..."
@@ -191,12 +198,12 @@
     "rightsReserved": "All rights reserved."
   },
   "registered": {
-    "success": "Your account has been successfully created!",
-    "header": "Thank you for completing our beta test!",
-    "body": "We want to express our deepest gratitude for your participation and dedication. Your feedback and experience are extremely valuable to us for improving our product and providing an exceptional experience to all citizens.",
+    "success": "Account Registration Successful",
+    "header": "Congratulations! Your Unique Citizen Account has been successfully created!",
+    "body": "Now you can view and complete procedures and request government services with a single account and password.",
     "feedback": {
       "title": "Help us improve:",
-      "link": "Share your opinion!"
+      "link": "Share your feedback!"
     }
   },
   "validations": {

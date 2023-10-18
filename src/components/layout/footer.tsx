@@ -7,19 +7,23 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Image from 'next/image';
 
-import { GridContainer, GridItem } from '@/components/elements/grid';
-import DivGrow from '@/components/elements/divGrow';
-import { useLanguage } from '@/app/[lang]/provider';
-
 import logoOGTIC from '@public/assets/logoOGTIC.svg';
+import logoWhite from '@public/assets/logo-white.svg';
 import logoGOB from '@public/assets/logoGOB.svg';
+
+import { GridContainer, GridItem } from '../elements/grid';
+import { useLanguage } from '@/app/[lang]/provider';
+import DivGrow from '../elements/divGrow';
+import theme from '../themes/theme';
 
 export default function Index() {
   const { intl } = useLanguage();
 
   return (
     <>
-      <div style={{ padding: '75px 25px' }} className="bg-primary">
+      <div
+        style={{ background: theme.palette.primary.main, padding: '75px 25px' }}
+      >
         <div
           style={{
             width: '100%',
@@ -29,13 +33,14 @@ export default function Index() {
           }}
         >
           <GridContainer spacing={4}>
-            <GridItem md={12} lg={3}>
-              <div style={{ display: 'flex' }}>
-                <Image src={logoGOB.src} alt="logo" width="241" height="90" />
-              </div>
+            <GridItem md={12} lg={2}>
+              <Image src={logoGOB.src} alt="logo" width="198" height="80" />
             </GridItem>
-            <GridItem md={12} lg={9}>
-              <GridContainer>
+            <GridItem md={12} lg={2}>
+              <Image src={logoWhite.src} alt="logo" width="166" height="82" />
+            </GridItem>
+            <GridItem md={12} lg={8}>
+              <GridContainer spacing={4}>
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
                     {intl.footer.knowUs}

@@ -25,6 +25,7 @@ import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
 import { useLanguage } from '../provider';
+import theme from '@/components/themes/theme';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
@@ -141,11 +142,20 @@ export function Form() {
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
               <Link
-                href={'https://ogtic.gob.do'}
+                href={'https://mi.cuentaunica.gob.do/'}
                 style={{ textDecoration: 'none' }}
               >
-                <span className="text-secondary">{intl.alreadyRegistered}</span>{' '}
-                {intl.actions.login}
+                <span style={{ color: theme.palette.primary.main }}>
+                  {intl.alreadyRegistered}
+                </span>{' '}
+                <span
+                  style={{
+                    color: theme.palette.info.main,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {intl.actions.login}
+                </span>
               </Link>
             </TextBodyTiny>
           </GridItem>

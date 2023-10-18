@@ -1,7 +1,7 @@
 import { TextField, Tooltip, Typography } from '@mui/material';
 import Image from 'next/image';
 
-import Confirmation from '@public/assets/confirmation.svg';
+import Code from '@public/assets/code.svg';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
@@ -19,10 +19,10 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
       <GridItem md={12} lg={12}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
-            src={Confirmation?.src}
-            alt="imagen de confirmación"
-            width="259"
-            height="225"
+            src={Code?.src}
+            alt="imagen de código"
+            width="177"
+            height="196"
           />
         </div>
         <br />
@@ -35,11 +35,25 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
           }}
           gutterBottom
         >
-          {intl.confirmation.title}
+          {intl.code.title}
         </Typography>
         <TextBody textCenter gutterBottom>
-          {intl.confirmation.subtitle}
+          {intl.code.body}
         </TextBody>
+        <br />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Tooltip title={intl.code.tooltip}>
+            <TextField
+              required
+              type="text"
+              placeholder="0-0-0-0-0-0"
+              autoComplete="off"
+              sx={{ textAlign: 'center', width: '9em' }}
+            />
+          </Tooltip>
+        </div>
+        <br />
+        <br />
       </GridItem>
 
       <GridItem md={12} lg={12}>
@@ -52,7 +66,7 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
           }}
           gutterBottom
         >
-          {intl.confirmation.emailSent}
+          {intl.code.sent}
         </Typography>
         <Tooltip title={intl.step3.email.tooltip}>
           <TextField
@@ -65,7 +79,7 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
         </Tooltip>
         <br />
         <br />
-        <ButtonApp>{intl.actions.resendEmail}</ButtonApp>
+        <ButtonApp variant="outlined">{intl.actions.resendEmail}</ButtonApp>
       </GridItem>
     </GridContainer>
   );
