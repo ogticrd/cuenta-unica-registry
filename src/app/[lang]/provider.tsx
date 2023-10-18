@@ -8,7 +8,6 @@ type Props = {
   intl: Awaited<ReturnType<typeof getDictionary>>;
 };
 
-// Create a provider component
 export function LanguageProvider({ children, intl }: Props) {
   const contextValue = {
     intl,
@@ -21,7 +20,6 @@ export function LanguageProvider({ children, intl }: Props) {
   );
 }
 
-// Create a hook to use the language context
 export function useLanguage() {
   const context = useContext(LanguageContext);
 
