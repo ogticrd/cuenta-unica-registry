@@ -11,6 +11,7 @@ export async function findIamCitizen(cedula: string) {
     headers: {
       Authorization: `Bearer ${process.env.ORY_SDK_TOKEN}`,
     },
+    cache: 'no-store',
   }).then<Identity[]>(unwrap);
 
   return {
