@@ -1,12 +1,11 @@
 import type { CompareFacesCommandInput } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getRekognitionClient } from '@/common/helpers';
-// import logger from '@/lib/logger';
 import {
   LIVENESS_LOW_CONFIDENCE_ERROR,
   LIVENESS_NO_MATCH_ERROR,
 } from '@/common/constants';
+import { getRekognitionClient } from '@/common/helpers';
 
 type Props = { params: { sessionId: string; cedula: string } };
 
@@ -19,9 +18,12 @@ export async function GET(
     SessionId: sessionId,
   });
 
+  const LIVENESS_THRESHOLD_VALUE = +process.env.LIVENESS_THRESHOLD_VALUE!;
+  const LIVENESS_SIMILARIY_VALUE = +process.env.LIVENESS_SIMILARIY_VALUE!;
+
   const confidence = response.Confidence ?? 0;
   // Threshold for face liveness
-  const isLive = confidence > 85;
+  const isLive = confidence > LIVENESS_THRESHOLD_VALUE;
 
   if (!isLive) {
     console.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
@@ -49,7 +51,7 @@ export async function GET(
           Bytes: Buffer.from(targetImageBuffer),
         },
         // Threshold for face match
-        SimilarityThreshold: 95,
+        SimilarityThreshold: LIVENESS_SIMILARIY_VALUE,
       };
 
       const { FaceMatches } = await client.compareFaces(params);
