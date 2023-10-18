@@ -6,6 +6,7 @@ import { IconButton, Typography } from '@mui/material';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import logoWhite from '@public/assets/logo-white.svg';
 import logoOGTIC from '@public/assets/logoOGTIC.svg';
@@ -84,9 +85,15 @@ export default function Index() {
                     {intl.footer.info}
                   </Typography>
                   <br />
-                  <Typography color="white" fontWeight="400" fontSize="16">
-                    {intl.common.terms}
-                  </Typography>
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Typography color="white" fontWeight="400" fontSize="16">
+                      {intl.common.terms}
+                    </Typography>
+                  </Link>
                   <Typography color="white" fontWeight="400" fontSize="16">
                     {intl.common.policy}
                   </Typography>
