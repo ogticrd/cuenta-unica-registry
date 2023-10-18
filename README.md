@@ -2,9 +2,9 @@
 
 # Portal de Registro de Cuenta Única
 
-[![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/linter.yml)
-[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-staging.yml)
-[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/deploy-to-prod.yml)
+[![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml)
+[![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml)
+[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml)
 [![License](https://img.shields.io/github/license/opticrd/cuenta-unica-registry?style&color=blue)](LICENSE)
 
 ## Tabla de contenidos
