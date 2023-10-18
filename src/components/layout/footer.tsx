@@ -17,7 +17,9 @@ import theme from '../themes/theme';
 export default function Index() {
   return (
     <>
-      <div style={{ background: theme.palette.primary.main, padding: '75px 25px' }}>
+      <div
+        style={{ background: theme.palette.primary.main, padding: '75px 25px' }}
+      >
         <div
           style={{
             width: '100%',
@@ -31,12 +33,7 @@ export default function Index() {
               <Image src={logoGOB.src} alt="logo" width="198" height="80" />
             </GridItem>
             <GridItem md={12} lg={2}>
-              <Image
-                src={logoWhite.src}
-                alt="logo"
-                width="166"
-                height="82"
-              />
+              <Image src={logoWhite.src} alt="logo" width="166" height="82" />
             </GridItem>
             <GridItem md={12} lg={8}>
               <GridContainer spacing={4}>

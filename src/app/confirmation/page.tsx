@@ -12,7 +12,7 @@ export default async function ConfirmationPage() {
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
             src={Confirmation?.src}
             alt="imagen de confirmación"
@@ -33,7 +33,8 @@ export default async function ConfirmationPage() {
           Te hemos enviado un correo
         </Typography>
         <TextBody textCenter gutterBottom>
-          Revisa tu <span>correo electrónico</span> y haz clic en el enlace de confirmación o utiliza el código de confirmación.
+          Revisa tu <span>correo electrónico</span> y haz clic en el enlace de
+          confirmación o utiliza el código de confirmación.
         </TextBody>
       </GridItem>
 
@@ -43,7 +44,7 @@ export default async function ConfirmationPage() {
             fontSize: '14px',
             fontWeight: '500',
             textAlign: 'center',
-            color: "#ABAFB3"
+            color: '#ABAFB3',
           }}
           gutterBottom
         >

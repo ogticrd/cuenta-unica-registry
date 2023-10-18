@@ -40,10 +40,10 @@ export const CardAuth = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            height: "95px",
+            height: '95px',
             background: '#F8F8F8',
             borderRadius: '10px 10px 0 0',
-            borderBottom: "1px solid #DFDFDF",
+            borderBottom: '1px solid #DFDFDF',
             padding: '13px 25px 0px 25px',
           }}
         >
@@ -102,4 +102,3 @@ export const CardAuth = ({
     </div>
   );
 };
-

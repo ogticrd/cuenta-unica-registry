@@ -51,7 +51,12 @@ export const TextSubTitleBody = ({ children }: IProps) => {
   );
 };
 
-export const TextBody = ({ children, textCenter, bold, gutterBottom }: IProps) => {
+export const TextBody = ({
+  children,
+  textCenter,
+  bold,
+  gutterBottom,
+}: IProps) => {
   return (
     <Typography
       color="primary"

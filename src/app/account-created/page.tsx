@@ -14,7 +14,7 @@ export default async function ConfirmationPage() {
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
             src={AccountCreated?.src}
             alt="imagen de cuenta creada"
@@ -35,14 +35,17 @@ export default async function ConfirmationPage() {
           ¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!
         </Typography>
         <TextBody textCenter gutterBottom>
-          Ahora puedes ver y realizar tramites y  solicitar servicios gubernamentales con una sola cuenta y contraseña.
+          Ahora puedes ver y realizar tramites y solicitar servicios
+          gubernamentales con una sola cuenta y contraseña.
         </TextBody>
       </GridItem>
 
       <GridItem md={12} lg={12}>
         <ButtonApp
-          onClick={() => window.open("https://mi.cuentaunica.gob.do/")}
-        >Ir a mi cuenta</ButtonApp>
+          onClick={() => window.open('https://mi.cuentaunica.gob.do/')}
+        >
+          Ir a mi cuenta
+        </ButtonApp>
       </GridItem>
     </GridContainer>
   );

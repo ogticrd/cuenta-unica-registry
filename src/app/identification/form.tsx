@@ -151,8 +151,17 @@ export function Form() {
                 href={'https://mi.cuentaunica.gob.do/'}
                 style={{ textDecoration: 'none' }}
               >
-                <span style={{ color: theme.palette.primary.main }}>¿Ya tienes una cuenta?</span>{' '}
-                <span style={{ color: theme.palette.info.main, textDecoration: 'underline' }}>Inicia sesión aquí.</span>
+                <span style={{ color: theme.palette.primary.main }}>
+                  ¿Ya tienes una cuenta?
+                </span>{' '}
+                <span
+                  style={{
+                    color: theme.palette.info.main,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Inicia sesión aquí.
+                </span>
               </Link>
             </TextBodyTiny>
           </GridItem>

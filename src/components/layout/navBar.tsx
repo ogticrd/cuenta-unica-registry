@@ -19,7 +19,12 @@ export default function Index() {
       />
       <official-header></official-header>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" color='inherit' elevation={0} sx={{ boxShadow: "0px 1.5px 4px 0px #00000040" }}>
+        <AppBar
+          position="static"
+          color="inherit"
+          elevation={0}
+          sx={{ boxShadow: '0px 1.5px 4px 0px #00000040' }}
+        >
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar sx={{ padding: '0px', height: '72px' }}>
               <div className={styles.logo}>
@@ -27,7 +32,11 @@ export default function Index() {
                   <Image src={Logo.src} alt="logo" width="105" height="52" />
                 </Link>
               </div>
-              <AppsIcon fontSize="large" color="primary" style={{ display: "none" }} />
+              <AppsIcon
+                fontSize="large"
+                color="primary"
+                style={{ display: 'none' }}
+              />
             </Toolbar>
           </div>
         </AppBar>

@@ -15,7 +15,11 @@ type Props = {
 
 export function Steps({ step }: Props) {
   const steps = ['Identificación', 'Verificación', 'Registro'];
-  const stepDetails = ['DNI del usuario', 'Prueba de vida', 'Cuenta de usuario'];
+  const stepDetails = [
+    'DNI del usuario',
+    'Prueba de vida',
+    'Cuenta de usuario',
+  ];
 
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));

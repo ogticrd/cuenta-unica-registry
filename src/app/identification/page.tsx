@@ -9,7 +9,8 @@ export default function ValidationPage() {
       <Steps step={0} />
       <Typography component="div" color="primary" textAlign="center">
         <Box sx={{ fontWeight: 500, fontSize: '14px', my: 4 }}>
-          Este es el primer paso para poder verificar tu identidad y crear tu cuenta única ciudadana.
+          Este es el primer paso para poder verificar tu identidad y crear tu
+          cuenta única ciudadana.
         </Box>
       </Typography>
 

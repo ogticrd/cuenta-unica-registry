@@ -15,7 +15,7 @@ export default async function LivenessPage() {
     <div>
       <Steps step={1} />
       <br />
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Image src={Verification.src} alt="Logo" width="190" height="162" />
       </div>
       <Typography

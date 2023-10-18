@@ -1,5 +1,5 @@
-import { TextBody } from "@/components/elements/typography";
-import { Typography } from "@mui/material";
+import { TextBody } from '@/components/elements/typography';
+import { Typography } from '@mui/material';
 
 export default function Terms() {
   return (
@@ -428,8 +428,8 @@ export default function Terms() {
       <ul>
         <li>
           <TextBody>
-            Acceder desde un dispositivo personal (computadora personal, teléfono
-            móvil, tableta, etc.) y que sea el único que utilice dicho
+            Acceder desde un dispositivo personal (computadora personal,
+            teléfono móvil, tableta, etc.) y que sea el único que utilice dicho
             dispositivo.
           </TextBody>
         </li>
@@ -443,8 +443,9 @@ export default function Terms() {
         </li>
         <li>
           <TextBody>
-            No revelar su contraseña o clave de acceso (password) de Cuenta Única,
-            si presume que ha sido comprometida, cámbiela a la brevedad posible.
+            No revelar su contraseña o clave de acceso (password) de Cuenta
+            Única, si presume que ha sido comprometida, cámbiela a la brevedad
+            posible.
           </TextBody>
         </li>
         <li>

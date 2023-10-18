@@ -57,9 +57,17 @@ export function Form({ cedula }: Props) {
             }}
           >
             <CameraAltOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px', color: theme.palette.info.contrastText }}
+              sx={{
+                fontSize: '45px',
+                marginRight: '12px',
+                color: theme.palette.info.contrastText,
+              }}
             />
-            <Divider orientation="vertical" flexItem style={{ marginRight: '14px' }} />
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{ marginRight: '14px' }}
+            />
             <Typography variant="body2" color="primary">
               Utilizar un dispositivo que posea{' '}
               <span style={{ fontWeight: 'bold' }}>cámara</span> integrada.
@@ -79,9 +87,17 @@ export function Form({ cedula }: Props) {
             }}
           >
             <SentimentSatisfiedOutlinedIcon
-              sx={{ fontSize: '45px', marginRight: '12px', color: theme.palette.info.contrastText }}
+              sx={{
+                fontSize: '45px',
+                marginRight: '12px',
+                color: theme.palette.info.contrastText,
+              }}
             />
-            <Divider orientation="vertical" flexItem style={{ marginRight: '14px' }} />
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{ marginRight: '14px' }}
+            />
             <Typography variant="body2" color="primary">
               Permitir que tomemos capturas de{' '}
               <span style={{ fontWeight: 'bold' }}>tu rostro.</span>
@@ -102,7 +118,13 @@ export function Form({ cedula }: Props) {
               label={
                 <>
                   <Link target="_blank" href="/terms">
-                    <span style={{ color: theme.palette.primary.main, textDecoration: 'underline', fontSize: '14px' }}>
+                    <span
+                      style={{
+                        color: theme.palette.primary.main,
+                        textDecoration: 'underline',
+                        fontSize: '14px',
+                      }}
+                    >
                       Aceptar términos y políticas de privacidad
                     </span>
                   </Link>{' '}
