@@ -1,4 +1,4 @@
-![logo-cuenta-unica.svg](public/assets/logo-cuenta-unica.svg)
+![logo-cuenta-unica.svg](public/assets/logo.svg)
 
 # Portal de Registro de Cuenta Única
 
@@ -85,14 +85,12 @@ Este proyecto depende de las siguientes recursos externos:
 - Interoperabilidad: [X-Road](https://x-road.global/)
 - Hosting: [Google Cloud Platform](https://cloud.google.com/)
 
-
 ## Autor/es
 
-- **Gustavo Valverde** - *Product Manager* - [@gustavovalverde](https://github.com/gustavovalverde)
+- **Gustavo Valverde** - _Product Manager_ - [@gustavovalverde](https://github.com/gustavovalverde)
 - **Marluan Espiritusanto** - *Technical Lead* - [@marluanespiritusanto](https://github.com/marluanespiritusanto)
 - **José Álvarez** - *Developer* - [@JE1999](https://github.com/JE1999)
-- **Deyvison García** - *UI/UX Designer* - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
-
+- **Deyvison García** - _UI/UX Designer_ - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
 
 ## Información adicional
 
