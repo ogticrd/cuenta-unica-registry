@@ -31,6 +31,7 @@ import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
+import theme from '@/components/themes/theme';
 
 type CedulaForm = z.infer<typeof CedulaValidationSchema>;
 
@@ -147,11 +148,20 @@ export function Form() {
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
               <Link
-                href={'https://ogtic.gob.do'}
+                href={'https://mi.cuentaunica.gob.do/'}
                 style={{ textDecoration: 'none' }}
               >
-                <span className="text-secondary">¿Ya tienes una cuenta?</span>{' '}
-                Inicia sesión aquí.
+                <span style={{ color: theme.palette.primary.main }}>
+                  ¿Ya tienes una cuenta?
+                </span>{' '}
+                <span
+                  style={{
+                    color: theme.palette.info.main,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Inicia sesión aquí.
+                </span>
               </Link>
             </TextBodyTiny>
           </GridItem>

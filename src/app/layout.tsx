@@ -9,7 +9,7 @@ import { CardAuth } from '@/components/elements/cardAuth';
 import SnackAlert from '@/components/elements/alert';
 import Layout from '../components/layout';
 
-import LandingChica2 from '../../public/assets/landingChica.svg';
+import LandingChica from '../../public/assets/landingChica.svg';
 
 import '../../public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
@@ -35,10 +35,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                 <SnackAlert>
                   <BoxContentCenter>
                     <CardAuth
-                      title="Cuenta Única Ciudadana"
-                      landing={LandingChica2}
-                      landingWidth={450}
-                      landingHeight={400}
+                      title="Registrar Cuenta Única Ciudadana"
+                      landing={LandingChica}
+                      landingWidth={312}
+                      landingHeight={267}
                     >
                       {children}
                     </CardAuth>

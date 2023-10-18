@@ -9,9 +9,11 @@ import Image from 'next/image';
 
 import { LivenessQuickStart } from '@/components/LivenessQuickStart';
 import { ButtonApp } from '@/components/elements/button';
-import Logo from '../../../public/assets/logo.svg';
+import LogoWhite from '../../../public/assets/logo-white.svg';
 import theme from '@/components/themes/theme';
 import { Transition } from './Transition';
+
+import styles from './styles.module.css';
 
 type Props = {
   cedula: string;
@@ -34,11 +36,12 @@ export function LivenessModal({ cedula, setOpen }: Props) {
           },
         }}
       >
+        <div className={styles.layer_logo} />
         <AppBar elevation={0} sx={{ position: 'absolute' }}>
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar>
               <Box sx={{ flex: 1 }}>
-                <Image src={Logo.src} alt="logo" width="200" height="48" />
+                <Image src={LogoWhite.src} alt="logo" width="100" height="52" />
               </Box>
               <ButtonApp
                 notFullWidth
@@ -52,7 +55,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
             </Toolbar>
           </div>
         </AppBar>
-        <div className="bg-primary" style={{ paddingTop: '100px' }}>
+        <div style={{ paddingTop: '100px' }}>
           <div
             style={{
               width: '100%',

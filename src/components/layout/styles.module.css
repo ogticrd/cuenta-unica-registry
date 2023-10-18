@@ -1,0 +1,10 @@
+.logo {
+  flex-grow: 1;
+  padding-top: '8px';
+}
+
+@media only screen and (max-width: 600px) {
+  .logo {
+    margin-left: 0.75em;
+  }
+}
