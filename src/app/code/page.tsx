@@ -1,12 +1,13 @@
 import { TextField, Tooltip, Typography } from '@mui/material';
 
+import Link from 'next/link';
 import Image from 'next/image';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
 
-import Confirmation from '../../../public/assets/confirmation.svg';
+import Code from '../../../public/assets/code.svg';
 
 export default async function ConfirmationPage() {
   return (
@@ -14,10 +15,10 @@ export default async function ConfirmationPage() {
       <GridItem md={12} lg={12}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
-            src={Confirmation?.src}
-            alt="imagen de confirmación"
-            width="259"
-            height="225"
+            src={Code?.src}
+            alt="imagen de código"
+            width="177"
+            height="196"
           />
         </div>
         <br />
@@ -30,12 +31,26 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          Te hemos enviado un correo
+          Ingresa tu código de confirmación
         </Typography>
         <TextBody textCenter gutterBottom>
-          Revisa tu <span>correo electrónico</span> y haz clic en el enlace de
-          confirmación o utiliza el código de confirmación.
+          Ingresa el código suministrado a tu correo electrónico, si no haz
+          recibido ningún código confirma debajo tu correo electrónico.
         </TextBody>
+        <br />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Tooltip title="Código">
+            <TextField
+              required
+              type="text"
+              placeholder="0-0-0-0-0-0"
+              autoComplete="off"
+              sx={{ textAlign: 'center', width: '9em' }}
+            />
+          </Tooltip>
+        </div>
+        <br />
+        <br />
       </GridItem>
 
       <GridItem md={12} lg={12}>
@@ -48,9 +63,9 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          Hemos enviado una confirmación al siguiente correo:
+          Hemos enviado el código al siguiente correo:
         </Typography>
-        <Tooltip title="Correo personal">
+        <Tooltip title="Correo">
           <TextField
             required
             type="email"
@@ -61,7 +76,7 @@ export default async function ConfirmationPage() {
         </Tooltip>
         <br />
         <br />
-        <ButtonApp>REENVIAR CORREO</ButtonApp>
+        <ButtonApp variant="outlined">REENVIAR CORREO</ButtonApp>
       </GridItem>
     </GridContainer>
   );

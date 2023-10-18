@@ -14,13 +14,13 @@ export default async function RegisterPage() {
         component="div"
         color="primary"
         textAlign="center"
-        sx={{ my: 4, fontSize: '16px' }}
+        sx={{ my: 4, fontSize: '14px' }}
       >
         <Box sx={{ fontWeight: 500 }}>
           Para finalizar tu registro completa los siguientes campos:
         </Box>
       </Typography>
-      <Form cedula={citizen.id} />
+      <Form cedula={citizen?.id} />
     </div>
   );
 }

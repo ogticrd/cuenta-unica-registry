@@ -1,12 +1,14 @@
+'use client';
 import { TextField, Tooltip, Typography } from '@mui/material';
 
+import Link from 'next/link';
 import Image from 'next/image';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
 
-import Confirmation from '../../../public/assets/confirmation.svg';
+import AccountCreated from '../../../public/assets/account-created.svg';
 
 export default async function ConfirmationPage() {
   return (
@@ -14,8 +16,8 @@ export default async function ConfirmationPage() {
       <GridItem md={12} lg={12}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
-            src={Confirmation?.src}
-            alt="imagen de confirmación"
+            src={AccountCreated?.src}
+            alt="imagen de cuenta creada"
             width="259"
             height="225"
           />
@@ -30,38 +32,20 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          Te hemos enviado un correo
+          ¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!
         </Typography>
         <TextBody textCenter gutterBottom>
-          Revisa tu <span>correo electrónico</span> y haz clic en el enlace de
-          confirmación o utiliza el código de confirmación.
+          Ahora puedes ver y realizar tramites y solicitar servicios
+          gubernamentales con una sola cuenta y contraseña.
         </TextBody>
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <Typography
-          sx={{
-            fontSize: '14px',
-            fontWeight: '500',
-            textAlign: 'center',
-            color: '#ABAFB3',
-          }}
-          gutterBottom
+        <ButtonApp
+          onClick={() => window.open('https://mi.cuentaunica.gob.do/')}
         >
-          Hemos enviado una confirmación al siguiente correo:
-        </Typography>
-        <Tooltip title="Correo personal">
-          <TextField
-            required
-            type="email"
-            defaultValue="correo@confirmacion.com"
-            autoComplete="off"
-            fullWidth
-          />
-        </Tooltip>
-        <br />
-        <br />
-        <ButtonApp>REENVIAR CORREO</ButtonApp>
+          Ir a mi cuenta
+        </ButtonApp>
       </GridItem>
     </GridContainer>
   );
