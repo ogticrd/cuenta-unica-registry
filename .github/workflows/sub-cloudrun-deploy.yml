@@ -105,6 +105,8 @@ jobs:
             CEDULA_TOKEN_API=${{ secrets.CEDULA_TOKEN_API }},
             CITIZENS_API_AUTH_KEY=${{ secrets.CITIZENS_API_AUTH_KEY }},
             RECAPTHA_PROJECT_ID=${{ vars.RECAPTHA_PROJECT_ID }},
+            LIVENESS_THRESHOLD_VALUE=${{ vars.LIVENESS_THRESHOLD_VALUE }},
+            LIVENESS_SIMILARIY_VALUE=${{ vars.LIVENESS_SIMILARIY_VALUE }},
           flags: |
             --min-instances=${{ inputs.min_instances }}
             --max-instances=${{ inputs.max_instances }}
