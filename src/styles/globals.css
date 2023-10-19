@@ -97,8 +97,9 @@ body {
 .amplify-flex .amplify-liveness-figures {
   margin: 0;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 40px;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
 }
 
 .amplify-liveness-figure__image {
@@ -112,8 +113,8 @@ body {
 }
 
 .amplify-liveness-figure__image--success {
-  width: 262px;
-  height: 262px;
+  width: 250px;
+  height: 250px;
   background-image: url('../../public/assets/liveness-success.svg');
   background-repeat: no-repeat;
   background-position: center;
@@ -122,8 +123,8 @@ body {
 }
 
 .amplify-liveness-figure__image--error {
-  width: 262px;
-  height: 262px;
+  width: 250px;
+  height: 250px;
   background-image: url('../../public/assets/liveness-error.svg');
   background-repeat: no-repeat;
   background-position: center;
