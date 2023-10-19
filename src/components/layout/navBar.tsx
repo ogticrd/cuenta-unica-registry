@@ -9,6 +9,7 @@ import Link from 'next/link';
 import styles from './styles.module.css';
 
 import Logo from '../../../public/assets/logo.svg';
+import { ButtonApp } from '../elements/button';
 
 export default function Index() {
   return (
@@ -37,6 +38,15 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
+              <ButtonApp
+                variant="outlined"
+                notFullWidth
+                onClick={() =>
+                  window.open('https://mi.cuentaunica.gob.do/ui/login')
+                }
+              >
+                INGRESAR
+              </ButtonApp>
             </Toolbar>
           </div>
         </AppBar>

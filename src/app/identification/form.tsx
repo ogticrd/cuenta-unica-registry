@@ -148,7 +148,7 @@ export function Form() {
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
               <Link
-                href={'https://mi.cuentaunica.gob.do/'}
+                href={'https://mi.cuentaunica.gob.do/ui/login'}
                 style={{ textDecoration: 'none' }}
               >
                 <span style={{ color: theme.palette.primary.main }}>
