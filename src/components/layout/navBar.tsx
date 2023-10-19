@@ -38,7 +38,13 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
-              <ButtonApp variant='outlined' notFullWidth onClick={() => window.open('https://mi.cuentaunica.gob.do/ui/login')}>
+              <ButtonApp
+                variant="outlined"
+                notFullWidth
+                onClick={() =>
+                  window.open('https://mi.cuentaunica.gob.do/ui/login')
+                }
+              >
                 INGRESAR
               </ButtonApp>
             </Toolbar>
