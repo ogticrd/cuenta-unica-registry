@@ -62,7 +62,8 @@
   "actions": {
     "confirm": "CONFIRMAR",
     "start": "INICIAR PROCESO",
-    "login": "Inicia sesión aquí.",
+    "login": "INGRESAR",
+    "loginHere": "Inicia sesión aquí.",
     "create": "CREAR CUENTA ÚNICA",
     "resendEmail": "REENVIAR CORREO",
     "myAccount": "IR A MI CUENTA"

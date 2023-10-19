@@ -61,7 +61,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
           <div
             style={{
               width: '100%',
-              maxWidth: '700px',
+              maxWidth: '800px',
               margin: 'auto',
               padding: '0 10px',
             }}

@@ -3,18 +3,11 @@
   height: 341px;
   background: url('../../../public/assets/layer-logo.svg');
   background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   right: 0%;
   bottom: 0;
-  position: fixed;
-  background-repeat: no-repeat;
-  z-index: 0;
-  background-size: cover;
-}
-
-@media only screen and (max-height: 753px) {
-  .layer_logo {
-    right: 1.1%;
-  }
+  position: absolute;
 }
 
 @media only screen and (max-width: 1200px) {

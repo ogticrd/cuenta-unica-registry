@@ -1,6 +1,6 @@
 import AppsIcon from '@mui/icons-material/Apps';
-import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Script from 'next/script';
 import Image from 'next/image';
@@ -9,7 +9,15 @@ import Link from 'next/link';
 import Logo from '@public/assets/logo.svg';
 import styles from './styles.module.css';
 
-export default function Index() {
+import { getDictionary } from '@/dictionaries';
+import { ButtonApp } from '../elements/button';
+import { Locale } from '@/i18n-config';
+
+type Props = { params: { lang: Locale } };
+
+export default async function Index({ params: { lang } }: Props) {
+  const intl = await getDictionary(lang);
+
   return (
     <>
       <Script
@@ -36,6 +44,15 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
+              <ButtonApp
+                variant="outlined"
+                notFullWidth
+                onClick={() =>
+                  window.open('https://mi.cuentaunica.gob.do/ui/login')
+                }
+              >
+                {intl.actions.login}
+              </ButtonApp>
             </Toolbar>
           </div>
         </AppBar>

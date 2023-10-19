@@ -62,7 +62,8 @@
   "actions": {
     "confirm": "CONFIRM",
     "start": "START PROCESS",
-    "login": "Log in here.",
+    "login": "LOGIN",
+    "loginHere": "Log in here.",
     "create": "CREATE ACCOUNT",
     "resendEmail": "RESEND EMAIL",
     "myAccount": "GO TO MY ACCOUNT"

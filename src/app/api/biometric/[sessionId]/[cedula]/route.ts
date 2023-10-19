@@ -15,9 +15,12 @@ export async function GET(
     SessionId: sessionId,
   });
 
+  const LIVENESS_THRESHOLD_VALUE = +process.env.LIVENESS_THRESHOLD_VALUE!;
+  const LIVENESS_SIMILARIY_VALUE = +process.env.LIVENESS_SIMILARIY_VALUE!;
+
   const confidence = response.Confidence ?? 0;
   // Threshold for face liveness
-  const isLive = confidence > 85;
+  const isLive = confidence > LIVENESS_THRESHOLD_VALUE;
 
   if (!isLive) {
     console.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
@@ -45,7 +48,7 @@ export async function GET(
           Bytes: Buffer.from(targetImageBuffer),
         },
         // Threshold for face match
-        SimilarityThreshold: 95,
+        SimilarityThreshold: LIVENESS_SIMILARIY_VALUE,
       };
 
       const { FaceMatches } = await client.compareFaces(params);

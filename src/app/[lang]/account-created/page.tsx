@@ -43,7 +43,7 @@ export default function ConfirmationPage() {
 
       <GridItem md={12} lg={12}>
         <ButtonApp
-          onClick={() => window.open('https://mi.cuentaunica.gob.do/')}
+          onClick={() => window.open('https://mi.cuentaunica.gob.do/ui/login')}
         >
           {intl.actions.myAccount}
         </ButtonApp>
