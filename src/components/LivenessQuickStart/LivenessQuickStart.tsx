@@ -62,18 +62,19 @@ export function LivenessQuickStart({ cedula }: Props) {
   }, []);
 
   useEffect(() => {
-    if (error) {
-      const message =
-        error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
-        error.message ||
-        intl.errors.unknown;
+    if (!error) return;
 
-      AlertError(message);
+    const message: string =
+      error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+      error.message ||
+      intl.errors.unknown;
 
-      if (!error.message) {
-        console.error(error);
-      }
+    AlertError(message);
+
+    if (!error.message) {
+      console.error(error);
     }
+
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line
   }, [error]);
