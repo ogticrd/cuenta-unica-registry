@@ -82,7 +82,13 @@ export default function Index() {
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Términos de Uso Política de Privacidad Preguntas Frecuentes
+                    Términos de Uso
+                  </Typography>
+                  <Typography color="white" fontWeight="400" fontSize="16">
+                    Política de Privacidad
+                  </Typography>
+                  <Typography color="white" fontWeight="400" fontSize="16">
+                    Preguntas Frecuentes
                   </Typography>
                 </GridItem>
               </GridContainer>
@@ -134,19 +140,37 @@ export default function Index() {
                     SÍGUENOS
                   </Typography>
 
-                  <IconButton color="primary">
+                  <IconButton
+                    onClick={() =>
+                      window.open('https://www.facebook.com/Ogticrd/')
+                    }
+                    color="primary"
+                  >
                     <FacebookIcon />
                   </IconButton>
 
-                  <IconButton color="primary">
+                  <IconButton
+                    onClick={() =>
+                      window.open('https://www.youtube.com/@OGTICRD')
+                    }
+                    color="primary"
+                  >
                     <YouTubeIcon />
                   </IconButton>
 
-                  <IconButton color="primary">
+                  <IconButton
+                    onClick={() => window.open('https://twitter.com/ogticrdo')}
+                    color="primary"
+                  >
                     <TwitterIcon />
                   </IconButton>
 
-                  <IconButton color="primary">
+                  <IconButton
+                    onClick={() =>
+                      window.open('https://www.instagram.com/ogticrd/')
+                    }
+                    color="primary"
+                  >
                     <InstagramIcon />
                   </IconButton>
                 </div>
