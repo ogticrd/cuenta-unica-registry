@@ -13,7 +13,6 @@ body {
 }
 
 /* MUI global */
-
 .MuiStepLabel-label {
   color: #03397775;
 }
@@ -25,27 +24,38 @@ body {
 }
 
 /* Face live */
-
 .amplify-card {
   background: transparent;
 }
 
 .amplify-alert {
-  background: #b8cef9 !important;
+  background: #6db0e2;
 }
 
 .amplify-alert__heading,
 .amplify-alert__body,
 .amplify-icon {
+  color: white;
+  font-weight: 400;
+}
+.amplify-liveness-popover__container {
   color: var(--primary-color);
+  z-index: 10;
 }
 
-.amplify-text {
-  /* TODO: this is to fix regresive count, but this is not the right approach*/
-  color: rgb(211, 211, 211) !important;
+.amplify-liveness-start-screen-header__heading {
+  font-weight: 700;
+  font-size: 21px;
+}
+
+.amplify-liveness-start-screen-instructions__heading {
+  font-weight: 500;
+  font-size: 21px;
+  margin-top: 40px;
 }
 
 .amplify-button {
+  margin: 40px 0;
   background: white;
   border: 1px solid #003876;
   color: var(--primary-color);
@@ -82,4 +92,59 @@ body {
 
 .amplify-liveness-toast--default div .amplify-liveness-toast__message {
   color: black;
+}
+
+.amplify-flex .amplify-liveness-figures {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.amplify-liveness-figure__image {
+  background: none;
+  border: none;
+}
+
+.amplify-liveness-figure__image--success svg,
+.amplify-liveness-figure__image--error svg {
+  display: none;
+}
+
+.amplify-liveness-figure__image--success {
+  width: 262px;
+  height: 262px;
+  background-image: url('../../public/assets/liveness-success.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  margin-bottom: 21px;
+}
+
+.amplify-liveness-figure__image--error {
+  width: 262px;
+  height: 262px;
+  background-image: url('../../public/assets/liveness-error.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  margin-bottom: 21px;
+}
+
+.amplify-liveness-figure__caption {
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 21px;
+  font-weight: 500;
+  border-radius: 10px;
+}
+
+.amplify-liveness-figure__caption--success {
+  background: #dcf4dd;
+  color: #00c35b;
+}
+
+.amplify-liveness-figure__caption--error {
+  background: #f4dcdc;
+  color: #c30000;
 }
