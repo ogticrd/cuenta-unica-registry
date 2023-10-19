@@ -150,49 +150,37 @@ export function Form({ cedula }: Props) {
 
       router.push('confirmation');
     } catch (err: any) {
-      if (err.response && err.response.data) {
+      if (err.response?.data) {
         const errorData = err.response.data;
 
-        console.error('errorData', errorData);
+        const { ui, error } = errorData;
 
-        const { ui } = errorData;
+        type Message = { type: string; text: string };
+        type Node = { messages: Array<Message> };
 
-        const messages = ui.messages;
-        const nodes = ui.nodes;
+        const messages = (ui?.messages as Array<Message>)
+          ?.filter(pickErrors)
+          .map((m) => m.text);
 
-        const errors = [];
+        const nodes = (ui?.nodes as Array<Node>)
+          ?.filter((n) => n?.messages.filter(pickErrors))
+          .flatMap((n) => n.messages.map((n) => n.text));
 
-        if (messages && messages.length) {
-          const e = messages
-            .filter((m: any) => m.type === 'error')
-            .map((e: any) => e.text);
-          errors.push(e);
-        }
+        const errors = new Array<string>()
+          .concat(messages, nodes, error?.id)
+          .filter(Boolean);
 
-        if (nodes && nodes.length) {
-          // TODO: sacar los errores de los nodos retornados por ORY!!
-          const e = nodes
-            .filter(
-              (node: any) =>
-                node.messages.length &&
-                node.messages.filter((x: any) => x.type === 'error'),
-            )
-            .map((a: any) => a.messages);
-          errors.push(e);
-        }
-
-        console.error('errors', errors);
+        console.error(errors);
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error
-      if (err.response && err.response.status && err.response.status === 400) {
+      if (err.response?.status && err.response.status === 400) {
         setFlow(err.response?.data);
 
         return;
       }
 
       AlertError(intl.errors.createIdentity);
-      return;
     }
   };
 
@@ -314,4 +302,8 @@ function doNothing<T extends SyntheticEvent<HTMLElement>>(e: T) {
   e.preventDefault();
 
   return false;
+}
+
+function pickErrors<T extends { type: string }>({ type }: T) {
+  return type === 'error';
 }

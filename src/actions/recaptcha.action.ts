@@ -22,7 +22,7 @@ export async function validateRecaptcha(token: string) {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   if (!siteKey) {
-    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${'intl.errors.noEnv'}`);
+    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: undefined env variable`);
   }
 
   try {
@@ -41,7 +41,7 @@ export async function validateRecaptcha(token: string) {
     logger.error('intl.errors.recaptcha.issues', error);
 
     return {
-      error: 'intl.errors.unknown',
+      message: 'intl.errors.unknown',
     };
   }
 }

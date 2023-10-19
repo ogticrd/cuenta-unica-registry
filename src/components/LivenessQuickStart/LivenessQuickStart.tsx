@@ -4,13 +4,13 @@ import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import awsExports from '@/aws-exports';
 import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
+import { useLanguage } from '@/app/[lang]/provider';
 import { useLocalizedText } from './localizedText';
 import { unwrap } from '@/common/helpers';
-import { useLanguage } from '@/app/[lang]/provider';
+import awsExports from '@/aws-exports';
 
 Amplify.configure(awsExports);
 
@@ -63,7 +63,13 @@ export function LivenessQuickStart({ cedula }: Props) {
 
   useEffect(() => {
     if (error) {
-      AlertError(error.message || intl.errors.unknown);
+      const message =
+        error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+        error.message ||
+        intl.errors.unknown;
+
+      AlertError(message);
+
       if (!error.message) {
         console.error(error);
       }
