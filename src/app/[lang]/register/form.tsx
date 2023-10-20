@@ -12,35 +12,31 @@ import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
 import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { passwordStrength, type Result } from 'check-password-strength';
+import Collapse from '@mui/material/Collapse';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import {
-  CREATE_BROWSER_REGISTRATION_FLOW_ERROR,
-  CREATE_IDENTITY_ERROR,
-  VALIDATE_PASSWORD_ERROR,
-} from '../../common/constants';
-import PasswordLevel, {
-  calculatePasswordStrength,
-} from '@/components/elements/passwordLevel';
-import { RegisterValidationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
+import { createRegisterSchema } from '@/common/validation-schemas';
+import PasswordLevel from '@/components/elements/passwordLevel';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { findCitizen, verifyPassword } from '@/actions';
+import { useLanguage } from '../provider';
 import { ory } from '@/common/lib/ory';
 
-type RegisterForm = z.infer<typeof RegisterValidationSchema>;
+type RegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
 type Props = {
   cedula: string;
 };
 
 export function Form({ cedula }: Props) {
   const [flow, setFlow] = useState<RegistrationFlow>();
-  const [passwordLevel, setPasswordLevel] = useState<any>({});
+  const [passwordLevel, setPasswordLevel] = useState(initialLevel);
   const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackAlert();
@@ -49,6 +45,8 @@ export function Form({ cedula }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams?.get('return_to');
+
+  const { intl } = useLanguage();
 
   useEffect(() => {
     const fetchFlow = async () => {
@@ -59,7 +57,7 @@ export function Form({ cedula }: Props) {
 
         setFlow(flow);
       } catch (err: any) {
-        AlertWarning(CREATE_BROWSER_REGISTRATION_FLOW_ERROR);
+        AlertWarning(intl.errors.registration.flow);
         console.error(err.message || err);
       }
     };
@@ -75,20 +73,18 @@ export function Form({ cedula }: Props) {
     setValue,
   } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: zodResolver(RegisterValidationSchema),
+    resolver: zodResolver(createRegisterSchema({ intl })),
   });
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
 
   const handleChangePassword = (password: string) => {
     setPasswordString(password);
-    setPasswordLevel(calculatePasswordStrength(password));
+    setPasswordLevel(passwordStrength(password));
     setValue('password', password);
     setIsPwned(false);
+
+    if (!password) {
+      setValue('passwordConfirm', '');
+    }
   };
 
   const onSubmitHandler = async (form: RegisterForm) => {
@@ -96,15 +92,12 @@ export function Form({ cedula }: Props) {
       return;
     }
 
-    const password = form.password;
-
     try {
-      const { data } = await verifyPassword(password);
-      const isValidPassword = data !== 0;
+      const exposure = await verifyPassword(form.password);
 
-      setIsPwned(isValidPassword);
+      setIsPwned(exposure !== 0);
     } catch (err: any) {
-      AlertError(VALIDATE_PASSWORD_ERROR);
+      AlertError(intl.errors.password.validation);
 
       return;
     }
@@ -113,7 +106,7 @@ export function Form({ cedula }: Props) {
       const citizen = await findCitizen(cedula, true);
       let csrfToken = '';
 
-      if (flow && flow.ui && Array.isArray(flow.ui.nodes)) {
+      if (flow?.ui && Array.isArray(flow.ui.nodes)) {
         const csrfNode = flow.ui.nodes.find(
           (node) =>
             isUiNodeInputAttributes(node.attributes) &&
@@ -153,49 +146,37 @@ export function Form({ cedula }: Props) {
 
       router.push('confirmation');
     } catch (err: any) {
-      if (err.response && err.response.data) {
+      if (err.response?.data) {
         const errorData = err.response.data;
 
-        console.error('errorData', errorData);
+        const { ui, error } = errorData;
 
-        const { ui } = errorData;
+        type Message = { type: string; text: string };
+        type Node = { messages: Array<Message> };
 
-        const messages = ui.messages;
-        const nodes = ui.nodes;
+        const messages = (ui?.messages as Array<Message>)
+          ?.filter(pickErrors)
+          .map((m) => m.text);
 
-        const errors = [];
+        const nodes = (ui?.nodes as Array<Node>)
+          ?.filter((n) => n?.messages.filter(pickErrors))
+          .flatMap((n) => n.messages.map((n) => n.text));
 
-        if (messages && messages.length) {
-          const e = messages
-            .filter((m: any) => m.type === 'error')
-            .map((e: any) => e.text);
-          errors.push(e);
-        }
+        const errors = new Array<string>()
+          .concat(messages, nodes, error?.id)
+          .filter(Boolean);
 
-        if (nodes && nodes.length) {
-          // TODO: sacar los errores de los nodos retornados por ORY!!
-          const e = nodes
-            .filter(
-              (node: any) =>
-                node.messages.length &&
-                node.messages.filter((x: any) => x.type === 'error'),
-            )
-            .map((a: any) => a.messages);
-          errors.push(e);
-        }
-
-        console.error('errors', errors);
+        console.error(errors);
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error
-      if (err.response && err.response.status && err.response.status === 400) {
+      if (err.response?.status && err.response.status === 400) {
         setFlow(err.response?.data);
 
         return;
       }
 
-      AlertError(CREATE_IDENTITY_ERROR);
-      return;
+      AlertError(intl.errors.createIdentity);
     }
   };
 
@@ -204,23 +185,17 @@ export function Form({ cedula }: Props) {
     <form onSubmit={handleSubmit(onSubmitHandler)}>
       <GridContainer>
         <GridItem lg={12} md={12}>
-          <Tooltip title="Correo personal">
+          <Tooltip title={intl.step3.email.tooltip}>
             <TextField
               {...register('email')}
               required
               type="email"
-              label="Correo Electrónico"
+              label={intl.step3.email.label}
               helperText={errors.email?.message}
               autoComplete="off"
               fullWidth
-              onPaste={(e) => {
-                e.preventDefault();
-                return false;
-              }}
-              onCopy={(e) => {
-                e.preventDefault();
-                return false;
-              }}
+              onPaste={doNothing}
+              onCopy={doNothing}
             />
           </Tooltip>
         </GridItem>
@@ -230,18 +205,13 @@ export function Form({ cedula }: Props) {
             {...register('emailConfirm')}
             required
             type="email"
-            label="Confirma tu Correo Electrónico"
+            color={errors.emailConfirm ? 'error' : 'primary'}
+            label={intl.step3.email.confirm}
             helperText={errors.emailConfirm?.message}
             autoComplete="off"
             fullWidth
-            onPaste={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-            onCopy={(e) => {
-              e.preventDefault();
-              return false;
-            }}
+            onPaste={doNothing}
+            onCopy={doNothing}
           />
         </GridItem>
 
@@ -249,7 +219,8 @@ export function Form({ cedula }: Props) {
           <TextField
             required
             type={showPassword ? 'text' : 'password'}
-            label="Contraseña"
+            label={intl.step3.password.label}
+            color={errors.password ? 'error' : 'primary'}
             placeholder="*********"
             helperText={errors.password?.message}
             fullWidth
@@ -259,9 +230,9 @@ export function Form({ cedula }: Props) {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={intl.step3.password.toggleVisibility}
                     onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={handleMouseDownPassword}
+                    onMouseDown={doNothing}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -277,9 +248,10 @@ export function Form({ cedula }: Props) {
           <TextField
             required
             type={showPasswordConfirm ? 'text' : 'password'}
-            label="Confirma tu Contraseña"
+            label={intl.step3.password.confirm}
+            color={errors.passwordConfirm ? 'error' : 'primary'}
             placeholder="*********"
-            disabled={passwordLevel.id === 3 ? false : true}
+            disabled={passwordLevel.id < 3}
             helperText={errors.passwordConfirm?.message}
             fullWidth
             {...register('passwordConfirm')}
@@ -287,9 +259,9 @@ export function Form({ cedula }: Props) {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={intl.step3.password.toggleVisibility}
                     onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    onMouseDown={handleMouseDownPassword}
+                    onMouseDown={doNothing}
                     edge="end"
                   >
                     {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
@@ -300,26 +272,34 @@ export function Form({ cedula }: Props) {
           />
         </GridItem>
 
-        {isPwned && (
-          <GridItem lg={12} md={12}>
-            <Alert severity="warning">
-              Esta contraseña ha estado en filtraciones de datos, por eso no se
-              considera segura. Te recomendamos eligir otra contraseña.
-            </Alert>
-          </GridItem>
-        )}
+        <GridItem lg={12} md={12}>
+          <Collapse in={isPwned}>
+            <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
+          </Collapse>
+        </GridItem>
 
         <GridItem lg={12} md={12}>
-          <br />
           <ButtonApp
             submit
             endIcon={<CheckCircleOutlineOutlinedIcon />}
             disabled={isPwned}
           >
-            CREAR CUENTA ÚNICA
+            {intl.actions.create}
           </ButtonApp>
         </GridItem>
       </GridContainer>
     </form>
   );
+}
+
+const initialLevel = { id: 0 } as Result<string>;
+
+function doNothing<T extends SyntheticEvent<HTMLElement>>(e: T) {
+  e.preventDefault();
+
+  return false;
+}
+
+function pickErrors<T extends { type: string }>({ type }: T) {
+  return type === 'error';
 }

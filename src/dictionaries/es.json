@@ -1,0 +1,228 @@
+{
+  "common": {
+    "title": "Cuenta Única Ciudadana",
+    "hello": "Hola",
+    "terms": "Términos de uso",
+    "policy": "Política de privacidad",
+    "faq": "Preguntas frecuentes"
+  },
+  "confirmation": {
+    "title": "Te hemos enviado un correo",
+    "subtitle": "Revisa tu correo electrónico y haz clic en el enlace de confirmación o utiliza el código de confirmación.",
+    "emailSent": "Hemos enviado una confirmación al siguiente correo:"
+  },
+  "code": {
+    "tooltip": "Código",
+    "title": "Ingresa tu código de confirmación",
+    "body": "Ingresa el código suministrado a tu correo electrónico, si no haz recibido ningún código confirma debajo tu correo electrónico.",
+    "sent": "Hemos enviado el código al siguiente correo:"
+  },
+  "step1": {
+    "title": "Identificación",
+    "subtitle": "DNI del usuario",
+    "description": "Este es el primer paso para poder verificar tu identidad y crear tu cuenta ciudadana.",
+    "cedula": "Número de cédula",
+    "cedulaTooltip": "Para iniciar el proceso de validar tu identidad es necesario tu número de cédula."
+  },
+  "step2": {
+    "title": "Verificación",
+    "subtitle": "Prueba de vida",
+    "description": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
+    "camera": "Utilizar un dispositivo que posea <b>cámara</b> integrada.",
+    "face": "Permitir que tomemos capturas de <b>tu rostro.</b>"
+  },
+  "step3": {
+    "title": "Registro",
+    "subtitle": "Cuenta de usuario",
+    "completeForm": "Para finalizar tu registro completa los siguientes campos:",
+    "email": {
+      "label": "Correo Electrónico",
+      "tooltip": "Correo personal",
+      "confirm": "Confirma tu Correo Electrónico"
+    },
+    "password": {
+      "label": "Contraseña",
+      "toggleVisibility": "Mostrar contraseña",
+      "confirm": "Confirma tu Contraseña",
+      "requirements": {
+        "lowercase": "Una letra minúscula",
+        "uppercase": "Una letra mayúscula",
+        "symbol": "Un caracter especial",
+        "number": "Un número",
+        "length": "10 caracteres como mínimo"
+      }
+    }
+  },
+  "stepper": {
+    "back": "Volver al paso anterior",
+    "exit": "Salir"
+  },
+  "alreadyRegistered": "¿Ya tienes una cuenta?",
+  "actions": {
+    "confirm": "CONFIRMAR",
+    "start": "INICIAR PROCESO",
+    "login": "INGRESAR",
+    "loginHere": "Inicia sesión aquí.",
+    "create": "CREAR CUENTA ÚNICA",
+    "resendEmail": "REENVIAR CORREO",
+    "myAccount": "IR A MI CUENTA"
+  },
+  "loader": {
+    "cedula": "Validando cédula..."
+  },
+  "bug": {
+    "report": "Reportar"
+  },
+  "errors": {
+    "cedula": {
+      "invalid": "Al parecer ha introducido una numeración de cédula inválida.",
+      "exists": "Esta cédula ya ha sido registrada."
+    },
+    "password": {
+      "validation": "Al parecer ha ocurrido un error al intentar validar su contraseña, inténtelo de nuevo más tarde."
+    },
+    "registration": {
+      "flow": "¡Ups! Ha ocurrido un error, por favor inténtelo más tarde."
+    },
+    "unknown": "Ha ocurrido un error inesperado, por favor inténtelo más tarde.",
+    "liveness": {
+      "noMatch": "No se ha podido validar su identidad con la JCE. Intente nuevamente o actualice su foto en la JCE.",
+      "lowConfidence": "La prueba de vida no ha sido exitosa. Verifique las instrucciones e intente nuevamente."
+    },
+    "recaptcha": {
+      "issues": "Al parecer el reCaptcha no ha validado correctamente su solicitud, refresque e intente nuevamente",
+      "validation": "No podemos validar la seguridad de su navegador, verifique si tiene actualizaciones pendientes o intente con otro dispositivo."
+    },
+    "createIdentity": "Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.",
+    "decryption": "Error al desencriptar:",
+    "noEnv": "Variable de entorno inválida o no definida"
+  },
+  "terms": {
+    "accept": "Aceptar términos y políticas de privacidad",
+    "check": "Para continuar, debe leer y aceptar los términos y políticas de privacidad."
+  },
+  "liveness": {
+    "camera": {
+      "minSpecifications": {
+        "heading": "La cámara no cumple con las especificaciones mínimas",
+        "message": "La cámara debe admitir una resolución de al menos 320 * 240 y 15 fotogramas por segundo."
+      },
+      "notFound": {
+        "heading": "Cámara no accesible",
+        "message": "Verifique que la cámara esté conectada y que los permisos de la cámara estén habilitados en la configuración antes de volver a intentarlo."
+      },
+      "permissions": "Procesar de nuevo"
+    },
+    "error": {
+      "timeout": {
+        "heading": "Se acabó el tiempo",
+        "message": "La cara no llenó el óvalo dentro del límite de tiempo. Vuelva a intentarlo y llene completamente el óvalo con la cara en 7 segundos."
+      },
+      "faceDistance": {
+        "heading": "Se detectó movimiento de la cara",
+        "message": "Evite acercarse durante la conexión."
+      },
+      "multipleFaces": {
+        "heading": "Se detectaron múltiples caras",
+        "message": "Solo una cara debe estar presente en el óvalo."
+      },
+      "client": {
+        "heading": "Error del cliente",
+        "message": "Verificación fallida debido a un problema con el cliente"
+      },
+      "server": {
+        "heading": "Problema con el servidor",
+        "message": "No se puede completar la verificación debido a un problema con el servidor"
+      },
+      "landscape": {
+        "heading": "Orientación horizontal no compatible",
+        "message": "Gire su dispositivo a la orientación vertical (retrato)."
+      },
+      "portrait": "Asegúrese de que su dispositivo permanezca en orientación vertical (retrato) durante la verificación.",
+      "tryAgain": "Intentar otra vez"
+    },
+    "hints": {
+      "moveFaceFrontOfCamera": "Posicione la cara frente a la cámara",
+      "tooManyFaces": "Asegúrese que solo una cara esté frente a la cámara",
+      "faceDetected": "Cara detectada",
+      "canNotIdentify": "No podemos identificar su cara frente a la cámara",
+      "tooClose": "Aléjese un poco más",
+      "tooFar": "Acérquese un poco más",
+      "holdFacePositionCountdown": "Mantenga la posición de la cara",
+      "connecting": "Conectando...",
+      "verifying": "Verificando...",
+      "illuminationTooBright": "El área está muy iluminada",
+      "illuminationTooDark": "El área está muy oscura",
+      "illuminationNormal": "Condiciones de iluminación correctas",
+      "holdFaceForFreshness": "Quédese quieto"
+    },
+    "instructions": {
+      "header": {
+        "heading": "Verificación facial",
+        "body": "Ahora va a realizar un proceso de verificación facial para demostrar que es una persona real."
+      },
+      "begin": "Iniciar verificación",
+      "photosensitivyWarning": {
+        "heading": "Alerta de fotosensibilidad",
+        "body": "Esta verificación muestra luces de colores. Tenga cuidado si es fotosensible.",
+        "info": "Un pequeño porcentaje de personas puede experimentar convulsiones epilépticas cuando se exponen a luces de colores. Tenga cuidado si usted o alguien de su familia tiene alguna condición epiléptica."
+      },
+      "list": {
+        "heading": "Siga las instrucciones para completar la verificación:",
+        "stepOne": "Cuando el óvalo aparezca, llénelo con su cara en 7 segundos.",
+        "stepTwo": "Maximice el brillo de su pantalla.",
+        "stepThree": "Asegúrese de que su cara no esté cubierta con gafas de sol o una máscara.",
+        "stepFour": "Muévase a un lugar bien iluminado que no esté expuesto a la luz solar directa."
+      },
+      "goodFit": {
+        "caption": "Bien encajado",
+        "alt": "Ilustración de la cara de una persona, encajando perfectamente dentro de un óvalo."
+      },
+      "tooFar": {
+        "caption": "Demasiado lejos",
+        "alt": "Ilustración de la cara de una persona dentro de un óvalo; hay un espacio entre el perímetro de la cara y los límites del óvalo."
+      }
+    },
+    "stream": {
+      "recording": "Grabando",
+      "cancel": "Cancelar"
+    }
+  },
+  "footer": {
+    "knowUs": "CONÓCENOS",
+    "contact": "CONTÁCTANOS",
+    "findUs": "BÚSCANOS",
+    "info": "INFÓRMATE",
+    "followUs": "SÍGUENOS",
+    "developedBy": "Desarrollado por",
+    "rightsReserved": "Todos los derechos reservados."
+  },
+  "registered": {
+    "success": "Registro de Cuenta Exitoso",
+    "header": "¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!",
+    "body": "Ahora puedes ver y realizar tramites y solicitar servicios gubernamentales con una sola cuenta y contraseña.",
+    "feedback": {
+      "title": "Ayúdanos a mejorar:",
+      "link": "¡Comparte tu opinión!"
+    }
+  },
+  "validations": {
+    "cedula": {
+      "min": "La cédula debe contener al menos 11 dígitos",
+      "max": "La cédula debe contener máximo 11 dígitos"
+    },
+    "email": {
+      "required": "El Correo Electrónico es obligatorio",
+      "invalid": "El Correo Electrónico no es válido",
+      "noMatch": "Los Correos no coinciden"
+    },
+    "password": {
+      "empty": "La Contraseña no puede estar vacía",
+      "noMatch": "Las Contraseñas no coinciden"
+    },
+    "required": "Campo requerido"
+  },
+  "warnings": {
+    "breachedPassword": "Esta contraseña ha estado en filtraciones de datos, por eso no se considera segura. Te recomendamos eligir otra contraseña."
+  }
+}

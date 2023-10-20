@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import Image from 'next/image';
 
 import { TextBody, TextBodyTiny } from '../typography';
-import SmallLogo from '../../../../public/assets/smallLogo.svg';
+import SmallLogo from '@public/assets/smallLogo.svg';
 
 export const CardAuth = ({
   title,

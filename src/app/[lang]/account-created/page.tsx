@@ -1,16 +1,18 @@
 'use client';
-import { TextField, Tooltip, Typography } from '@mui/material';
 
-import Link from 'next/link';
+import { Typography } from '@mui/material';
 import Image from 'next/image';
+
+import AccountCreated from '@public/assets/account-created.svg';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
+import { useLanguage } from '@/app/[lang]/provider';
 
-import AccountCreated from '../../../public/assets/account-created.svg';
+export default function ConfirmationPage() {
+  const { intl } = useLanguage();
 
-export default async function ConfirmationPage() {
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
@@ -32,11 +34,10 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          ¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!
+          {intl.registered.header}
         </Typography>
         <TextBody textCenter gutterBottom>
-          Ahora puedes ver y realizar tramites y solicitar servicios
-          gubernamentales con una sola cuenta y contraseña.
+          {intl.registered.body}
         </TextBody>
       </GridItem>
 
@@ -44,7 +45,7 @@ export default async function ConfirmationPage() {
         <ButtonApp
           onClick={() => window.open('https://mi.cuentaunica.gob.do/ui/login')}
         >
-          Ir a mi cuenta
+          {intl.actions.myAccount}
         </ButtonApp>
       </GridItem>
     </GridContainer>

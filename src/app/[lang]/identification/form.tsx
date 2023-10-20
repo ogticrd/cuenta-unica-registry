@@ -11,35 +11,31 @@ import Link from 'next/link';
 import { z } from 'zod';
 
 import {
-  IDENTITY_ALREADY_EXISTS_ERROR,
-  INVALID_CEDULA_ERROR,
-  INVALID_CEDULA_NUMBER_ERROR,
-  RECAPTCHA_ISSUES_ERROR,
-  RECAPTCHA_VALIDATION_ERROR,
-} from '@/common/constants';
-import {
   findCitizen,
   findIamCitizen,
   setCookie,
   validateRecaptcha,
 } from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { CedulaValidationSchema } from '@/common/validation-schemas';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { createCedulaSchema } from '@/common/validation-schemas';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
 import theme from '@/components/themes/theme';
+import { useLanguage } from '../provider';
 
-type CedulaForm = z.infer<typeof CedulaValidationSchema>;
+type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const { AlertError, AlertWarning } = useSnackAlert();
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useReCaptcha();
   const router = useRouter();
+
+  const { intl } = useLanguage();
 
   const {
     handleSubmit,
@@ -48,7 +44,7 @@ export function Form() {
     watch,
   } = useForm<CedulaForm>({
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(CedulaValidationSchema),
+    resolver: zodResolver(createCedulaSchema({ intl })),
   });
 
   const cedulaFormValue = watch('cedula', '');
@@ -65,7 +61,7 @@ export function Form() {
     const isValidByLuhn = Validations.luhnCheck(cedula);
 
     if (!isValidByLuhn) {
-      AlertError(INVALID_CEDULA_NUMBER_ERROR);
+      AlertError(intl.errors.cedula.invalid);
       setLoading(false);
 
       return;
@@ -74,7 +70,7 @@ export function Form() {
     const reCaptchaToken = await executeRecaptcha('form_submit');
 
     if (!reCaptchaToken) {
-      AlertWarning(RECAPTCHA_ISSUES_ERROR);
+      AlertWarning(intl.errors.recaptcha.issues);
       setLoading(false);
 
       return;
@@ -84,13 +80,13 @@ export function Form() {
       const { isHuman } = await validateRecaptcha(reCaptchaToken);
 
       if (!isHuman) {
-        return AlertError(RECAPTCHA_VALIDATION_ERROR);
+        return AlertError(intl.errors.recaptcha.validation);
       }
 
       const { exists } = await findIamCitizen(cedula);
 
       if (exists) {
-        return AlertError(IDENTITY_ALREADY_EXISTS_ERROR);
+        return AlertError(intl.errors.cedula.exists);
       }
 
       const citizen = await findCitizen(cedula);
@@ -99,7 +95,7 @@ export function Form() {
     } catch (err: any) {
       console.error(err.message || err);
 
-      return AlertError(INVALID_CEDULA_ERROR);
+      return AlertError(intl.errors.cedula.invalid);
     } finally {
       setLoading(false);
     }
@@ -107,19 +103,17 @@ export function Form() {
 
   return (
     <>
-      {loading && (
-        <LoadingBackdrop text="Espere un momento, estamos validando su cédula." />
-      )}
+      {loading && <LoadingBackdrop text={intl.loader.cedula} />}
 
       <form onSubmit={onSubmit}>
         <GridContainer>
           <GridItem lg={12} md={12}>
-            <Tooltip title="Para iniciar el proceso de validar tu identidad es necesario tu número de cédula.">
+            <Tooltip title={intl.step1.cedulaTooltip}>
               <TextField
                 required
                 value={cedulaFormValue}
                 onChange={onChange}
-                label="Número de cédula"
+                label={intl.step1.cedula}
                 placeholder="***-**00000-0"
                 autoComplete="off"
                 error={Boolean(errors.cedula)}
@@ -138,7 +132,7 @@ export function Form() {
           <GridItem lg={12} md={12}>
             <br />
             <ButtonApp submit endIcon={<ArrowCircleRightOutlinedIcon />}>
-              CONFIRMAR
+              {intl.actions.confirm}
             </ButtonApp>
           </GridItem>
         </GridContainer>
@@ -152,7 +146,7 @@ export function Form() {
                 style={{ textDecoration: 'none' }}
               >
                 <span style={{ color: theme.palette.primary.main }}>
-                  ¿Ya tienes una cuenta?
+                  {intl.alreadyRegistered}
                 </span>{' '}
                 <span
                   style={{
@@ -160,7 +154,7 @@ export function Form() {
                     textDecoration: 'underline',
                   }}
                 >
-                  Inicia sesión aquí.
+                  {intl.actions.loginHere}
                 </span>
               </Link>
             </TextBodyTiny>
@@ -170,6 +164,7 @@ export function Form() {
     </>
   );
 }
+
 function verifyReCaptcha(
   reCaptchaToken: string,
 ): { isHuman: any } | PromiseLike<{ isHuman: any }> {

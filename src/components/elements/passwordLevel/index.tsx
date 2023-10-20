@@ -1,21 +1,41 @@
-import * as React from 'react';
-import {
-  passwordStrength,
-  DiversityType,
-  Result,
-} from 'check-password-strength';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Typography, Box } from '@mui/material';
+import { passwordStrength } from 'check-password-strength';
+import { Typography, Box, Collapse } from '@mui/material';
 
-interface PasswordRequirementProps {
-  met: boolean;
-  text: string;
+import { useLanguage } from '@/app/[lang]/provider';
+
+export default function PasswordLevel({ password }: { password: string }) {
+  const { intl } = useLanguage();
+
+  type Diversity = keyof typeof intl.step3.password.requirements;
+
+  const strength = passwordStrength(password);
+  const container: Array<Diversity> = strength.contains;
+
+  if (strength.length >= 10) container.push('length');
+
+  const requirements = Object.keys(
+    intl.step3.password.requirements,
+  ) as Array<Diversity>;
+
+  return (
+    <Collapse in={Boolean(password)}>
+      <Box mt={2}>
+        {requirements.map((name, index) => (
+          <Requirement
+            key={index}
+            met={container.includes(name)}
+            text={intl.step3.password.requirements[name]}
+          />
+        ))}
+      </Box>
+    </Collapse>
+  );
 }
 
-const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
-  met,
-  text,
-}) => (
+type Props = { met: boolean; text: string };
+
+const Requirement = ({ met, text }: Props) => (
   <Box display="flex" alignItems="center">
     <CheckCircleIcon
       color={met ? 'success' : 'disabled'}
@@ -26,45 +46,3 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
     </Typography>
   </Box>
 );
-
-interface PasswordLevelProps {
-  password: string;
-}
-
-export const calculatePasswordStrength = (password: string): Result<string> => {
-  return passwordStrength(password);
-};
-
-const PasswordLevel: React.FC<PasswordLevelProps> = ({ password }) => {
-  const passwordStrengthResult = calculatePasswordStrength(password);
-
-  const containsRequirementsMet = passwordStrengthResult.contains || [];
-  const lengthRequirementMet = passwordStrengthResult.length >= 10;
-
-  const requirements: { [key in DiversityType]: string } = {
-    lowercase: 'Una letra minúscula',
-    uppercase: 'Una letra mayúscula',
-    symbol: 'Un caracter especial',
-    number: 'Un número',
-  };
-
-  if (!password) return null;
-
-  return (
-    <Box mt={2}>
-      {Object.entries(requirements).map(([key, text], index) => (
-        <PasswordRequirement
-          key={index}
-          met={containsRequirementsMet.includes(key as DiversityType)}
-          text={text}
-        />
-      ))}
-      <PasswordRequirement
-        met={lengthRequirementMet}
-        text="10 caracteres como mínimo"
-      />
-    </Box>
-  );
-};
-
-export default PasswordLevel;

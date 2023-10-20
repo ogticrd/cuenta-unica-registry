@@ -1,11 +1,8 @@
 import type { CompareFacesCommandInput } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 
-import {
-  LIVENESS_LOW_CONFIDENCE_ERROR,
-  LIVENESS_NO_MATCH_ERROR,
-} from '@/common/constants';
 import { getRekognitionClient } from '@/common/helpers';
+// import logger from '@/lib/logger';
 
 type Props = { params: { sessionId: string; cedula: string } };
 
@@ -30,7 +27,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        message: LIVENESS_LOW_CONFIDENCE_ERROR,
+        message: 'intl.errors.liveness.lowConfidence',
         isLive,
       },
       { status: 403 },
@@ -61,7 +58,7 @@ export async function GET(
 
         return NextResponse.json(
           {
-            message: LIVENESS_NO_MATCH_ERROR,
+            message: 'intl.errors.liveness.noMatch',
             isMatch: false,
           },
           {
@@ -80,7 +77,7 @@ export async function GET(
 
       return NextResponse.json(
         {
-          message: LIVENESS_NO_MATCH_ERROR,
+          message: 'intl.errors.liveness.noMatch',
           isMatch: false,
         },
         { status: 500 },

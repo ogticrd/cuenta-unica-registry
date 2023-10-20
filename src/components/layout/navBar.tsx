@@ -1,17 +1,20 @@
 import AppsIcon from '@mui/icons-material/Apps';
-import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Script from 'next/script';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import Logo from '@public/assets/logo.svg';
 import styles from './styles.module.css';
 
-import Logo from '../../../public/assets/logo.svg';
+import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
 
 export default function Index() {
+  const { intl } = useLanguage();
+
   return (
     <>
       <Script
@@ -45,7 +48,7 @@ export default function Index() {
                   window.open('https://mi.cuentaunica.gob.do/ui/login')
                 }
               >
-                INGRESAR
+                {intl.actions.login}
               </ButtonApp>
             </Toolbar>
           </div>

@@ -20,9 +20,9 @@
     "lint": "next lint",
     "commitlint": "commitlint --edit"
   },
-  "engines" : {
-    "npm" : ">=10.1.0 <11.0.0",
-    "node" : ">=20.8.0 <21.0.0"
+  "engines": {
+    "npm": ">=10.1.0 <11.0.0",
+    "node": ">=20.8.0 <21.0.0"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^5.3.1",
@@ -31,6 +31,7 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@formatjs/intl-localematcher": "^0.4.2",
     "@google-cloud/logging-bunyan": "^5.0.0",
     "@hookform/resolvers": "^3.3.2",
     "@mui/icons-material": "^5.14.13",
@@ -46,6 +47,7 @@
     "eslint": "^8.51.0",
     "eslint-config-next": "^13.5.4",
     "hibp": "^13.0.0",
+    "negotiator": "^0.6.3",
     "next": "^13.5.4",
     "next-recaptcha-v3": "^1.2.0",
     "react": "^18.2.0",
@@ -60,6 +62,7 @@
     "@commitlint/cli": "^17.8.0",
     "@commitlint/config-conventional": "^17.8.0",
     "@types/cookie": "^0.5.2",
+    "@types/negotiator": "^0.6.1",
     "@types/node": "^20.8.6",
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.13",

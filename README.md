@@ -90,6 +90,7 @@ Este proyecto depende de las siguientes recursos externos:
 - **Gustavo Valverde** - _Product Manager_ - [@gustavovalverde](https://github.com/gustavovalverde)
 - **Marluan Espiritusanto** - *Technical Lead* - [@marluanespiritusanto](https://github.com/marluanespiritusanto)
 - **José Álvarez** - *Developer* - [@JE1999](https://github.com/JE1999)
+- **Jeffrey Mesa** - *Developer* - [@jeffreyart1](https://github.com/jeffreyart1)
 - **Deyvison García** - _UI/UX Designer_ - [@DeyvisonGarcia](https://github.com/DeyvisonGarcia)
 
 ## Información adicional
