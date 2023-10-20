@@ -2,19 +2,24 @@
 
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import { IconButton, Typography } from '@mui/material';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { IconButton, Typography } from '@mui/material';
 import Image from 'next/image';
+import Link from 'next/link';
 
-import logoOGTIC from '../../../public/assets/logoOGTIC.svg';
+import logoWhite from '@public/assets/logo-white.svg';
+import logoOGTIC from '@public/assets/logoOGTIC.svg';
+import logoGOB from '@public/assets/logoGOB.svg';
+
 import { GridContainer, GridItem } from '../elements/grid';
-import logoGOB from '../../../public/assets/logoGOB.svg';
-import logoWhite from '../../../public/assets/logo-white.svg';
+import { useLanguage } from '@/app/[lang]/provider';
 import DivGrow from '../elements/divGrow';
 import theme from '../themes/theme';
 
 export default function Index() {
+  const { intl } = useLanguage();
+
   return (
     <>
       <div
@@ -39,7 +44,7 @@ export default function Index() {
               <GridContainer spacing={4}>
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    CONÓCENOS
+                    {intl.footer.knowUs}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
@@ -50,7 +55,7 @@ export default function Index() {
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    CONTÁCTANOS
+                    {intl.footer.contact}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
@@ -66,29 +71,34 @@ export default function Index() {
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    BÚSCANOS
+                    {intl.footer.findUs}
                   </Typography>
                   <br />
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Oficina Gubernamental de Tecnologías de la Información y
-                    Comunicación (OGTIC) Av. Rómulo Betancourt #311, Edificio
-                    Corporativo Vista 311, Santo Domingo, República Dominicana.
+                    Ave. Rómulo Betancourt #311, Edificio Corporativo Vista 311,
+                    Santo Domingo, República Dominicana.
                   </Typography>
                 </GridItem>
 
                 <GridItem md={6} lg={3}>
                   <Typography fontWeight="500" fontSize={16} color="white">
-                    INFÓRMATE
+                    {intl.footer.info}
                   </Typography>
                   <br />
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Typography color="white" fontWeight="400" fontSize="16">
+                      {intl.common.terms}
+                    </Typography>
+                  </Link>
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Términos de Uso
+                    {intl.common.policy}
                   </Typography>
                   <Typography color="white" fontWeight="400" fontSize="16">
-                    Política de Privacidad
-                  </Typography>
-                  <Typography color="white" fontWeight="400" fontSize="16">
-                    Preguntas Frecuentes
+                    {intl.common.faq}
                   </Typography>
                 </GridItem>
               </GridContainer>
@@ -110,8 +120,8 @@ export default function Index() {
             <GridItem md={6} lg={6}>
               <div style={{ marginTop: '8px' }}>
                 <Typography variant="caption" fontWeight="600" color="primary">
-                  © {new Date().getFullYear()} Todos los Derechos Reservados.
-                  Desarrollado por
+                  © {new Date().getFullYear()} {intl.footer.rightsReserved}{' '}
+                  {intl.footer.developedBy}
                 </Typography>
                 <Image
                   style={{
@@ -137,7 +147,7 @@ export default function Index() {
                     fontWeight="bold"
                     color="primary"
                   >
-                    SÍGUENOS
+                    {intl.footer.followUs}
                   </Typography>
 
                   <IconButton

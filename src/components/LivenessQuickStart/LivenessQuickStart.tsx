@@ -4,13 +4,13 @@ import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import awsExports from '@/aws-exports';
 import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
-import { UNIDENTIFIED_ERROR } from '@/common/constants';
-import { displayText } from './displayText';
+import { useLanguage } from '@/app/[lang]/provider';
+import { useLocalizedText } from './localizedText';
 import { unwrap } from '@/common/helpers';
+import awsExports from '@/aws-exports';
 
 Amplify.configure(awsExports);
 
@@ -22,6 +22,10 @@ export function LivenessQuickStart({ cedula }: Props) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const { AlertError } = useSnackAlert();
   const router = useRouter();
+
+  const { intl } = useLanguage();
+
+  const displayText = useLocalizedText({ intl });
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })
@@ -58,12 +62,19 @@ export function LivenessQuickStart({ cedula }: Props) {
   }, []);
 
   useEffect(() => {
-    if (error) {
-      AlertError(error.message || UNIDENTIFIED_ERROR);
-      if (!error.message) {
-        console.error(error);
-      }
+    if (!error) return;
+
+    const message: string =
+      error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+      error.message ||
+      intl.errors.unknown;
+
+    AlertError(message);
+
+    if (!error.message) {
+      console.error(error);
     }
+
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
     // eslint-disable-next-line
   }, [error]);

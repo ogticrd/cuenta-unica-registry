@@ -1,24 +1,28 @@
 import { TextField, Tooltip, Typography } from '@mui/material';
-
-import Link from 'next/link';
 import Image from 'next/image';
+
+import Confirmation from '@public/assets/confirmation.svg';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
+import { getDictionary } from '@/dictionaries';
+import { Locale } from '@/i18n-config';
 
-import Code from '../../../public/assets/code.svg';
+type Props = { params: { lang: Locale } };
 
-export default async function ConfirmationPage() {
+export default async function ConfirmationPage({ params: { lang } }: Props) {
+  const intl = await getDictionary(lang);
+
   return (
     <GridContainer>
       <GridItem md={12} lg={12}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
-            src={Code?.src}
-            alt="imagen de código"
-            width="177"
-            height="196"
+            src={Confirmation?.src}
+            alt="imagen de confirmación"
+            width="259"
+            height="225"
           />
         </div>
         <br />
@@ -31,26 +35,11 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          Ingresa tu código de confirmación
+          {intl.confirmation.title}
         </Typography>
         <TextBody textCenter gutterBottom>
-          Ingresa el código suministrado a tu correo electrónico, si no haz
-          recibido ningún código confirma debajo tu correo electrónico.
+          {intl.confirmation.subtitle}
         </TextBody>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Tooltip title="Código">
-            <TextField
-              required
-              type="text"
-              placeholder="0-0-0-0-0-0"
-              autoComplete="off"
-              sx={{ textAlign: 'center', width: '9em' }}
-            />
-          </Tooltip>
-        </div>
-        <br />
-        <br />
       </GridItem>
 
       <GridItem md={12} lg={12}>
@@ -63,9 +52,9 @@ export default async function ConfirmationPage() {
           }}
           gutterBottom
         >
-          Hemos enviado el código al siguiente correo:
+          {intl.confirmation.emailSent}
         </Typography>
-        <Tooltip title="Correo">
+        <Tooltip title={intl.step3.email.tooltip}>
           <TextField
             required
             type="email"
@@ -76,7 +65,7 @@ export default async function ConfirmationPage() {
         </Tooltip>
         <br />
         <br />
-        <ButtonApp variant="outlined">REENVIAR CORREO</ButtonApp>
+        <ButtonApp>{intl.actions.resendEmail}</ButtonApp>
       </GridItem>
     </GridContainer>
   );

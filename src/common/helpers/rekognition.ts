@@ -1,6 +1,7 @@
-import { Amplify, withSSRContext } from 'aws-amplify';
 import { Rekognition } from '@aws-sdk/client-rekognition';
+import { Amplify, withSSRContext } from 'aws-amplify';
 import { NextRequest } from 'next/server';
+
 import awsExports from '@/aws-exports';
 
 Amplify.configure({ ...awsExports, ssr: true });

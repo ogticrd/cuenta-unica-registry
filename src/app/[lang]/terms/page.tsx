@@ -1,5 +1,6 @@
-import { TextBody } from '@/components/elements/typography';
 import { Typography } from '@mui/material';
+
+import { TextBody } from '@/components/elements/typography';
 
 export default function Terms() {
   return (

@@ -5,16 +5,19 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { Fab } from '@mui/material';
 
+import { useLanguage } from '@/app/[lang]/provider';
 import NavBar from './navBar';
 import Footer from './footer';
 
-export default function Index({ children }: any) {
+export default function Index({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const { intl } = useLanguage();
 
   return (
     <>
       <NavBar />
+
       <div style={{ padding: '50px 0px' }}>
         {children}
         <Fab
@@ -36,7 +39,7 @@ export default function Index({ children }: any) {
           }}
         >
           <BugReportOutlinedIcon sx={{ mr: matches ? 1 : 0 }} color="info" />
-          {matches && 'Reportar'}
+          {matches && intl.bug.report}
         </Fab>
       </div>
       <Footer />

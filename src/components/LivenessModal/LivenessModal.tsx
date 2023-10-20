@@ -7,13 +7,14 @@ import Dialog from '@mui/material/Dialog';
 import { Box } from '@mui/material';
 import Image from 'next/image';
 
+import LogoWhite from '@public/assets/logo-white.svg';
+import styles from './styles.module.css';
+
 import { LivenessQuickStart } from '@/components/LivenessQuickStart';
 import { ButtonApp } from '@/components/elements/button';
-import LogoWhite from '../../../public/assets/logo-white.svg';
+import { useLanguage } from '@/app/[lang]/provider';
 import theme from '@/components/themes/theme';
 import { Transition } from './Transition';
-
-import styles from './styles.module.css';
 
 type Props = {
   cedula: string;
@@ -22,6 +23,7 @@ type Props = {
 
 export function LivenessModal({ cedula, setOpen }: Props) {
   const closeModal = () => setOpen(false);
+  const { intl } = useLanguage();
 
   return (
     <div>
@@ -50,7 +52,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
                 color="inherit"
                 onClick={closeModal}
               >
-                Salir
+                {intl.stepper.exit}
               </ButtonApp>
             </Toolbar>
           </div>
