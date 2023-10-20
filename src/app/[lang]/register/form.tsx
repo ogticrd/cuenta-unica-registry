@@ -93,13 +93,10 @@ export function Form({ cedula }: Props) {
       return;
     }
 
-    const password = form.password;
-
     try {
-      const { data } = await verifyPassword(password);
-      const isValidPassword = data !== 0;
+      const exposure = await verifyPassword(form.password);
 
-      setIsPwned(isValidPassword);
+      setIsPwned(exposure !== 0);
     } catch (err: any) {
       AlertError(intl.errors.password.validation);
 

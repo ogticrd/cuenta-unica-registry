@@ -32,7 +32,7 @@ export default async function LivenessPage({ params: { lang } }: Props) {
         sx={{ my: 4, fontWeight: 500, fontSize: '14px' }}
       >
         <Box sx={{ fontWeight: 'bold' }}>
-          ¡{intl.common.hello} {citizen.name}!
+          ¡{intl.common.hello}, {citizen.name}!
         </Box>
         <Box>{intl.step2.description}</Box>
       </Typography>

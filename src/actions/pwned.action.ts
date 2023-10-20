@@ -2,8 +2,10 @@
 
 import { pwnedPassword } from 'hibp';
 
+/**
+ * Fetches the number of times the the given password has
+ * been exposed in a breach (0 indicating no exposure).
+ */
 export async function verifyPassword(password: string) {
-  const data = await pwnedPassword(password);
-
-  return { data };
+  return pwnedPassword(password);
 }
