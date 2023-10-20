@@ -9,14 +9,11 @@ import Link from 'next/link';
 import Logo from '@public/assets/logo.svg';
 import styles from './styles.module.css';
 
-import { getDictionary } from '@/dictionaries';
+import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
-import { Locale } from '@/i18n-config';
 
-type Props = { params: { lang: Locale } };
-
-export default async function Index({ params: { lang } }: Props) {
-  const intl = await getDictionary(lang);
+export default function Index() {
+  const { intl } = useLanguage();
 
   return (
     <>
