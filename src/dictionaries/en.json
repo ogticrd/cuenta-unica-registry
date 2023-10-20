@@ -44,13 +44,12 @@
       "label": "Password",
       "toggleVisibility": "Show password",
       "confirm": "Confirm your Password",
-      "strength": "Password strength:",
-      "levels": {
-        "too-weak": "too weak",
-        "weak": "weak",
-        "medium": "medium",
-        "strong": "strong",
-        "secure": "secure"
+      "requirements": {
+        "lowercase": "One lowercase letter",
+        "uppercase": "One uppercase letter",
+        "symbol": "One special character",
+        "number": "One number",
+        "length": "At least 10 characters"
       }
     }
   },

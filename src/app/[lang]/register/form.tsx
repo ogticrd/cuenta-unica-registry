@@ -15,12 +15,11 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Result } from 'check-password-strength';
+import { passwordStrength, type Result } from 'check-password-strength';
 import Collapse from '@mui/material/Collapse';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { getPasswordStrength } from '@/components/elements/passwordLevel/options';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { createRegisterSchema } from '@/common/validation-schemas';
 import PasswordLevel from '@/components/elements/passwordLevel';
@@ -79,7 +78,7 @@ export function Form({ cedula }: Props) {
 
   const handleChangePassword = (password: string) => {
     setPasswordString(password);
-    setPasswordLevel(getPasswordStrength(password));
+    setPasswordLevel(passwordStrength(password));
     setValue('password', password);
     setIsPwned(false);
 

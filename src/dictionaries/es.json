@@ -44,13 +44,12 @@
       "label": "Contraseña",
       "toggleVisibility": "Mostrar contraseña",
       "confirm": "Confirma tu Contraseña",
-      "strength": "Nivel de contraseña:",
-      "levels": {
-        "too-weak": "muy débil",
-        "weak": "débil",
-        "medium": "medio",
-        "strong": "fuerte",
-        "secure": "seguro"
+      "requirements": {
+        "lowercase": "Una letra minúscula",
+        "uppercase": "Una letra mayúscula",
+        "symbol": "Un caracter especial",
+        "number": "Un número",
+        "length": "10 caracteres como mínimo"
       }
     }
   },

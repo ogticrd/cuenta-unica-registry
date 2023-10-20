@@ -1,44 +1,48 @@
-import { Typography, Box } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { passwordStrength } from 'check-password-strength';
+import { Typography, Box, Collapse } from '@mui/material';
 
 import { useLanguage } from '@/app/[lang]/provider';
-import { getPasswordStrength } from './options';
 
-type Props = { password: string };
-
-export default function PasswordLevel({ password }: Props) {
-  const strength = getPasswordStrength(password);
-  const colors = ['#e05d56', '#e09856', '#e0d256', '#b5df56', '#a3e056'];
-
+export default function PasswordLevel({ password }: { password: string }) {
   const { intl } = useLanguage();
-  type Level = keyof typeof intl.step3.password.levels;
+
+  type Diversity = keyof typeof intl.step3.password.requirements;
+
+  const strength = passwordStrength(password);
+  const container: Array<Diversity> = strength.contains;
+
+  if (strength.length >= 10) container.push('length');
+
+  const requirements = Object.keys(
+    intl.step3.password.requirements,
+  ) as Array<Diversity>;
 
   return (
-    <>
-      <Box
-        mt={1}
-        px={1}
-        sx={{
-          width: 1,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 1,
-        }}
-      >
-        {colors.map((color, index) => (
-          <Box
+    <Collapse in={Boolean(password)}>
+      <Box mt={2}>
+        {requirements.map((name, index) => (
+          <Requirement
             key={index}
-            bgcolor={index > strength.id ? '#e4e4e7' : color}
-            sx={{
-              height: '.5rem',
-              borderRadius: 2,
-            }}
-          ></Box>
+            met={container.includes(name)}
+            text={intl.step3.password.requirements[name]}
+          />
         ))}
       </Box>
-      <Typography variant="caption" color="gray" mt={1} px={1}>
-        {intl.step3.password.strength}{' '}
-        {intl.step3.password.levels[strength.value as Level]}
-      </Typography>
-    </>
+    </Collapse>
   );
 }
+
+type Props = { met: boolean; text: string };
+
+const Requirement = ({ met, text }: Props) => (
+  <Box display="flex" alignItems="center">
+    <CheckCircleIcon
+      color={met ? 'success' : 'disabled'}
+      style={{ fontSize: '20px', marginRight: '3px' }}
+    />
+    <Typography variant="caption" color="gray">
+      {text}
+    </Typography>
+  </Box>
+);
