@@ -103,7 +103,7 @@ export function Form() {
 
   return (
     <>
-      {loading && <LoadingBackdrop text={intl.loader.cedula} />}
+      {loading ? <LoadingBackdrop text={intl.loader.cedula} /> : null}
 
       <form onSubmit={onSubmit}>
         <GridContainer>
@@ -163,10 +163,4 @@ export function Form() {
       </form>
     </>
   );
-}
-
-function verifyReCaptcha(
-  reCaptchaToken: string,
-): { isHuman: any } | PromiseLike<{ isHuman: any }> {
-  throw new Error('Function not implemented.');
 }
