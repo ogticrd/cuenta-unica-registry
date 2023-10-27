@@ -65,6 +65,7 @@
     "loginHere": "Inicia sesión aquí.",
     "create": "CREAR CUENTA ÚNICA",
     "resendEmail": "REENVIAR CORREO",
+    "verifyAccount": "Verificar cuenta",
     "myAccount": "IR A MI CUENTA"
   },
   "loader": {
@@ -210,6 +211,10 @@
     "cedula": {
       "min": "La cédula debe contener al menos 11 dígitos",
       "max": "La cédula debe contener máximo 11 dígitos"
+    },
+    "code": {
+      "min": "El código debe contener al menos 6 dígitos",
+      "max": "el código debe contener máximo 6 dígitos"
     },
     "email": {
       "required": "El Correo Electrónico es obligatorio",
