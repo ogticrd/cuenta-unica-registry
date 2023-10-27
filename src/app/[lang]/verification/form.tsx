@@ -45,6 +45,10 @@ export function Form({ flow, returnTo, code }: Props) {
       setValue('code', code || '');
     }
 
+    if (currentFlow) {
+      return;
+    }
+
     if (flow) {
       ory
         .getVerificationFlow({ id: flow })
@@ -57,7 +61,7 @@ export function Form({ flow, returnTo, code }: Props) {
             // Status code 410 means the request has expired - so let's load a fresh flow!
             case 403:
               // Status code 403 implies some other issue (e.g. CSRF) - let's reload!
-              return router.push('/verification');
+              return router.push('/en/verification');
           }
 
           throw err;
@@ -82,7 +86,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
         throw err;
       });
-  }, [currentFlow, router, returnTo, flow]);
+  }, []);
 
   const codeFormValue = watch('code', '');
 
@@ -99,6 +103,8 @@ export function Form({ flow, returnTo, code }: Props) {
       .then(({ data }) => {
         // Form submission was successful, show the message to the user!
         setCurrentFlow(data);
+
+        router.push('/account-created');
       })
       .catch((err: any) => {
         switch (err.response?.status) {
