@@ -41,13 +41,10 @@ export function Form({ flow, returnTo, code }: Props) {
   });
 
   useEffect(() => {
-    setValue('code', code || '');
-    // If the router is not ready yet, or we already have a flow, do nothing.
-    // if (flow) {
-    //   return;
-    // }
+    if (code) {
+      setValue('code', code || '');
+    }
 
-    // If ?flow=.. was in the URL, we fetch it
     if (flow) {
       ory
         .getVerificationFlow({ id: flow })
@@ -94,11 +91,6 @@ export function Form({ flow, returnTo, code }: Props) {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    await router
-      // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
-      // their data when they reload the page.
-      .push(`/verification?flow=${flow}`);
-
     ory
       .updateVerificationFlow({
         flow: String(flow),

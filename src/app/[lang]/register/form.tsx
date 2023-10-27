@@ -140,12 +140,12 @@ export function Form({ cedula }: Props) {
       });
 
       if (data.continue_with) {
-        const flow = data.continue_with.find(
-          (item) => item.action === 'show_verification_ui',
+        const item: any = data.continue_with.find(
+          (i) => i.action === 'show_verification_ui',
         );
 
-        if (flow) {
-          return router.push(`/verification?flow=${flow}`);
+        if (item) {
+          return router.push(`/en/verification?flow=${item?.flow.id}`);
         }
       }
 
@@ -153,8 +153,6 @@ export function Form({ cedula }: Props) {
         window.location.href = returnTo;
         return;
       }
-
-      router.push('confirmation');
     } catch (err: any) {
       if (err.response?.data) {
         const errorData = err.response.data;
