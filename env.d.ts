@@ -15,5 +15,8 @@ namespace NodeJS {
     NEXT_PUBLIC_ORY_SDK_URL?: string;
     ORY_SDK_TOKEN?: string;
     PWNED_KEY?: string;
+    NEXT_PUBLIC_SENTRY_DSN?: string;
+    SENTRY_ORG?: string;
+    SENTRY_PROJECT?: string;
   }
 }
