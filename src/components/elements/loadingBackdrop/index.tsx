@@ -17,7 +17,7 @@ export default function LoadingBackdrop({ text }: IProps) {
     >
       <div style={{ textAlign: 'center' }}>
         <CircularProgress color="inherit" />
-        {text && <Typography>{text}</Typography>}
+        {text ? <Typography>{text}</Typography> : null}
       </div>
     </Backdrop>
   );

@@ -14,7 +14,7 @@ export const CustomTextMask: any = forwardRef<HTMLElement, CustomProps>(
         {...other}
         mask="000-0000000-0"
         inputRef={ref}
-        onAccept={(value: any) =>
+        onAccept={(value: string) =>
           onChange({ target: { name: props.name, value } })
         }
         overwrite

@@ -2,10 +2,8 @@
 
 import { cookies } from 'next/headers';
 
-export async function setCookie(key: string, data: any) {
-  data = JSON.stringify(data);
-
-  cookies().set(key, data, {
+export async function setCookie<T>(key: string, data: T) {
+  cookies().set(key, JSON.stringify(data), {
     httpOnly: true,
     secure: true,
     maxAge: 60 * 60 * 10,
