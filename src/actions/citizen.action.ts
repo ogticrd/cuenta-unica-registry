@@ -4,7 +4,6 @@ import {
   CitizensBasicInformationResponse,
   CitizensBirthInformationResponse,
   CitizensTokenResponse,
-  CitizensDataFlow,
 } from '../types';
 import { unwrap } from '@/common/helpers';
 
