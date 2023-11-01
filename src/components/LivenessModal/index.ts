@@ -1,1 +1,0 @@
-export { LivenessModal } from './LivenessModal';
