@@ -15,5 +15,7 @@ namespace NodeJS {
     NEXT_PUBLIC_ORY_SDK_URL?: string;
     ORY_SDK_TOKEN?: string;
     PWNED_KEY?: string;
+    LIVENESS_THRESHOLD_VALUE?: number;
+    LIVENESS_SIMILARIY_VALUE?: number;
   }
 }
