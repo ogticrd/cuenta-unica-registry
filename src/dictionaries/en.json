@@ -14,7 +14,7 @@
   "code": {
     "tooltip": "Code",
     "title": "Enter your confirmation code",
-    "body": "Enter the code provided to your email, if you have not received any code confirm your email below.",
+    "body": "Enter the code provided to your email.",
     "sent": "We have sent the code to the following email:"
   },
   "step1": {

@@ -14,7 +14,7 @@
   "code": {
     "tooltip": "Código",
     "title": "Ingresa tu código de confirmación",
-    "body": "Ingresa el código suministrado a tu correo electrónico, si no haz recibido ningún código confirma debajo tu correo electrónico.",
+    "body": "Ingresa el código suministrado a tu correo electrónico.",
     "sent": "Hemos enviado el código al siguiente correo:"
   },
   "step1": {
