@@ -65,6 +65,7 @@
     "loginHere": "Log in here.",
     "create": "CREATE ACCOUNT",
     "resendEmail": "RESEND EMAIL",
+    "verifyAccount": "Verify account",
     "myAccount": "GO TO MY ACCOUNT"
   },
   "loader": {
@@ -210,6 +211,10 @@
     "cedula": {
       "min": "The ID must contain at least 11 digits",
       "max": "The ID must contain a maximum of 11 digits"
+    },
+    "code": {
+      "min": "The code must contain at least 6 digits",
+      "max": "The code must contain a maximum of 6 digits"
     },
     "email": {
       "required": "Email is mandatory",

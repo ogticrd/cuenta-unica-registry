@@ -9,13 +9,13 @@ import {
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { RegistrationFlow, UpdateRegistrationFlowBody } from '@ory/client';
+import { passwordStrength, type Result } from 'check-password-strength';
 import { isUiNodeInputAttributes } from '@ory/integrations/ui';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { passwordStrength, type Result } from 'check-password-strength';
 import Collapse from '@mui/material/Collapse';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -134,17 +134,25 @@ export function Form({ cedula }: Props) {
         },
       };
 
-      await ory.updateRegistrationFlow({
+      const { data } = await ory.updateRegistrationFlow({
         flow: String(flow?.id),
         updateRegistrationFlowBody,
       });
+
+      if (data.continue_with) {
+        const item: any = data.continue_with.find(
+          (i) => i.action === 'show_verification_ui',
+        );
+
+        if (item) {
+          return router.push(`/en/verification?flow=${item?.flow.id}`);
+        }
+      }
 
       if (returnTo) {
         window.location.href = returnTo;
         return;
       }
-
-      router.push('confirmation');
     } catch (err: any) {
       if (err.response?.data) {
         const errorData = err.response.data;
