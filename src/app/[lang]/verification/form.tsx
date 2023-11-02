@@ -30,12 +30,7 @@ export function Form({ flow, returnTo, code }: Props) {
   const { intl } = useLanguage();
   const router = useRouter();
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm<VerificationForm>({
+  const { handleSubmit, setValue, watch } = useForm<VerificationForm>({
     reValidateMode: 'onSubmit',
     resolver: zodResolver(createVerificationSchema({ intl })),
   });
@@ -45,16 +40,12 @@ export function Form({ flow, returnTo, code }: Props) {
       setValue('code', code || '');
     }
 
-    if (currentFlow) {
-      return;
-    }
+    if (currentFlow) return;
 
     if (flow) {
       ory
         .getVerificationFlow({ id: flow })
-        .then(({ data }) => {
-          setCurrentFlow(data);
-        })
+        .then(({ data }) => setCurrentFlow(data))
         .catch((err: any) => {
           switch (err.response?.status) {
             case 410:
@@ -64,8 +55,9 @@ export function Form({ flow, returnTo, code }: Props) {
               return router.push('/en/verification');
           }
 
-          throw err;
+          throw new Error(err);
         });
+
       return;
     }
 
@@ -74,9 +66,7 @@ export function Form({ flow, returnTo, code }: Props) {
       .createBrowserVerificationFlow({
         returnTo,
       })
-      .then(({ data }) => {
-        setCurrentFlow(data);
-      })
+      .then(({ data }) => setCurrentFlow(data))
       .catch((err: any) => {
         switch (err.response?.status) {
           case 400:
@@ -84,7 +74,7 @@ export function Form({ flow, returnTo, code }: Props) {
             return router.push('/');
         }
 
-        throw err;
+        throw new Error(err);
       });
   }, []);
 
@@ -122,10 +112,11 @@ export function Form({ flow, returnTo, code }: Props) {
             ory
               .getVerificationFlow({ id: newFlowID })
               .then(({ data }) => setCurrentFlow(data));
+
             return;
         }
 
-        throw err;
+        throw new Error(err);
       });
   });
 

@@ -6,6 +6,7 @@ import { TextField, Tooltip } from '@mui/material';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 import Link from 'next/link';
 import { z } from 'zod';
@@ -93,7 +94,7 @@ export function Form() {
       await setCookie('citizen', citizen);
       router.push('liveness');
     } catch (err: any) {
-      console.error(err.message || err);
+      Sentry.captureException(err.message || err);
 
       return AlertError(intl.errors.cedula.invalid);
     } finally {

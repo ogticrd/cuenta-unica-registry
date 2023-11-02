@@ -22,7 +22,7 @@
   },
   "engines": {
     "npm": ">=10.1.0 <11.0.0",
-    "node": ">=20.8.0 <21.0.0"
+    "node": ">=20.9.0 <21.0.0"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^5.3.1",
@@ -38,6 +38,7 @@
     "@mui/material": "^5.14.13",
     "@ory/client": "^1.2.11",
     "@ory/integrations": "^1.1.5",
+    "@sentry/nextjs": "^7.76.0",
     "@thgh/next-gtm": "^0.1.4",
     "@types/bunyan": "^1.8.9",
     "@types/react-gtm-module": "^2.0.1",

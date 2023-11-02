@@ -1,7 +1,8 @@
+import type { SxProps, Theme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React from 'react';
 
-interface IPropsContainer {
+interface GridProps {
   children: React.ReactNode;
   marginY?: boolean;
   spacing?: number;
@@ -15,7 +16,7 @@ export const GridContainer = ({
   marginY,
   justifyCenter,
   flexDirection,
-}: IPropsContainer) => (
+}: GridProps) => (
   <Grid
     container
     spacing={spacing ? spacing : 2}
@@ -28,21 +29,15 @@ export const GridContainer = ({
   </Grid>
 );
 
-interface IPropsItem {
+interface Props {
   children?: React.ReactNode;
-  sx?: any;
+  sx?: SxProps<Theme> | undefined;
   sm?: number;
   md?: number;
   lg?: number;
 }
 
-export const GridItem = ({
-  children,
-  sx,
-  sm = 12,
-  md = 6,
-  lg = 4,
-}: IPropsItem) => (
+export const GridItem = ({ children, sx, sm = 12, md = 6, lg = 4 }: Props) => (
   <Grid item sx={sx ? sx : null} xs={12} sm={sm} md={md} lg={lg}>
     {children}
   </Grid>

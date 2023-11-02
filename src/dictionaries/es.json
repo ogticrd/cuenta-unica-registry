@@ -66,13 +66,18 @@
     "create": "CREAR CUENTA ÚNICA",
     "resendEmail": "REENVIAR CORREO",
     "verifyAccount": "Verificar cuenta",
-    "myAccount": "IR A MI CUENTA"
+    "myAccount": "IR A MI CUENTA",
+    "close": "Cerrar"
   },
   "loader": {
     "cedula": "Validando cédula..."
   },
   "bug": {
-    "report": "Reportar"
+    "title": "Envíanos tus sugerencias!",
+    "comments": "Comentarios",
+    "name": "Nombre",
+    "report": "Reportar",
+    "sent": "Enviado. Gracias por tu ayuda!"
   },
   "errors": {
     "cedula": {

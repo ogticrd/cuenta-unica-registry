@@ -18,6 +18,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Collapse from '@mui/material/Collapse';
 import { useForm } from 'react-hook-form';
+import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -57,8 +58,8 @@ export function Form({ cedula }: Props) {
 
         setFlow(flow);
       } catch (err: any) {
+        Sentry.captureException(err.message || err);
         AlertWarning(intl.errors.registration.flow);
-        console.error(err.message || err);
       }
     };
 
@@ -174,7 +175,7 @@ export function Form({ cedula }: Props) {
           .concat(messages, nodes, error?.id)
           .filter(Boolean);
 
-        console.error(errors);
+        Sentry.captureException({ errors });
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error

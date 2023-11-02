@@ -1,7 +1,8 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
-import logger from '@/common/lib/logger';
 
 const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
   const projectId = process.env.RECAPTHA_PROJECT_ID;
@@ -19,10 +20,11 @@ const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
 };
 
 export async function validateRecaptcha(token: string) {
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const variable = 'NEXT_PUBLIC_RECAPTCHA_SITE_KEY';
+  const siteKey = process.env[variable];
 
   if (!siteKey) {
-    throw new Error(`NEXT_PUBLIC_RECAPTCHA_SITE_KEY: undefined env variable`);
+    throw new Error(`${variable}: undefined env variable`);
   }
 
   try {
@@ -34,11 +36,11 @@ export async function validateRecaptcha(token: string) {
       },
     });
 
-    const isHuman = riskAnalysis && riskAnalysis.score >= 0.3;
+    const isHuman = Number(riskAnalysis?.score) >= 0.3;
 
     return { isHuman };
   } catch (error) {
-    logger.error('intl.errors.recaptcha.issues', error);
+    Sentry.captureException(error, { tags: { type: 'recaptcha' } });
 
     return {
       message: 'intl.errors.unknown',
