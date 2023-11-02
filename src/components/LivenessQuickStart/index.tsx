@@ -4,6 +4,7 @@ import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import * as Sentry from '@sentry/nextjs';
 import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
@@ -56,7 +57,8 @@ export function LivenessQuickStart({ cedula }: Props) {
 
   useEffect(() => {
     fetchCreateLiveness().catch((error) => {
-      console.error(error);
+      Sentry.captureException(error);
+
       setError(error);
     });
   }, []);
@@ -72,7 +74,7 @@ export function LivenessQuickStart({ cedula }: Props) {
     AlertError(message);
 
     if (!error.message) {
-      console.error(error);
+      Sentry.captureException(error);
     }
 
     // TODO: AlertError is causing re-rendering issues. But not adding it causes eslint error.
@@ -98,7 +100,7 @@ export function LivenessQuickStart({ cedula }: Props) {
           sessionId={sessionId}
           region="us-east-1"
           onUserCancel={onUserCancel}
-          onError={console.error}
+          onError={(e) => Sentry.captureException(e)}
           onAnalysisComplete={handleAnalysisComplete}
           disableInstructionScreen={false}
           displayText={displayText}

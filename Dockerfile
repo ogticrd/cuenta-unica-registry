@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # ===================== Create base stage =====================
-ARG NODE_VERSION=20
+ARG NODE_VERSION=lts
 ARG ALPINE_VERSION=3.16
 ARG WORK_DIR=/app
 FROM node:${NODE_VERSION}-slim AS base
@@ -25,6 +25,9 @@ ENV NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
 
 ARG NEXT_PUBLIC_ORY_SDK_URL
 ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
+
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"

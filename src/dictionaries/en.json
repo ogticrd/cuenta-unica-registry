@@ -66,13 +66,18 @@
     "create": "CREATE ACCOUNT",
     "resendEmail": "RESEND EMAIL",
     "verifyAccount": "Verify account",
-    "myAccount": "GO TO MY ACCOUNT"
+    "myAccount": "GO TO MY ACCOUNT",
+    "close": "Close"
   },
   "loader": {
     "cedula": "Validating ID..."
   },
   "bug": {
-    "report": "Report"
+    "title": "Send us your feedback!",
+    "comments": "Comments",
+    "name": "Name",
+    "report": "Report",
+    "sent": "Sent. Thank you for your feedback!"
   },
   "errors": {
     "cedula": {

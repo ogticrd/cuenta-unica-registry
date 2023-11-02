@@ -47,8 +47,9 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node: [20.8.1, latest]
+        node: [lts/*, latest]
 
     steps:
       - name: Checkout Code Repository
@@ -76,3 +77,5 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"

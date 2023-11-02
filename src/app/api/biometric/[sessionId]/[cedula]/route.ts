@@ -1,8 +1,8 @@
 import type { CompareFacesCommandInput } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 
 import { getRekognitionClient } from '@/common/helpers';
-// import logger from '@/lib/logger';
 
 type Props = { params: { sessionId: string; cedula: string } };
 
@@ -15,15 +15,19 @@ export async function GET(
     SessionId: sessionId,
   });
 
-  const LIVENESS_THRESHOLD_VALUE = +process.env.LIVENESS_THRESHOLD_VALUE!;
-  const LIVENESS_SIMILARIY_VALUE = +process.env.LIVENESS_SIMILARIY_VALUE!;
+  const { LIVENESS_CONFIDENCE_THRESHOLD, LIVENESS_SIMILARITY_THRESHOLD } =
+    process.env;
 
   const confidence = response.Confidence ?? 0;
-  // Threshold for face liveness
-  const isLive = confidence > LIVENESS_THRESHOLD_VALUE;
+
+  const isLive = confidence > Number(LIVENESS_CONFIDENCE_THRESHOLD);
 
   if (!isLive) {
-    console.warn(`Low confidence (${confidence}%) for citizen ${cedula}`);
+    Sentry.captureMessage('Low confidence', {
+      level: 'log',
+      extra: { cedula, confidence },
+      tags: { type: 'confidence' },
+    });
 
     return NextResponse.json(
       {
@@ -34,7 +38,11 @@ export async function GET(
     );
   }
 
-  console.info(`High confidence (${confidence}%) for citizen ${cedula}`);
+  Sentry.captureMessage('High confidence', {
+    level: 'info',
+    extra: { cedula, confidence },
+    tags: { type: 'confidence' },
+  });
 
   if (response?.ReferenceImage?.Bytes) {
     const targetImageBuffer = await fetchPhotoBuffer(cedula);
@@ -47,14 +55,17 @@ export async function GET(
         TargetImage: {
           Bytes: Buffer.from(targetImageBuffer),
         },
-        // Threshold for face match
-        SimilarityThreshold: LIVENESS_SIMILARIY_VALUE,
+        SimilarityThreshold: Number(LIVENESS_SIMILARITY_THRESHOLD),
       };
 
       const { FaceMatches } = await client.compareFaces(params);
 
       if (!FaceMatches?.length) {
-        console.warn(`Low similarity for citizen ${cedula}`);
+        Sentry.captureMessage('Low similarity', {
+          level: 'log',
+          extra: { cedula },
+          tags: { type: 'similarity' },
+        });
 
         return NextResponse.json(
           {
@@ -67,13 +78,15 @@ export async function GET(
         );
       }
 
-      const similarity = FaceMatches[0].Similarity;
-
-      console.info(`High similarity (${similarity}%) for citizen ${cedula}`);
+      Sentry.captureMessage('High similarity', {
+        level: 'info',
+        extra: { cedula, similarity: FaceMatches[0].Similarity },
+        tags: { type: 'similarity' },
+      });
 
       return NextResponse.json({ isMatch: true });
     } catch (error) {
-      console.error(error);
+      Sentry.captureException(error);
 
       return NextResponse.json(
         {
