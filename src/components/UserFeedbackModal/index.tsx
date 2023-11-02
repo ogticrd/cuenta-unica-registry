@@ -1,9 +1,12 @@
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
-import { Modal, TextField, Typography } from '@mui/material';
+import { Alert, Modal, TextField, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import IconButton from '@mui/material/IconButton';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
+import Fade from '@mui/material/Fade';
+import Collapse from '@mui/material/Collapse';
+import { useState } from 'react';
 import { z } from 'zod';
 
 import { createReportSchema } from '@/common/validation-schemas';
@@ -16,6 +19,7 @@ type Report = z.infer<ReturnType<typeof createReportSchema>>;
 
 export default function UserFeedbackModal({ open, onClose }: Props) {
   const { intl } = useLanguage();
+  const [sent, setSent] = useState(false);
 
   const {
     handleSubmit,
@@ -23,7 +27,6 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
     register,
     reset,
   } = useForm<Report>({
-    mode: 'onBlur',
     resolver: zodResolver(createReportSchema({ intl })),
   });
 
@@ -35,84 +38,107 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
       event_id: Sentry.captureMessage('User feedback'),
     });
 
+    setTimeout(() => setSent(true), 213);
+    setTimeout(closeModal, 2300);
+  });
+
+  const closeModal = () => {
+    setSent(false);
     reset();
     onClose();
-  });
+  };
 
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={closeModal}
+      closeAfterTransition
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
-      <form
-        onSubmit={sendFeedback}
-        style={{
-          backgroundColor: 'white',
-          width: 500,
-          padding: 30,
-          borderRadius: '10px',
-        }}
-      >
-        <GridContainer spacing={3}>
-          <GridItem
-            lg={12}
-            md={12}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <Typography fontSize={20} color="primary">
-              {intl.bug.title}
-            </Typography>
-            {/* <IconButton aria-label={intl.actions.close}>
+      <Fade in={open}>
+        <form
+          onSubmit={sendFeedback}
+          style={{
+            backgroundColor: 'white',
+            width: 500,
+            padding: 30,
+            borderRadius: '10px',
+          }}
+        >
+          <GridContainer spacing={3}>
+            <GridItem
+              lg={12}
+              md={12}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <Typography fontSize={20} color="primary">
+                {intl.bug.title}
+              </Typography>
+              {/* <IconButton aria-label={intl.actions.close}>
               <CloseTwoToneIcon />
             </IconButton> */}
-          </GridItem>
+            </GridItem>
 
-          <GridItem lg={12} md={12} sx={{ mt: 3 }}>
-            <TextField
-              {...register('name')}
-              label={intl.bug.name}
-              autoComplete="off"
-              fullWidth
-            />
-          </GridItem>
+            <GridItem lg={12} md={12} sx={{ mt: 3 }}>
+              <TextField
+                {...register('name')}
+                label={intl.bug.name}
+                autoComplete="off"
+                disabled={sent}
+                fullWidth
+              />
+            </GridItem>
 
-          <GridItem lg={12} md={12}>
-            <TextField
-              {...register('email')}
-              required
-              type="email"
-              label={intl.step3.email.label}
-              error={Boolean(errors.email)}
-              helperText={errors.email?.message}
-              autoComplete="off"
-              fullWidth
-            />
-          </GridItem>
+            <GridItem lg={12} md={12}>
+              <TextField
+                {...register('email')}
+                required
+                type="email"
+                label={intl.step3.email.label}
+                error={Boolean(errors.email)}
+                helperText={errors.email?.message}
+                autoComplete="off"
+                disabled={sent}
+                fullWidth
+              />
+            </GridItem>
 
-          <GridItem lg={12} md={12}>
-            <TextField
-              {...register('comments')}
-              required
-              label={intl.bug.comments}
-              error={Boolean(errors.comments)}
-              helperText={errors.comments?.message}
-              autoComplete="off"
-              multiline
-              rows={4}
-              fullWidth
-            />
-          </GridItem>
-          <GridItem lg={12} md={12} sx={{ mt: 3 }}>
-            <ButtonApp submit>{intl.bug.report}</ButtonApp>
-          </GridItem>
-        </GridContainer>
-      </form>
+            <GridItem lg={12} md={12}>
+              <TextField
+                {...register('comments')}
+                required
+                label={intl.bug.comments}
+                error={Boolean(errors.comments)}
+                helperText={errors.comments?.message}
+                autoComplete="off"
+                multiline
+                rows={4}
+                disabled={sent}
+                fullWidth
+              />
+            </GridItem>
+
+            <GridItem lg={12} md={12}>
+              <Collapse in={sent}>
+                <Alert variant="standard" severity="success">
+                  {intl.bug.sent}
+                </Alert>
+              </Collapse>
+            </GridItem>
+
+            <GridItem lg={12} md={12} sx={{ mt: 1 }}>
+              <ButtonApp disabled={sent} submit>
+                {intl.bug.report}
+              </ButtonApp>
+            </GridItem>
+          </GridContainer>
+        </form>
+      </Fade>
     </Modal>
   );
 }

@@ -6,5 +6,5 @@ export const createReportSchema = ({ intl: { validations } }: Context) =>
   z.object({
     email: z.string().email(validations.email.invalid),
     name: z.string().optional(),
-    comments: z.string(),
+    comments: z.string().min(4, validations.required),
   });
