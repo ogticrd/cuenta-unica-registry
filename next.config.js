@@ -7,29 +7,29 @@ const nextConfig = {
   output: 'standalone',
   webpack: (config, { webpack, isServer, nextRuntime }) => {
     // Avoid AWS SDK Node.js require issue
-    if (isServer && nextRuntime === 'nodejs')
+    if (isServer && nextRuntime === 'nodejs') {
       config.plugins.push(
         new webpack.IgnorePlugin({ resourceRegExp: /^aws-crt$/ }),
       );
-    if (!isServer) {
-      config.externals = ['dtrace-provider'];
     }
+
+    if (!isServer) config.externals = ['dtrace-provider'];
+
     return config;
   },
 };
 
-module.exports = nextConfig;
-
-// Injected content via Sentry wizard below
-
 const { withSentryConfig } = require('@sentry/nextjs');
+const { version: release } = require('./package.json');
 
 module.exports = withSentryConfig(
-  module.exports,
+  nextConfig,
   {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
+    release,
+    cleanArtifacts: true,
     // Suppresses source map uploading logs during build
     silent: true,
     org: process.env.SENTRY_ORG,
