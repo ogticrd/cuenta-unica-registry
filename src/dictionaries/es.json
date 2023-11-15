@@ -99,6 +99,9 @@
       "issues": "Al parecer el reCaptcha no ha validado correctamente su solicitud, refresque e intente nuevamente",
       "validation": "No podemos validar la seguridad de su navegador, verifique si tiene actualizaciones pendientes o intente con otro dispositivo."
     },
+    "code": {
+      "wrong": "El código es incorrecto"
+    },
     "createIdentity": "Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.",
     "decryption": "Error al desencriptar:",
     "noEnv": "Variable de entorno inválida o no definida"

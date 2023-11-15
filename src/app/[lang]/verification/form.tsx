@@ -2,7 +2,7 @@
 
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import { createVerificationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { VerificationFlow } from '@ory/client';
 import { useLanguage } from '../provider';
 import { ory } from '@/common/lib/ory';
@@ -34,6 +35,31 @@ export function Form({ flow, returnTo, code }: Props) {
     reValidateMode: 'onSubmit',
     resolver: zodResolver(createVerificationSchema({ intl })),
   });
+
+  const [loading, setLoading] = useState(false);
+  const [errorCode, setErrorCode] = useState(false);
+  const [verificationCodes, setVerificationCodes] = useState(['', '', '', '', '', '']);
+  const inputRefs = [useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>()];
+
+  const handleCodeChange = (index: number, code: string) => {
+    setErrorCode(false)
+
+    const newCodes = [...verificationCodes];
+    newCodes[index] = code;
+    setVerificationCodes(newCodes);
+
+    if (index < inputRefs.length - 1 && code !== '') {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
+
+  const areAllInputsFilled = verificationCodes.every((code) => code !== '');
+
+  useEffect(() => {
+    if (areAllInputsFilled) {
+      setValue('code', verificationCodes.join(''));
+    }
+  }, [areAllInputsFilled]);
 
   useEffect(() => {
     if (code) {
@@ -78,13 +104,8 @@ export function Form({ flow, returnTo, code }: Props) {
       });
   }, []);
 
-  const codeFormValue = watch('code', '');
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('code', event.target.value);
-  };
-
   const onSubmit = handleSubmit(async (data) => {
+    setLoading(true)
     ory
       .updateVerificationFlow({
         flow: String(flow),
@@ -97,6 +118,7 @@ export function Form({ flow, returnTo, code }: Props) {
         router.push('/account-created');
       })
       .catch((err: any) => {
+        setErrorCode(true)
         switch (err.response?.status) {
           case 400:
             // Status code 400 implies the form validation had an error
@@ -117,57 +139,77 @@ export function Form({ flow, returnTo, code }: Props) {
         }
 
         throw new Error(err);
-      });
+      })
+      .finally(() => setLoading(false));
   });
 
   return (
-    <form onSubmit={onSubmit}>
-      <GridContainer>
-        <GridItem md={12} lg={12}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Image
-              src={Code?.src}
-              alt="imagen de código"
-              width="177"
-              height="196"
-            />
-          </div>
-          <br />
-          <Typography
-            color="primary"
-            sx={{
-              fontSize: '24px',
-              fontWeight: '700',
-              textAlign: 'center',
-            }}
-            gutterBottom
-          >
-            {intl.code.title}
-          </Typography>
-          <TextBody textCenter gutterBottom>
-            {intl.code.body}
-          </TextBody>
-          <br />
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Tooltip title={intl.code.tooltip}>
-              <TextField
-                value={codeFormValue}
-                onChange={onChange}
-                required
-                type="text"
-                placeholder="0-0-0-0-0-0"
-                autoComplete="off"
-                sx={{ textAlign: 'center', width: '9em' }}
-              />
-            </Tooltip>
-          </div>
-          <br />
-        </GridItem>
+    <>
+      {loading && <LoadingBackdrop />}
 
-        <ButtonApp variant="outlined" submit>
-          {intl.actions.verifyAccount}
-        </ButtonApp>
-      </GridContainer>
-    </form>
+      <form onSubmit={onSubmit}>
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Image
+                src={Code?.src}
+                alt="imagen de código"
+                width="177"
+                height="196"
+              />
+            </div>
+            <br />
+            <Typography
+              color="primary"
+              sx={{
+                fontSize: '24px',
+                fontWeight: '700',
+                textAlign: 'center',
+              }}
+              gutterBottom
+            >
+              {intl.code.title}
+            </Typography>
+            <TextBody textCenter gutterBottom>
+              {intl.code.body}
+            </TextBody>
+            <br />
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0px 8px' }}>
+              {verificationCodes.map((code, index) => (
+                <Tooltip
+                  title={intl.code.tooltip}
+                  key={index}
+                >
+                  <TextField
+                    value={code}
+                    onChange={(newCode: React.ChangeEvent<HTMLInputElement>) => handleCodeChange(index, newCode.target.value.replace(/\D/g, ''))}
+                    inputRef={inputRefs[index]}
+                    error={errorCode}
+                    required
+                    type="text"
+                    placeholder="0"
+                    autoComplete="off"
+                    inputProps={{
+                      maxLength: 1, style: {
+                        textAlign: 'center'
+                      }
+                    }}
+                    style={{ width: '50px', height: '56px', border: '1px', padding: '0px, 12px, 0px, 12px' }}
+                  />
+                </Tooltip>
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
+              <Typography color="secondary" sx={{ fontSize: '14px', fontWeight: '500' }}>{errorCode && intl.errors.code.wrong}</Typography>
+            </div>
+            <br />
+            <ButtonApp variant="outlined" disabled={!areAllInputsFilled} submit>
+              {intl.actions.verifyAccount}
+            </ButtonApp>
+          </GridItem>
+
+        </GridContainer>
+      </form>
+    </>
   );
 }
