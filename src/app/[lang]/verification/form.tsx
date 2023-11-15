@@ -38,11 +38,25 @@ export function Form({ flow, returnTo, code }: Props) {
 
   const [loading, setLoading] = useState(false);
   const [errorCode, setErrorCode] = useState(false);
-  const [verificationCodes, setVerificationCodes] = useState(['', '', '', '', '', '']);
-  const inputRefs = [useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>(), useRef<HTMLInputElement>()];
+  const [verificationCodes, setVerificationCodes] = useState([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]);
+  const inputRefs = [
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+  ];
 
   const handleCodeChange = (index: number, code: string) => {
-    setErrorCode(false)
+    setErrorCode(false);
 
     const newCodes = [...verificationCodes];
     newCodes[index] = code;
@@ -53,13 +67,32 @@ export function Form({ flow, returnTo, code }: Props) {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '') || '';
+    const pastedCodes = pastedData.trim().split('').slice(0, inputRefs.length);
+
+    if (!pastedCodes) {
+      return;
+    }
+
+    const newCodes = [...verificationCodes];
+    pastedCodes.forEach((code: string, index: number) => {
+      if (inputRefs[index] && inputRefs[index].current) {
+        newCodes[index] = code;
+      }
+    });
+
+    setVerificationCodes(newCodes);
+  };
+
   const areAllInputsFilled = verificationCodes.every((code) => code !== '');
 
   useEffect(() => {
     if (areAllInputsFilled) {
       setValue('code', verificationCodes.join(''));
     }
-  }, [areAllInputsFilled]);
+    // eslint-disable-next-line
+  }, [areAllInputsFilled, verificationCodes]);
 
   useEffect(() => {
     if (code) {
@@ -102,10 +135,11 @@ export function Form({ flow, returnTo, code }: Props) {
 
         throw new Error(err);
       });
+    // eslint-disable-next-line
   }, []);
 
   const onSubmit = handleSubmit(async (data) => {
-    setLoading(true)
+    setLoading(true);
     ory
       .updateVerificationFlow({
         flow: String(flow),
@@ -118,7 +152,7 @@ export function Form({ flow, returnTo, code }: Props) {
         router.push('/account-created');
       })
       .catch((err: any) => {
-        setErrorCode(true)
+        setErrorCode(true);
         switch (err.response?.status) {
           case 400:
             // Status code 400 implies the form validation had an error
@@ -174,40 +208,69 @@ export function Form({ flow, returnTo, code }: Props) {
               {intl.code.body}
             </TextBody>
             <br />
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0px 8px' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: '0px 8px',
+              }}
+            >
               {verificationCodes.map((code, index) => (
-                <Tooltip
-                  title={intl.code.tooltip}
-                  key={index}
-                >
+                <Tooltip title={intl.code.tooltip} key={index}>
                   <TextField
                     value={code}
-                    onChange={(newCode: React.ChangeEvent<HTMLInputElement>) => handleCodeChange(index, newCode.target.value.replace(/\D/g, ''))}
+                    onChange={(newCode: React.ChangeEvent<HTMLInputElement>) =>
+                      handleCodeChange(
+                        index,
+                        newCode.target.value.replace(/\D/g, ''),
+                      )
+                    }
                     inputRef={inputRefs[index]}
+                    onPaste={handlePaste}
                     error={errorCode}
                     required
                     type="text"
                     placeholder="0"
                     autoComplete="off"
                     inputProps={{
-                      maxLength: 1, style: {
-                        textAlign: 'center'
-                      }
+                      maxLength: 1,
+                      style: {
+                        textAlign: 'center',
+                      },
                     }}
-                    style={{ width: '50px', height: '56px', border: '1px', padding: '0px, 12px, 0px, 12px' }}
+                    style={{
+                      width: '50px',
+                      height: '56px',
+                      border: '1px',
+                      padding: '0px, 12px, 0px, 12px',
+                    }}
                   />
                 </Tooltip>
               ))}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
-              <Typography color="secondary" sx={{ fontSize: '14px', fontWeight: '500' }}>{errorCode && intl.errors.code.wrong}</Typography>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '8px',
+              }}
+            >
+              <Typography
+                color="secondary"
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                {errorCode && intl.errors.code.wrong}
+              </Typography>
             </div>
             <br />
             <ButtonApp variant="outlined" disabled={!areAllInputsFilled} submit>
               {intl.actions.verifyAccount}
             </ButtonApp>
           </GridItem>
-
         </GridContainer>
       </form>
     </>
