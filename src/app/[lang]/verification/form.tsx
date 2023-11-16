@@ -19,6 +19,8 @@ import { ory } from '@/common/lib/ory';
 
 import Code from '@public/assets/code.svg';
 
+import styles from './styles.module.css';
+
 type VerificationForm = z.infer<ReturnType<typeof createVerificationSchema>>;
 type Props = {
   flow?: string;
@@ -211,14 +213,7 @@ export function Form({ flow, returnTo, code }: Props) {
               {intl.code.body}
             </TextBody>
             <br />
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                gap: '0px 8px',
-              }}
-            >
+            <div className={styles.verification_codes}>
               {verificationCodes.map((code, index) => (
                 <Tooltip title={intl.code.tooltip} key={index}>
                   <TextField
@@ -242,23 +237,12 @@ export function Form({ flow, returnTo, code }: Props) {
                         textAlign: 'center',
                       },
                     }}
-                    style={{
-                      width: '50px',
-                      height: '56px',
-                      border: '1px',
-                      padding: '0px, 12px, 0px, 12px',
-                    }}
+                    className={styles.verification_input}
                   />
                 </Tooltip>
               ))}
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '8px',
-              }}
-            >
+            <div className={styles.error_code}>
               <Typography
                 color="secondary"
                 sx={{
