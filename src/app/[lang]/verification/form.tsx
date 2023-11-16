@@ -65,6 +65,9 @@ export function Form({ flow, returnTo, code }: Props) {
     if (index < inputRefs.length - 1 && code !== '') {
       inputRefs[index + 1].current?.focus();
     }
+    if (code === '' && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
