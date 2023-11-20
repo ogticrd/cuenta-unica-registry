@@ -1,8 +1,9 @@
 'use client';
 
+import { createRef, useEffect, useRef, useState } from 'react';
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { VerificationFlow } from '@ory/client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -10,16 +11,15 @@ import { z } from 'zod';
 
 import { createVerificationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
-import LoadingBackdrop from '@/components/elements/loadingBackdrop';
-import { VerificationFlow } from '@ory/client';
 import { useLanguage } from '../provider';
 import { ory } from '@/common/lib/ory';
 
 import Code from '@public/assets/code.svg';
-
 import styles from './styles.module.css';
+import { useSnackAlert } from '@/components/elements/alert';
 
 type VerificationForm = z.infer<ReturnType<typeof createVerificationSchema>>;
 type Props = {
@@ -30,78 +30,61 @@ type Props = {
 
 export function Form({ flow, returnTo, code }: Props) {
   const [currentFlow, setCurrentFlow] = useState<VerificationFlow>();
+  const { AlertWarning } = useSnackAlert();
   const { intl } = useLanguage();
   const router = useRouter();
 
-  const { handleSubmit, setValue, watch } = useForm<VerificationForm>({
+  const { handleSubmit, setValue } = useForm<VerificationForm>({
     reValidateMode: 'onSubmit',
     resolver: zodResolver(createVerificationSchema({ intl })),
   });
 
   const [loading, setLoading] = useState(false);
-  const [errorCode, setErrorCode] = useState(false);
-  const [verificationCodes, setVerificationCodes] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ]);
-  const inputRefs = [
-    useRef<HTMLInputElement>(),
-    useRef<HTMLInputElement>(),
-    useRef<HTMLInputElement>(),
-    useRef<HTMLInputElement>(),
-    useRef<HTMLInputElement>(),
-    useRef<HTMLInputElement>(),
-  ];
+  const [error, setError] = useState(false);
 
-  const handleCodeChange = (index: number, code: string) => {
-    setErrorCode(false);
+  const [otp, setOtp] = useState(Array<string>(6).fill(''));
+  const inputRefs = useRef(otp.map(() => createRef<HTMLInputElement>()));
 
-    const newCodes = [...verificationCodes];
-    newCodes[index] = code;
-    setVerificationCodes(newCodes);
+  const handleChange = (value: string, index: number) => {
+    if (isNaN(+value)) return false;
 
-    if (index < inputRefs.length - 1 && code !== '') {
-      inputRefs[index + 1].current?.focus();
+    setError(false);
+    setOtp(Object.assign([...otp], { [index]: value }));
+
+    const nextRef = inputRefs.current[index + 1];
+    const prevRef = inputRefs.current[index - 1];
+
+    if (nextRef?.current && value) {
+      nextRef.current.focus();
     }
-    if (code === '' && index > 0) {
-      inputRefs[index - 1].current?.focus();
+
+    if (prevRef?.current && !value) {
+      prevRef.current.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '') || '';
-    const pastedCodes = pastedData.trim().split('').slice(0, inputRefs.length);
+    const text = parseOTP(e.clipboardData.getData('text'));
 
-    if (!pastedCodes) {
-      return;
+    if (text.length === 6) {
+      setOtp(text);
+      // @ts-ignore
+      e.target.blur(); // `target` is supossed to be `HTMLInputElement`
     }
-
-    const newCodes = [...verificationCodes];
-    pastedCodes.forEach((code: string, index: number) => {
-      if (inputRefs[index] && inputRefs[index].current) {
-        newCodes[index] = code;
-      }
-    });
-
-    setVerificationCodes(newCodes);
   };
 
-  const areAllInputsFilled = verificationCodes.every((code) => code !== '');
-
   useEffect(() => {
-    if (areAllInputsFilled) {
-      setValue('code', verificationCodes.join(''));
-    }
+    if (otp.every(Boolean)) setValue('code', otp.join(''));
+
     // eslint-disable-next-line
-  }, [areAllInputsFilled, verificationCodes]);
+  }, [otp]);
 
   useEffect(() => {
-    if (code) {
-      setValue('code', code || '');
+    const validFromQuery = code?.length === 6 && parseOTP(code).length === 6;
+
+    if (validFromQuery) setOtp(parseOTP(code));
+    else {
+      AlertWarning(intl.errors.code.badUrl);
     }
 
     if (currentFlow) return;
@@ -110,7 +93,7 @@ export function Form({ flow, returnTo, code }: Props) {
       ory
         .getVerificationFlow({ id: flow })
         .then(({ data }) => setCurrentFlow(data))
-        .catch((err: any) => {
+        .catch((err) => {
           switch (err.response?.status) {
             case 410:
             // Status code 410 means the request has expired - so let's load a fresh flow!
@@ -143,12 +126,12 @@ export function Form({ flow, returnTo, code }: Props) {
     // eslint-disable-next-line
   }, []);
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async ({ code }) => {
     setLoading(true);
     ory
       .updateVerificationFlow({
         flow: String(flow),
-        updateVerificationFlowBody: { method: 'code', code: data.code },
+        updateVerificationFlowBody: { method: 'code', code },
       })
       .then(({ data }) => {
         // Form submission was successful, show the message to the user!
@@ -157,7 +140,7 @@ export function Form({ flow, returnTo, code }: Props) {
         router.push('/account-created');
       })
       .catch((err: any) => {
-        setErrorCode(true);
+        setError(true);
         switch (err.response?.status) {
           case 400:
             // Status code 400 implies the form validation had an error
@@ -165,10 +148,9 @@ export function Form({ flow, returnTo, code }: Props) {
             return;
           case 410:
             const newFlowID = err.response.data.use_flow_id;
-            router
-              // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
-              // their data when they reload the page.
-              .push(`/verification?flow=${newFlowID}`);
+            // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
+            // their data when they reload the page.
+            router.push(`/verification?flow=${newFlowID}`);
 
             ory
               .getVerificationFlow({ id: newFlowID })
@@ -184,7 +166,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
   return (
     <>
-      {loading && <LoadingBackdrop />}
+      {loading ? <LoadingBackdrop /> : null}
 
       <form onSubmit={onSubmit}>
         <GridContainer>
@@ -214,25 +196,20 @@ export function Form({ flow, returnTo, code }: Props) {
             </TextBody>
             <br />
             <div className={styles.verification_codes}>
-              {verificationCodes.map((code, index) => (
+              {otp.map((code, index) => (
                 <Tooltip title={intl.code.tooltip} key={index}>
                   <TextField
                     value={code}
-                    onChange={(newCode: React.ChangeEvent<HTMLInputElement>) =>
-                      handleCodeChange(
-                        index,
-                        newCode.target.value.replace(/\D/g, ''),
-                      )
-                    }
-                    inputRef={inputRefs[index]}
+                    onChange={({ target }) => handleChange(target.value, index)}
+                    inputRef={inputRefs.current[index]}
                     onPaste={handlePaste}
-                    error={errorCode}
+                    error={error}
                     required
-                    type="text"
                     placeholder="0"
                     autoComplete="off"
                     inputProps={{
                       maxLength: 1,
+                      inputMode: 'numeric',
                       style: {
                         textAlign: 'center',
                       },
@@ -250,11 +227,11 @@ export function Form({ flow, returnTo, code }: Props) {
                   fontWeight: '500',
                 }}
               >
-                {errorCode && intl.errors.code.wrong}
+                {error ? intl.errors.code.wrong : null}
               </Typography>
             </div>
             <br />
-            <ButtonApp variant="outlined" disabled={!areAllInputsFilled} submit>
+            <ButtonApp variant="outlined" disabled={!otp.every(Boolean)} submit>
               {intl.actions.verifyAccount}
             </ButtonApp>
           </GridItem>
@@ -263,3 +240,6 @@ export function Form({ flow, returnTo, code }: Props) {
     </>
   );
 }
+
+const parseOTP = (value: string, size = 6) =>
+  value.replace(/\D/g, '').trim().split('').slice(0, size);

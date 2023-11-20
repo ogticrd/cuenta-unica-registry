@@ -100,6 +100,7 @@
       "validation": "We cannot validate the security of your browser, check for pending updates or try with another device."
     },
     "code": {
+      "badUrl": "The code link is incorrect or has expired.",
       "wrong": "The code is incorrect"
     },
     "createIdentity": "An error occurred trying to create the citizen account. Please, try again later.",
