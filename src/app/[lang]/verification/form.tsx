@@ -83,7 +83,7 @@ export function Form({ flow, returnTo, code }: Props) {
     const validFromQuery = code?.length === 6 && parseOTP(code).length === 6;
 
     if (validFromQuery) setOtp(parseOTP(code));
-    else {
+    else if (code) {
       AlertWarning(intl.errors.code.badUrl);
     }
 
@@ -148,8 +148,8 @@ export function Form({ flow, returnTo, code }: Props) {
             return;
           case 410:
             const newFlowID = err.response.data.use_flow_id;
-            // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
-            // their data when they reload the page.
+            // On submission, add the flow ID to the URL but do not navigate.
+            // This prevents the user loosing their data when they reload the page.
             router.push(`/verification?flow=${newFlowID}`);
 
             ory
