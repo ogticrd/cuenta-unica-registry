@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { createVerificationSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
+import { useSnackAlert } from '@/components/elements/alert';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
 import { useLanguage } from '../provider';
@@ -19,7 +20,7 @@ import { ory } from '@/common/lib/ory';
 
 import Code from '@public/assets/code.svg';
 import styles from './styles.module.css';
-import { useSnackAlert } from '@/components/elements/alert';
+
 
 type VerificationForm = z.infer<ReturnType<typeof createVerificationSchema>>;
 type Props = {
