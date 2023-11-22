@@ -99,6 +99,10 @@
       "issues": "It seems the reCaptcha has not correctly validated your request, refresh and try again",
       "validation": "We cannot validate the security of your browser, check for pending updates or try with another device."
     },
+    "code": {
+      "badUrl": "The code link is incorrect or has expired.",
+      "wrong": "The code is incorrect"
+    },
     "createIdentity": "An error occurred trying to create the citizen account. Please, try again later.",
     "decryption": "Error decrypting:",
     "noEnv": "Invalid or undefined environment variable"
