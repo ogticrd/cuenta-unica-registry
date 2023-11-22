@@ -21,7 +21,6 @@ import { ory } from '@/common/lib/ory';
 import Code from '@public/assets/code.svg';
 import styles from './styles.module.css';
 
-
 type VerificationForm = z.infer<ReturnType<typeof createVerificationSchema>>;
 type Props = {
   flow?: string;
