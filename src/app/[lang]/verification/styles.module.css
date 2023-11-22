@@ -1,0 +1,29 @@
+.verification_codes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0px 8px;
+}
+
+.verification_input {
+  width: 50px;
+  height: 56px;
+  border: 1px;
+  padding: 0px, 12px;
+}
+
+.error_code {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+@media only screen and (max-width: 430px) {
+  .verification_codes {
+    gap: 0px 2px;
+  }
+
+  .verification_input {
+    width: 38px;
+  }
+}
