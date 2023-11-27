@@ -78,7 +78,7 @@ jobs:
 
       - name: Authenticate to GCP
         id: auth
-        uses: google-github-actions/auth@v1.1.1
+        uses: google-github-actions/auth@v1.2.0
         with:
           project_id: ${{ vars.GOOGLE_PROJECT_ID || inputs.project_id }}
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
