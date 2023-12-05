@@ -17,11 +17,12 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Collapse from '@mui/material/Collapse';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
+import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { createRegisterSchema } from '@/common/validation-schemas';
 import PasswordLevel from '@/components/elements/passwordLevel';
 import { useSnackAlert } from '@/components/elements/alert';
@@ -46,6 +47,7 @@ export function Form({ cedula }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams?.get('return_to');
+  const [loading, setLoading] = useState(false);
 
   const { intl } = useLanguage();
 
@@ -104,6 +106,8 @@ export function Form({ cedula }: Props) {
     }
 
     try {
+      setLoading(true);
+
       const citizen = await findCitizen(cedula, true);
       let csrfToken = '';
 
@@ -155,6 +159,8 @@ export function Form({ cedula }: Props) {
         return;
       }
     } catch (err: any) {
+      setLoading(false);
+
       if (err.response?.data) {
         const errorData = err.response.data;
 
@@ -191,113 +197,119 @@ export function Form({ cedula }: Props) {
 
   // TODO: Use this Password UI approach https://stackblitz.com/edit/material-password-strength?file=Icons.js
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)}>
-      <GridContainer>
-        <GridItem lg={12} md={12}>
-          <Tooltip title={intl.step3.email.tooltip}>
+    <>
+      {loading ? <LoadingBackdrop /> : null}
+
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
+        <GridContainer>
+          <GridItem lg={12} md={12}>
+            <Tooltip title={intl.step3.email.tooltip}>
+              <TextField
+                {...register('email')}
+                required
+                type="email"
+                label={intl.step3.email.label}
+                helperText={errors.email?.message}
+                autoComplete="off"
+                fullWidth
+                onPaste={doNothing}
+                onCopy={doNothing}
+              />
+            </Tooltip>
+          </GridItem>
+
+          <GridItem lg={12} md={12}>
             <TextField
-              {...register('email')}
+              {...register('emailConfirm')}
               required
               type="email"
-              label={intl.step3.email.label}
-              helperText={errors.email?.message}
+              color={errors.emailConfirm ? 'error' : 'primary'}
+              label={intl.step3.email.confirm}
+              helperText={errors.emailConfirm?.message}
               autoComplete="off"
               fullWidth
               onPaste={doNothing}
               onCopy={doNothing}
             />
-          </Tooltip>
-        </GridItem>
+          </GridItem>
 
-        <GridItem lg={12} md={12}>
-          <TextField
-            {...register('emailConfirm')}
-            required
-            type="email"
-            color={errors.emailConfirm ? 'error' : 'primary'}
-            label={intl.step3.email.confirm}
-            helperText={errors.emailConfirm?.message}
-            autoComplete="off"
-            fullWidth
-            onPaste={doNothing}
-            onCopy={doNothing}
-          />
-        </GridItem>
+          <GridItem lg={12} md={12}>
+            <TextField
+              required
+              type={showPassword ? 'text' : 'password'}
+              label={intl.step3.password.label}
+              color={errors.password ? 'error' : 'primary'}
+              placeholder="*********"
+              helperText={errors.password?.message}
+              fullWidth
+              {...register('password')}
+              onChange={(e) => handleChangePassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={intl.step3.password.toggleVisibility}
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={doNothing}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <PasswordLevel password={passwordString} />
+          </GridItem>
 
-        <GridItem lg={12} md={12}>
-          <TextField
-            required
-            type={showPassword ? 'text' : 'password'}
-            label={intl.step3.password.label}
-            color={errors.password ? 'error' : 'primary'}
-            placeholder="*********"
-            helperText={errors.password?.message}
-            fullWidth
-            {...register('password')}
-            onChange={(e) => handleChangePassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={intl.step3.password.toggleVisibility}
-                    onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={doNothing}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <PasswordLevel password={passwordString} />
-        </GridItem>
+          <GridItem lg={12} md={12}>
+            <TextField
+              required
+              type={showPasswordConfirm ? 'text' : 'password'}
+              label={intl.step3.password.confirm}
+              color={errors.passwordConfirm ? 'error' : 'primary'}
+              placeholder="*********"
+              disabled={passwordLevel.id < 3}
+              helperText={errors.passwordConfirm?.message}
+              fullWidth
+              {...register('passwordConfirm')}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={intl.step3.password.toggleVisibility}
+                      onClick={() =>
+                        setShowPasswordConfirm(!showPasswordConfirm)
+                      }
+                      onMouseDown={doNothing}
+                      edge="end"
+                    >
+                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </GridItem>
 
-        <GridItem lg={12} md={12}>
-          <TextField
-            required
-            type={showPasswordConfirm ? 'text' : 'password'}
-            label={intl.step3.password.confirm}
-            color={errors.passwordConfirm ? 'error' : 'primary'}
-            placeholder="*********"
-            disabled={passwordLevel.id < 3}
-            helperText={errors.passwordConfirm?.message}
-            fullWidth
-            {...register('passwordConfirm')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={intl.step3.password.toggleVisibility}
-                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    onMouseDown={doNothing}
-                    edge="end"
-                  >
-                    {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </GridItem>
+          <GridItem lg={12} md={12}>
+            <Collapse in={isPwned}>
+              <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
+            </Collapse>
+          </GridItem>
 
-        <GridItem lg={12} md={12}>
-          <Collapse in={isPwned}>
-            <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
-          </Collapse>
-        </GridItem>
-
-        <GridItem lg={12} md={12}>
-          <ButtonApp
-            submit
-            endIcon={<CheckCircleOutlineOutlinedIcon />}
-            disabled={isPwned}
-          >
-            {intl.actions.create}
-          </ButtonApp>
-        </GridItem>
-      </GridContainer>
-    </form>
+          <GridItem lg={12} md={12}>
+            <ButtonApp
+              submit
+              endIcon={<CheckCircleOutlineOutlinedIcon />}
+              disabled={isPwned}
+            >
+              {intl.actions.create}
+            </ButtonApp>
+          </GridItem>
+        </GridContainer>
+      </form>
+    </>
   );
 }
 
