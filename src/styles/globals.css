@@ -24,6 +24,10 @@ body {
 }
 
 /* Face live */
+.amplify-liveness-landscape-error-modal p {
+  color: var(--primary-color);
+}
+
 .amplify-card {
   background: transparent;
 }
@@ -57,15 +61,19 @@ body {
 .amplify-button {
   margin: 40px 0;
   background: white;
-  border: 1px solid #003876;
+  border: 1px solid var(--primary-color);
   color: var(--primary-color);
   border-radius: 60px;
+}
+
+.amplify-button .amplify-icon {
+  color: var(--primary-color);
 }
 
 .amplify-button:hover {
   background: #e3e3e3;
   color: var(--primary-color);
-  border: 1px solid #003876;
+  border: 1px solid var(--primary-color);
 }
 
 [data-amplify-theme] {
