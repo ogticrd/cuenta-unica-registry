@@ -60,7 +60,7 @@ export function Form({ cedula }: Props) {
 
         setFlow(flow);
       } catch (err: any) {
-        Sentry.captureException(err.message || err);
+        Sentry.captureMessage(err.message || err, 'error');
         AlertWarning(intl.errors.registration.flow);
       }
     };
