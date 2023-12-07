@@ -89,17 +89,25 @@ body {
   margin: 0 auto;
 }
 
+.amplify-flex p {
+  color: var(--primary-color);
+}
+
 .amplify-liveness-instruction-overlay div .amplify-liveness-toast {
   background: white;
   color: var(--primary-color);
 }
 
 .amplify-liveness-toast__message div p {
-  color: black !important;
+  color: var(--primary-color) !important;
 }
 
 .amplify-liveness-toast--default div .amplify-liveness-toast__message {
-  color: black;
+  color: var(--primary-color);
+}
+
+.amplify-liveness-recording-icon-container div span {
+  color: var(--primary-color);
 }
 
 .amplify-flex .amplify-liveness-figures {
