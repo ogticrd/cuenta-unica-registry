@@ -1,8 +1,9 @@
 'use client';
 
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
-import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import { ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
+import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { Amplify } from 'aws-amplify';
@@ -93,7 +94,7 @@ export function LivenessQuickStart({ cedula }: Props) {
             justifyContent: 'center',
           }}
         >
-          <Loader />
+          <CircularProgress sx={{ color: 'white' }} />
         </div>
       ) : sessionId ? (
         <FaceLivenessDetector
