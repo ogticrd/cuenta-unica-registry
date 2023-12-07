@@ -32,7 +32,16 @@ export function LivenessQuickStart({ cedula }: Props) {
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })
       .then(unwrap)
-      .then(({ sessionId }) => setSessionId(sessionId));
+      .then(({ sessionId }) => setSessionId(sessionId))
+      .catch(({ error, state }) => {
+        Sentry.captureMessage(error.message, {
+          extra: { state, error },
+          level: 'error',
+        });
+
+        setError(error);
+      })
+      .catch(Sentry.captureException);
 
     setLoading(false);
   };
@@ -57,11 +66,7 @@ export function LivenessQuickStart({ cedula }: Props) {
   };
 
   useEffect(() => {
-    fetchCreateLiveness().catch((error) => {
-      Sentry.captureException(error);
-
-      setError(error);
-    });
+    fetchCreateLiveness();
   }, []);
 
   useEffect(() => {
