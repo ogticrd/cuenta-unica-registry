@@ -60,7 +60,16 @@ export function Form({ cedula }: Props) {
 
         setFlow(flow);
       } catch (err: any) {
-        Sentry.captureMessage(err.message || err, 'error');
+        Sentry.captureMessage('Unable to create flow', {
+          level: 'error',
+          extra: err.config
+            ? {
+                message: err.message,
+                url: err.config.url,
+                method: err.config.method.toUpperCase(),
+              }
+            : undefined,
+        });
         AlertWarning(intl.errors.registration.flow);
       }
     };
