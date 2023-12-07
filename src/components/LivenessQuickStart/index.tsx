@@ -100,7 +100,12 @@ export function LivenessQuickStart({ cedula }: Props) {
           sessionId={sessionId}
           region="us-east-1"
           onUserCancel={onUserCancel}
-          onError={(e) => Sentry.captureException(e)}
+          onError={({ error, state }) => {
+            Sentry.captureMessage(error.message, {
+              extra: { state, error },
+              level: 'error',
+            });
+          }}
           onAnalysisComplete={handleAnalysisComplete}
           disableInstructionScreen={false}
           displayText={displayText}
