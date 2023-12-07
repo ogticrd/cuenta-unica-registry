@@ -43,11 +43,6 @@ body {
   z-index: 10;
 }
 
-[data-testid="close-icon"] {
-  color: var(--primary-color);
-  scale: 1.1;
-}
-
 .amplify-liveness-start-screen-header__heading {
   font-weight: 700;
   font-size: 21px;
@@ -74,7 +69,7 @@ body {
 }
 
 [data-amplify-theme] {
-  --amplify-colors-background-primary: var(--primary-color);
+  /* --amplify-colors-background-primary: var(--primary-color); */
   --amplify-colors-font-primary: white;
   /* --amplify-colors-brand-primary-10: var(--primary-color); */
   /* --amplify-colors-brand-primary-80: var(--primary-color);
@@ -89,10 +84,6 @@ body {
 .amplify-liveness-instruction-overlay div .amplify-liveness-toast {
   background: white;
   color: var(--primary-color);
-}
-
-.amplify-liveness-popover__container {
-  color: white;
 }
 
 .amplify-liveness-toast__message div p {
