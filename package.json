@@ -18,7 +18,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "serve": "node server.js"
   },
   "engines": {
     "npm": ">=10.1.0 <11.0.0",

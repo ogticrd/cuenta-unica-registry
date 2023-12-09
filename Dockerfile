@@ -77,4 +77,4 @@ ENV HOSTNAME 0.0.0.0
 
 HEALTHCHECK CMD wget -q localhost:3000
 
-CMD ["node", "server.js"]
+CMD ["pnpm", "serve"]
