@@ -24,8 +24,9 @@ export async function GET(
 
   if (!isLive) {
     Sentry.captureMessage('Low confidence', {
+      user: { id: cedula },
       level: 'debug',
-      extra: { cedula, confidence },
+      extra: { confidence },
       tags: { type: 'confidence' },
     });
 
@@ -39,6 +40,7 @@ export async function GET(
   }
 
   Sentry.captureMessage('High confidence', {
+    user: { id: cedula },
     level: 'debug',
     extra: { cedula, confidence },
     tags: { type: 'confidence' },
@@ -62,8 +64,8 @@ export async function GET(
 
       if (!FaceMatches?.length) {
         Sentry.captureMessage('Low similarity', {
+          user: { id: cedula },
           level: 'debug',
-          extra: { cedula },
           tags: { type: 'similarity' },
         });
 
@@ -79,8 +81,9 @@ export async function GET(
       }
 
       Sentry.captureMessage('High similarity', {
+        user: { id: cedula },
         level: 'debug',
-        extra: { cedula, similarity: FaceMatches[0].Similarity },
+        extra: { similarity: FaceMatches[0].Similarity },
         tags: { type: 'similarity' },
       });
 
