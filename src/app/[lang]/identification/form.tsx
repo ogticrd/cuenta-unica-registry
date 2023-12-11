@@ -94,7 +94,7 @@ export function Form() {
       await setCookie('citizen', citizen);
       router.push('liveness');
     } catch (err: any) {
-      Sentry.captureException(err.message || err);
+      Sentry.captureMessage(err.message || err, 'error');
 
       return AlertError(intl.errors.cedula.invalid);
     } finally {
