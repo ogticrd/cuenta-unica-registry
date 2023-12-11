@@ -1,7 +1,7 @@
 {
   "name": "cuenta-unica-registry",
   "description": "Portal de registro de Cuenta Única",
-  "version": "v1.0.3",
+  "version": "v1.0.4",
   "private": false,
   "author": "OGTIC",
   "license": "MIT",
@@ -18,7 +18,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "serve": "node server.js"
   },
   "engines": {
     "npm": ">=10.1.0 <11.0.0",
