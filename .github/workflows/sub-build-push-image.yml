@@ -96,6 +96,8 @@ jobs:
             NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}
             NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL }}
             NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
+            SENTRY_ORG=${{ vars.SENTRY_ORG }},
+            SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }},
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           secrets: |
             "AWS_EXPORTS_JSON=${{ secrets.AWS_EXPORTS_JSON || ''}}"
