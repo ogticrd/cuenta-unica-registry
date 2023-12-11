@@ -17,7 +17,7 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Collapse from '@mui/material/Collapse';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
@@ -61,6 +61,7 @@ export function Form({ cedula }: Props) {
         setFlow(flow);
       } catch (err: any) {
         Sentry.captureMessage('Unable to create flow', {
+          user: { id: cedula, email: getValues('email') },
           level: 'error',
           extra: err.config
             ? {
@@ -82,6 +83,7 @@ export function Form({ cedula }: Props) {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     setValue,
   } = useForm<RegisterForm>({
     mode: 'onChange',
@@ -189,6 +191,7 @@ export function Form({ cedula }: Props) {
           .filter(Boolean);
 
         Sentry.captureMessage(errors.join(', '), {
+          user: { id: cedula, email: getValues('email') },
           level: 'error',
           extra: { errors },
         });

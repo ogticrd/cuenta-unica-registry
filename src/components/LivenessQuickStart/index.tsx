@@ -35,6 +35,7 @@ export function LivenessQuickStart({ cedula }: Props) {
       .then(({ sessionId }) => setSessionId(sessionId))
       .catch(({ error, state }) => {
         Sentry.captureMessage(error.message, {
+          user: { id: cedula },
           extra: { state, error },
           level: 'error',
         });
@@ -112,6 +113,7 @@ export function LivenessQuickStart({ cedula }: Props) {
             }
 
             Sentry.captureMessage(error.message, {
+              user: { id: cedula },
               extra: { state, error },
               level: 'error',
             });
