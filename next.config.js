@@ -20,7 +20,7 @@ const nextConfig = {
 };
 
 const { withSentryConfig } = require('@sentry/nextjs');
-const { version: release } = require('./package.json');
+const { version, name } = require('./package.json');
 
 module.exports = withSentryConfig(
   nextConfig,
@@ -28,7 +28,7 @@ module.exports = withSentryConfig(
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
-    release,
+    release: `${name}@${version}`,
     cleanArtifacts: true,
     // Suppresses source map uploading logs during build
     silent: true,
