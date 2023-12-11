@@ -1,13 +1,14 @@
 import * as Sentry from '@sentry/nextjs';
 
-const { version: release } = require('./package.json');
+const { version, name } = require('./package.json');
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1,
   debug: false,
 
-  release,
+  // release: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
+  release: `${name}@${version}`,
 
   replaysOnErrorSampleRate: 1.0,
   // This sets the sample rate to be 10%. You may want this to be 100% while
