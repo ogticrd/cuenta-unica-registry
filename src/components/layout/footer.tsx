@@ -17,6 +17,8 @@ import { useLanguage } from '@/app/[lang]/provider';
 import DivGrow from '../elements/divGrow';
 import theme from '../themes/theme';
 
+import styles from './styles.module.css';
+
 export default function Index() {
   const { intl } = useLanguage();
 
@@ -25,14 +27,7 @@ export default function Index() {
       <div
         style={{ background: theme.palette.primary.main, padding: '75px 25px' }}
       >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '1400px',
-            margin: 'auto',
-            padding: '0px 24px',
-          }}
-        >
+        <div className={styles.footer_container}>
           <GridContainer spacing={4}>
             <GridItem md={12} lg={2}>
               <Image src={logoGOB.src} alt="logo" width="198" height="80" />
@@ -108,14 +103,7 @@ export default function Index() {
       </div>
 
       <div style={{ background: 'white', padding: '12.5px 25px' }}>
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '1400px',
-            margin: 'auto',
-            padding: '0px 24px',
-          }}
-        >
+        <div className={styles.footer_container}>
           <GridContainer>
             <GridItem md={6} lg={6}>
               <div style={{ marginTop: '8px' }}>

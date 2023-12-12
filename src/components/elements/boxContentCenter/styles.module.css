@@ -1,0 +1,13 @@
+.box_container {
+  width: 100%;
+  min-height: calc(100vh - 630px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box_content {
+  width: 100%;
+  max-width: 560px;
+  padding: 0 10px;
+}

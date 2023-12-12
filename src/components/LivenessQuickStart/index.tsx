@@ -13,6 +13,8 @@ import { useLocalizedText } from './localizedText';
 import { unwrap } from '@/common/helpers';
 import awsExports from '@/aws-exports';
 
+import styles from './styles.module.css';
+
 Amplify.configure(awsExports);
 
 type Props = { cedula: string };
@@ -84,15 +86,7 @@ export function LivenessQuickStart({ cedula }: Props) {
   return (
     <ThemeProvider>
       {loading ? (
-        <div
-          style={{
-            width: '100%',
-            height: '55vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div className={styles.liveness_container}>
           <Loader />
         </div>
       ) : sessionId ? (
