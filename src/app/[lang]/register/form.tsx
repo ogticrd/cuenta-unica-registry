@@ -198,10 +198,8 @@ export function Form({ cedula }: Props) {
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error
-      if (err.response?.status && err.response.status === 400) {
+      if (err.response?.status === 400) {
         setFlow(err.response?.data);
-
-        return;
       }
 
       AlertError(intl.errors.createIdentity);
