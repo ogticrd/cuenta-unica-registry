@@ -232,7 +232,8 @@
     },
     "password": {
       "empty": "La Contraseña no puede estar vacía",
-      "noMatch": "Las Contraseñas no coinciden"
+      "noMatch": "Las Contraseñas no coinciden",
+      "hasID": "La contraseña no puede contener el número de cédula."
     },
     "required": "Campo requerido"
   },

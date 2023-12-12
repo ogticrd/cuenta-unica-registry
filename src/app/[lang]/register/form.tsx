@@ -87,7 +87,7 @@ export function Form({ cedula }: Props) {
     setValue,
   } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: zodResolver(createRegisterSchema({ intl })),
+    resolver: zodResolver(createRegisterSchema({ intl }, cedula)),
   });
 
   const handleChangePassword = (password: string) => {
