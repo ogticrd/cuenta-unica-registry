@@ -175,22 +175,19 @@ export function Form({ cedula }: Props) {
       if (err.response?.data) {
         const { ui, error } = err.response.data;
 
-        type Message = { type: string; text: string };
-        type Node = { messages: Array<Message> };
+        type Message = { type: string; text: string; id: number };
+        type Node = { type: string; messages: Array<Message> };
 
-        const messages = (ui?.messages as Array<Message>)
-          ?.filter(pickErrors)
-          .map((m) => m.text);
+        const messages = (ui?.messages as Array<Message>)?.filter(pickErrors);
 
         const nodes = (ui?.nodes as Array<Node>)
           ?.filter((n) => n?.messages.filter(pickErrors))
-          .flatMap((n) => n.messages.map((n) => n.text));
+          .flatMap((n) => n.messages);
 
-        const errors = new Array<string>()
-          .concat(messages, nodes, error?.id)
-          .filter(Boolean);
+        const errors = new Array<Message>().concat(messages, nodes, error?.id);
+        const message = errors.map((msg) => msg.text).join(', ');
 
-        Sentry.captureMessage(errors.join(', '), {
+        Sentry.captureMessage(message, {
           user: { id: cedula, email: getValues('email') },
           level: 'error',
           extra: { errors },
