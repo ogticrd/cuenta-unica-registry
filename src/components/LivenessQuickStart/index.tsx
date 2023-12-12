@@ -1,8 +1,9 @@
 'use client';
 
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
-import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import { ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
+import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { Amplify } from 'aws-amplify';
@@ -33,7 +34,17 @@ export function LivenessQuickStart({ cedula }: Props) {
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })
       .then(unwrap)
-      .then(({ sessionId }) => setSessionId(sessionId));
+      .then(({ sessionId }) => setSessionId(sessionId))
+      .catch(({ error, state }) => {
+        Sentry.captureMessage(error.message, {
+          user: { id: cedula },
+          extra: { state, error },
+          level: 'error',
+        });
+
+        setError(error);
+      })
+      .catch(Sentry.captureException);
 
     setLoading(false);
   };
@@ -58,11 +69,7 @@ export function LivenessQuickStart({ cedula }: Props) {
   };
 
   useEffect(() => {
-    fetchCreateLiveness().catch((error) => {
-      Sentry.captureException(error);
-
-      setError(error);
-    });
+    fetchCreateLiveness();
   }, []);
 
   useEffect(() => {
@@ -87,14 +94,24 @@ export function LivenessQuickStart({ cedula }: Props) {
     <ThemeProvider>
       {loading ? (
         <div className={styles.liveness_container}>
-          <Loader />
+          <CircularProgress sx={{ color: 'white' }} />
         </div>
       ) : sessionId ? (
         <FaceLivenessDetector
           sessionId={sessionId}
           region="us-east-1"
           onUserCancel={onUserCancel}
-          onError={(e) => Sentry.captureException(e)}
+          onError={({ error, state }) => {
+            if (state === 'CAMERA_ACCESS_ERROR') {
+              AlertError(intl.liveness.camera.notFound.heading);
+            }
+
+            Sentry.captureMessage(error.message, {
+              user: { id: cedula },
+              extra: { state, error },
+              level: 'error',
+            });
+          }}
           onAnalysisComplete={handleAnalysisComplete}
           disableInstructionScreen={false}
           displayText={displayText}

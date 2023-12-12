@@ -29,6 +29,15 @@ ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
 ARG NEXT_PUBLIC_SENTRY_DSN
 ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+
+ARG SENTRY_ORG
+ENV SENTRY_ORG=${SENTRY_ORG}
+
+ARG SENTRY_PROJECT
+ENV SENTRY_PROJECT=${SENTRY_PROJECT}
+
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -44,6 +53,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 # ===================== Build Stage =====================
 # Rebuild the source code only when needed
 FROM base AS build
+
+RUN <<EOF
+    apt-get update
+    apt-get install -y ca-certificates
+    rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .

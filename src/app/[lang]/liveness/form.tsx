@@ -13,6 +13,7 @@ import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfi
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Collapse from '@mui/material/Collapse';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -128,9 +129,9 @@ export function Form({ cedula }: Props) {
                 </>
               }
             />
-            {errors.accepted ? (
+            <Collapse in={Boolean(errors.accepted)}>
               <Alert severity="info">{intl.terms.check}</Alert>
-            ) : null}
+            </Collapse>
           </FormGroup>
         </GridItem>
 
