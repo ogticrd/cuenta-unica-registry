@@ -1,19 +1,11 @@
 import Box from '@mui/material/Box';
 
+import styles from './styles.module.css';
+
 export default function BoxContentCenter({ children }: any) {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        minHeight: `calc(100vh - 630px)`,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Box sx={{ width: '100%', maxWidth: '560px', padding: '0 10px' }}>
-        {children}
-      </Box>
+    <Box className={styles.box_container}>
+      <Box className={styles.box_content}>{children}</Box>
     </Box>
   );
 }
