@@ -26,6 +26,8 @@ import { createTermsSchema } from '@/common/validation-schemas';
 import { LivenessModal } from '@/components/LivenessModal';
 import { useLanguage } from '../provider';
 
+import styles from './styles.module.css';
+
 type TermsForm = z.infer<ReturnType<typeof createTermsSchema>>;
 import theme from '@/components/themes/theme';
 
@@ -52,16 +54,7 @@ export function Form({ cedula }: Props) {
     <form onSubmit={onSubmit}>
       <GridContainer>
         <GridItem lg={12} md={12}>
-          <div
-            style={{
-              background: '#EFF7FF',
-              borderRadius: '6px',
-              padding: '30px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}
-          >
+          <div className={styles.liveness_conditions}>
             <CameraAltOutlinedIcon
               sx={{
                 fontSize: '45px',
@@ -85,16 +78,7 @@ export function Form({ cedula }: Props) {
         </GridItem>
 
         <GridItem lg={12} md={12}>
-          <div
-            style={{
-              background: '#EFF7FF',
-              borderRadius: '6px',
-              padding: '30px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}
-          >
+          <div className={styles.liveness_conditions}>
             <SentimentSatisfiedOutlinedIcon
               sx={{
                 fontSize: '45px',

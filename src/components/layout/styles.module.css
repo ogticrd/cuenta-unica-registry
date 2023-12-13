@@ -1,3 +1,10 @@
+.footer_container {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 0px 24px;
+}
+
 .logo {
   flex-grow: 1;
   padding-top: '8px';

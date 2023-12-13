@@ -58,14 +58,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
           </div>
         </AppBar>
         <div style={{ paddingTop: '100px' }}>
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '800px',
-              margin: 'auto',
-              padding: '0 10px',
-            }}
-          >
+          <div className={styles.liveness_container}>
             <LivenessQuickStart cedula={cedula} />
           </div>
         </div>

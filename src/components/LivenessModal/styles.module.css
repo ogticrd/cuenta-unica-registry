@@ -10,6 +10,13 @@
   position: absolute;
 }
 
+.liveness_container {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  padding: 0 10px;
+}
+
 @media only screen and (max-width: 1200px) {
   .layer_logo {
     display: none;
