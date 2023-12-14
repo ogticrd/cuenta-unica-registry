@@ -38,8 +38,6 @@ type Props = {
 
 export function Form({ cedula }: Props) {
   const [flow, setFlow] = useState<RegistrationFlow>();
-  const [passwordLevel, setPasswordLevel] = useState(initialLevel);
-  const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackAlert();
   const [showPassword, setShowPassword] = useState(false);
@@ -85,24 +83,28 @@ export function Form({ cedula }: Props) {
     formState: { errors },
     getValues,
     setValue,
+    resetField,
+    watch,
   } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: zodResolver(createRegisterSchema({ intl })),
+    resolver: zodResolver(createRegisterSchema({ intl }, cedula)),
   });
 
-  const handleChangePassword = (password: string) => {
-    setPasswordString(password);
-    setPasswordLevel(passwordStrength(password));
-    setValue('password', password);
+  const password = watch('password');
+
+  useEffect(() => {
     setIsPwned(false);
 
-    if (!password) {
-      setValue('passwordConfirm', '');
-    }
-  };
+    if (password) return;
+
+    resetField('password');
+    resetField('passwordConfirm');
+    setValue('passwordConfirm', '');
+    // eslint-disable-next-line
+  }, [password]);
 
   const onSubmitHandler = async (form: RegisterForm) => {
-    if (isPwned || passwordLevel.id !== 3) {
+    if (isPwned || passwordStrength(password).id !== 3) {
       return;
     }
 
@@ -175,22 +177,19 @@ export function Form({ cedula }: Props) {
       if (err.response?.data) {
         const { ui, error } = err.response.data;
 
-        type Message = { type: string; text: string };
-        type Node = { messages: Array<Message> };
+        type Message = { type: string; text: string; id: number };
+        type Node = { type: string; messages: Array<Message> };
 
-        const messages = (ui?.messages as Array<Message>)
-          ?.filter(pickErrors)
-          .map((m) => m.text);
+        const messages = (ui?.messages as Array<Message>)?.filter(pickErrors);
 
         const nodes = (ui?.nodes as Array<Node>)
           ?.filter((n) => n?.messages.filter(pickErrors))
-          .flatMap((n) => n.messages.map((n) => n.text));
+          .flatMap((n) => n.messages);
 
-        const errors = new Array<string>()
-          .concat(messages, nodes, error?.id)
-          .filter(Boolean);
+        const errors = new Array<Message>().concat(messages, nodes, error?.id);
+        const message = errors.map((msg) => msg.text).join(', ');
 
-        Sentry.captureMessage(errors.join(', '), {
+        Sentry.captureMessage(message, {
           user: { id: cedula, email: getValues('email') },
           level: 'error',
           extra: { errors },
@@ -198,10 +197,8 @@ export function Form({ cedula }: Props) {
       }
 
       // If the previous handler did not catch the error it's most likely a form validation error
-      if (err.response?.status && err.response.status === 400) {
+      if (err.response?.status === 400) {
         setFlow(err.response?.data);
-
-        return;
       }
 
       AlertError(intl.errors.createIdentity);
@@ -251,12 +248,12 @@ export function Form({ cedula }: Props) {
               required
               type={showPassword ? 'text' : 'password'}
               label={intl.step3.password.label}
-              color={errors.password ? 'error' : 'primary'}
+              color="primary"
+              error={Boolean(errors.password)}
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
               {...register('password')}
-              onChange={(e) => handleChangePassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -272,7 +269,7 @@ export function Form({ cedula }: Props) {
                 ),
               }}
             />
-            <PasswordLevel password={passwordString} />
+            <PasswordLevel password={password} />
           </GridItem>
 
           <GridItem lg={12} md={12}>
@@ -280,9 +277,10 @@ export function Form({ cedula }: Props) {
               required
               type={showPasswordConfirm ? 'text' : 'password'}
               label={intl.step3.password.confirm}
-              color={errors.passwordConfirm ? 'error' : 'primary'}
+              color="primary"
+              error={Boolean(errors.passwordConfirm)}
               placeholder="*********"
-              disabled={passwordLevel.id < 3}
+              disabled={passwordStrength(password).id < 3}
               helperText={errors.passwordConfirm?.message}
               fullWidth
               {...register('passwordConfirm')}
