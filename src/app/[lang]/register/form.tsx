@@ -38,8 +38,6 @@ type Props = {
 
 export function Form({ cedula }: Props) {
   const [flow, setFlow] = useState<RegistrationFlow>();
-  const [passwordLevel, setPasswordLevel] = useState(initialLevel);
-  const [passwordString, setPasswordString] = useState<string>('');
   const [isPwned, setIsPwned] = useState(false);
   const { AlertWarning, AlertError } = useSnackAlert();
   const [showPassword, setShowPassword] = useState(false);
@@ -85,24 +83,28 @@ export function Form({ cedula }: Props) {
     formState: { errors },
     getValues,
     setValue,
+    resetField,
+    watch,
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: zodResolver(createRegisterSchema({ intl }, cedula)),
   });
 
-  const handleChangePassword = (password: string) => {
-    setPasswordString(password);
-    setPasswordLevel(passwordStrength(password));
-    setValue('password', password);
+  const password = watch('password');
+
+  useEffect(() => {
     setIsPwned(false);
 
-    if (!password) {
-      setValue('passwordConfirm', '');
-    }
-  };
+    if (password) return;
+
+    resetField('password');
+    resetField('passwordConfirm');
+    setValue('passwordConfirm', '');
+    // eslint-disable-next-line
+  }, [password]);
 
   const onSubmitHandler = async (form: RegisterForm) => {
-    if (isPwned || passwordLevel.id !== 3) {
+    if (isPwned || passwordStrength(password).id !== 3) {
       return;
     }
 
@@ -246,12 +248,12 @@ export function Form({ cedula }: Props) {
               required
               type={showPassword ? 'text' : 'password'}
               label={intl.step3.password.label}
-              color={errors.password ? 'error' : 'primary'}
+              color="primary"
+              error={Boolean(errors.password)}
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
               {...register('password')}
-              onChange={(e) => handleChangePassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -267,7 +269,7 @@ export function Form({ cedula }: Props) {
                 ),
               }}
             />
-            <PasswordLevel password={passwordString} />
+            <PasswordLevel password={password} />
           </GridItem>
 
           <GridItem lg={12} md={12}>
@@ -275,9 +277,10 @@ export function Form({ cedula }: Props) {
               required
               type={showPasswordConfirm ? 'text' : 'password'}
               label={intl.step3.password.confirm}
-              color={errors.passwordConfirm ? 'error' : 'primary'}
+              color="primary"
+              error={Boolean(errors.passwordConfirm)}
               placeholder="*********"
-              disabled={passwordLevel.id < 3}
+              disabled={passwordStrength(password).id < 3}
               helperText={errors.passwordConfirm?.message}
               fullWidth
               {...register('passwordConfirm')}
