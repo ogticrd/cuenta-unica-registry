@@ -1,0 +1,8 @@
+.liveness_conditions {
+  background: #eff7ff;
+  border-radius: 6px;
+  padding: 30px 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
