@@ -238,5 +238,10 @@
   },
   "warnings": {
     "breachedPassword": "This password has been in data breaches, so it is not considered safe. We recommend you choose another password."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "Could not find requested resource",
+    "returnHome": "Return Home"
   }
 }

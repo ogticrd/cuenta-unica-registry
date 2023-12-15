@@ -238,5 +238,10 @@
   },
   "warnings": {
     "breachedPassword": "Esta contraseña ha estado en filtraciones de datos, por eso no se considera segura. Te recomendamos eligir otra contraseña."
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "No se pudo encontrar el recurso solicitado",
+    "returnHome": "Volver al inicio"
   }
 }
