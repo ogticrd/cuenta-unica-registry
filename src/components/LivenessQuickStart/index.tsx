@@ -108,6 +108,10 @@ export function LivenessQuickStart({ cedula }: Props) {
               message = JSON.parse(message).Message?.split(':')[0];
             }
 
+            if (message.includes('Signature')) {
+              AlertError(intl.liveness.error.signature);
+            }
+
             if (state === 'CAMERA_ACCESS_ERROR') {
               AlertError(intl.liveness.camera.notFound.heading);
             }

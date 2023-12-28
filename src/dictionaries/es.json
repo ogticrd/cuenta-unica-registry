@@ -124,6 +124,7 @@
       "permissions": "Procesar de nuevo"
     },
     "error": {
+      "signature": "Firma expirada. Verifique la configuración de hora de su sistema e intente de nuevo.",
       "timeout": {
         "heading": "Se acabó el tiempo",
         "message": "La cara no llenó el óvalo dentro del límite de tiempo. Vuelva a intentarlo y llene completamente el óvalo con la cara en 7 segundos."

@@ -124,6 +124,7 @@
       "permissions": "Process again"
     },
     "error": {
+      "signature": "Signature has expired. Please verify your system's time settings and attempt again.",
       "timeout": {
         "heading": "Time's up",
         "message": "The face did not fill the oval within the time limit. Try again and completely fill the oval with your face in 7 seconds."
