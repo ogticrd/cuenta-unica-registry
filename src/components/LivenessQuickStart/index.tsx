@@ -102,11 +102,17 @@ export function LivenessQuickStart({ cedula }: Props) {
           region="us-east-1"
           onUserCancel={onUserCancel}
           onError={({ error, state }) => {
+            let message = error.message;
+
+            if (message.includes('{"Message"')) {
+              message = JSON.parse(message).Message?.split(':')[0];
+            }
+
             if (state === 'CAMERA_ACCESS_ERROR') {
               AlertError(intl.liveness.camera.notFound.heading);
             }
 
-            Sentry.captureMessage(error.message, {
+            Sentry.captureMessage(message, {
               user: { id: cedula },
               extra: { state, error },
               level: 'error',
