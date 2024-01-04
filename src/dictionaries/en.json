@@ -232,7 +232,8 @@
     },
     "password": {
       "empty": "Password cannot be empty",
-      "noMatch": "Passwords do not match"
+      "noMatch": "Passwords do not match",
+      "hasID": "Your password cannot contain your ID number."
     },
     "required": "Required field"
   },
