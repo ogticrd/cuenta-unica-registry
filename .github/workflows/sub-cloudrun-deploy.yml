@@ -58,7 +58,9 @@ jobs:
           script: |
             return context.payload.release.tag_name.substring(0,2)
       - uses: actions/checkout@v4
-      - run: |
+      - name: Check if release matches package version
+        if: ${{ github.event_name == 'release' }}
+        run: |
           if [[ "${{ steps.get.outputs.result }}" != "$(jq -r .version package.json)" ]]; then
             echo "Release number must match package version"
             exit 1
