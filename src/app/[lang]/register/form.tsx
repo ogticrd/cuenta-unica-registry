@@ -187,7 +187,10 @@ export function Form({ cedula }: Props) {
           .flatMap((n) => n.messages);
 
         const errors = new Array<Message>().concat(messages, nodes, error?.id);
-        const message = errors.map((msg) => msg.text).join(', ');
+        const message = errors
+          .map((msg) => msg?.text)
+          .filter(Boolean)
+          .join(', ');
 
         Sentry.captureMessage(message, {
           user: { id: cedula, email: getValues('email') },
@@ -323,8 +326,6 @@ export function Form({ cedula }: Props) {
     </>
   );
 }
-
-const initialLevel = { id: 0 } as Result<string>;
 
 function doNothing<T extends SyntheticEvent<HTMLElement>>(e: T) {
   e.preventDefault();
