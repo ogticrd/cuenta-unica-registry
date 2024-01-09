@@ -61,7 +61,7 @@ jobs:
       - name: Check if release matches package version
         if: ${{ github.event_name == 'release' }}
         run: |
-          if [[ "${{ steps.get.outputs.result }}" != "$(jq -r .version package.json)" ]]; then
+          if [[ "${{ github.ref_name }}" != "$(jq -r .version package.json)" ]]; then
             echo "Release number must match package version"
             exit 1
           fi
