@@ -14,7 +14,6 @@ namespace NodeJS {
     CITIZENS_API_AUTH_KEY?: string;
     NEXT_PUBLIC_ORY_SDK_URL?: string;
     ORY_SDK_TOKEN?: string;
-    PWNED_KEY?: string;
     LIVENESS_CONFIDENCE_THRESHOLD?: number;
     LIVENESS_SIMILARITY_THRESHOLD?: number;
     NEXT_PUBLIC_SENTRY_DSN?: string;
