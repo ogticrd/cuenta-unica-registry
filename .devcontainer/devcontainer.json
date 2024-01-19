@@ -1,0 +1,36 @@
+{
+	"name": "Cuenta Única Ciudadana",
+	"dockerComposeFile": "../docker-compose.dev.yml",
+	"service": "cuenta_unica",
+	"workspaceFolder": "/app",
+	"shutdownAction": "stopCompose",
+	"postCreateCommand": "npm i",
+	"customizations": {
+	  "vscode": {
+		"settings": {
+		  "terminal.integrated.shell.linux": "/bin/bash",
+		  "editor.fontSize": 15,
+		  "editor.formatOnSave": true,
+		  "workbench.iconTheme": "material-icon-theme"
+		},
+		"extensions": [
+		  "github.vscode-github-actions",
+		  "GitHub.vscode-pull-request-github",
+		  "eamodio.gitlens",
+		  "aaron-bond.better-comments",
+		  "ms-vscode.vscode-typescript-next",
+		  "xabikos.JavaScriptSnippets",
+		  "PKief.material-icon-theme",
+		  "christian-kohler.npm-intellisense",
+		  "christian-kohler.path-intellisense",
+		  "esbenp.prettier-vscode",
+		  "wayou.vscode-todo-highlight",
+		  "redhat.vscode-yaml",
+		  "ms-azuretools.vscode-docker",
+		  "mikestead.dotenv",
+		  "usernamehw.errorlens",
+		  "dsznajder.es7-react-js-snippets"
+		]
+	  }
+	}
+  }
