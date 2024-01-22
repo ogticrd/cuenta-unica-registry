@@ -57,6 +57,14 @@ jobs:
           result-encoding: string
           script: |
             return context.payload.release.tag_name.substring(0,2)
+      - uses: actions/checkout@v4
+      - name: Check if release matches package version
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          if [[ "${{ github.ref_name }}" != "$(jq -r .version package.json)" ]]; then
+            echo "Release number must match package version"
+            exit 1
+          fi
       - name: Setting API Version
         id: set
         run: echo "version=${{ steps.get.outputs.result }}" >> "$GITHUB_OUTPUT"
@@ -84,7 +92,7 @@ jobs:
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2.0.0
+        uses: google-github-actions/setup-gcloud@v2.0.1
 
       - name: Deploy to cloud run
         id: deploy

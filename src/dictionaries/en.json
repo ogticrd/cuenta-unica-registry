@@ -124,6 +124,7 @@
       "permissions": "Process again"
     },
     "error": {
+      "signature": "Signature has expired. Please verify your system's time settings and attempt again.",
       "timeout": {
         "heading": "Time's up",
         "message": "The face did not fill the oval within the time limit. Try again and completely fill the oval with your face in 7 seconds."
@@ -239,5 +240,10 @@
   },
   "warnings": {
     "breachedPassword": "This password has been in data breaches, so it is not considered safe. We recommend you choose another password."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "Could not find requested resource",
+    "returnHome": "Return Home"
   }
 }
