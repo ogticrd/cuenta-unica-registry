@@ -2,7 +2,7 @@
 	"name": "Cuenta Única Ciudadana",
 	"image": "node:lts",
 	"hostRequirements": {
-	  "cpus": 5
+	  "cpus": 2
 	},
 	"waitFor": "onCreateCommand",
 	"postAttachCommand": {
