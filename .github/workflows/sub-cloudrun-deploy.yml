@@ -86,7 +86,7 @@ jobs:
 
       - name: Authenticate to GCP
         id: auth
-        uses: google-github-actions/auth@v2.0.0
+        uses: google-github-actions/auth@v2.0.1
         with:
           project_id: ${{ vars.GOOGLE_PROJECT_ID || inputs.project_id }}
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: Deploy to cloud run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2.0.0
+        uses: google-github-actions/deploy-cloudrun@v2.1.0
         with:
           image: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ inputs.app_name }}@${{ inputs.image_digest }}
           service: ${{ inputs.app_name }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
