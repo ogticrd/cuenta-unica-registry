@@ -92,11 +92,11 @@ jobs:
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2.0.1
+        uses: google-github-actions/setup-gcloud@v2.1.0
 
       - name: Deploy to cloud run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2.1.0
+        uses: google-github-actions/deploy-cloudrun@v2.2.0
         with:
           image: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ inputs.app_name }}@${{ inputs.image_digest }}
           service: ${{ inputs.app_name }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
