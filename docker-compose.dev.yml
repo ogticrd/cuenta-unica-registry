@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  cuenta_unica:
+    container_name: cuenta_unica
+    image: node
+    environment:
+      - CEDULA_API
+      - CEDULA_API_KEY
+      - JCE_PHOTO_API
+      - JCE_PHOTO_API_KEY
+      - ENCRYPTION_KEY
+      - RECAPTHA_API_KEY
+      - RECAPTHA_PROJECT_ID
+      - SITE_COOKIE_KEY
+      - NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+      - NEXT_PUBLIC_GOOGLE_ANALYTICS
+      - CEDULA_TOKEN_API
+      - CITIZENS_API_AUTH_KEY
+      - ORY_SDK_URL
+      - NEXT_PUBLIC_ORY_SDK_URL
+      - ORY_SDK_TOKEN
+      - NEXT_PUBLIC_API_MOCKING
+      - LIVENESS_THRESHOLD_VALUE
+      - LIVENESS_SIMILARIY_VALUE
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    networks:
+      - cuenta_unica_network
+    tty: true
+
+networks:
+  cuenta_unica_network:
+    driver: bridge
