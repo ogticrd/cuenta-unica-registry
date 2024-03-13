@@ -54,11 +54,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 # Rebuild the source code only when needed
 FROM base AS build
 
-RUN <<EOF
-    apt-get update
-    apt-get install -y ca-certificates
-    rm -rf /var/lib/apt/lists/*
-EOF
+RUN apt-get update \
+    && apt-get install -y ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
