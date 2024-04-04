@@ -63,10 +63,10 @@ export function Form({ cedula }: Props) {
           level: 'error',
           extra: err.config
             ? {
-              message: err.message,
-              url: err.config.url,
-              method: err.config.method.toUpperCase(),
-            }
+                message: err.message,
+                url: err.config.url,
+                method: err.config.method.toUpperCase(),
+              }
             : undefined,
         });
         AlertWarning(intl.errors.registration.flow);
