@@ -234,7 +234,8 @@
     "password": {
       "empty": "Password cannot be empty",
       "noMatch": "Passwords do not match",
-      "hasID": "Your password cannot contain your ID number."
+      "minimum": "The Password must contain at least 10 characters.",
+      "similarity": "The Password cannot contain parts of your ID or Email"
     },
     "required": "Required field"
   },
