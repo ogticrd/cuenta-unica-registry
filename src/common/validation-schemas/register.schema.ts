@@ -10,17 +10,22 @@ export const createRegisterSchema = (
     .object({
       email: z.string().email(validations.email.invalid),
       emailConfirm: z.string().email(validations.email.invalid),
-      password: z.string().min(8),
-      passwordConfirm: z.string().min(8),
+      password: z.string().min(10, validations.password.minimum),
+      passwordConfirm: z.string().min(10, validations.password.minimum),
     })
-    .refine(({ password }) => !password.includes(cedula), {
-      message: validations.password.hasID,
-      path: ['password'],
-    })
-    .refine(({ passwordConfirm }) => !passwordConfirm.includes(cedula), {
-      message: validations.password.hasID,
-      path: ['passwordConfirm'],
-    })
+    .refine(
+      (data) => {
+        const [email] = data.email.split('@');
+        return (
+          !data.password.includes(cedula) &&
+          !data.password.toLowerCase().includes(email.toLowerCase())
+        );
+      },
+      {
+        message: validations.password.similarity,
+        path: ['password'],
+      },
+    )
     .refine((data) => data.email === data.emailConfirm, {
       message: validations.email.noMatch,
       path: ['emailConfirm'],
