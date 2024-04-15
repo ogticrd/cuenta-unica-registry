@@ -234,7 +234,8 @@
     "password": {
       "empty": "La Contraseña no puede estar vacía",
       "noMatch": "Las Contraseñas no coinciden",
-      "hasID": "La contraseña no puede contener el número de cédula."
+      "minimum": "La Contraseña debe contener al menos 10 caracteres.",
+      "similarity": "La Contraseña no puede contener partes de su cédula o Correo Electrónico."
     },
     "required": "Campo requerido"
   },
