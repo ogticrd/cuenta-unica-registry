@@ -95,24 +95,25 @@ export function Form() {
       const { isHuman } = await validateRecaptcha(reCaptchaToken);
 
       if (!isHuman) {
+        setLoading(false);
         return AlertError(intl.errors.recaptcha.validation);
       }
 
       const { exists } = await findIamCitizen(cedula);
 
       if (exists) {
+        setLoading(false);
         return AlertError(intl.errors.cedula.exists);
       }
 
       const citizen = await findCitizen(cedula);
       await setCookie('citizen', citizen);
       router.push('liveness');
+      setLoading(false);
     } catch (err: any) {
       Sentry.captureMessage(err.message || err, 'error');
-
-      return AlertError(intl.errors.cedula.invalid);
-    } finally {
       setLoading(false);
+      return AlertError(intl.errors.cedula.invalid);
     }
   });
 
