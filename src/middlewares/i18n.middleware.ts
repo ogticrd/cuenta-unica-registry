@@ -32,5 +32,6 @@ function getLocale(request: NextRequest): string | undefined {
   // Use negotiator and intl-localematcher to get best locale
   let languages = new Negotiator({ headers }).languages(locales);
 
-  return matchLocale(languages, locales, i18n.defaultLocale);
+  // return matchLocale(languages, locales, i18n.defaultLocale);
+  return 'es';
 }
