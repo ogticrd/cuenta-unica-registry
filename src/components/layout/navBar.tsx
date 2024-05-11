@@ -11,6 +11,7 @@ import styles from './styles.module.css';
 
 import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
+import { LanguageSelector } from './languageSelector';
 
 export default function Index() {
   const { intl } = useLanguage();
@@ -41,8 +42,8 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
+              <LanguageSelector />
               <ButtonApp
-                variant="outlined"
                 notFullWidth
                 onClick={() =>
                   window.open('https://mi.cuentaunica.gob.do/ui/login')
