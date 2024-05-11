@@ -36,7 +36,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
   const { handleSubmit, setValue } = useForm<VerificationForm>({
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(createVerificationSchema({ intl })),
+    resolver: zodResolver(createVerificationSchema(intl)),
   });
 
   const [loading, setLoading] = useState(false);

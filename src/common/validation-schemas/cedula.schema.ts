@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
 
-export const createCedulaSchema = ({ intl: { validations } }: Context) =>
+export const createCedulaSchema = ({ validations }: Context['intl']) =>
   z.object({
     cedula: z
       .string()

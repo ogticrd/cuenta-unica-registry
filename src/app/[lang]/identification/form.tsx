@@ -45,7 +45,7 @@ export function Form() {
     watch,
   } = useForm<CedulaForm>({
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(createCedulaSchema({ intl })),
+    resolver: zodResolver(createCedulaSchema(intl)),
   });
 
   const cedulaFormValue = watch('cedula', '');
