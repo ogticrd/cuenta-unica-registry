@@ -145,7 +145,9 @@ export function Form({ cedula }: Props) {
           username: citizen.id,
           name: {
             first: citizen.names,
-            last: `${citizen.firstSurname} ${citizen.secondSurname}`,
+            last: [citizen.firstSurname, citizen.secondSurname]
+              .filter(Boolean)
+              .join(' '),
           },
           birthdate: citizen.birthDate,
           gender: citizen.gender,
