@@ -9,12 +9,12 @@ import Link from 'next/link';
 import Logo from '@public/assets/logo.svg';
 import styles from './styles.module.css';
 
+import { LanguageSelector } from './languageSelector';
 import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
-import { LanguageSelector } from './languageSelector';
 
 export default function Index() {
-  const { intl } = useLanguage();
+  const { intl, locales } = useLanguage();
 
   return (
     <>
@@ -42,7 +42,9 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
-              <LanguageSelector />
+              <LanguageSelector
+                other={locales.find((l) => l !== intl.language)!}
+              />
               <ButtonApp
                 notFullWidth
                 onClick={() =>

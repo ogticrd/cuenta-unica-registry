@@ -1,40 +1,48 @@
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-import ESLanguage from '@public/assets/es-language.svg';
-import ENLanguage from '@public/assets/en-language.svg';
-import { useLanguage } from '@/app/[lang]/provider';
-import { ButtonApp } from '../elements/button';
+import esicon from '@public/assets/es-language.svg';
+import enicon from '@public/assets/en-language.svg';
+import esdata from '../../dictionaries/es.json';
+import endata from '../../dictionaries/en.json';
 
-export const LanguageSelector = () => {
-    const { intl } = useLanguage();
+import { ButtonApp } from '@/components/elements/button';
+import { Locale } from '@/i18n-config';
 
-    const handleLanguageChange = () => {
-        return window.location.href = `/${intl.language === 'en' ? 'es' : 'en'}/identification`;
-    };
+const locales = {
+  es: {
+    icon: esicon.src,
+    name: esdata.languageName,
+  },
+  en: {
+    icon: enicon.src,
+    name: endata.languageName,
+  },
+};
 
-    return (
-        <div
-            style={{ marginRight: '16px' }}
-        >
-            <ButtonApp
-                variant='outlined'
-                startIcon={
-                    <Image
-                        src={intl.language === 'en' ? ESLanguage.src : ENLanguage.src}
-                        alt="icon language"
-                        width="24"
-                        height="24"
-                    />
-                }
-                onClick={() => handleLanguageChange()}
-            >
-                {intl.language === 'en'
-                    ?
-                    'Español'
-                    :
-                    'English'
-                }
-            </ButtonApp>
-        </div>
-    );
-}
+export const LanguageSelector = ({ other }: { other: Locale }) => {
+  const router = useRouter();
+
+  const changeLanguage = () => {
+    router.push(`/${other}/identification`);
+  };
+
+  return (
+    <div style={{ marginRight: 16 }}>
+      <ButtonApp
+        variant="outlined"
+        startIcon={
+          <Image
+            src={locales[other].icon}
+            alt="language icon"
+            width="24"
+            height="24"
+          />
+        }
+        onClick={changeLanguage}
+      >
+        {locales[other].name}
+      </ButtonApp>
+    </div>
+  );
+};
