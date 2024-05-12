@@ -1,5 +1,7 @@
 name: Lint Code Base
 
+permissions: read-all
+
 on:
   pull_request:
     branches: [master]
