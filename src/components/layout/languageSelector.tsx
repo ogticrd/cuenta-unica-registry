@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 import esicon from '@public/assets/es-language.svg';
@@ -21,10 +20,8 @@ const locales = {
 };
 
 export const LanguageSelector = ({ other }: { other: Locale }) => {
-  const router = useRouter();
-
   const changeLanguage = () => {
-    router.push(`/${other}/identification`);
+    window.location.href = `/${other}/identification`;
   };
 
   return (
