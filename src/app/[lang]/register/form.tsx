@@ -165,7 +165,7 @@ export function Form({ cedula }: Props) {
         );
 
         if (item) {
-          return router.push(`/en/verification?flow=${item?.flow.id}`);
+          return router.push(`/verification?flow=${item?.flow.id}`);
         }
       }
 
