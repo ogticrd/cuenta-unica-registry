@@ -35,7 +35,7 @@ jobs:
       image_digest: ${{ steps.docker_build.outputs.digest }}
     permissions:
       contents: read
-      id-token: write
+      id-token: read
     environment:
       name: ${{ inputs.environment }}
     steps:
