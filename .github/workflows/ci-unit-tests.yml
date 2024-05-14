@@ -77,7 +77,7 @@ jobs:
 
       - name: Install and Build
         run: |
-          pnpm build
+          pnpm install
           pnpm test
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
