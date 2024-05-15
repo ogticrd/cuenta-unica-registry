@@ -19,7 +19,8 @@
     "start": "next start",
     "lint": "next lint",
     "commitlint": "commitlint --edit",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "test": "vitest"
   },
   "engines": {
     "npm": ">=10.1.0 <11.0.0",
