@@ -36,7 +36,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
   const { handleSubmit, setValue } = useForm<VerificationForm>({
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(createVerificationSchema({ intl })),
+    resolver: zodResolver(createVerificationSchema(intl)),
   });
 
   const [loading, setLoading] = useState(false);
@@ -99,7 +99,7 @@ export function Form({ flow, returnTo, code }: Props) {
             // Status code 410 means the request has expired - so let's load a fresh flow!
             case 403:
               // Status code 403 implies some other issue (e.g. CSRF) - let's reload!
-              return router.push('/en/verification');
+              return router.push('/verification');
           }
 
           throw new Error(err);
