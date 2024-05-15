@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:docker": "scripts/docker-build.sh",
     "start": "next start",
     "lint": "next lint",
     "commitlint": "commitlint --edit",
