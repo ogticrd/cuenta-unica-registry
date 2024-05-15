@@ -64,7 +64,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4.0.0
         with:
-          version: 8
+          version: 9
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4.0.2
@@ -73,11 +73,9 @@ jobs:
           cache: pnpm
 
       - name: Audit for vulnerabilities
-        run: npx audit-ci@^6 --config ./audit-ci.jsonc
+        run: pnpm audit
 
       - name: Install and Build
         run: |
           pnpm install
           pnpm test
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
