@@ -19,7 +19,8 @@
     "start": "next start",
     "lint": "next lint",
     "commitlint": "commitlint --edit",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "test": "vitest"
   },
   "engines": {
     "npm": ">=10.1.0 <11.0.0",
@@ -80,6 +81,7 @@
     "husky": "^8.0.3",
     "install-peers": "^1.0.4",
     "lint-staged": "^15.1.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "vitest": "^1.6.0"
   }
 }
