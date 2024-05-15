@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Context } from '@/app/[lang]/provider';
 
 export const createRegisterSchema = (
-  { intl: { validations } }: Context,
+  { validations }: Context['intl'],
   cedula: string,
 ) =>
   z

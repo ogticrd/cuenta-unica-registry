@@ -9,10 +9,8 @@ import type {
 } from '@aws-amplify/ui-react-liveness/dist/types/components/FaceLivenessDetector/displayText';
 
 export const useLocalizedText = ({
-  intl: {
-    liveness: { hints, camera, instructions, stream, error },
-  },
-}: Context) =>
+  liveness: { hints, camera, instructions, stream, error },
+}: Context['intl']) =>
   ({
     ...({
       hintMoveFaceFrontOfCameraText: hints.moveFaceFrontOfCamera,
