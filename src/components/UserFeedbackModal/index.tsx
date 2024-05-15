@@ -27,7 +27,7 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
     register,
     reset,
   } = useForm<Report>({
-    resolver: zodResolver(createReportSchema({ intl })),
+    resolver: zodResolver(createReportSchema(intl)),
   });
 
   const sendFeedback = handleSubmit(({ email, comments, name = '' }) => {

@@ -1,7 +1,8 @@
 'use client';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import { getDictionary } from '@/dictionaries';
+import { i18n } from '@/i18n-config';
 
 type Props = {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ type Props = {
 export function LanguageProvider({ children, intl }: Props) {
   const contextValue = {
     intl,
+    locales: i18n.locales,
   };
 
   return (
@@ -21,7 +23,7 @@ export function LanguageProvider({ children, intl }: Props) {
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
+  const context = use(LanguageContext);
 
   if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
@@ -32,4 +34,7 @@ export function useLanguage() {
 
 export const LanguageContext = createContext({} as Context);
 
-export type Context = { intl: Props['intl'] };
+export type Context = {
+  intl: Props['intl'];
+  locales: (typeof i18n)['locales'];
+};

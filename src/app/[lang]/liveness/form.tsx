@@ -45,7 +45,7 @@ export function Form({ cedula }: Props) {
     register,
     formState: { errors },
   } = useForm<TermsForm>({
-    resolver: zodResolver(createTermsSchema({ intl })),
+    resolver: zodResolver(createTermsSchema(intl)),
   });
 
   const onSubmit = handleSubmit(() => setOpen(true));

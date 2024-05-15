@@ -29,7 +29,7 @@ export function LivenessQuickStart({ cedula }: Props) {
 
   const { intl } = useLanguage();
 
-  const displayText = useLocalizedText({ intl });
+  const displayText = useLocalizedText(intl);
 
   const fetchCreateLiveness: () => Promise<void> = async () => {
     await fetch(`/api/biometric`, { method: 'POST' })

@@ -87,7 +87,7 @@ export function Form({ cedula }: Props) {
     watch,
   } = useForm<RegisterForm>({
     mode: 'onChange',
-    resolver: zodResolver(createRegisterSchema({ intl }, cedula)),
+    resolver: zodResolver(createRegisterSchema(intl, cedula)),
   });
 
   const password = watch('password');
@@ -145,7 +145,9 @@ export function Form({ cedula }: Props) {
           username: citizen.id,
           name: {
             first: citizen.names,
-            last: [citizen.firstSurname, citizen.secondSurname].join(' '),
+            last: [citizen.firstSurname, citizen.secondSurname]
+              .filter(Boolean)
+              .join(' '),
           },
           birthdate: citizen.birthDate,
           gender: citizen.gender,
@@ -163,7 +165,7 @@ export function Form({ cedula }: Props) {
         );
 
         if (item) {
-          return router.push(`/en/verification?flow=${item?.flow.id}`);
+          return router.push(`/verification?flow=${item?.flow.id}`);
         }
       }
 
