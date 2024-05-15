@@ -1,7 +1,5 @@
 name: Deploy to Cloud Run
 
-permissions: read-all
-
 on:
   workflow_call:
     inputs:
