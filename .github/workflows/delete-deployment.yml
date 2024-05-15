@@ -1,7 +1,5 @@
 name: Delete Cloud Run instances on PR closed by merged
 
-permissions: read-all
-
 on:
   pull_request:
     branches:
@@ -13,6 +11,16 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
+      - name: Check if Cloud Run service exists
+        id: check_service
+        run: |
+          SERVICE_NAME=${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
+          if gcloud run services describe $SERVICE_NAME --region=${{ vars.GCP_REGION }} > /dev/null 2>&1; then
+            echo "service_exists=true" >> $GITHUB_ENV
+          else
+            echo "service_exists=false" >> $GITHUB_ENV
+          fi
+
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4.5.0
 
@@ -25,8 +33,9 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
 
-      - name: 'Use gcloud CLI'
+      - name: 'Display information about the current gcloud environment'
         run: 'gcloud info'
 
-      - name: Use gcloud CLI
+      - name: 'Delete service'
+        if: env.service_exists == 'true'
         run: gcloud run services delete ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }} --region=${{ vars.GCP_REGION }} --quiet
