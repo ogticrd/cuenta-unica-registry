@@ -9,7 +9,6 @@ interface SnackbarState {
   vertical: 'top' | 'bottom';
   horizontal: 'left' | 'center' | 'right';
   open: boolean;
-  duration: number;
   content: string;
   severity: AlertProps['severity'];
 }
@@ -40,7 +39,6 @@ const SnackAlert: React.FC<SnackAlertProps> = ({ children }) => {
     vertical: 'bottom',
     horizontal: 'left',
     open: false,
-    duration: 6000,
     content: '',
     severity: 'success' as AlertProps['severity'],
   };
@@ -62,7 +60,7 @@ const SnackAlert: React.FC<SnackAlertProps> = ({ children }) => {
   const AlertSuccess = (text: string = 'Proceso realizado correctamente') =>
     handleOpen({ content: text, severity: 'success' });
 
-  const { vertical, horizontal, open, severity, content, duration } = snackbar;
+  const { vertical, horizontal, open, severity, content } = snackbar;
 
   return (
     <SnackAlertContext.Provider
@@ -70,7 +68,6 @@ const SnackAlert: React.FC<SnackAlertProps> = ({ children }) => {
     >
       {children}
       <Snackbar
-        autoHideDuration={duration}
         anchorOrigin={{ vertical, horizontal }}
         open={open}
         onClose={handleClose}
