@@ -50,6 +50,7 @@ export function Form() {
         }
       })
       .catch(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
@@ -59,7 +60,7 @@ export function Form() {
     watch,
   } = useForm<CedulaForm>({
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(createCedulaSchema({ intl })),
+    resolver: zodResolver(createCedulaSchema(intl)),
   });
 
   const cedulaFormValue = watch('cedula', '');

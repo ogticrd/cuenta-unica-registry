@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
 
-export const createReportSchema = ({ intl: { validations } }: Context) =>
+export const createReportSchema = ({ validations }: Context['intl']) =>
   z.object({
     email: z.string().email(validations.email.invalid),
     name: z.string().optional(),
