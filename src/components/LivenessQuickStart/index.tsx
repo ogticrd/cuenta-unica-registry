@@ -70,6 +70,7 @@ export function LivenessQuickStart({ cedula }: Props) {
 
   useEffect(() => {
     fetchCreateLiveness();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
