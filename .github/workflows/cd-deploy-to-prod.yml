@@ -1,7 +1,5 @@
 name: Deploy to prod
 
-permissions: read-all
-
 on:
   release:
     types:

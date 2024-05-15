@@ -1,7 +1,5 @@
 name: Build docker image
 
-permissions: read-all
-
 on:
   workflow_call:
     inputs:
