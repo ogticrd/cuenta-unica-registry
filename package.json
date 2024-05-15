@@ -27,6 +27,13 @@
     "npm": ">=10.1.0 <11.0.0",
     "node": ">=20.9.0 <21.0.0"
   },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreCves": [
+        "CVE-2024-34351"
+      ]
+    }
+  },
   "dependencies": {
     "@aws-amplify/ui-react": "^5.3.2",
     "@aws-amplify/ui-react-liveness": "^2.0.11",
