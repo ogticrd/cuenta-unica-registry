@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
   reactStrictMode: true,
   output: 'standalone',
   webpack: (config, { webpack, isServer, nextRuntime }) => {
