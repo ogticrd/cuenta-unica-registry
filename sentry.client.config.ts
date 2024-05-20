@@ -7,6 +7,8 @@ Sentry.init({
   tracesSampleRate: 1,
   debug: false,
 
+  enabled: process.env.NODE_ENV === 'production',
+
   // release: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
   release: `${name}@${version}`,
 
