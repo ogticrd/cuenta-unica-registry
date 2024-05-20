@@ -12,6 +12,7 @@ import styles from './styles.module.css';
 import { LanguageSelector } from './languageSelector';
 import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
+import { LOGIN_URL } from '@/common';
 
 export default function Index() {
   const { intl, locales } = useLanguage();
@@ -45,12 +46,7 @@ export default function Index() {
               <LanguageSelector
                 other={locales.find((l) => l !== intl.language)!}
               />
-              <ButtonApp
-                notFullWidth
-                onClick={() =>
-                  window.open('https://mi.cuentaunica.gob.do/ui/login')
-                }
-              >
+              <ButtonApp notFullWidth onClick={() => window.open(LOGIN_URL)}>
                 {intl.actions.login}
               </ButtonApp>
             </Toolbar>

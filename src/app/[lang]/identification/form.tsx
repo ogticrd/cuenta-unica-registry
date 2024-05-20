@@ -28,6 +28,7 @@ import { Validations } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
 import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
+import { LOGIN_URL } from '@/common';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
@@ -44,9 +45,7 @@ export function Form() {
       .toSession()
       .then(({ data }) => {
         if (data.active) {
-          return router.push('https://mi.cuentaunica.gob.do/ui/login');
-        } else {
-          setLoading(false);
+          return router.push(LOGIN_URL);
         }
       })
       .catch(() => setLoading(false));
@@ -158,10 +157,7 @@ export function Form() {
         <GridContainer>
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
-              <Link
-                href={'https://mi.cuentaunica.gob.do/ui/login'}
-                style={{ textDecoration: 'none' }}
-              >
+              <Link href={LOGIN_URL} style={{ textDecoration: 'none' }}>
                 <span style={{ color: theme.palette.primary.main }}>
                   {intl.alreadyRegistered}
                 </span>{' '}
