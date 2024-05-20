@@ -25,9 +25,9 @@ import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
-import { ory } from '@/common/lib/ory';
 import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
+import { ory } from '@/common/lib/ory';
 import { LOGIN_URL } from '@/common';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
@@ -48,7 +48,7 @@ export function Form() {
           return router.push(LOGIN_URL);
         }
       })
-      .catch(() => setLoading(false));
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
