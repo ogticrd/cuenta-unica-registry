@@ -39,7 +39,7 @@ body:
         Copie y pegue cualquier log output relevante
       render: shell
     validations:
-      required: true
+      required: false
   - type: textarea
     attributes:
       label: Pasos para reproducir
@@ -51,33 +51,19 @@ body:
         1. Run '...'
         1. See error...
     validations:
-      required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: "Browsers"
-      description: ¿En qué navegadores ves el problema?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
-        - Opera
-    validations:
       required: false
   - type: dropdown
-    id: os
+    id: plataforma
     attributes:
-      label: "OS"
+      label: "Plataforma"
       description: ¿Cuál es el medio ambiente impactado?
-      multiple: true
+      multiple: false
       options:
-        - Windows
-        - Linux
-        - Mac
+        - Android
+        - IOS
+        - Desktop
     validations:
-      required: false  
+      required: true  
   - type: textarea
     attributes:
       label: ¿Algo más?
