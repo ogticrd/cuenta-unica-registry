@@ -1,0 +1,87 @@
+---
+name: Bug report
+description: Crear un informe de error
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ¡Gracias por tomarse el tiempo para completar este informe de error!
+  - type: textarea
+    attributes:
+      label: Comportamiento Actual
+      description: Por favor ingrese una descripción explícita del problema (issue)
+      placeholder: Descripción breve y explícita de su incidente...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Screenshots"
+      description: Si corresponde, agregue capturas de pantalla para ayudar a explicar su problema.
+      value: |
+        ![DESCRIPCION](LINK.png)
+      render: bash
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Comportamiento Esperado
+      description: Una descripción concisa de lo que esperaba que suceda.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Salida de registro relevante (logs)
+      description: |
+        Copie y pegue cualquier log output relevante
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Pasos para reproducir
+      description: |
+        Steps to reproduce the issue.
+      placeholder: |
+        1. In this environment...
+        1. With this config...
+        1. Run '...'
+        1. See error...
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: "Browsers"
+      description: ¿En qué navegadores ves el problema?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Opera
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: "OS"
+      description: ¿Cuál es el medio ambiente impactado?
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - Mac
+    validations:
+      required: false  
+  - type: textarea
+    attributes:
+      label: ¿Algo más?
+      description: |
+        ¿Enlaces? ¿Referencias? ¡Cualquier cosa que nos brinde más contexto sobre el problema que encontro!
+    validations:
+      required: false

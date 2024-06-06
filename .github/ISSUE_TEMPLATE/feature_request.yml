@@ -1,0 +1,45 @@
+name: "💡 Feature Request"
+description: Sugiere una idea para este proyecto.
+labels: 
+  - enhancement
+body:
+  - type: input
+    id: start_date
+    attributes:
+      label: "Fecha de inicio"
+      description: Inicio del desarrollo
+      placeholder: "mes/dia/año"
+    validations:
+      required: false
+  - type: textarea
+    id: implementation_pr
+    attributes:
+      label: "Implementacion PR"
+      description: Pull request utilizado
+      placeholder: "#Pull Request ID"
+    validations:
+      required: false
+  - type: textarea
+    id: reference_issues
+    attributes:
+      label: "Referencia del Issue"
+      description: Issues
+      placeholder: "#Issues IDs"
+    validations:
+      required: false
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Resumen"
+      description: Proporcione una breve explicación del feature
+      placeholder: Describe en unas pocas líneas tu solicitud del feature
+    validations:
+      required: true
+  - type: textarea
+    id: drawbacks
+    attributes:
+      label: "Inconvenientes"
+      description: ¿Cuáles son los inconvenientes/impactos de la solicitud del feature?
+      placeholder: Identifique los inconvenientes y los impactos  en la solicitud del feature.
+    validations:
+      required: true
