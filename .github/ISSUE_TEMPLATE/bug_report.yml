@@ -3,6 +3,10 @@ name: Bug report
 description: Crear un informe de error
 labels:
   - bug
+assignees:
+  - marluanespiritusanto
+  - JeffreyArt1
+  - JE1999
 body:
   - type: markdown
     attributes:

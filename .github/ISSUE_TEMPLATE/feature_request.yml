@@ -2,6 +2,10 @@ name: "💡 Feature Request"
 description: Sugiere una idea para este proyecto.
 labels: 
   - enhancement
+assignees:
+  - marluanespiritusanto
+  - JeffreyArt1
+  - JE1999
 body:
   - type: input
     id: start_date
