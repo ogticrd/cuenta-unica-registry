@@ -8,7 +8,7 @@ body:
     attributes:
       label: "Fecha de inicio"
       description: Inicio del desarrollo
-      placeholder: "mes/dia/año"
+      placeholder: "Día/Mes/Año"
     validations:
       required: false
   - type: textarea
