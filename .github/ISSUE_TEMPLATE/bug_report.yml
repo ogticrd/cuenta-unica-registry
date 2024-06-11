@@ -25,6 +25,21 @@ body:
       render: bash
     validations:
       required: false
+- type: dropdown
+  id: severity
+  attributes:
+    label: Impacto de la gravedad
+    description: Elija la gravedad del impacto de este problema.
+    multiple: false
+    options:
+      - 'None'
+      - 'Bajo'
+      - 'Medio'
+      - 'Alta'
+      - 'Urgente'
+      - 'Otros'
+  validations:
+    required: true
   - type: textarea
     attributes:
       label: Comportamiento Esperado
@@ -44,16 +59,16 @@ body:
     attributes:
       label: Pasos para reproducir
       description: |
-        Steps to reproduce the issue.
+        Pasos para reproducir el problema.
       placeholder: |
-        1. In this environment...
-        1. With this config...
-        1. Run '...'
-        1. See error...
+        1. En este ambiente...
+        1. Con esta configuración...
+        1. Ejecute '...'
+        1. Observe el error...
     validations:
       required: false
   - type: dropdown
-    id: plataforma
+    id: platform
     attributes:
       label: "Plataforma"
       description: ¿Cuál es el medio ambiente impactado?
@@ -61,7 +76,9 @@ body:
       options:
         - Android
         - IOS
-        - Desktop
+        - Windows
+        - Mac
+        - Linux
     validations:
       required: true  
   - type: textarea
