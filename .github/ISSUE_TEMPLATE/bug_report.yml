@@ -36,7 +36,6 @@ body:
       description: Elija la gravedad del impacto de este problema.
       multiple: false
       options:
-        - 'None'
         - 'Bajo'
         - 'Medio'
         - 'Alta'
