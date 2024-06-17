@@ -34,23 +34,11 @@ type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const { AlertError, AlertWarning } = useSnackAlert();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useReCaptcha();
   const router = useRouter();
 
   const { intl } = useLanguage();
-
-  useEffect(() => {
-    ory
-      .toSession()
-      .then(({ data }) => {
-        if (data.active) {
-          return router.push(LOGIN_URL);
-        }
-      })
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const {
     handleSubmit,
