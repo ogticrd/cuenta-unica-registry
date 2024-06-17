@@ -7,7 +7,7 @@ import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { z } from 'zod';
 
@@ -27,7 +27,6 @@ import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
 import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
-import { ory } from '@/common/lib/ory';
 import { LOGIN_URL } from '@/common';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
