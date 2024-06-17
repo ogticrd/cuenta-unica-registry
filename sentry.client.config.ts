@@ -7,6 +7,8 @@ Sentry.init({
   tracesSampleRate: 1,
   debug: false,
 
+  enabled: process.env.NODE_ENV === 'production',
+
   // release: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
   release: `${name}@${version}`,
 
@@ -16,7 +18,7 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   // You can remove this option if you're not planning to use the Sentry Session Replay feature:
   integrations: [
-    new Sentry.Replay({
+    Sentry.replayIntegration({
       // Additional Replay configuration goes in here, for example:
       maskAllText: false,
       blockAllMedia: true,

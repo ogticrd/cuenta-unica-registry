@@ -7,7 +7,7 @@ import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { z } from 'zod';
 
@@ -25,33 +25,19 @@ import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { Validations } from '@/common/helpers';
-import { ory } from '@/common/lib/ory';
 import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
+import { LOGIN_URL } from '@/common';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const { AlertError, AlertWarning } = useSnackAlert();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useReCaptcha();
   const router = useRouter();
 
   const { intl } = useLanguage();
-
-  useEffect(() => {
-    ory
-      .toSession()
-      .then(({ data }) => {
-        if (data.active) {
-          return router.push('https://mi.cuentaunica.gob.do/ui/login');
-        } else {
-          setLoading(false);
-        }
-      })
-      .catch(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const {
     handleSubmit,
@@ -158,10 +144,7 @@ export function Form() {
         <GridContainer>
           <GridItem md={12} lg={12}>
             <TextBodyTiny textCenter>
-              <Link
-                href={'https://mi.cuentaunica.gob.do/ui/login'}
-                style={{ textDecoration: 'none' }}
-              >
+              <Link href={LOGIN_URL} style={{ textDecoration: 'none' }}>
                 <span style={{ color: theme.palette.primary.main }}>
                   {intl.alreadyRegistered}
                 </span>{' '}

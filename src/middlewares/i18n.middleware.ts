@@ -5,7 +5,7 @@ import Negotiator from 'negotiator';
 import { i18n } from '@/i18n-config';
 
 export default function internationalize(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   const pathnameIsMissingLocale = i18n.locales.every(
     (locale) =>
@@ -17,7 +17,7 @@ export default function internationalize(request: NextRequest) {
     const prefix = pathname.startsWith('/') ? '' : '/';
 
     return NextResponse.redirect(
-      new URL(`/${locale}${prefix}${pathname}`, request.url),
+      new URL(`/${locale}${prefix}${pathname}${search}`, request.url),
     );
   }
 }
