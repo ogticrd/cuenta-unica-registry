@@ -3,6 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     instrumentationHook: true,
+    serverComponentsExternalPackages: [
+      '@aws-amplify/adapter-nextjs',
+      'aws-amplify',
+    ],
   },
   output: 'standalone',
   webpack: (config, { webpack, isServer, nextRuntime }) => {
