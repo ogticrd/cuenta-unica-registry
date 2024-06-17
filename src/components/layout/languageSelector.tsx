@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 
 import esicon from '@public/assets/es-language.svg';
@@ -6,7 +8,7 @@ import esdata from '../../dictionaries/es.json';
 import endata from '../../dictionaries/en.json';
 
 import { ButtonApp } from '@/components/elements/button';
-import { Locale } from '@/i18n-config';
+import { useLanguage } from '@/app/[lang]/provider';
 
 const locales = {
   es: {
@@ -19,7 +21,10 @@ const locales = {
   },
 };
 
-export const LanguageSelector = ({ other }: { other: Locale }) => {
+export const LanguageSelector = () => {
+  const { intl, locales: langs } = useLanguage();
+  const other = langs.find((l) => l !== intl.language)!;
+
   const changeLanguage = () => {
     window.location.href = `/${other}/identification`;
   };
