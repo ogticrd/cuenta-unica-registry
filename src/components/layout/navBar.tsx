@@ -28,7 +28,7 @@ export default async function NavBar({ intl }: Props) {
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar sx={{ padding: '0px', height: '72px' }}>
               <div className={styles.logo}>
-                <Link href={'/'}>
+                <Link href={`/${intl.language}/identification`}>
                   <Image src={Logo.src} alt="logo" width="105" height="52" />
                 </Link>
               </div>
