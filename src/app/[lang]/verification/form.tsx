@@ -110,9 +110,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
     // Otherwise we initialize it
     ory
-      .createBrowserVerificationFlow({
-        returnTo,
-      })
+      .createBrowserVerificationFlow({ returnTo })
       .then(({ data }) => setCurrentFlow(data))
       .catch((err: any) => {
         switch (err.response?.status) {
@@ -215,6 +213,7 @@ export function Form({ flow, returnTo, code }: Props) {
                       },
                     }}
                     className={styles.verification_input}
+                    sx={{ caretColor: 'transparent' }}
                   />
                 </Tooltip>
               ))}
