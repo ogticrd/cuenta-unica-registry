@@ -4,7 +4,7 @@
 
 [![Linters](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/ci-check-linters.yml)
 [![Staging Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-test.yml)
-[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml/badge.svg)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml)
+[![Prod Deployment](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml/badge.svg?cache-buster=2)](https://github.com/opticrd/cuenta-unica-registry/actions/workflows/cd-deploy-to-prod.yml)
 [![License](https://img.shields.io/github/license/opticrd/cuenta-unica-registry?style&color=blue)](LICENSE)
 
 ## Tabla de contenidos
