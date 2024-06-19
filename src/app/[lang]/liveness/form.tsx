@@ -147,7 +147,7 @@ export function Form({ cedula }: Props) {
           <Box textAlign="center">
             <ButtonTextApp
               startIcon={<ArrowCircleLeftOutlinedIcon />}
-              onClick={router.back}
+              onClick={() => (window.location.href = '/identification')}
             >
               {intl.stepper.back}
             </ButtonTextApp>
