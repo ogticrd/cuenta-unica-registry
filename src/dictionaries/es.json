@@ -72,7 +72,8 @@
     "close": "Cerrar"
   },
   "loader": {
-    "cedula": "Validando cédula..."
+    "cedula": "Validando cédula...",
+    "longWait": "Gracias por tu paciencia, seguimos trabajando en tu solicitud."
   },
   "bug": {
     "title": "Envíanos tus sugerencias!",
