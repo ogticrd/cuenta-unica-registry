@@ -72,7 +72,8 @@
     "close": "Close"
   },
   "loader": {
-    "cedula": "Validating ID..."
+    "cedula": "Validating ID...",
+    "longWait": "Thank you for your patience, we continue working on your request."
   },
   "bug": {
     "title": "Send us your feedback!",
