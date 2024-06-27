@@ -2,7 +2,7 @@
 
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextField, Tooltip } from '@mui/material';
+import { CircularProgress, TextField, Tooltip } from '@mui/material';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -18,7 +18,6 @@ import {
   validateRecaptcha,
 } from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { createCedulaSchema } from '@/common/validation-schemas';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
@@ -106,8 +105,6 @@ export function Form() {
 
   return (
     <>
-      {loading ? <LoadingBackdrop text={intl.loader.cedula} /> : null}
-
       <form onSubmit={onSubmit}>
         <GridContainer>
           <GridItem lg={12} md={12}>
@@ -126,6 +123,11 @@ export function Form() {
                 }}
                 InputProps={{
                   inputComponent: CustomTextMask,
+                  endAdornment: loading ? (
+                    <div style={{ display: 'flex' }}>
+                      <CircularProgress size={28} />
+                    </div>
+                  ) : null,
                 }}
                 fullWidth
               />
@@ -134,7 +136,11 @@ export function Form() {
 
           <GridItem lg={12} md={12}>
             <br />
-            <ButtonApp submit endIcon={<ArrowCircleRightOutlinedIcon />}>
+            <ButtonApp
+              submit
+              endIcon={<ArrowCircleRightOutlinedIcon />}
+              disabled={loading}
+            >
               {intl.actions.confirm}
             </ButtonApp>
           </GridItem>
