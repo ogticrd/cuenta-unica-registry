@@ -31,7 +31,8 @@
     "subtitle": "Life proof",
     "description": "Next, we will validate your identity through facial verification and life test. Make sure to meet the following conditions:",
     "camera": "Use a device that has an integrated <b>camera</b>.",
-    "face": "Allow us to take captures of <b>your face.</b>"
+    "face": "Allow us to take captures of <b>your face.</b>",
+    "photosensitivity": "This verification displays <b>colored lights.</b> Be careful if you are photosensitive."
   },
   "step3": {
     "title": "Registration",

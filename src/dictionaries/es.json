@@ -31,7 +31,8 @@
     "subtitle": "Prueba de vida",
     "description": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
     "camera": "Utilizar un dispositivo que posea <b>cámara</b> integrada.",
-    "face": "Permitir que tomemos capturas de <b>tu rostro.</b>"
+    "face": "Permitir que tomemos capturas de <b>tu rostro.</b>",
+    "photosensitivity": "Esta verificación muestra <b>luces de colores.</b> Tenga cuidado si es fotosensible."
   },
   "step3": {
     "title": "Registro",
