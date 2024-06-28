@@ -120,7 +120,7 @@ export function LivenessQuickStart({ cedula }: Props) {
             });
           }}
           onAnalysisComplete={handleAnalysisComplete}
-          disableStartScreen={false}
+          disableStartScreen={true}
           displayText={displayText}
         />
       ) : null}
