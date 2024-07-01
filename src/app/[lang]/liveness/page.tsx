@@ -6,6 +6,7 @@ import Verification from '@public/assets/verification.svg';
 
 import { getDictionary } from '@/dictionaries';
 import { Steps } from '@/components/Steps';
+import { CitizenCookie } from '@/types';
 import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 import { Form } from './form';
@@ -13,7 +14,7 @@ import { Form } from './form';
 type Props = { params: { lang: Locale } };
 
 export default async function LivenessPage({ params: { lang } }: Props) {
-  const citizen = await getCookie('citizen');
+  const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
   if (!citizen) return redirect('identification');
