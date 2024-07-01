@@ -11,8 +11,11 @@ import styles from './page.module.css';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { getDictionary } from '@/dictionaries';
+import { CitizenCookie } from '@/types';
+import { getCookie } from '@/actions';
 
 export default async function ConfirmationPage({ params: { lang } }) {
+  const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
   const sites = [
@@ -60,10 +63,14 @@ export default async function ConfirmationPage({ params: { lang } }) {
           }}
           gutterBottom
         >
-          {intl.registered.header}
+          {intl.registered.header.replace('{name}', citizen?.name || '')}
         </Typography>
         <TextBody textCenter gutterBottom>
-          {intl.registered.body}
+          <span
+            dangerouslySetInnerHTML={{
+              __html: intl.registered.body.replace('{id}', citizen?.id || ''),
+            }}
+          />
         </TextBody>
       </GridItem>
 

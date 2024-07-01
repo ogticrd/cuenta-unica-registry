@@ -213,8 +213,8 @@
   },
   "registered": {
     "success": "Successful Account Registration",
-    "header": "Congratulations your Cuenta Única has been successfully created!",
-    "body": "Now you can view and carry out procedures and request government services with a single account and password.",
+    "header": "Congratulations {name}, your Cuenta Única has been successfully created!",
+    "body": "Now your ID <strong>{id}</strong> is the key to access government websites and applications with just one account and password.",
     "capabilities": "From now on, you can access: ",
     "feedback": {
       "title": "Help us improve:",

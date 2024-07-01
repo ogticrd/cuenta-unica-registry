@@ -213,8 +213,8 @@
   },
   "registered": {
     "success": "Registro de Cuenta Exitoso",
-    "header": "¡Felicidades, tu Cuenta Única Ciudadana se creó con éxito!",
-    "body": "Ahora tienes la llave para ingresar a portales web y aplicaciones del Estado con solo una cuenta y una contraseña.",
+    "header": "¡Felicidades {name}, tu Cuenta Única Ciudadana se creó con éxito!",
+    "body": "Ahora tu cédula <strong>{id}</strong> es la llave para ingresar a portales web y aplicaciones del Estado con solo una cuenta y una contraseña.",
     "capabilities": "Desde ahora, puedes ingresar a: ",
     "feedback": {
       "title": "Ayúdanos a mejorar:",
