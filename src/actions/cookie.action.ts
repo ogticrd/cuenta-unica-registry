@@ -12,8 +12,13 @@ export async function setCookie<T>(key: string, data: T) {
   });
 }
 
-export async function getCookie(key: string) {
-  const data = cookies().get(key);
+export async function getCookie<T>(key: string) {
+  let data = cookies().get(key)?.value;
 
-  return data ? JSON.parse(data.value) : null;
+  try {
+    data = JSON.parse(data || '{}');
+    return data as T;
+  } catch (err) {
+    return null;
+  }
 }

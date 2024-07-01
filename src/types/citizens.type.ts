@@ -37,3 +37,5 @@ export type CitizensDataFlow = {
   gender?: string;
   birthDate?: string;
 };
+
+export type CitizenCookie = { name: string; id: string };
