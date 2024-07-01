@@ -213,11 +213,18 @@
   },
   "registered": {
     "success": "Registro de Cuenta Exitoso",
-    "header": "¡Felicidades tu Cuenta Única Ciudadana ha sido creada con éxito!",
-    "body": "Ahora puedes ver y realizar tramites y solicitar servicios gubernamentales con una sola cuenta y contraseña.",
+    "header": "¡Felicidades, tu Cuenta Única Ciudadana se creó con éxito!",
+    "body": "Ahora tienes la llave para ingresar a portales web y aplicaciones del Estado con solo una cuenta y una contraseña.",
+    "capabilities": "Desde ahora, puedes ingresar a: ",
     "feedback": {
       "title": "Ayúdanos a mejorar:",
       "link": "¡Comparte tu opinión!"
+    },
+    "soon": "próximamente",
+    "descriptions": {
+      "gobdo": "Para consultar y realizar trámites o servicios desde la comodidad de tu hogar.",
+      "soyyo": "Donde tendrás todos tus datos en un solo lugar.",
+      "becas": "Para solicitudes de créditos educativos y becas."
     }
   },
   "validations": {
