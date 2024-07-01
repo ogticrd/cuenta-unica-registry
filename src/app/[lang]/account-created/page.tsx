@@ -12,9 +12,12 @@ import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { getDictionary } from '@/dictionaries';
 import { CitizenCookie } from '@/types';
+import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 
-export default async function ConfirmationPage({ params: { lang } }) {
+type Props = { params: { lang: Locale } };
+
+export default async function ConfirmationPage({ params: { lang } }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
