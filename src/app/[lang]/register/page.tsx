@@ -4,13 +4,14 @@ import { redirect } from 'next/navigation';
 import { getDictionary } from '@/dictionaries';
 import { Steps } from '@/components/Steps';
 import { Locale } from '@/i18n-config';
+import { CitizenCookie } from '@/types';
 import { getCookie } from '@/actions';
 import { Form } from './form';
 
 type Props = { params: { lang: Locale } };
 
 export default async function RegisterPage({ params: { lang } }: Props) {
-  const citizen = await getCookie('citizen');
+  const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
   if (!citizen) return redirect('identification');

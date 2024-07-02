@@ -78,6 +78,7 @@
   "bug": {
     "title": "Send us your feedback!",
     "comments": "Comments",
+    "cedula": "ID number",
     "name": "Name",
     "report": "Report",
     "sent": "Sent. Thank you for your feedback!"
@@ -219,11 +220,18 @@
   },
   "registered": {
     "success": "Successful Account Registration",
-    "header": "Congratulations your Cuenta Única has been successfully created!",
-    "body": "Now you can view and carry out procedures and request government services with a single account and password.",
+    "header": "Congratulations {name}, your Cuenta Única has been successfully created!",
+    "body": "Now your ID <strong>{id}</strong> is the key to access government websites and applications with just one account and password.",
+    "capabilities": "From now on, you can access: ",
     "feedback": {
       "title": "Help us improve:",
       "link": "Share your opinion!"
+    },
+    "soon": "coming soon",
+    "descriptions": {
+      "gobdo": "To consult and carry out procedures or services from the comfort of your home.",
+      "soyyo": "Where you will have all your data in one place.",
+      "becas": "For educational credit and scholarship applications."
     }
   },
   "validations": {

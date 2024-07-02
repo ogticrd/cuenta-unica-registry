@@ -1,7 +1,5 @@
-import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import { Alert, Modal, TextField, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import IconButton from '@mui/material/IconButton';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import Fade from '@mui/material/Fade';
@@ -13,6 +11,7 @@ import { createReportSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '../elements/grid';
 import { useLanguage } from '@/app/[lang]/provider';
 import { ButtonApp } from '../elements/button';
+import { CustomTextMask } from '../CustomTextMask';
 
 type Props = { open: boolean; onClose: () => void };
 type Report = z.infer<ReturnType<typeof createReportSchema>>;
@@ -30,17 +29,21 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
     resolver: zodResolver(createReportSchema(intl)),
   });
 
-  const sendFeedback = handleSubmit(({ email, comments, name = '' }) => {
-    Sentry.captureUserFeedback({
-      email,
-      comments,
-      name,
-      event_id: Sentry.captureMessage('User feedback'),
-    });
+  const sendFeedback = handleSubmit(
+    ({ cedula, email, comments, name = '' }) => {
+      Sentry.captureUserFeedback({
+        email,
+        comments,
+        name,
+        event_id: Sentry.captureMessage('User feedback', {
+          user: { id: cedula.replace(/-/g, ''), email },
+        }),
+      });
 
-    setTimeout(() => setSent(true), 213);
-    setTimeout(closeModal, 2300);
-  });
+      setTimeout(() => setSent(true), 213);
+      setTimeout(closeModal, 2300);
+    },
+  );
 
   const closeModal = () => {
     setSent(false);
@@ -85,6 +88,26 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
             </GridItem>
 
             <GridItem lg={12} md={12} sx={{ mt: 3 }}>
+              <TextField
+                required
+                {...register('cedula')}
+                label={intl.bug.cedula}
+                autoComplete="off"
+                placeholder="***-**00000-0"
+                disabled={sent}
+                error={Boolean(errors.cedula)}
+                helperText={errors?.cedula?.message}
+                inputProps={{
+                  inputMode: 'numeric',
+                }}
+                InputProps={{
+                  inputComponent: CustomTextMask,
+                }}
+                fullWidth
+              />
+            </GridItem>
+
+            <GridItem lg={12} md={12}>
               <TextField
                 {...register('name')}
                 label={intl.bug.name}
