@@ -8,7 +8,7 @@ export default function OfficialHeader() {
         defer
       />
 
-      <div style={{ height: 27, background: 'white' }}>
+      <div style={{ minHeight: 27, background: 'white' }}>
         <official-header />
       </div>
     </>
