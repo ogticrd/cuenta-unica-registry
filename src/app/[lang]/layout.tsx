@@ -1,10 +1,10 @@
-import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import type { Metadata, Viewport } from 'next';
 
 import LandingChica from '@public/assets/landingChica.svg';
-import '@public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
+import '@public/fonts/poppins_wght.css';
 import '@/styles/globals.css';
 
 import BoxContentCenter from '@/components/elements/boxContentCenter';
@@ -33,15 +33,15 @@ export const viewport: Viewport = {
 
 type Props = { children: React.ReactNode; params: { lang: Locale } };
 
-export default async function RootLayout({
-  children,
-  params: { lang },
-}: Props) {
-  const intl = await getDictionary(lang);
+export default async function RootLayout({ children, params }: Props) {
+  const intl = await getDictionary(params.lang);
+
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
 
   return (
-    <html lang={lang}>
-      <head>{GoogleTagManagerHead}</head>
+    <html lang={params.lang}>
+      <GoogleTagManager gtmId={gtmId} />
+
       <body suppressHydrationWarning={true}>
         <OfficialHeader />
 
@@ -63,7 +63,6 @@ export default async function RootLayout({
                     </CardAuth>
                   </BoxContentCenter>
                 </SnackAlert>
-                {GoogleTagManagerBody}
               </ReCaptchaProvider>
             </div>
 
