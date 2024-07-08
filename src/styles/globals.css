@@ -1,6 +1,7 @@
 /* Variables */
 :root {
   --primary-color: #003876;
+  --secondary-color: rgb(124, 174, 221);
 }
 
 /* Global styles */
@@ -23,6 +24,50 @@ div:has(
   display: none;
 }
 
-.amplify-flex p {
-  color: white;
+.amplify-button {
+  background: white;
+  border: 0.1rem solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 60px;
+}
+
+.amplify-alert__icon .amplify-icon svg {
+  color: rgb(209, 45, 63);
+}
+
+.amplify-button:hover {
+  background: #e3e3e3;
+  color: var(--primary-color);
+}
+
+.amplify-button:focus {
+  box-shadow: none;
+}
+
+[data-amplify-theme] {
+  --amplify-colors-font-primary: var(--primary-color);
+}
+
+.amplify-flex.amplify-liveness-hint {
+  background-color: var(--primary-color);
+  padding: 0.1rem;
+  border-radius: 0.5rem;
+
+  div {
+    border-radius: 0.4rem;
+    font-size: x-large;
+    color: var(--primary-color);
+  }
+}
+
+.amplify-liveness-toast {
+  background: white;
+}
+
+.amplify-liveness-match-indicator__bar::after {
+  background-color: var(--secondary-color);
+}
+
+.amplify-liveness-toast.amplify-liveness-toast--default.amplify-liveness-toast--medium {
+  max-width: 40rem;
 }
