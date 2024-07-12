@@ -103,8 +103,8 @@
       "validation": "No podemos validar la seguridad de su navegador, verifique si tiene actualizaciones pendientes o intente con otro dispositivo."
     },
     "code": {
-      "badUrl": "Enlace del código es incorrecto o ha expirado",
-      "wrong": "El código es incorrecto"
+      "badUrl": "Enlace del código es incorrecto o ha expirado.",
+      "wrong": "El código es incorrecto o ha expirado."
     },
     "createIdentity": "Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.",
     "decryption": "Error al desencriptar:",
