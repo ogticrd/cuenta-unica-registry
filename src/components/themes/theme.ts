@@ -1,5 +1,5 @@
-import { Poppins } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
+import { Poppins } from 'next/font/google';
 import { red } from '@mui/material/colors';
 
 const poppins = Poppins({

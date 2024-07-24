@@ -64,7 +64,7 @@ COPY . .
 COPY . ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/aws-exports.js \
+RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/amplifyconfiguration.json \
     pnpm run build
 
 # ===================== App Runner Stage =====================
@@ -85,8 +85,8 @@ USER nextjs
 
 EXPOSE ${PORT}
 
-ENV PORT ${PORT}
-ENV HOSTNAME 0.0.0.0
+ENV PORT=${PORT}
+ENV HOSTNAME=0.0.0.0
 
 HEALTHCHECK CMD wget -q localhost:3000
 
