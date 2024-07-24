@@ -2,7 +2,6 @@ import AppsIcon from '@mui/icons-material/Apps';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Script from 'next/script';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,19 +9,15 @@ import Logo from '@public/assets/logo.svg';
 import styles from './styles.module.css';
 
 import { LanguageSelector } from './languageSelector';
-import { useLanguage } from '@/app/[lang]/provider';
+import type { getDictionary } from '@/dictionaries';
 import { ButtonApp } from '../elements/button';
+import { LOGIN_URL } from '@/common';
 
-export default function Index() {
-  const { intl, locales } = useLanguage();
+type Props = { intl: Awaited<ReturnType<typeof getDictionary>> };
 
+export default async function NavBar({ intl }: Props) {
   return (
-    <>
-      <Script
-        src="https://cdn.jsdelivr.net/gh/opticrd/official-header/main.js"
-        defer
-      />
-      <official-header></official-header>
+    <nav>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar
           position="static"
@@ -33,7 +28,7 @@ export default function Index() {
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar sx={{ padding: '0px', height: '72px' }}>
               <div className={styles.logo}>
-                <Link href={'/'}>
+                <Link href={`/${intl.language}/identification`}>
                   <Image src={Logo.src} alt="logo" width="105" height="52" />
                 </Link>
               </div>
@@ -42,21 +37,16 @@ export default function Index() {
                 color="primary"
                 style={{ display: 'none' }}
               />
-              <LanguageSelector
-                other={locales.find((l) => l !== intl.language)!}
-              />
-              <ButtonApp
-                notFullWidth
-                onClick={() =>
-                  window.open('https://mi.cuentaunica.gob.do/ui/login')
-                }
-              >
-                {intl.actions.login}
-              </ButtonApp>
+
+              <LanguageSelector />
+
+              <Link href={LOGIN_URL} target="_blank">
+                <ButtonApp notFullWidth>{intl.actions.login}</ButtonApp>
+              </Link>
             </Toolbar>
           </div>
         </AppBar>
       </Box>
-    </>
+    </nav>
   );
 }

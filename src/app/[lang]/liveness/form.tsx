@@ -12,6 +12,7 @@ import {
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Collapse from '@mui/material/Collapse';
 import { useRouter } from 'next/navigation';
@@ -50,58 +51,39 @@ export function Form({ cedula }: Props) {
 
   const onSubmit = handleSubmit(() => setOpen(true));
 
+  const conditions = [
+    { text: intl.step2.camera, Icon: CameraAltOutlinedIcon },
+    { text: intl.step2.face, Icon: SentimentSatisfiedOutlinedIcon },
+    { text: intl.step2.photosensitivity, Icon: WarningAmberIcon },
+  ];
+
   return (
     <form onSubmit={onSubmit}>
       <GridContainer>
-        <GridItem lg={12} md={12}>
-          <div className={styles.liveness_conditions}>
-            <CameraAltOutlinedIcon
-              sx={{
-                fontSize: '45px',
-                marginRight: '12px',
-                color: theme.palette.info.contrastText,
-              }}
-            />
-            <Divider
-              orientation="vertical"
-              flexItem
-              style={{ marginRight: '14px' }}
-            />
-            <Typography
-              variant="body2"
-              color="primary"
-              dangerouslySetInnerHTML={{
-                __html: intl.step2.camera,
-              }}
-            />
-          </div>
-        </GridItem>
+        {conditions.map(({ text: __html, Icon }, index) => (
+          <GridItem lg={12} md={12} key={index}>
+            <div className={styles.liveness_conditions}>
+              <Icon
+                sx={{
+                  fontSize: '45px',
+                  color: theme.palette.info.contrastText,
+                }}
+              />
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ mx: 2, borderColor: theme.palette.info.contrastText }}
+              />
+              <Typography
+                variant="body2"
+                color="primary"
+                dangerouslySetInnerHTML={{ __html }}
+              />
+            </div>
+          </GridItem>
+        ))}
 
-        <GridItem lg={12} md={12}>
-          <div className={styles.liveness_conditions}>
-            <SentimentSatisfiedOutlinedIcon
-              sx={{
-                fontSize: '45px',
-                marginRight: '12px',
-                color: theme.palette.info.contrastText,
-              }}
-            />
-            <Divider
-              orientation="vertical"
-              flexItem
-              style={{ marginRight: '14px' }}
-            />
-            <Typography
-              variant="body2"
-              color="primary"
-              dangerouslySetInnerHTML={{
-                __html: intl.step2.face,
-              }}
-            />
-          </div>
-        </GridItem>
-
-        <GridItem lg={12} md={12}>
+        <GridItem lg={12} md={12} sx={{ my: 1 }}>
           <FormGroup>
             <FormControlLabel
               color="error"

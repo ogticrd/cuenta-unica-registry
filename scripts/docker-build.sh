@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMAGE_NAME=cuc-registry:latest
-AWS_EXPORTS_PATH=./src/aws-exports.js
+AWS_EXPORTS_PATH=./src/amplifyconfiguration.json
 
 # to use the variables, run this in your terminal
 #   export $(grep -v '^#' .env | xargs)

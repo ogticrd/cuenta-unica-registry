@@ -1,6 +1,6 @@
 .box_container {
   width: 100%;
-  min-height: calc(100vh - 630px);
+  min-height: calc(100vh - 560px);
   display: flex;
   justify-content: center;
   align-items: center;
