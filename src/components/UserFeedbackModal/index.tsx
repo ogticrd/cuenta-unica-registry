@@ -10,8 +10,8 @@ import { z } from 'zod';
 import { createReportSchema } from '@/common/validation-schemas';
 import { GridContainer, GridItem } from '../elements/grid';
 import { useLanguage } from '@/app/[lang]/provider';
-import { ButtonApp } from '../elements/button';
 import { CustomTextMask } from '../CustomTextMask';
+import { ButtonApp } from '../elements/button';
 
 type Props = { open: boolean; onClose: () => void };
 type Report = z.infer<ReturnType<typeof createReportSchema>>;
@@ -31,11 +31,11 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
 
   const sendFeedback = handleSubmit(
     ({ cedula, email, comments, name = '' }) => {
-      Sentry.captureUserFeedback({
+      Sentry.captureFeedback({
         email,
-        comments,
+        message: comments,
         name,
-        event_id: Sentry.captureMessage('User feedback', {
+        associatedEventId: Sentry.captureMessage('User feedback', {
           user: { id: cedula.replace(/-/g, ''), email },
         }),
       });
