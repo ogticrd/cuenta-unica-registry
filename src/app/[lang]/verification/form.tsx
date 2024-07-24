@@ -98,7 +98,9 @@ export function Form({ flow, returnTo, code }: Props) {
             case 410:
             // Status code 410 means the request has expired - so let's load a fresh flow!
             case 403:
+            case 404:
               // Status code 403 implies some other issue (e.g. CSRF) - let's reload!
+              setOtp(Array<string>(6).fill(''));
               return router.push('/verification');
           }
 
@@ -132,8 +134,12 @@ export function Form({ flow, returnTo, code }: Props) {
         updateVerificationFlowBody: { method: 'code', code },
       })
       .then(({ data }) => {
-        // Form submission was successful, show the message to the user!
-        setCurrentFlow(data);
+        // Check for errors
+        const errors = data.ui.messages?.filter((msg) => msg.type === 'error');
+
+        if (errors?.length) {
+          throw new Error(errors.at(0)?.text);
+        }
 
         router.push('/account-created');
       })

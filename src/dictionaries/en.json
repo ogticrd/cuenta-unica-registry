@@ -105,7 +105,7 @@
     },
     "code": {
       "badUrl": "The code link is incorrect or has expired.",
-      "wrong": "The code is incorrect"
+      "wrong": "The code is incorrect or has expired."
     },
     "createIdentity": "An error occurred trying to create the citizen account. Please, try again later.",
     "decryption": "Error decrypting:",
