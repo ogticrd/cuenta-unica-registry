@@ -6,17 +6,13 @@ import React, { useState, useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
-import { Amplify } from 'aws-amplify';
 
 import { useSnackAlert } from '@/components/elements/alert';
 import { useLanguage } from '@/app/[lang]/provider';
 import { useLocalizedText } from './localizedText';
 import { unwrap } from '@/common/helpers';
-import awsExports from '@/aws-exports';
 
 import styles from './styles.module.css';
-
-Amplify.configure(awsExports);
 
 type Props = { cedula: string };
 
@@ -124,7 +120,7 @@ export function LivenessQuickStart({ cedula }: Props) {
             });
           }}
           onAnalysisComplete={handleAnalysisComplete}
-          disableInstructionScreen={false}
+          disableStartScreen={true}
           displayText={displayText}
         />
       ) : null}

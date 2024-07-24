@@ -1,20 +1,18 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-
 import { Typography } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import NotFound404 from '@public/assets/not-found.svg';
-
-import { TextBody } from '@/components/elements/typography';
 import { GridContainer, GridItem } from '@/components/elements/grid';
+import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
-import { useLanguage } from '@/app/[lang]/provider';
+import NotFound404 from '@public/assets/not-found.svg';
+import { getDictionary } from '@/dictionaries';
+import { Locale } from '@/i18n-config';
 
-export default function NotFound() {
-  const router = useRouter();
-  const { intl } = useLanguage();
+type Props = { params: { lang: Locale } };
+
+export default async function NotFound({ params }: Props) {
+  const intl = await getDictionary(params.lang);
 
   return (
     <GridContainer>
@@ -45,9 +43,9 @@ export default function NotFound() {
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <ButtonApp onClick={() => router.push('/')}>
-          {intl.notFound.returnHome}
-        </ButtonApp>
+        <Link href={`/${params.lang}/identification`}>
+          <ButtonApp>{intl.notFound.returnHome}</ButtonApp>
+        </Link>
       </GridItem>
     </GridContainer>
   );

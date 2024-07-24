@@ -1,6 +1,7 @@
 /* Variables */
 :root {
   --primary-color: #003876;
+  --secondary-color: rgb(124, 174, 221);
 }
 
 /* Global styles */
@@ -17,151 +18,56 @@ body {
   color: #03397775;
 }
 
-.test-life {
-  background: red;
-  z-index: 500 !important;
-  padding: 450px;
-}
-
-/* Face live */
-.amplify-liveness-landscape-error-modal p {
-  color: var(--primary-color);
-}
-
-.amplify-card {
-  background: transparent;
-}
-
-.amplify-alert {
-  background: #6db0e2;
-}
-
-.amplify-alert__heading,
-.amplify-alert__body,
-.amplify-icon {
-  color: white;
-  font-weight: 400;
-}
-.amplify-liveness-popover__container {
-  color: var(--primary-color);
-  z-index: 10;
-}
-
-.amplify-liveness-start-screen-header__heading {
-  font-weight: 700;
-  font-size: 21px;
-}
-
-.amplify-liveness-start-screen-instructions__heading {
-  font-weight: 500;
-  font-size: 21px;
-  margin-top: 40px;
+div:has(
+    > div.amplify-flex.amplify-alert.amplify-liveness-start-screen-warning
+  ) {
+  display: none;
 }
 
 .amplify-button {
-  margin: 40px 0;
   background: white;
-  border: 1px solid var(--primary-color);
+  border: 0.1rem solid var(--primary-color);
   color: var(--primary-color);
   border-radius: 60px;
 }
 
-.amplify-button .amplify-icon {
-  color: var(--primary-color);
+.amplify-alert__icon .amplify-icon svg {
+  color: rgb(209, 45, 63);
 }
 
 .amplify-button:hover {
   background: #e3e3e3;
   color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+}
+
+.amplify-button:focus {
+  box-shadow: none;
 }
 
 [data-amplify-theme] {
-  /* --amplify-colors-background-primary: var(--primary-color); */
-  --amplify-colors-font-primary: white;
-  /* --amplify-colors-brand-primary-10: var(--primary-color); */
-  /* --amplify-colors-brand-primary-80: var(--primary-color);
-  --amplify-colors-brand-primary-90: var(--primary-color);
-  --amplify-colors-brand-primary-100: var(--primary-color); */
+  --amplify-colors-font-primary: var(--primary-color);
 }
 
-.amplify-flex.amplify-liveness-figures {
-  margin: 0 auto;
+.amplify-flex.amplify-liveness-hint {
+  background-color: var(--primary-color);
+  padding: 0.1rem;
+  border-radius: 0.5rem;
+
+  div {
+    border-radius: 0.4rem;
+    font-size: x-large;
+    color: var(--primary-color);
+  }
 }
 
-.amplify-flex p {
-  color: var(--primary-color);
-}
-
-.amplify-liveness-instruction-overlay div .amplify-liveness-toast {
+.amplify-liveness-toast {
   background: white;
-  color: var(--primary-color);
 }
 
-.amplify-liveness-toast__message div p {
-  color: var(--primary-color) !important;
+.amplify-liveness-match-indicator__bar::after {
+  background-color: var(--secondary-color);
 }
 
-.amplify-liveness-toast--default div .amplify-liveness-toast__message {
-  color: var(--primary-color);
-}
-
-.amplify-liveness-recording-icon-container div span {
-  color: var(--primary-color);
-}
-
-.amplify-flex .amplify-liveness-figures {
-  margin: 0;
-  display: flex;
-  gap: 50px;
-  justify-content: center;
-  align-items: center;
-}
-
-.amplify-liveness-figure__image {
-  background: none;
-  border: none;
-}
-
-.amplify-liveness-figure__image--success svg,
-.amplify-liveness-figure__image--error svg {
-  display: none;
-}
-
-.amplify-liveness-figure__image--success {
-  width: 250px;
-  height: 250px;
-  background-image: url('../../public/assets/liveness-success.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  margin-bottom: 21px;
-}
-
-.amplify-liveness-figure__image--error {
-  width: 250px;
-  height: 250px;
-  background-image: url('../../public/assets/liveness-error.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  margin-bottom: 21px;
-}
-
-.amplify-liveness-figure__caption {
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 21px;
-  font-weight: 500;
-  border-radius: 10px;
-}
-
-.amplify-liveness-figure__caption--success {
-  background: #dcf4dd;
-  color: #00c35b;
-}
-
-.amplify-liveness-figure__caption--error {
-  background: #f4dcdc;
-  color: #c30000;
+.amplify-liveness-toast.amplify-liveness-toast--default.amplify-liveness-toast--medium {
+  max-width: 40rem;
 }

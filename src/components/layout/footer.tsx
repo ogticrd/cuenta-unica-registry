@@ -1,5 +1,3 @@
-'use client';
-
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { IconButton, Typography } from '@mui/material';
@@ -13,20 +11,17 @@ import logoOGTIC from '@public/assets/logoOGTIC.svg';
 import logoGOB from '@public/assets/logoGOB.svg';
 
 import { GridContainer, GridItem } from '../elements/grid';
-import { useLanguage } from '@/app/[lang]/provider';
+import type { getDictionary } from '@/dictionaries';
 import DivGrow from '../elements/divGrow';
-import theme from '../themes/theme';
 
 import styles from './styles.module.css';
 
-export default function Index() {
-  const { intl } = useLanguage();
+type Props = { intl: Awaited<ReturnType<typeof getDictionary>> };
 
+export default async function Footer({ intl }: Props) {
   return (
-    <>
-      <div
-        style={{ background: theme.palette.primary.main, padding: '75px 25px' }}
-      >
+    <footer>
+      <div className={styles.footer}>
         <div className={styles.footer_container}>
           <GridContainer spacing={4}>
             <GridItem md={12} lg={2}>
@@ -111,18 +106,19 @@ export default function Index() {
                   © {new Date().getFullYear()} {intl.footer.rightsReserved}{' '}
                   {intl.footer.developedBy}
                 </Typography>
-                <Image
-                  style={{
-                    marginBottom: '-10px',
-                    marginLeft: '5px',
-                    cursor: 'pointer',
-                  }}
-                  src={logoOGTIC.src}
-                  alt="logo ogtic"
-                  width="55"
-                  height="29"
-                  onClick={() => window.open('https://ogtic.gob.do/')}
-                />
+                <Link href="https://ogtic.gob.do/" target="_blank">
+                  <Image
+                    style={{
+                      marginBottom: '-10px',
+                      marginLeft: '5px',
+                      cursor: 'pointer',
+                    }}
+                    src={logoOGTIC.src}
+                    alt="logo ogtic"
+                    width="55"
+                    height="29"
+                  />
+                </Link>
               </div>
             </GridItem>
 
@@ -138,45 +134,38 @@ export default function Index() {
                     {intl.footer.followUs}
                   </Typography>
 
-                  <IconButton
-                    onClick={() =>
-                      window.open('https://www.facebook.com/Ogticrd/')
-                    }
-                    color="primary"
-                  >
-                    <FacebookIcon />
-                  </IconButton>
+                  <Link href="https://www.facebook.com/Ogticrd" target="_blank">
+                    <IconButton color="primary">
+                      <FacebookIcon />
+                    </IconButton>
+                  </Link>
 
-                  <IconButton
-                    onClick={() =>
-                      window.open('https://www.youtube.com/@OGTICRD')
-                    }
-                    color="primary"
-                  >
-                    <YouTubeIcon />
-                  </IconButton>
+                  <Link href="https://www.youtube.com/@OGTICRD" target="_blank">
+                    <IconButton color="primary">
+                      <YouTubeIcon />
+                    </IconButton>
+                  </Link>
 
-                  <IconButton
-                    onClick={() => window.open('https://twitter.com/ogticrdo')}
-                    color="primary"
-                  >
-                    <TwitterIcon />
-                  </IconButton>
+                  <Link href="https://twitter.com/ogticrdo" target="_blank">
+                    <IconButton color="primary">
+                      <TwitterIcon />
+                    </IconButton>
+                  </Link>
 
-                  <IconButton
-                    onClick={() =>
-                      window.open('https://www.instagram.com/ogticrd/')
-                    }
-                    color="primary"
+                  <Link
+                    href="https://www.instagram.com/ogticrd"
+                    target="_blank"
                   >
-                    <InstagramIcon />
-                  </IconButton>
+                    <IconButton color="primary">
+                      <InstagramIcon />
+                    </IconButton>
+                  </Link>
                 </div>
               </DivGrow>
             </GridItem>
           </GridContainer>
         </div>
       </div>
-    </>
+    </footer>
   );
 }

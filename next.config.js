@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
   reactStrictMode: true,
+  experimental: {
+    instrumentationHook: true,
+    serverComponentsExternalPackages: [
+      '@aws-amplify/adapter-nextjs',
+      'aws-amplify',
+    ],
+  },
   output: 'standalone',
   webpack: (config, { webpack, isServer, nextRuntime }) => {
     // Avoid AWS SDK Node.js require issue

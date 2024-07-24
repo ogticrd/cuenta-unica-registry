@@ -1,21 +1,23 @@
+import { fetchAuthSession } from 'aws-amplify/auth/server';
 import { Rekognition } from '@aws-sdk/client-rekognition';
-import { Amplify, withSSRContext } from 'aws-amplify';
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { Amplify } from 'aws-amplify';
 
-import awsExports from '@/aws-exports';
+import { runWithAmplifyServerContext } from './amplify-server';
+import config from '@/amplifyconfiguration.json';
 
-Amplify.configure({ ...awsExports, ssr: true });
+Amplify.configure(config, { ssr: true });
 
 export async function getRekognitionClient(
-  req: NextRequest,
+  request: NextRequest,
 ): Promise<Rekognition> {
-  const SSR = withSSRContext({ req });
-  const credentials = await SSR.Credentials.get();
+  const { credentials } = await runWithAmplifyServerContext({
+    nextServerContext: { request, response: new Response() },
+    operation: fetchAuthSession,
+  });
 
-  const rekognitionClient = new Rekognition({
+  return new Rekognition({
     region: 'us-east-1',
     credentials,
   });
-
-  return rekognitionClient;
 }

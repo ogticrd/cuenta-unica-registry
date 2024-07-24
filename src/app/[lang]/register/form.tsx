@@ -21,13 +21,13 @@ import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 
+import { findCitizen, findIamCitizen, verifyPassword } from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { createRegisterSchema } from '@/common/validation-schemas';
 import PasswordLevel from '@/components/elements/passwordLevel';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
-import { findCitizen, verifyPassword } from '@/actions';
 import { useLanguage } from '../provider';
 import { ory } from '@/common/lib/ory';
 
@@ -154,12 +154,40 @@ export function Form({ cedula }: Props) {
         },
       };
 
-      const { data } = await ory.updateRegistrationFlow({
-        flow: String(flow?.id),
-        updateRegistrationFlowBody,
-      });
+      const { data } = await ory
+        .updateRegistrationFlow({
+          flow: String(flow?.id),
+          updateRegistrationFlowBody,
+        })
+        .catch(async (err) => {
+          const { exists } = await findIamCitizen(cedula);
 
-      if (data.continue_with) {
+          if (!exists) throw err;
+
+          if (err.response.status === 500) {
+            await ory
+              .createBrowserVerificationFlow()
+              .then(({ data }) =>
+                ory.updateVerificationFlow({
+                  flow: data.id,
+                  updateVerificationFlowBody: {
+                    method: 'code',
+                    email: form.email,
+                    csrf_token: data.ui.nodes.find(
+                      //@ts-ignore
+                      (node) => node.attributes.name === 'csrf_token',
+                      //@ts-ignore
+                    )?.attributes.value,
+                  },
+                }),
+              )
+              .then(({ data }) => router.push(`/verification?flow=${data.id}`));
+          }
+
+          return { data: null };
+        });
+
+      if (data?.continue_with) {
         const item: any = data.continue_with.find(
           (i) => i.action === 'show_verification_ui',
         );

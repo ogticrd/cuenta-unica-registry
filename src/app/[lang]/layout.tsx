@@ -1,10 +1,10 @@
-import { GoogleTagManagerBody, GoogleTagManagerHead } from '@thgh/next-gtm';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import LandingChica from '@public/assets/landingChica.svg';
-import '@public/fonts/poppins_wght.css';
 import '@aws-amplify/ui-react/styles.css';
+import '@public/fonts/poppins_wght.css';
 import '@/styles/globals.css';
 
 import BoxContentCenter from '@/components/elements/boxContentCenter';
@@ -12,33 +12,44 @@ import ThemeRegistry from '@/components/themes/ThemeRegistry';
 import { CardAuth } from '@/components/elements/cardAuth';
 import SnackAlert from '@/components/elements/alert';
 import { getDictionary } from '@/dictionaries';
+import OfficialHeader from '@/components/OfficialHeader';
+import UserFeedback from '@/components/layout/userFeedback';
 import { LanguageProvider } from './provider';
-import Layout from '@/components/layout';
 import { Locale } from '@/i18n-config';
+import Footer from '@/components/layout/footer';
+import NavBar from '@/components/layout/navBar';
 
 export const metadata: Metadata = {
   title: 'Cuenta Única - Registro',
   description: 'Plataforma de Registro para creación de tu Cuenta Única',
   keywords:
     'Cuenta Única, Registro, Plataforma de Autenticación, Gobierno Dominicano, República Dominicana',
-  viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 type Props = { children: React.ReactNode; params: { lang: Locale } };
 
-export default async function RootLayout({
-  children,
-  params: { lang },
-}: Props) {
-  const intl = await getDictionary(lang);
+export default async function RootLayout({ children, params }: Props) {
+  const intl = await getDictionary(params.lang);
+
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
 
   return (
-    <html lang={lang}>
-      <head>{GoogleTagManagerHead}</head>
+    <html lang={params.lang}>
+      <GoogleTagManager gtmId={gtmId} />
+
       <body suppressHydrationWarning={true}>
+        <OfficialHeader />
+
         <ThemeRegistry>
           <LanguageProvider intl={intl}>
-            <Layout>
+            <NavBar intl={intl} />
+
+            <div style={{ padding: '50px 0px' }}>
               <ReCaptchaProvider useEnterprise>
                 <SnackAlert>
                   <BoxContentCenter>
@@ -52,9 +63,11 @@ export default async function RootLayout({
                     </CardAuth>
                   </BoxContentCenter>
                 </SnackAlert>
-                {GoogleTagManagerBody}
               </ReCaptchaProvider>
-            </Layout>
+            </div>
+
+            <UserFeedback />
+            <Footer intl={intl} />
           </LanguageProvider>
         </ThemeRegistry>
       </body>

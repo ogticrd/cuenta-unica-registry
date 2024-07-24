@@ -31,7 +31,8 @@
     "subtitle": "Life proof",
     "description": "Next, we will validate your identity through facial verification and life test. Make sure to meet the following conditions:",
     "camera": "Use a device that has an integrated <b>camera</b>.",
-    "face": "Allow us to take captures of <b>your face.</b>"
+    "face": "Allow us to take captures of <b>your face.</b>",
+    "photosensitivity": "This verification displays <b>colored lights.</b> Be careful if you are photosensitive."
   },
   "step3": {
     "title": "Registration",
@@ -156,6 +157,11 @@
       "tryAgain": "Try again"
     },
     "hints": {
+      "centerFaceInstructionText": "Instruction: Before starting the check, make sure your camera is at the center top of your screen and center your face to the camera. When the check starts an oval will show up in the center. You will be prompted to move forward into the oval and then prompted to hold still. After holding still for a few seconds, you should hear check complete.",
+      "centerFaceText": "Center your face",
+      "checkCompleteText": "Check complete",
+      "faceOffCenterText": "Face is not in the oval, center your face to the camera.",
+      "matchIndicatorText": "50% completed. Keep moving closer.",
       "moveFaceFrontOfCamera": "Position your face in front of the camera",
       "tooManyFaces": "Make sure only one face is in front of the camera",
       "faceDetected": "Face detected",
@@ -176,7 +182,8 @@
         "body": "You are now going to undergo a facial verification process to prove you are a real person."
       },
       "begin": "Start verification",
-      "photosensitivyWarning": {
+      "photosensitivityWarning": {
+        "label": "Photosensitivity LABEL",
         "heading": "Photosensitivity alert",
         "body": "This verification displays colored lights. Be careful if you are photosensitive.",
         "info": "A small percentage of people may experience epileptic seizures when exposed to colored lights. Be careful if you or someone in your family has any epileptic condition."

@@ -13,6 +13,11 @@ export const useLocalizedText = ({
 }: Context['intl']) =>
   ({
     ...({
+      hintCenterFaceInstructionText: hints.centerFaceInstructionText,
+      hintCenterFaceText: hints.centerFaceText,
+      hintCheckCompleteText: hints.checkCompleteText,
+      hintFaceOffCenterText: hints.faceOffCenterText,
+      hintMatchIndicatorText: hints.matchIndicatorText,
       hintMoveFaceFrontOfCameraText: hints.moveFaceFrontOfCamera,
       hintTooManyFacesText: hints.tooManyFaces,
       hintFaceDetectedText: hints.faceDetected,
@@ -35,22 +40,27 @@ export const useLocalizedText = ({
       retryCameraPermissionsText: camera.permissions,
     } as Required<CameraDisplayText>),
     ...({
-      instructionsHeaderHeadingText: instructions.header.heading,
-      instructionsHeaderBodyText: instructions.header.body,
-      instructionsBeginCheckText: instructions.begin,
-      photosensitivyWarningHeadingText:
-        instructions.photosensitivyWarning.heading,
-      photosensitivyWarningBodyText: instructions.photosensitivyWarning.body,
-      photosensitivyWarningInfoText: instructions.photosensitivyWarning.info,
-      instructionListHeadingText: instructions.list.heading,
+      startScreenBeginCheckText: instructions.begin,
+      // instructionsHeaderHeadingText: instructions.header.heading,
+      // instructionsHeaderBodyText: instructions.header.body,
+      // instructionsBeginCheckText: instructions.begin,
+      photosensitivityWarningHeadingText:
+        instructions.photosensitivityWarning.heading,
+      photosensitivityWarningBodyText:
+        instructions.photosensitivityWarning.body,
+      photosensitivityWarningInfoText:
+        instructions.photosensitivityWarning.info,
+      // photosensitivityWarningLabelText:
+      //   instructions.photosensitivityWarning.label,
+      // instructionListHeadingText: instructions.list.heading,
       goodFitCaptionText: instructions.goodFit.caption,
       goodFitAltText: instructions.goodFit.alt,
       tooFarCaptionText: instructions.tooFar.caption,
       tooFarAltText: instructions.tooFar.alt,
-      instructionListStepOneText: instructions.list.stepOne,
-      instructionListStepTwoText: instructions.list.stepTwo,
-      instructionListStepThreeText: instructions.list.stepThree,
-      instructionListStepFourText: instructions.list.stepFour,
+      // instructionListStepOneText: instructions.list.stepOne,
+      // instructionListStepTwoText: instructions.list.stepTwo,
+      // instructionListStepThreeText: instructions.list.stepThree,
+      // instructionListStepFourText: instructions.list.stepFour,
     } as Required<InstructionDisplayText>),
     ...({
       recordingIndicatorText: stream.recording,

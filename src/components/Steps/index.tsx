@@ -25,11 +25,11 @@ export function Steps({ step }: Props) {
   ];
 
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Stepper
-      alternativeLabel={!matches}
+      alternativeLabel={mobile}
       sx={{ paddingBottom: '20px', borderBottom: '1px solid #9FD0FD' }}
       activeStep={step}
     >

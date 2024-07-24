@@ -31,7 +31,8 @@
     "subtitle": "Prueba de vida",
     "description": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
     "camera": "Utilizar un dispositivo que posea <b>cámara</b> integrada.",
-    "face": "Permitir que tomemos capturas de <b>tu rostro.</b>"
+    "face": "Permitir que tomemos capturas de <b>tu rostro.</b>",
+    "photosensitivity": "Esta verificación muestra <b>luces de colores.</b> Tenga cuidado si es fotosensible."
   },
   "step3": {
     "title": "Registro",
@@ -156,6 +157,11 @@
       "tryAgain": "Intentar otra vez"
     },
     "hints": {
+      "centerFaceInstructionText": "Instrucción: Antes de comenzar la verificación, asegúrate de que tu cámara esté en la parte superior central de tu pantalla y centra tu rostro en la cámara. Cuando comience la verificación, aparecerá un óvalo en el centro. Se te pedirá que te acerques hacia el óvalo y luego que te mantengas quieto. Después de mantenerte quieto durante unos segundos, deberías escuchar “verificación completa”",
+      "centerFaceText": "Centra tu rostro.",
+      "checkCompleteText": "Verificación completa.",
+      "faceOffCenterText": "Tu rostro no está en el óvalo, centra tu rostro en la cámara.",
+      "matchIndicatorText": "50% completado. Sigue acercándote.",
       "moveFaceFrontOfCamera": "Posicione la cara frente a la cámara",
       "tooManyFaces": "Asegúrese que solo una cara esté frente a la cámara",
       "faceDetected": "Cara detectada",
@@ -176,7 +182,8 @@
         "body": "Ahora va a realizar un proceso de verificación facial para demostrar que es una persona real."
       },
       "begin": "Iniciar verificación",
-      "photosensitivyWarning": {
+      "photosensitivityWarning": {
+        "label": "Photosensitivity LABEL",
         "heading": "Alerta de fotosensibilidad",
         "body": "Esta verificación muestra luces de colores. Tenga cuidado si es fotosensible.",
         "info": "Un pequeño porcentaje de personas puede experimentar convulsiones epilépticas cuando se exponen a luces de colores. Tenga cuidado si usted o alguien de su familia tiene alguna condición epiléptica."

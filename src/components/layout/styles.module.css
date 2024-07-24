@@ -10,6 +10,11 @@
   padding-top: '8px';
 }
 
+.footer {
+  background: #003876;
+  padding: 75px 25px;
+}
+
 @media only screen and (max-width: 600px) {
   .logo {
     margin-left: 0.75em;
