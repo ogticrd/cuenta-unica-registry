@@ -1,8 +1,8 @@
 'use client';
 
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { CircularProgress, TextField, Tooltip } from '@mui/material';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -104,69 +104,67 @@ export function Form() {
   });
 
   return (
-    <>
-      <form onSubmit={onSubmit}>
-        <GridContainer>
-          <GridItem lg={12} md={12}>
-            <Tooltip title={intl.step1.cedulaTooltip}>
-              <TextField
-                required
-                value={cedulaFormValue}
-                onChange={onChange}
-                label={intl.step1.cedula}
-                placeholder="***-**00000-0"
-                autoComplete="off"
-                error={Boolean(errors.cedula)}
-                helperText={errors?.cedula?.message}
-                inputProps={{
-                  inputMode: 'numeric',
-                }}
-                InputProps={{
-                  inputComponent: CustomTextMask,
-                  endAdornment: loading ? (
-                    <div style={{ display: 'flex' }}>
-                      <CircularProgress size={28} />
-                    </div>
-                  ) : null,
-                }}
-                fullWidth
-              />
-            </Tooltip>
-          </GridItem>
+    <form onSubmit={onSubmit}>
+      <GridContainer>
+        <GridItem lg={12} md={12}>
+          <Tooltip title={intl.step1.cedulaTooltip}>
+            <TextField
+              required
+              value={cedulaFormValue}
+              onChange={onChange}
+              label={intl.step1.cedula}
+              placeholder="***-**00000-0"
+              autoComplete="off"
+              error={Boolean(errors.cedula)}
+              helperText={errors?.cedula?.message}
+              inputProps={{
+                inputMode: 'numeric',
+              }}
+              InputProps={{
+                inputComponent: CustomTextMask,
+                endAdornment: loading ? (
+                  <div style={{ display: 'flex' }}>
+                    <CircularProgress size={28} />
+                  </div>
+                ) : null,
+              }}
+              fullWidth
+            />
+          </Tooltip>
+        </GridItem>
 
-          <GridItem lg={12} md={12}>
-            <br />
-            <ButtonApp
-              submit
-              endIcon={<ArrowCircleRightOutlinedIcon />}
-              disabled={loading}
-            >
-              {intl.actions.confirm}
-            </ButtonApp>
-          </GridItem>
-        </GridContainer>
+        <GridItem lg={12} md={12}>
+          <br />
+          <ButtonApp
+            submit
+            endIcon={<ArrowCircleRightOutlinedIcon />}
+            disabled={loading}
+          >
+            {intl.actions.confirm}
+          </ButtonApp>
+        </GridItem>
+      </GridContainer>
 
-        <br />
-        <GridContainer>
-          <GridItem md={12} lg={12}>
-            <TextBodyTiny textCenter>
-              <Link href={LOGIN_URL} style={{ textDecoration: 'none' }}>
-                <span style={{ color: theme.palette.primary.main }}>
-                  {intl.alreadyRegistered}
-                </span>{' '}
-                <span
-                  style={{
-                    color: theme.palette.info.main,
-                    textDecoration: 'underline',
-                  }}
-                >
-                  {intl.actions.loginHere}
-                </span>
-              </Link>
-            </TextBodyTiny>
-          </GridItem>
-        </GridContainer>
-      </form>
-    </>
+      <br />
+      <GridContainer>
+        <GridItem md={12} lg={12}>
+          <TextBodyTiny textCenter>
+            <Link href={LOGIN_URL} style={{ textDecoration: 'none' }}>
+              <span style={{ color: theme.palette.primary.main }}>
+                {intl.alreadyRegistered}
+              </span>{' '}
+              <span
+                style={{
+                  color: theme.palette.info.main,
+                  textDecoration: 'underline',
+                }}
+              >
+                {intl.actions.loginHere}
+              </span>
+            </Link>
+          </TextBodyTiny>
+        </GridItem>
+      </GridContainer>
+    </form>
   );
 }
