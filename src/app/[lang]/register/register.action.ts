@@ -104,6 +104,12 @@ export async function registerAccount(prev: State, form: FormData) {
         if (type === 'error') return { message: text };
       }
     }
+
+    for (const { type, text } of registration.ui.messages ?? []) {
+      if (type === 'error') {
+        return { message: text };
+      }
+    }
   }
 
   if ('continue_with' in registration && registration.continue_with) {
@@ -119,5 +125,5 @@ export async function registerAccount(prev: State, form: FormData) {
     }
   }
 
-  return { message: 'An error ocurred' };
+  return { message: 'Failed to register account' };
 }
