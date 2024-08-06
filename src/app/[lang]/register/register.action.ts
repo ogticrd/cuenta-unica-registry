@@ -30,6 +30,7 @@ type State = {
 
 export async function verifyUser(prev: State, form: FormData) {
   const email = form.get('email') as string;
+  const return_to = form.get('return_to') as string;
 
   const flow = await verify(email);
 
@@ -39,12 +40,22 @@ export async function verifyUser(prev: State, form: FormData) {
     }
   }
 
-  const search = createSearchParams({
-    flow: flow.id,
-    return_to: String(form.get('return_to')),
-  });
+  for (const { type, text } of flow.ui.messages ?? []) {
+    if (type === 'error') {
+      return { message: text };
+    }
+  }
 
-  redirect(`verification?${search}`);
+  if (flow.state === 'sent_email') {
+    const search = createSearchParams({
+      flow: flow.id,
+      return_to,
+    });
+
+    redirect(`verification?${search}`);
+  }
+
+  return { message: 'Failed to send mail' };
 }
 
 export async function registerAccount(prev: State, form: FormData) {
