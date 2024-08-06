@@ -26,8 +26,6 @@ type State = {
 export async function verifyUser(prev: State, form: FormData) {
   const email = form.get('email') as string;
 
-  return { message: 'Ta mluco' };
-
   try {
     const verificationFlow = await verify(email);
     const search = createSearchParams({
