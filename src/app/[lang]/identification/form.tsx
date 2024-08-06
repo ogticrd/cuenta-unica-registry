@@ -69,13 +69,13 @@ export function Form() {
     <form
       action={action}
       onSubmit={async (e) => {
-        await executeRecaptcha('form_submit').then(setToken);
-
         if (!formState.isValid) {
           e.preventDefault();
           trigger();
           return false;
         }
+
+        await executeRecaptcha('form_submit').then(setToken);
 
         e.currentTarget?.requestSubmit();
       }}
