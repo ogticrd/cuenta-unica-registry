@@ -18,9 +18,7 @@ type Confirmation = z.infer<ReturnType<typeof createConfirmationSchema>>;
 
 export function ConfirmationForm() {
   const { intl } = useLanguage();
-
   const { AlertError } = useSnackAlert();
-
   const {
     register,
     formState: { errors, isValid },
