@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 
+import { createSearchParams } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
 
 type State = { message: string };
@@ -10,32 +11,29 @@ export async function verifyAccount(prev: State, form: FormData) {
   const flow = form.get('flow') as string;
   const code = form.get('code') as string;
 
-  const { data } = await ory.updateVerificationFlow({
-    flow,
-    updateVerificationFlowBody: { method: 'code', code },
-  });
+  const verification = await ory
+    .updateVerificationFlow({
+      flow,
+      updateVerificationFlowBody: { method: 'code', code: 'cbbb' },
+    })
+    .then((res) => res.data)
+    .catch<{ use_flow_id: string }>((err) => err.response.data);
 
-  for (const { type, text } of data.ui.messages ?? []) {
-    if (type === 'error') {
-      return { message: text };
+  if ('ui' in verification) {
+    for (const { type, text } of verification.ui.messages ?? []) {
+      if (type === 'error') {
+        return { message: text };
+      }
     }
   }
 
-  redirect('account-created');
+  if ('use_flow_id' in verification) {
+    const search = createSearchParams({
+      flow: verification.use_flow_id,
+    });
 
-  // Err
-  //   switch (err.response?.status) {
-  //     case 400:
-  //       setCurrentFlow(err.response?.data);
-  //       break;
-  //     case 410:
-  //       const newFlowID = err.response.data.use_flow_id;
-  //       router.push(`/verification?flow=${newFlowID}`);
-  //       ory
-  //         .getVerificationFlow({ id: newFlowID })
-  //         .then(({ data }) => setCurrentFlow(data));
-  //       break;
-  //     default:
-  //       throw new Error(err);
-  //   }
+    redirect(`verification?${search}`);
+  }
+
+  redirect('account-created');
 }
