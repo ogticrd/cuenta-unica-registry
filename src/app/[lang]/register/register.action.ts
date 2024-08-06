@@ -107,4 +107,6 @@ export async function registerAccount(prev: State, form: FormData) {
       }
     }
   }
+
+  return { message: 'An error ocurred' };
 }

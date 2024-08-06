@@ -34,9 +34,7 @@ export function Form() {
       resolver: zodResolver(createCedulaSchema(intl)),
     });
 
-  const [state, action] = useFormState(identifyAccount, {
-    message: '',
-  });
+  const [state, action] = useFormState(identifyAccount, { message: '' });
 
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const cedula = target.value.replace(/-/g, '');
@@ -58,12 +56,13 @@ export function Form() {
         .then(setToken)
         .catch(() => '');
     }
-  }, [token, loaded]);
+  }, [token, loaded, executeRecaptcha]);
 
   React.useEffect(() => {
     if (state.message) {
       AlertError(state.message);
     }
+    // eslint-disable-next-line
   }, [state]);
 
   return (
