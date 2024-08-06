@@ -1,29 +1,22 @@
 'use client';
 
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
-import { CircularProgress, TextField, Tooltip } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TextField, Tooltip } from '@mui/material';
 import { useReCaptcha } from 'next-recaptcha-v3';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import * as Sentry from '@sentry/nextjs';
-import { useState } from 'react';
+import { useFormState } from 'react-dom';
 import Link from 'next/link';
+import React from 'react';
 import { z } from 'zod';
 
-import {
-  findCitizen,
-  findIamCitizen,
-  setCookie,
-  validateRecaptcha,
-} from '@/actions';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { createCedulaSchema } from '@/common/validation-schemas';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
-import { ButtonApp } from '@/components/elements/button';
-import { Validations } from '@/common/helpers';
+import { identifyAccount } from './identify.action';
+import { SubmitButton } from './submit.button';
+import { LoadingAdornment } from './adornment';
 import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
 import { LOGIN_URL } from '@/common';
@@ -32,127 +25,100 @@ type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const { AlertError, AlertWarning } = useSnackAlert();
-  const [loading, setLoading] = useState(false);
-  const { executeRecaptcha } = useReCaptcha();
-  const router = useRouter();
-
+  const { executeRecaptcha, loaded } = useReCaptcha();
   const { intl } = useLanguage();
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm<CedulaForm>({
-    reValidateMode: 'onSubmit',
-    resolver: zodResolver(createCedulaSchema(intl)),
+  const { formState, setValue, register, trigger, clearErrors, setError } =
+    useForm<CedulaForm>({
+      reValidateMode: 'onChange',
+      resolver: zodResolver(createCedulaSchema(intl)),
+    });
+
+  const [state, action] = useFormState(identifyAccount, {
+    message: '',
   });
 
-  const cedulaFormValue = watch('cedula', '');
+  const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const cedula = target.value.replace(/-/g, '');
+    setValue('cedula', cedula);
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const valueWithoutHyphens = event.target.value.replace(/-/g, '');
-    setValue('cedula', valueWithoutHyphens);
+    if (formState.errors.cedula) {
+      clearErrors('cedula');
+    }
+
+    if (cedula.length === 11) {
+      trigger('cedula');
+    }
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    setLoading(true);
-
-    const cedula = data.cedula.replace(/-/g, '');
-    const isValidByLuhn = Validations.luhnCheck(cedula);
-
-    if (!isValidByLuhn) {
-      AlertError(intl.errors.cedula.invalid);
-      setLoading(false);
-
-      return;
+  const [token, setToken] = React.useState('');
+  React.useEffect(() => {
+    if (loaded && !token) {
+      executeRecaptcha('form_submit')
+        .then(setToken)
+        .catch(() => '');
     }
+  }, [token, loaded]);
 
-    const reCaptchaToken = await executeRecaptcha('form_submit');
-
-    if (!reCaptchaToken) {
-      AlertWarning(intl.errors.recaptcha.issues);
-      setLoading(false);
-
-      return;
+  React.useEffect(() => {
+    if (state.message) {
+      AlertError(state.message);
     }
-
-    try {
-      const { isHuman } = await validateRecaptcha(reCaptchaToken);
-
-      if (!isHuman) {
-        setLoading(false);
-        return AlertError(intl.errors.recaptcha.validation);
-      }
-
-      const { exists } = await findIamCitizen(cedula);
-
-      if (exists) {
-        setLoading(false);
-        return AlertError(intl.errors.cedula.exists);
-      }
-
-      const citizen = await findCitizen(cedula);
-      await setCookie('citizen', citizen);
-      router.push('liveness');
-      setLoading(false);
-    } catch (err: any) {
-      Sentry.captureMessage(err.message || err, 'error');
-      setLoading(false);
-      return AlertError(intl.errors.cedula.invalid);
-    }
-  });
+  }, [state]);
 
   return (
-    <form onSubmit={onSubmit}>
+    <form
+      action={action}
+      onSubmit={async (e) => {
+        await executeRecaptcha('form_submit').then(setToken);
+
+        if (!formState.isValid) {
+          e.preventDefault();
+          trigger();
+          return false;
+        }
+
+        e.currentTarget?.requestSubmit();
+      }}
+    >
+      <input type="hidden" name="token" value={token} />
+      <input type="hidden" {...register('cedula')} />
+
       <GridContainer>
         <GridItem lg={12} md={12}>
           <Tooltip title={intl.step1.cedulaTooltip}>
             <TextField
               required
-              value={cedulaFormValue}
               onChange={onChange}
               label={intl.step1.cedula}
               placeholder="***-**00000-0"
               autoComplete="off"
-              error={Boolean(errors.cedula)}
-              helperText={errors?.cedula?.message}
+              error={Boolean(formState.errors.cedula)}
+              helperText={formState.errors?.cedula?.message}
               inputProps={{
                 inputMode: 'numeric',
               }}
               InputProps={{
                 inputComponent: CustomTextMask,
-                endAdornment: loading ? (
-                  <div style={{ display: 'flex' }}>
-                    <CircularProgress size={28} />
-                  </div>
-                ) : null,
+                endAdornment: <LoadingAdornment />,
               }}
               fullWidth
             />
           </Tooltip>
         </GridItem>
 
-        <GridItem lg={12} md={12}>
-          <br />
-          <ButtonApp
-            submit
-            endIcon={<ArrowCircleRightOutlinedIcon />}
-            disabled={loading}
-          >
-            {intl.actions.confirm}
-          </ButtonApp>
+        <GridItem lg={12} md={12} sx={{ my: 3 }}>
+          <SubmitButton />
         </GridItem>
       </GridContainer>
 
-      <br />
       <GridContainer>
         <GridItem md={12} lg={12}>
           <TextBodyTiny textCenter>
-            <Link href={LOGIN_URL} style={{ textDecoration: 'none' }}>
-              <span style={{ color: theme.palette.primary.main }}>
-                {intl.alreadyRegistered}
-              </span>{' '}
+            <span style={{ color: theme.palette.primary.main }}>
+              {intl.alreadyRegistered}
+            </span>{' '}
+            <Link href={LOGIN_URL}>
               <span
                 style={{
                   color: theme.palette.info.main,
