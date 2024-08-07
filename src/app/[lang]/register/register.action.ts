@@ -93,7 +93,7 @@ export async function registerAccount(prev: State, form: FormData) {
           birthdate: citizen.birthDate,
           gender: citizen.gender,
         },
-      } as any,
+      },
     })
     .then((res) => res.data)
     .catch<RegistrationFlow>((err) => err.response.data);
@@ -125,5 +125,5 @@ export async function registerAccount(prev: State, form: FormData) {
     }
   }
 
-  return { message: 'Failed to register account' };
+  return { message: 'intl.errors.createIdentity' };
 }

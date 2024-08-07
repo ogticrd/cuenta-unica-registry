@@ -60,7 +60,11 @@ export function Form() {
 
   React.useEffect(() => {
     if (state.message) {
-      AlertError(state.message);
+      const message: string =
+        state.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+        state.message;
+
+      AlertError(message);
     }
     // eslint-disable-next-line
   }, [state]);

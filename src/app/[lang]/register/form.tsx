@@ -67,7 +67,11 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
   useEffect(() => {
     if (state.message) {
       setLoading(false);
-      AlertError(state.message);
+      const message: string =
+        state.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+        state.message;
+
+      AlertError(message);
     }
     // eslint-disable-next-line
   }, [state]);
