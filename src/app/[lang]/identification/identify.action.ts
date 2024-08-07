@@ -31,7 +31,12 @@ export async function identifyAccount(prev: State, form: FormData) {
     return { message: 'intl.errors.cedula.exists' };
   }
 
-  const citizen = await findCitizen(cedula);
+  const citizen = await findCitizen(cedula).catch(() => null);
+
+  if (!citizen) {
+    return { message: 'intl.errors.cedula.invalid' };
+  }
+
   await setCookie('citizen', citizen);
 
   redirect('liveness');
