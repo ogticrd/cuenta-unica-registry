@@ -1,5 +1,6 @@
 namespace NodeJS {
   interface ProcessEnv {
+    NODE_ENV?: 'development' | 'production';
     CEDULA_API?: string;
     CEDULA_API_KEY?: string;
     JCE_PHOTO_API?: string;
