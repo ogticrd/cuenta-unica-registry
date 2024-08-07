@@ -19,10 +19,6 @@ export async function identifyAccount(prev: State, form: FormData) {
     return { message: 'intl.errors.recaptcha.issues' };
   }
 
-  if (!cedula) {
-    return { message: 'No cédula' };
-  }
-
   const { isHuman } = await validateRecaptcha(token);
 
   if (!isHuman) {
