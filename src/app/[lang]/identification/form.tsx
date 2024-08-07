@@ -60,7 +60,8 @@ export function Form() {
   }, [token, loaded, executeRecaptcha]);
 
   React.useEffect(() => {
-    if (state.message) {
+    // For some reason `state.message` is undefined in safari
+    if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
 
       AlertError(message);
