@@ -1,3 +1,4 @@
+import { passwordStrength } from 'check-password-strength';
 import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
@@ -33,4 +34,8 @@ export const createRegisterSchema = (
     .refine((data) => data.password === data.passwordConfirm, {
       message: validations.password.noMatch,
       path: ['passwordConfirm'],
+    })
+    .refine(({ password }) => !(passwordStrength(password).id !== 3), {
+      message: 'Weak password',
+      path: ['password'],
     });

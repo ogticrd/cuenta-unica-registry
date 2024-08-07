@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 export async function setCookie<T>(key: string, data: T) {
   cookies().set(key, JSON.stringify(data), {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 10,
     sameSite: 'strict',
     path: '/',

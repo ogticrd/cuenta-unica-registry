@@ -34,11 +34,17 @@ export default async function ValidationPage({ params: { lang } }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Steps step={0} />
-      <Typography component="div" color="primary" textAlign="center">
-        <Box sx={{ fontWeight: 500, fontSize: '14px', my: 4 }}>
+
+      <Box sx={{ my: 4 }}>
+        <Typography
+          color="primary"
+          textAlign="center"
+          fontWeight={500}
+          fontSize="14px"
+        >
           {intl.step1.description}
-        </Box>
-      </Typography>
+        </Typography>
+      </Box>
 
       <Form />
     </Box>
