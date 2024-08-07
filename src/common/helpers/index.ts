@@ -1,3 +1,4 @@
+export { localizeString, type LocalizedPath } from './localize-string';
 export { runWithAmplifyServerContext } from './amplify-server';
 export { createSearchParams } from './create-search-params';
 export { getRekognitionClient } from './rekognition';

@@ -28,6 +28,7 @@ import PasswordLevel from '@/components/elements/passwordLevel';
 import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { registerAccount } from './register.action';
+import { localizeString } from '@/common/helpers';
 import { verifyPassword } from '@/actions';
 import { useLanguage } from '../provider';
 
@@ -67,9 +68,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
   useEffect(() => {
     if (state.message) {
       setLoading(false);
-      const message: string =
-        state.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
-        state.message;
+      const message = localizeString(intl, state.message) || state.message;
 
       AlertError(message);
     }

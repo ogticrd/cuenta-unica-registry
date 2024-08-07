@@ -8,33 +8,35 @@ import {
   setCookie,
   validateRecaptcha,
 } from '@/actions';
+import { State } from '@/types';
 
-type State = { message: string };
-
-export async function identifyAccount(prev: State, form: FormData) {
+export async function identifyAccount(
+  prev: State,
+  form: FormData,
+): Promise<State> {
   const cedula = form.get('cedula') as string;
   const token = form.get('token') as string;
 
   if (!token) {
-    return { message: 'intl.errors.recaptcha.issues' };
+    return { message: 'errors.recaptcha.issues' };
   }
 
   const { isHuman } = await validateRecaptcha(token);
 
   if (!isHuman) {
-    return { message: 'intl.errors.recaptcha.validation' };
+    return { message: 'errors.recaptcha.validation' };
   }
 
   const { exists } = await findIamCitizen(cedula);
 
   if (exists) {
-    return { message: 'intl.errors.cedula.exists' };
+    return { message: 'errors.cedula.exists' };
   }
 
   const citizen = await findCitizen(cedula).catch(() => null);
 
   if (!citizen) {
-    return { message: 'intl.errors.cedula.invalid' };
+    return { message: 'errors.cedula.invalid' };
   }
 
   await setCookie('citizen', citizen);

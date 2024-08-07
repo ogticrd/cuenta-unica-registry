@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { findCitizen, findIamCitizen } from '@/actions';
 import { createSearchParams } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
+import { State } from '@/types';
 
 async function verify(email: string): Promise<VerificationFlow> {
   const flow = await ory
@@ -24,11 +25,7 @@ async function verify(email: string): Promise<VerificationFlow> {
     .catch((err) => err.response.data);
 }
 
-type State = {
-  message: string;
-};
-
-export async function verifyUser(prev: State, form: FormData) {
+export async function verifyUser(prev: State, form: FormData): Promise<State> {
   const email = form.get('email') as string;
   const return_to = form.get('return_to') as string;
 
@@ -58,7 +55,10 @@ export async function verifyUser(prev: State, form: FormData) {
   return { message: 'Failed to send mail' };
 }
 
-export async function registerAccount(prev: State, form: FormData) {
+export async function registerAccount(
+  prev: State,
+  form: FormData,
+): Promise<State> {
   const cedula: string = form.get('cedula') as string;
   const email: string = form.get('email') as string;
 
@@ -125,5 +125,5 @@ export async function registerAccount(prev: State, form: FormData) {
     }
   }
 
-  return { message: 'intl.errors.createIdentity' };
+  return { message: 'errors.createIdentity' };
 }

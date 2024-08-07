@@ -15,6 +15,7 @@ import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
 import { identifyAccount } from './identify.action';
+import { localizeString } from '@/common/helpers';
 import { SubmitButton } from './submit.button';
 import { LoadingAdornment } from './adornment';
 import theme from '@/components/themes/theme';
@@ -60,9 +61,7 @@ export function Form() {
 
   React.useEffect(() => {
     if (state.message) {
-      const message: string =
-        state.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
-        state.message;
+      const message = localizeString(intl, state.message) || state.message;
 
       AlertError(message);
     }

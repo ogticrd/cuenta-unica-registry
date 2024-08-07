@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 
 import { useSnackAlert } from '@/components/elements/alert';
+import { localizeString, unwrap } from '@/common/helpers';
 import { useLanguage } from '@/app/[lang]/provider';
 import { useLocalizedText } from './localizedText';
-import { unwrap } from '@/common/helpers';
 
 import styles from './styles.module.css';
 
@@ -73,7 +73,7 @@ export function LivenessQuickStart({ cedula }: Props) {
     if (!error) return;
 
     const message: string =
-      error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+      localizeString(intl, error.message) ||
       error.message ||
       intl.errors.unknown;
 

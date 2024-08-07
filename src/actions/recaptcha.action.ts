@@ -43,7 +43,7 @@ export async function validateRecaptcha(token: string) {
     Sentry.captureException(error, { tags: { type: 'recaptcha' } });
 
     return {
-      message: 'intl.errors.unknown',
+      message: 'errors.unknown',
     };
   }
 }
