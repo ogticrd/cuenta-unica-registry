@@ -14,7 +14,7 @@ export async function verifyAccount(prev: State, form: FormData) {
   const verification = await ory
     .updateVerificationFlow({
       flow,
-      updateVerificationFlowBody: { method: 'code', code: 'cbbb' },
+      updateVerificationFlowBody: { method: 'code', code },
     })
     .then((res) => res.data)
     .catch<{ use_flow_id: string }>((err) => err.response.data);
