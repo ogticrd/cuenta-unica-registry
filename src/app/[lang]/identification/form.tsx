@@ -24,11 +24,11 @@ import { LOGIN_URL } from '@/common';
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
-  const { AlertError, AlertWarning } = useSnackAlert();
+  const { AlertError } = useSnackAlert();
   const { executeRecaptcha, loaded } = useReCaptcha();
   const { intl } = useLanguage();
 
-  const { formState, setValue, register, trigger, clearErrors, setError } =
+  const { formState, setValue, register, trigger, clearErrors } =
     useForm<CedulaForm>({
       reValidateMode: 'onChange',
       resolver: zodResolver(createCedulaSchema(intl)),
