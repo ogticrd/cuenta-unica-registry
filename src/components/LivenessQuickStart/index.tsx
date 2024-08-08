@@ -20,7 +20,7 @@ export function LivenessQuickStart({ cedula }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const { AlertError } = useSnackAlert();
+  const { AlertError, AlertWarning } = useSnackAlert();
   const router = useRouter();
 
   const { intl } = useLanguage();
@@ -99,7 +99,7 @@ export function LivenessQuickStart({ cedula }: Props) {
           region="us-east-1"
           onUserCancel={onUserCancel}
           onError={({ error, state }) => {
-            let message = error.message;
+            let message = error?.message ?? state;
 
             if (message.includes('{"Message"')) {
               message = JSON.parse(message).Message?.split(':')[0];
@@ -111,6 +111,10 @@ export function LivenessQuickStart({ cedula }: Props) {
 
             if (state === 'CAMERA_ACCESS_ERROR') {
               AlertError(intl.liveness.camera.notFound.heading);
+            }
+
+            if (state === 'MOBILE_LANDSCAPE_ERROR') {
+              AlertWarning(intl.liveness.error.landscape.message);
             }
 
             Sentry.captureMessage(message, {
