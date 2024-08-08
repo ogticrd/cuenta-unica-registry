@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@aws-amplify/adapter-nextjs':
-        specifier: ^1.2.11
-        version: 1.2.11(aws-amplify@6.4.4(aws-crt@1.21.3))(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^1.2.12
+        version: 1.2.12(aws-amplify@6.5.0(aws-crt@1.21.3))(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@aws-amplify/ui-react':
         specifier: ^6.1.14
-        version: 6.1.14(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)
+        version: 6.1.14(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)
       '@aws-amplify/ui-react-liveness':
         specifier: ^3.1.3
-        version: 3.1.3(@tensorflow/tfjs-backend-webgl@4.20.0(@tensorflow/tfjs-core@4.11.0(encoding@0.1.13)))(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(aws-crt@1.21.3)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.1.3(@tensorflow/tfjs-backend-webgl@4.20.0(@tensorflow/tfjs-core@4.11.0(encoding@0.1.13)))(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(aws-crt@1.21.3)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@aws-sdk/client-rekognition':
         specifier: ^3.624.0
         version: 3.624.0(aws-crt@1.21.3)
@@ -54,8 +54,8 @@ importers:
         specifier: ^8.24.0
         version: 8.24.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.92.1)
       aws-amplify:
-        specifier: ^6.4.4
-        version: 6.4.4(aws-crt@1.21.3)
+        specifier: ^6.5.0
+        version: 6.5.0(aws-crt@1.21.3)
       check-password-strength:
         specifier: ^2.0.10
         version: 2.0.10
@@ -91,8 +91,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@commitlint/cli':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/node@20.14.14)(typescript@5.5.4)
+        specifier: ^19.4.0
+        version: 19.4.0(@types/node@20.14.14)(typescript@5.5.4)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -125,7 +125,7 @@ importers:
         version: 6.21.0(eslint@8.57.0)(typescript@5.5.4)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.3.5(@types/node@20.14.14)(terser@5.31.3))
+        version: 4.3.1(vite@5.4.0(@types/node@20.14.14)(terser@5.31.5))
       aws-crt:
         specifier: ^1.21.3
         version: 1.21.3
@@ -161,7 +161,7 @@ importers:
         version: 3.3.3
       vitest:
         specifier: ^2.0.5
-        version: 2.0.5(@types/node@20.14.14)(jsdom@24.1.1)(terser@5.31.3)
+        version: 2.0.5(@types/node@20.14.14)(jsdom@24.1.1)(terser@5.31.5)
 
 packages:
 
@@ -169,35 +169,35 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aws-amplify/adapter-nextjs@1.2.11':
-    resolution: {integrity: sha512-f88Wu+1VFcSKuLSkaij1v5zyQ9W8wFvAy/k6W6B1ahzx8BLn+QFMSWRPlMM5X3bWhKfE9yH8qwaEawLWm5VExQ==}
+  '@aws-amplify/adapter-nextjs@1.2.12':
+    resolution: {integrity: sha512-pHTSQKt4vbUnStqzheVFq6CurEd/wnk4IZ+j7X2hWo3s0RYlBH3BiIpuowd4ir58zPhf1b4KKPJfXlMYzGyTdw==}
     peerDependencies:
       aws-amplify: ^6.0.7
       next: '>=13.5.0 <15.0.0'
 
-  '@aws-amplify/analytics@7.0.41':
-    resolution: {integrity: sha512-K7BLxgR8RaheuFmjXrJNU2agK2f/5NWxTb1cxZdsgGKmWuGE0Lf2CsnpBwS5x/QD4uJj7x0nWJzatu6zy8RG9A==}
+  '@aws-amplify/analytics@7.0.42':
+    resolution: {integrity: sha512-k3jZ4aHhN0Iz0td3R82cPXFGm5gq2+lSq4GVXJITO3A6L49QWRMIK9DMtTONf0wiO96gMNgjgOdJIak0kzPbSA==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
-  '@aws-amplify/api-graphql@4.1.12':
-    resolution: {integrity: sha512-1i0lpxgESxhrER6FjMdxsloUvhMW7JPxCaH+wx64RdRXXMPKGC43wXf93V766PsC6yj3iYM9TCBUa1H7FtsizQ==}
+  '@aws-amplify/api-graphql@4.1.13':
+    resolution: {integrity: sha512-uzvToQEaxVO/oNg5O5NXjAu7LdiBtgGchlgHYQphIL7AZRVQPHLvfzpA9Rd91ekEhyg1iBJJqLtVNHxUdKH2jg==}
 
-  '@aws-amplify/api-rest@4.0.41':
-    resolution: {integrity: sha512-ueN09zMc5ujFjZ7KvxiWGn+GYJu2NA1GUuiM7yChzZSQ8q2CgZwGji36Que37uN4oj5ADE+y58IVfsB8dOSdew==}
+  '@aws-amplify/api-rest@4.0.42':
+    resolution: {integrity: sha512-A0tVwnjN7KNDT5M3VfXieP5fv0MaAMaeLs4229ZK2ZW3H25c4+pRdzkmpKmJ1ppHajau8gGu2fiQYbRIhttl7Q==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
-  '@aws-amplify/api@6.0.43':
-    resolution: {integrity: sha512-ilUej4uLmrjiGKfozMSEMO5LSyJBBtoktkwS3efiIVuzr+Ef2HxSh6jkQ4w3iTRbTY2Nx2GvMzLsyKmuAxuMCw==}
+  '@aws-amplify/api@6.0.44':
+    resolution: {integrity: sha512-6moGD2hTY0p6P70pLvW+ca9kkkoy1VgPGP4z3iVuNJbltwsd9JFca09oNkZocRKpmSerA6S+2FaFQ7OLb4ReCw==}
 
-  '@aws-amplify/auth@6.3.12':
-    resolution: {integrity: sha512-z22z3t73Z++bTj2Odr/mACgWBgsGT+lMCAZgTHq/CyxVtfXT/FZrrDx78Nm9RBXXAESsYmJiU9CT65w8lthg1Q==}
+  '@aws-amplify/auth@6.3.13':
+    resolution: {integrity: sha512-TA9tEDYa/m2R3YemkzwuQaRQMJZOmDHM6kIWLv7h/2Gaz/fTqu17lCKBEUMq+bnEtLCBp8fuJ9kFCPD+cVEWbw==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
-  '@aws-amplify/core@6.3.8':
-    resolution: {integrity: sha512-vOQppG+JGpcdbwLvml5csTUiAd4q0TGDUVNWCN6IKeyXrc8B/2ERLWSZqgBmW8XUparkn1LZAXldnvPDMRhRMg==}
+  '@aws-amplify/core@6.3.9':
+    resolution: {integrity: sha512-qaqQXcJrLLpNX/KKtFmJPNdDPP/BeKGK4vmVzmHmwOQJoQnmlH7Oynkbmt6R2C97Jr8nqqLkoDYhwoBsGowS3g==}
 
   '@aws-amplify/data-schema-types@1.1.1':
     resolution: {integrity: sha512-WhWEEsztpSSxIY0lJ3Ge5iA4g3PBm66SQmy1fBH1FBq0T+cxUBijifOU8MNwf+tf6lGpArMX0RS54HRVF5fUSA==}
@@ -205,18 +205,18 @@ packages:
   '@aws-amplify/data-schema@1.3.10':
     resolution: {integrity: sha512-rUo6wb+DO6aGCSeSiB8wb92O4cEuN4sZBXn7TgqaYc8Bv4HutrLaIlptgXCYJMkaAp/h9rxyi6wIFJ7bEyD/6g==}
 
-  '@aws-amplify/datastore@5.0.43':
-    resolution: {integrity: sha512-Pi5Gb0KzWGtuYooHGHbSN24rYImFUV29ykZPnpr//tdCovwPHJtqpuqlKTkcjPU+e5w8KYXIpRzSDw4gTi+12Q==}
+  '@aws-amplify/datastore@5.0.44':
+    resolution: {integrity: sha512-uM3hYH+iNobQnt8b7Nihvjxd/DCMURMaVd40g+LHAlMue7oljQPIYF7rSf2LEe9oddljI/sz507QHTflM9mAFw==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
-  '@aws-amplify/notifications@2.0.41':
-    resolution: {integrity: sha512-/7OT6t+lNvQIxspJ324S9FKtBweh3KEY6tm7Mi426815Wu9nL2JQQAVjuCkyzOUxFuFEmjD+07flhErZIvfVIA==}
+  '@aws-amplify/notifications@2.0.42':
+    resolution: {integrity: sha512-rPOV6GIZ4PnTxop7tQNHZU7V0T0QyfKQMJZZ1WBRvWfQDdLZ79xs7RVkq2ATTpX1pTpwe0yaDFBwuH+ZWsL/PA==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
-  '@aws-amplify/storage@6.5.4':
-    resolution: {integrity: sha512-jHo7jrQgTddsXiOOLpRMhjypfckiTZpfOVphUPccqoUwP5wltXQlX1T9b8wshnFZRpQAztIqZOkWBtrv8TNxAQ==}
+  '@aws-amplify/storage@6.6.0':
+    resolution: {integrity: sha512-SN+WYQ89pg0tKaMOlLbbeLD+sdR/gVksK3T5QD4tefEacGGbTcoCinljfgRnsiHUstnCVj25wo0qeZVubFwfkQ==}
     peerDependencies:
       '@aws-amplify/core': ^6.1.0
 
@@ -557,8 +557,8 @@ packages:
     resolution: {integrity: sha512-YTnYtra7W9e6/oAZEHj0bJehPRUlLH9/fbpT5LfB0NhQXyALCRkRs3zH9v07IYhkgpqX6Z78FnuccZr/l4Fs4Q==}
     engines: {node: '>=6.9.0'}
 
-  '@commitlint/cli@19.3.0':
-    resolution: {integrity: sha512-LgYWOwuDR7BSTQ9OLZ12m7F/qhNY+NpAyPBgo4YNMkACE7lGuUnuQq1yi9hz1KA4+3VqpOYl8H1rY/LYK43v7g==}
+  '@commitlint/cli@19.4.0':
+    resolution: {integrity: sha512-sJX4J9UioVwZHq7JWM9tjT5bgWYaIN3rC4FP7YwfEwBYiIO+wMyRttRvQLNkow0vCdM0D67r9NEWU0Ui03I4Eg==}
     engines: {node: '>=v18'}
     hasBin: true
 
@@ -590,8 +590,8 @@ packages:
     resolution: {integrity: sha512-xrzMmz4JqwGyKQKTpFzlN0dx0TAiT7Ran1fqEBgEmEj+PU98crOFtysJgY+QdeSagx6EDRigQIXJVnfrI0ratA==}
     engines: {node: '>=v18'}
 
-  '@commitlint/load@19.2.0':
-    resolution: {integrity: sha512-XvxxLJTKqZojCxaBQ7u92qQLFMMZc4+p9qrIq/9kJDy8DOrEa7P1yx7Tjdc2u2JxIalqT4KOGraVgCE7eCYJyQ==}
+  '@commitlint/load@19.4.0':
+    resolution: {integrity: sha512-I4lCWaEZYQJ1y+Y+gdvbGAx9pYPavqZAZ3/7/8BpWh+QjscAn8AjsUpLV2PycBsEx7gupq5gM4BViV9xwTIJuw==}
     engines: {node: '>=v18'}
 
   '@commitlint/message@19.0.0':
@@ -602,8 +602,8 @@ packages:
     resolution: {integrity: sha512-Il+tNyOb8VDxN3P6XoBBwWJtKKGzHlitEuXA5BP6ir/3loWlsSqDr5aecl6hZcC/spjq4pHqNh0qPlfeWu38QA==}
     engines: {node: '>=v18'}
 
-  '@commitlint/read@19.2.1':
-    resolution: {integrity: sha512-qETc4+PL0EUv7Q36lJbPG+NJiBOGg7SSC7B5BsPWOmei+Dyif80ErfWQ0qXoW9oCh7GTpTNRoaVhiI8RbhuaNw==}
+  '@commitlint/read@19.4.0':
+    resolution: {integrity: sha512-r95jLOEZzKDakXtnQub+zR3xjdnrl2XzerPwm7ch1/cc5JGq04tyaNpa6ty0CRCWdVrk4CZHhqHozb8yZwy2+g==}
     engines: {node: '>=v18'}
 
   '@commitlint/resolve-extends@19.1.0':
@@ -1642,24 +1642,24 @@ packages:
     resolution: {integrity: sha512-UaPf8jKbcP71BGiO0CdeLmlg+RhWnlN8ipsMSdwvqBFigl5nil3rHOI/5GE3tfiuX8LvY5Z9N0meuU7Rab7jWw==}
     engines: {node: '>=14.0.0'}
 
-  '@smithy/eventstream-serde-browser@3.0.5':
-    resolution: {integrity: sha512-dEyiUYL/ekDfk+2Ra4GxV+xNnFoCmk1nuIXg+fMChFTrM2uI/1r9AdiTYzPqgb72yIv/NtAj6C3dG//1wwgakQ==}
+  '@smithy/eventstream-serde-browser@3.0.6':
+    resolution: {integrity: sha512-2hM54UWQUOrki4BtsUI1WzmD13/SeaqT/AB3EUJKbcver/WgKNaiJ5y5F5XXuVe6UekffVzuUDrBZVAA3AWRpQ==}
     engines: {node: '>=16.0.0'}
 
   '@smithy/eventstream-serde-config-resolver@3.0.3':
     resolution: {integrity: sha512-NVTYjOuYpGfrN/VbRQgn31x73KDLfCXCsFdad8DiIc3IcdxL+dYA9zEQPyOP7Fy2QL8CPy2WE4WCUD+ZsLNfaQ==}
     engines: {node: '>=16.0.0'}
 
-  '@smithy/eventstream-serde-node@3.0.4':
-    resolution: {integrity: sha512-mjlG0OzGAYuUpdUpflfb9zyLrBGgmQmrobNT8b42ZTsGv/J03+t24uhhtVEKG/b2jFtPIHF74Bq+VUtbzEKOKg==}
+  '@smithy/eventstream-serde-node@3.0.5':
+    resolution: {integrity: sha512-+upXvnHNyZP095s11jF5dhGw/Ihzqwl5G+/KtMnoQOpdfC3B5HYCcDVG9EmgkhJMXJlM64PyN5gjJl0uXFQehQ==}
     engines: {node: '>=16.0.0'}
 
   '@smithy/eventstream-serde-universal@2.2.0':
     resolution: {integrity: sha512-pvoe/vvJY0mOpuF84BEtyZoYfbehiFj8KKWk1ds2AT0mTLYFVs+7sBJZmioOFdBXKd48lfrx1vumdPdmGlCLxA==}
     engines: {node: '>=14.0.0'}
 
-  '@smithy/eventstream-serde-universal@3.0.4':
-    resolution: {integrity: sha512-Od9dv8zh3PgOD7Vj4T3HSuox16n0VG8jJIM2gvKASL6aCtcS8CfHZDWe1Ik3ZXW6xBouU+45Q5wgoliWDZiJ0A==}
+  '@smithy/eventstream-serde-universal@3.0.5':
+    resolution: {integrity: sha512-5u/nXbyoh1s4QxrvNre9V6vfyoLWuiVvvd5TlZjGThIikc3G+uNiG9uOTCWweSRjv1asdDIWK7nOmN7le4RYHQ==}
     engines: {node: '>=16.0.0'}
 
   '@smithy/fetch-http-handler@2.5.0':
@@ -1928,8 +1928,8 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
-  '@types/aws-lambda@8.10.142':
-    resolution: {integrity: sha512-wy2y/2hQKrS6myOS++koXg3N1Hg+LLyPjaggCFajczSHZPqBnOMuT2sdH3kiASrmdBYyM3pmjyz5SoWraRllCQ==}
+  '@types/aws-lambda@8.10.143':
+    resolution: {integrity: sha512-u5vzlcR14ge/4pMTTMDQr3MF0wEe38B2F9o84uC4F43vN5DGTy63npRrB6jQhyt+C0lGv4ZfiRcRkqJoZuPnmg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2322,8 +2322,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  aws-amplify@6.4.4:
-    resolution: {integrity: sha512-WMfyWrBDSLpWBBZ/HQPGfu4eV0pSDoKWBgem1TwJrQOt/pJ15dFkcu5EcUW4LKVjICM9H7Tzq4i+i2ozH84Qsg==}
+  aws-amplify@6.5.0:
+    resolution: {integrity: sha512-GSN12AJ+wPqvms6iFrI2FeO28yCg15A8HypPuBhI44yDrl8ZYE7iHVVigetqQ/QYminZ+N4mJ84HNfezhC+V1g==}
 
   aws-crt@1.21.3:
     resolution: {integrity: sha512-oaiP5zoPkXwbM9T3nwSgq6CBZWx0501iefLPg12FODniIgqGMyzbMXHYC+fxbCoP5SOQVmCwtAfbNuIG5bFENg==}
@@ -2416,8 +2416,8 @@ packages:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
 
-  caniuse-lite@1.0.30001649:
-    resolution: {integrity: sha512-fJegqZZ0ZX8HOWr6rcafGr72+xcgJKI9oWfDW5DrD7ExUtgZC7a7R7ZYmZqplh7XDocFdGeIFn7roAxhOeYrPQ==}
+  caniuse-lite@1.0.30001651:
+    resolution: {integrity: sha512-9Cf+Xv1jJNe1xPZLGuUXLNkE1BoDkqRqYyFJ9TDYSqhduqA4hu4oR9HluGoWYQC/aj8WHjsGVV+bwkh0+tegRg==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -3033,8 +3033,8 @@ packages:
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
 
-  foreground-child@3.2.1:
-    resolution: {integrity: sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==}
+  foreground-child@3.3.0:
+    resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
     engines: {node: '>=14'}
 
   form-data@4.0.0:
@@ -4526,8 +4526,8 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.31.3:
-    resolution: {integrity: sha512-pAfYn3NIZLyZpa83ZKigvj6Rn9c/vd5KfYGX7cN1mnzqgDcxWvrU5ZtAfIKhEXz9nRecw4z3LXkjaq96/qZqAA==}
+  terser@5.31.5:
+    resolution: {integrity: sha512-YPmas0L0rE1UyLL/llTWA0SiDOqIcAQYLeUj7cJYzXHlRTAnMSg9pPe4VJ5PlKvTrPQsdVFuiRiwyeNlYgwh2Q==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -4740,8 +4740,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite@5.3.5:
-    resolution: {integrity: sha512-MdjglKR6AQXQb9JGiS7Rc2wC6uMjcm7Go/NHNO63EwiJXfuk9PgqiP/n5IDJCziMkfw9n4Ubp7lttNwz+8ZVKA==}
+  vite@5.4.0:
+    resolution: {integrity: sha512-5xokfMX0PIiwCMCMb9ZJcMyh5wbBun0zUzKib+L65vAZ8GY9ePZMXxFrHbr/Kyll2+LSCY7xtERPpxkBDKngwg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -4749,6 +4749,7 @@ packages:
       less: '*'
       lightningcss: ^1.21.0
       sass: '*'
+      sass-embedded: '*'
       stylus: '*'
       sugarss: '*'
       terser: ^5.4.0
@@ -4760,6 +4761,8 @@ packages:
       lightningcss:
         optional: true
       sass:
+        optional: true
+      sass-embedded:
         optional: true
       stylus:
         optional: true
@@ -4985,16 +4988,16 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aws-amplify/adapter-nextjs@1.2.11(aws-amplify@6.4.4(aws-crt@1.21.3))(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@aws-amplify/adapter-nextjs@1.2.12(aws-amplify@6.5.0(aws-crt@1.21.3))(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
-      aws-amplify: 6.4.4(aws-crt@1.21.3)
+      aws-amplify: 6.5.0(aws-crt@1.21.3)
       aws-jwt-verify: 4.0.1
       cookie: 0.5.0
       next: 14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  '@aws-amplify/analytics@7.0.41(@aws-amplify/core@6.3.8)(aws-crt@1.21.3)':
+  '@aws-amplify/analytics@7.0.42(@aws-amplify/core@6.3.9)(aws-crt@1.21.3)':
     dependencies:
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/core': 6.3.9
       '@aws-sdk/client-firehose': 3.621.0(aws-crt@1.21.3)
       '@aws-sdk/client-kinesis': 3.621.0(aws-crt@1.21.3)
       '@aws-sdk/client-personalize-events': 3.621.0(aws-crt@1.21.3)
@@ -5003,10 +5006,10 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-amplify/api-graphql@4.1.12':
+  '@aws-amplify/api-graphql@4.1.13':
     dependencies:
-      '@aws-amplify/api-rest': 4.0.41(@aws-amplify/core@6.3.8)
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/api-rest': 4.0.42(@aws-amplify/core@6.3.9)
+      '@aws-amplify/core': 6.3.9
       '@aws-amplify/data-schema': 1.3.10
       '@aws-sdk/types': 3.387.0
       graphql: 15.8.0
@@ -5014,25 +5017,25 @@ snapshots:
       tslib: 2.6.3
       uuid: 9.0.1
 
-  '@aws-amplify/api-rest@4.0.41(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/api-rest@4.0.42(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/core': 6.3.9
       tslib: 2.6.3
 
-  '@aws-amplify/api@6.0.43(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/api@6.0.44(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/api-graphql': 4.1.12
-      '@aws-amplify/api-rest': 4.0.41(@aws-amplify/core@6.3.8)
+      '@aws-amplify/api-graphql': 4.1.13
+      '@aws-amplify/api-rest': 4.0.42(@aws-amplify/core@6.3.9)
       tslib: 2.6.3
     transitivePeerDependencies:
       - '@aws-amplify/core'
 
-  '@aws-amplify/auth@6.3.12(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/auth@6.3.13(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/core': 6.3.9
       tslib: 2.6.3
 
-  '@aws-amplify/core@6.3.8':
+  '@aws-amplify/core@6.3.9':
     dependencies:
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/types': 3.398.0
@@ -5051,39 +5054,39 @@ snapshots:
   '@aws-amplify/data-schema@1.3.10':
     dependencies:
       '@aws-amplify/data-schema-types': 1.1.1
-      '@types/aws-lambda': 8.10.142
+      '@types/aws-lambda': 8.10.143
       rxjs: 7.8.1
 
-  '@aws-amplify/datastore@5.0.43(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/datastore@5.0.44(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/api': 6.0.43(@aws-amplify/core@6.3.8)
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/api': 6.0.44(@aws-amplify/core@6.3.9)
+      '@aws-amplify/core': 6.3.9
       buffer: 4.9.2
       idb: 5.0.6
       immer: 9.0.6
       rxjs: 7.8.1
       ulid: 2.3.0
 
-  '@aws-amplify/notifications@2.0.41(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/notifications@2.0.42(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/core': 6.3.9
       lodash: 4.17.21
       tslib: 2.6.3
 
-  '@aws-amplify/storage@6.5.4(@aws-amplify/core@6.3.8)':
+  '@aws-amplify/storage@6.6.0(@aws-amplify/core@6.3.9)':
     dependencies:
-      '@aws-amplify/core': 6.3.8
+      '@aws-amplify/core': 6.3.9
       '@aws-sdk/types': 3.398.0
       '@smithy/md5-js': 2.0.7
       buffer: 4.9.2
       fast-xml-parser: 4.4.1
       tslib: 2.6.3
 
-  '@aws-amplify/ui-react-core@3.0.17(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(react@18.3.1)':
+  '@aws-amplify/ui-react-core@3.0.17(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(react@18.3.1)':
     dependencies:
-      '@aws-amplify/ui': 6.0.17(aws-amplify@6.4.4(aws-crt@1.21.3))(xstate@4.38.3)
+      '@aws-amplify/ui': 6.0.17(aws-amplify@6.5.0(aws-crt@1.21.3))(xstate@4.38.3)
       '@xstate/react': 3.2.2(@types/react@18.3.3)(react@18.3.1)(xstate@4.38.3)
-      aws-amplify: 6.4.4(aws-crt@1.21.3)
+      aws-amplify: 6.5.0(aws-crt@1.21.3)
       lodash: 4.17.21
       react: 18.3.1
       react-hook-form: 7.52.2(react@18.3.1)
@@ -5092,10 +5095,10 @@ snapshots:
       - '@types/react'
       - '@xstate/fsm'
 
-  '@aws-amplify/ui-react-liveness@3.1.3(@tensorflow/tfjs-backend-webgl@4.20.0(@tensorflow/tfjs-core@4.11.0(encoding@0.1.13)))(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(aws-crt@1.21.3)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@aws-amplify/ui-react-liveness@3.1.3(@tensorflow/tfjs-backend-webgl@4.20.0(@tensorflow/tfjs-core@4.11.0(encoding@0.1.13)))(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(aws-crt@1.21.3)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@aws-amplify/ui': 6.0.17(aws-amplify@6.4.4(aws-crt@1.21.3))(xstate@4.38.3)
-      '@aws-amplify/ui-react': 6.1.14(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)
+      '@aws-amplify/ui': 6.0.17(aws-amplify@6.5.0(aws-crt@1.21.3))(xstate@4.38.3)
+      '@aws-amplify/ui-react': 6.1.14(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)
       '@aws-sdk/client-rekognitionstreaming': 3.621.0(aws-crt@1.21.3)
       '@aws-sdk/util-format-url': 3.609.0
       '@mediapipe/face_detection': 0.4.1646425229
@@ -5109,7 +5112,7 @@ snapshots:
       '@tensorflow/tfjs-converter': 4.11.0(@tensorflow/tfjs-core@4.11.0(encoding@0.1.13))
       '@tensorflow/tfjs-core': 4.11.0(encoding@0.1.13)
       '@xstate/react': 3.2.2(@types/react@18.3.3)(react@18.3.1)(xstate@4.38.3)
-      aws-amplify: 6.4.4(aws-crt@1.21.3)
+      aws-amplify: 6.5.0(aws-crt@1.21.3)
       nanoid: 3.1.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -5122,10 +5125,10 @@ snapshots:
       - aws-crt
       - encoding
 
-  '@aws-amplify/ui-react@6.1.14(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)':
+  '@aws-amplify/ui-react@6.1.14(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)':
     dependencies:
-      '@aws-amplify/ui': 6.0.17(aws-amplify@6.4.4(aws-crt@1.21.3))(xstate@4.38.3)
-      '@aws-amplify/ui-react-core': 3.0.17(@types/react@18.3.3)(aws-amplify@6.4.4(aws-crt@1.21.3))(react@18.3.1)
+      '@aws-amplify/ui': 6.0.17(aws-amplify@6.5.0(aws-crt@1.21.3))(xstate@4.38.3)
+      '@aws-amplify/ui-react-core': 3.0.17(@types/react@18.3.3)(aws-amplify@6.5.0(aws-crt@1.21.3))(react@18.3.1)
       '@radix-ui/react-direction': 1.0.0(react@18.3.1)
       '@radix-ui/react-dropdown-menu': 1.0.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slider': 1.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5136,15 +5139,15 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       tslib: 2.6.3
     optionalDependencies:
-      aws-amplify: 6.4.4(aws-crt@1.21.3)
+      aws-amplify: 6.5.0(aws-crt@1.21.3)
     transitivePeerDependencies:
       - '@types/react'
       - '@xstate/fsm'
       - xstate
 
-  '@aws-amplify/ui@6.0.17(aws-amplify@6.4.4(aws-crt@1.21.3))(xstate@4.38.3)':
+  '@aws-amplify/ui@6.0.17(aws-amplify@6.5.0(aws-crt@1.21.3))(xstate@4.38.3)':
     dependencies:
-      aws-amplify: 6.4.4(aws-crt@1.21.3)
+      aws-amplify: 6.5.0(aws-crt@1.21.3)
       csstype: 3.1.3
       lodash: 4.17.21
       style-dictionary: 3.9.1
@@ -5261,9 +5264,9 @@ snapshots:
       '@aws-sdk/util-user-agent-node': 3.614.0(aws-crt@1.21.3)
       '@smithy/config-resolver': 3.0.5
       '@smithy/core': 2.3.2
-      '@smithy/eventstream-serde-browser': 3.0.5
+      '@smithy/eventstream-serde-browser': 3.0.6
       '@smithy/eventstream-serde-config-resolver': 3.0.3
-      '@smithy/eventstream-serde-node': 3.0.4
+      '@smithy/eventstream-serde-node': 3.0.5
       '@smithy/fetch-http-handler': 3.2.4
       '@smithy/hash-node': 3.0.3
       '@smithy/invalid-dependency': 3.0.3
@@ -5409,9 +5412,9 @@ snapshots:
       '@aws-sdk/util-user-agent-node': 3.614.0(aws-crt@1.21.3)
       '@smithy/config-resolver': 3.0.5
       '@smithy/core': 2.3.2
-      '@smithy/eventstream-serde-browser': 3.0.5
+      '@smithy/eventstream-serde-browser': 3.0.6
       '@smithy/eventstream-serde-config-resolver': 3.0.3
-      '@smithy/eventstream-serde-node': 3.0.4
+      '@smithy/eventstream-serde-node': 3.0.5
       '@smithy/fetch-http-handler': 3.2.4
       '@smithy/hash-node': 3.0.3
       '@smithy/invalid-dependency': 3.0.3
@@ -5991,7 +5994,7 @@ snapshots:
       '@aws-sdk/types': 3.609.0
       '@aws-sdk/util-format-url': 3.609.0
       '@smithy/eventstream-codec': 3.1.2
-      '@smithy/eventstream-serde-browser': 3.0.5
+      '@smithy/eventstream-serde-browser': 3.0.6
       '@smithy/fetch-http-handler': 3.2.4
       '@smithy/protocol-http': 4.1.0
       '@smithy/signature-v4': 4.1.0
@@ -6221,12 +6224,12 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.14)(typescript@5.5.4)':
+  '@commitlint/cli@19.4.0(@types/node@20.14.14)(typescript@5.5.4)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.14)(typescript@5.5.4)
-      '@commitlint/read': 19.2.1
+      '@commitlint/load': 19.4.0(@types/node@20.14.14)(typescript@5.5.4)
+      '@commitlint/read': 19.4.0
       '@commitlint/types': 19.0.3
       execa: 8.0.1
       yargs: 17.7.2
@@ -6272,7 +6275,7 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.14)(typescript@5.5.4)':
+  '@commitlint/load@19.4.0(@types/node@20.14.14)(typescript@5.5.4)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
@@ -6296,7 +6299,7 @@ snapshots:
       conventional-changelog-angular: 7.0.0
       conventional-commits-parser: 5.0.0
 
-  '@commitlint/read@19.2.1':
+  '@commitlint/read@19.4.0':
     dependencies:
       '@commitlint/top-level': 19.0.0
       '@commitlint/types': 19.0.3
@@ -7516,9 +7519,9 @@ snapshots:
       '@smithy/types': 2.12.0
       tslib: 2.6.3
 
-  '@smithy/eventstream-serde-browser@3.0.5':
+  '@smithy/eventstream-serde-browser@3.0.6':
     dependencies:
-      '@smithy/eventstream-serde-universal': 3.0.4
+      '@smithy/eventstream-serde-universal': 3.0.5
       '@smithy/types': 3.3.0
       tslib: 2.6.3
 
@@ -7527,9 +7530,9 @@ snapshots:
       '@smithy/types': 3.3.0
       tslib: 2.6.3
 
-  '@smithy/eventstream-serde-node@3.0.4':
+  '@smithy/eventstream-serde-node@3.0.5':
     dependencies:
-      '@smithy/eventstream-serde-universal': 3.0.4
+      '@smithy/eventstream-serde-universal': 3.0.5
       '@smithy/types': 3.3.0
       tslib: 2.6.3
 
@@ -7539,7 +7542,7 @@ snapshots:
       '@smithy/types': 2.12.0
       tslib: 2.6.3
 
-  '@smithy/eventstream-serde-universal@3.0.4':
+  '@smithy/eventstream-serde-universal@3.0.5':
     dependencies:
       '@smithy/eventstream-codec': 3.1.2
       '@smithy/types': 3.3.0
@@ -7933,7 +7936,7 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
-  '@types/aws-lambda@8.10.142': {}
+  '@types/aws-lambda@8.10.143': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -8133,14 +8136,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.3.5(@types/node@20.14.14)(terser@5.31.3))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.0(@types/node@20.14.14)(terser@5.31.5))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.3.5(@types/node@20.14.14)(terser@5.31.3)
+      vite: 5.4.0(@types/node@20.14.14)(terser@5.31.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -8437,15 +8440,15 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.0.0
 
-  aws-amplify@6.4.4(aws-crt@1.21.3):
+  aws-amplify@6.5.0(aws-crt@1.21.3):
     dependencies:
-      '@aws-amplify/analytics': 7.0.41(@aws-amplify/core@6.3.8)(aws-crt@1.21.3)
-      '@aws-amplify/api': 6.0.43(@aws-amplify/core@6.3.8)
-      '@aws-amplify/auth': 6.3.12(@aws-amplify/core@6.3.8)
-      '@aws-amplify/core': 6.3.8
-      '@aws-amplify/datastore': 5.0.43(@aws-amplify/core@6.3.8)
-      '@aws-amplify/notifications': 2.0.41(@aws-amplify/core@6.3.8)
-      '@aws-amplify/storage': 6.5.4(@aws-amplify/core@6.3.8)
+      '@aws-amplify/analytics': 7.0.42(@aws-amplify/core@6.3.9)(aws-crt@1.21.3)
+      '@aws-amplify/api': 6.0.44(@aws-amplify/core@6.3.9)
+      '@aws-amplify/auth': 6.3.13(@aws-amplify/core@6.3.9)
+      '@aws-amplify/core': 6.3.9
+      '@aws-amplify/datastore': 5.0.44(@aws-amplify/core@6.3.9)
+      '@aws-amplify/notifications': 2.0.42(@aws-amplify/core@6.3.9)
+      '@aws-amplify/storage': 6.6.0(@aws-amplify/core@6.3.9)
       tslib: 2.6.3
     transitivePeerDependencies:
       - aws-crt
@@ -8520,7 +8523,7 @@ snapshots:
 
   browserslist@4.23.3:
     dependencies:
-      caniuse-lite: 1.0.30001649
+      caniuse-lite: 1.0.30001651
       electron-to-chromium: 1.5.5
       node-releases: 2.0.18
       update-browserslist-db: 1.1.0(browserslist@4.23.3)
@@ -8566,7 +8569,7 @@ snapshots:
 
   camelcase@5.3.1: {}
 
-  caniuse-lite@1.0.30001649: {}
+  caniuse-lite@1.0.30001651: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -9424,7 +9427,7 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
-  foreground-child@3.2.1:
+  foreground-child@3.3.0:
     dependencies:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
@@ -9505,7 +9508,7 @@ snapshots:
 
   glob@10.3.10:
     dependencies:
-      foreground-child: 3.2.1
+      foreground-child: 3.3.0
       jackspeak: 2.3.6
       minimatch: 9.0.5
       minipass: 7.1.2
@@ -9513,7 +9516,7 @@ snapshots:
 
   glob@10.4.5:
     dependencies:
-      foreground-child: 3.2.1
+      foreground-child: 3.3.0
       jackspeak: 3.4.3
       minimatch: 9.0.5
       minipass: 7.1.2
@@ -10167,7 +10170,7 @@ snapshots:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001649
+      caniuse-lite: 1.0.30001651
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -10947,10 +10950,10 @@ snapshots:
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
-      terser: 5.31.3
+      terser: 5.31.5
       webpack: 5.92.1
 
-  terser@5.31.3:
+  terser@5.31.5:
     dependencies:
       '@jridgewell/source-map': 0.3.6
       acorn: 8.12.1
@@ -11143,24 +11146,25 @@ snapshots:
 
   version-range@4.14.0: {}
 
-  vite-node@2.0.5(@types/node@20.14.14)(terser@5.31.3):
+  vite-node@2.0.5(@types/node@20.14.14)(terser@5.31.5):
     dependencies:
       cac: 6.7.14
       debug: 4.3.6
       pathe: 1.1.2
       tinyrainbow: 1.2.0
-      vite: 5.3.5(@types/node@20.14.14)(terser@5.31.3)
+      vite: 5.4.0(@types/node@20.14.14)(terser@5.31.5)
     transitivePeerDependencies:
       - '@types/node'
       - less
       - lightningcss
       - sass
+      - sass-embedded
       - stylus
       - sugarss
       - supports-color
       - terser
 
-  vite@5.3.5(@types/node@20.14.14)(terser@5.31.3):
+  vite@5.4.0(@types/node@20.14.14)(terser@5.31.5):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.41
@@ -11168,9 +11172,9 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.14
       fsevents: 2.3.3
-      terser: 5.31.3
+      terser: 5.31.5
 
-  vitest@2.0.5(@types/node@20.14.14)(jsdom@24.1.1)(terser@5.31.3):
+  vitest@2.0.5(@types/node@20.14.14)(jsdom@24.1.1)(terser@5.31.5):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.5
@@ -11188,8 +11192,8 @@ snapshots:
       tinybench: 2.9.0
       tinypool: 1.0.0
       tinyrainbow: 1.2.0
-      vite: 5.3.5(@types/node@20.14.14)(terser@5.31.3)
-      vite-node: 2.0.5(@types/node@20.14.14)(terser@5.31.3)
+      vite: 5.4.0(@types/node@20.14.14)(terser@5.31.5)
+      vite-node: 2.0.5(@types/node@20.14.14)(terser@5.31.5)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.14.14
@@ -11198,6 +11202,7 @@ snapshots:
       - less
       - lightningcss
       - sass
+      - sass-embedded
       - stylus
       - sugarss
       - supports-color
