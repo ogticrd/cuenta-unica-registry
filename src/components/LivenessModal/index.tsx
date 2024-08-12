@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
 import Dialog from '@mui/material/Dialog';
 import { Box } from '@mui/material';
+import React from 'react';
 import Image from 'next/image';
 
 import LogoWhite from '@public/assets/logo-white.svg';
@@ -24,6 +25,13 @@ type Props = {
 export function LivenessModal({ cedula, setOpen }: Props) {
   const closeModal = () => setOpen(false);
   const { intl } = useLanguage();
+
+  React.useEffect(() => {
+    const FIVE_MINUTES = 5 * 60 * 1000;
+    const timeout = setTimeout(() => window.location.reload(), FIVE_MINUTES);
+
+    return () => clearTimeout(timeout);
+  });
 
   return (
     <div>
