@@ -47,7 +47,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
         }}
       >
         <div className={styles.layer_logo} />
-        <AppBar elevation={0} sx={{ position: 'absolute' }}>
+        <AppBar elevation={0} sx={{ position: 'relative' }}>
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar>
               <Box sx={{ flex: 1 }}>
