@@ -4,6 +4,7 @@ import { passwordStrength } from 'check-password-strength';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import * as Sentry from '@sentry/nextjs';
 import { useFormState } from 'react-dom';
 import { z } from 'zod';
 
@@ -66,9 +67,15 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
   const password = watch('password');
 
   useEffect(() => {
-    if (state.message) {
+    if (state?.message) {
       setLoading(false);
       const message = localizeString(intl, state.message) || state.message;
+
+      Sentry.captureMessage(message, {
+        user: { id: state?.meta?.cedula, email: watch('email') },
+        extra: { state, error: state?.message },
+        level: 'error',
+      });
 
       AlertError(message);
     }

@@ -4,6 +4,7 @@ import { createRef, useEffect, useRef, useState } from 'react';
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import * as Sentry from '@sentry/nextjs';
 import { useFormState } from 'react-dom';
 import Image from 'next/image';
 import { z } from 'zod';
@@ -45,9 +46,15 @@ export function Form({ flow, returnTo, code }: Props) {
   const [state, action] = useFormState(verifyAccount, { message: '' });
 
   useEffect(() => {
-    if (state.message) {
+    if (state?.message) {
       setLoading(false);
       setError(true);
+
+      Sentry.captureMessage(state.message, {
+        extra: { state, error: state?.message, flow },
+        level: 'error',
+      });
+
       AlertError(state.message);
     }
     // eslint-disable-next-line
@@ -172,17 +179,3 @@ function parseOTP(value: string | undefined, size = 6) {
 
   return value.replace(/\D/g, '').trim().split('').slice(0, size);
 }
-
-// onSubmit={async (e) => {
-//   // setLoading(true);
-
-//   console.log({ valid: formState.isValid });
-//   // if (!formState.isValid) {
-//   //   e.preventDefault();
-
-//   //   // await trigger();
-//   //   return false;
-//   // }
-
-//   e.currentTarget.requestSubmit();
-// }}

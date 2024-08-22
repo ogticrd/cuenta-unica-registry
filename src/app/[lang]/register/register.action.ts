@@ -101,13 +101,13 @@ export async function registerAccount(
   if ('ui' in registration) {
     for (const node of registration.ui.nodes) {
       for (const { type, text } of node.messages) {
-        if (type === 'error') return { message: text };
+        if (type === 'error') return { message: text, meta: { cedula } };
       }
     }
 
     for (const { type, text } of registration.ui.messages ?? []) {
       if (type === 'error') {
-        return { message: text };
+        return { message: text, meta: { cedula } };
       }
     }
   }
@@ -125,5 +125,5 @@ export async function registerAccount(
     }
   }
 
-  return { message: 'errors.createIdentity' };
+  return { message: 'errors.createIdentity', meta: { cedula } };
 }

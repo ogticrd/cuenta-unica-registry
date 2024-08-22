@@ -5,6 +5,7 @@ import { TextField, Tooltip } from '@mui/material';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import { useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import React from 'react';
 import { z } from 'zod';
@@ -29,7 +30,7 @@ export function Form() {
   const { executeRecaptcha, loaded } = useReCaptcha();
   const { intl } = useLanguage();
 
-  const { formState, setValue, register, trigger, clearErrors } =
+  const { formState, setValue, register, trigger, clearErrors, watch } =
     useForm<CedulaForm>({
       reValidateMode: 'onChange',
       resolver: zodResolver(createCedulaSchema(intl)),
@@ -63,6 +64,12 @@ export function Form() {
     // For some reason `state.message` is undefined in safari
     if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
+
+      Sentry.captureMessage(message, {
+        user: { id: watch('cedula') },
+        extra: { state, error: state?.message },
+        level: 'error',
+      });
 
       AlertError(message);
     }
