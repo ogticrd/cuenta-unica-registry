@@ -15,8 +15,9 @@ import { verifyUser } from '../register/register.action';
 import { useLanguage } from '../provider';
 
 type Confirmation = z.infer<ReturnType<typeof createConfirmationSchema>>;
+type Props = { defaultValue: string };
 
-export function ConfirmationForm() {
+export function ConfirmationForm({ defaultValue }: Props) {
   const { intl } = useLanguage();
   const { AlertError } = useSnackAlert();
   const {
@@ -60,6 +61,7 @@ export function ConfirmationForm() {
               required
               type="email"
               label={intl.step3.email.label}
+              defaultValue={defaultValue ?? ''}
               helperText={errors.email?.message}
               error={Boolean(errors.email)}
               onChange={() => clearErrors('email')}

@@ -7,9 +7,12 @@ import { getDictionary } from '@/dictionaries';
 import { ConfirmationForm } from './form';
 import { Locale } from '@/i18n-config';
 
-type Props = { params: { lang: Locale } };
+type Props = { params: { lang: Locale }; searchParams: { email: string } };
 
-export default async function ConfirmationPage({ params: { lang } }: Props) {
+export default async function ConfirmationPage({
+  params: { lang },
+  searchParams: { email },
+}: Props) {
   const intl = await getDictionary(lang);
 
   return (
@@ -33,12 +36,12 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
           }}
           gutterBottom
         >
-          Verificar correo electrónico
+          {intl.actions.verifyEmail}
         </Typography>
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <ConfirmationForm />
+        <ConfirmationForm defaultValue={email} />
       </GridItem>
     </GridContainer>
   );
