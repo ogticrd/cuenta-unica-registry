@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default async function VerificationPage({
-  searchParams: { flow, returnTo, code },
+  searchParams: { flow = '', returnTo, code },
 }: Props) {
   const validated = z.string().length(6).safeParse(code);
 
