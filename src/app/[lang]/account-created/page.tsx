@@ -38,8 +38,8 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
     },
     {
       ready: false,
-      name: 'Soy Yo',
-      url: '#',
+      name: 'Soy Yo RD',
+      url: 'https://soyyord.gob.do',
       description: intl.registered.descriptions.soyyo,
       icon: soyyo,
     },
