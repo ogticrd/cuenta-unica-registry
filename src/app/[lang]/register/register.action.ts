@@ -61,6 +61,9 @@ export async function registerAccount(
 ): Promise<State> {
   const cedula: string = form.get('cedula') as string;
   const email: string = form.get('email') as string;
+  const flow: string = form.get('flow') as string;
+
+  const meta = { cedula, flow };
 
   const { exists } = await findIamCitizen(cedula);
 
@@ -77,7 +80,7 @@ export async function registerAccount(
   const citizen = await findCitizen(cedula, true);
   const registration = await ory
     .updateRegistrationFlow({
-      flow: form.get('flow') as string,
+      flow,
       updateRegistrationFlowBody: {
         method: 'password',
         password: form.get('password') as string,
@@ -101,13 +104,13 @@ export async function registerAccount(
   if ('ui' in registration) {
     for (const node of registration.ui.nodes) {
       for (const { type, text } of node.messages) {
-        if (type === 'error') return { message: text, meta: { cedula } };
+        if (type === 'error') return { message: text, meta };
       }
     }
 
     for (const { type, text } of registration.ui.messages ?? []) {
       if (type === 'error') {
-        return { message: text, meta: { cedula } };
+        return { message: text, meta };
       }
     }
   }
@@ -125,5 +128,5 @@ export async function registerAccount(
     }
   }
 
-  return { message: 'errors.createIdentity', meta: { cedula } };
+  return { message: 'errors.createIdentity', meta };
 }
