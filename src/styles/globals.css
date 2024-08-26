@@ -37,7 +37,7 @@ div:has(
 
 @media only screen and (max-width: 819px) {
   .amplify-liveness-overlay {
-    margin-top: 60px;
+    margin-top: 3.75rem;
   }
 }
 
