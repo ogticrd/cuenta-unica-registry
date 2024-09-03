@@ -61,7 +61,7 @@ export function ConfirmationForm({ defaultValue }: Props) {
               required
               type="email"
               label={intl.step3.email.label}
-              defaultValue={defaultValue ?? ''}
+              value={defaultValue ?? ''}
               helperText={errors.email?.message}
               error={Boolean(errors.email)}
               onChange={() => clearErrors('email')}
