@@ -24,10 +24,11 @@ export default async function ValidationPage({ params: { lang } }: Props) {
     .then((resp) => resp.data)
     .catch(() => ({}) as Session);
 
-  if (user.identity?.verifiable_addresses?.find((id) => !id.verified)) {
-    // console.log('NO VERIFICADO');
-  } else if (user.active) {
-    // Donde deberia ir si ya está creada
+  for (const addr of user.identity?.verifiable_addresses ?? []) {
+    if (!addr.verified) redirect(`confirmation?email=${addr.value}`);
+  }
+
+  if (user.active) {
     return redirect(SETTINGS_URL);
   }
 
