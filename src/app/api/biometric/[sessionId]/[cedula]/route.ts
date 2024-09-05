@@ -47,9 +47,9 @@ export async function GET(
   });
 
   if (response?.ReferenceImage?.Bytes) {
-    const targetImageBuffer = await fetchPhotoBuffer(cedula);
-
     try {
+      const targetImageBuffer = await fetchPhotoBuffer(cedula);
+
       const params: CompareFacesCommandInput = {
         SourceImage: {
           Bytes: Buffer.from(response.ReferenceImage.Bytes),

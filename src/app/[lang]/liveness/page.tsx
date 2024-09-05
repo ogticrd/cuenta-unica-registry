@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import Verification from '@public/assets/verification.svg';
 
+import { fetchPhotoBuffer } from './get-photo.action';
 import { getDictionary } from '@/dictionaries';
 import { Steps } from '@/components/Steps';
 import { CitizenCookie } from '@/types';
@@ -19,6 +20,8 @@ export default async function LivenessPage({ params: { lang } }: Props) {
 
   if (!citizen?.name) return redirect('identification');
 
+  const photo = await fetchPhotoBuffer(citizen?.id);
+
   return (
     <div>
       <Steps step={1} />
@@ -26,6 +29,7 @@ export default async function LivenessPage({ params: { lang } }: Props) {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Image src={Verification.src} alt="Logo" width="190" height="162" />
       </div>
+
       <Typography
         component="div"
         color="primary"
@@ -35,10 +39,10 @@ export default async function LivenessPage({ params: { lang } }: Props) {
         <Box sx={{ fontWeight: 'bold' }}>
           ¡{intl.common.hello}, {citizen.name}!
         </Box>
-        <Box>{intl.step2.description}</Box>
+        <Box>{photo ? intl.step2.description : intl.step2.unavailable}</Box>
       </Typography>
 
-      <Form cedula={citizen.id} />
+      {photo ? <Form cedula={citizen.id} /> : null}
     </div>
   );
 }
