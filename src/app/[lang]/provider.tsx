@@ -1,12 +1,12 @@
 'use client';
 import { createContext, use } from 'react';
 
-import { getDictionary } from '@/dictionaries';
+import type { Dictionary } from '@/dictionaries';
 import { i18n } from '@/i18n-config';
 
 type Props = {
   children: React.ReactNode;
-  intl: Awaited<ReturnType<typeof getDictionary>>;
+  intl: Dictionary;
 };
 
 export function LanguageProvider({ children, intl }: Props) {
@@ -35,6 +35,6 @@ export function useLanguage() {
 export const LanguageContext = createContext({} as Context);
 
 export type Context = {
-  intl: Props['intl'];
+  intl: Dictionary;
   locales: (typeof i18n)['locales'];
 };

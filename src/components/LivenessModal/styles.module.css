@@ -11,14 +11,14 @@
 }
 
 .liveness_container {
-  width: 72%;
-  min-width: 400px;
+  width: 100%;
+  max-width: 800px;
   margin: auto;
-  padding: 10px 0;
+  padding: 10px;
 }
 
-@media only screen and (max-width: 1200px) {
-  .layer_logo {
-    display: none;
+@media only screen and (max-height: 550px) {
+  .liveness_container {
+    max-width: 500px;
   }
 }

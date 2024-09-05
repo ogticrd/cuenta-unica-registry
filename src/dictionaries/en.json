@@ -69,6 +69,7 @@
     "create": "CREATE ACCOUNT",
     "resendEmail": "RESEND EMAIL",
     "verifyAccount": "Verify account",
+    "verifyEmail": "Send verification email",
     "myAccount": "GO TO MY ACCOUNT",
     "close": "Close"
   },
