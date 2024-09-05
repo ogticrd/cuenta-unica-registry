@@ -35,6 +35,12 @@ div:has(
   color: rgb(209, 45, 63);
 }
 
+@media only screen and (max-width: 819px) {
+  .amplify-liveness-overlay {
+    margin-top: 3.75rem;
+  }
+}
+
 .amplify-button:hover {
   background: #e3e3e3;
   color: var(--primary-color);

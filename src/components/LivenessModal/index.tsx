@@ -6,6 +6,7 @@ import AppBar from '@mui/material/AppBar';
 import Dialog from '@mui/material/Dialog';
 import { Box } from '@mui/material';
 import Image from 'next/image';
+import React from 'react';
 
 import LogoWhite from '@public/assets/logo-white.svg';
 import styles from './styles.module.css';
@@ -13,6 +14,7 @@ import styles from './styles.module.css';
 import { LivenessQuickStart } from '@/components/LivenessQuickStart';
 import { ButtonApp } from '@/components/elements/button';
 import { useLanguage } from '@/app/[lang]/provider';
+import { LIVENESS_TIMEOUT_SECONDS } from '@/common';
 import theme from '@/components/themes/theme';
 import { Transition } from './Transition';
 
@@ -24,6 +26,13 @@ type Props = {
 export function LivenessModal({ cedula, setOpen }: Props) {
   const closeModal = () => setOpen(false);
   const { intl } = useLanguage();
+
+  React.useEffect(() => {
+    const ms = LIVENESS_TIMEOUT_SECONDS * 1000;
+    const timeout = setTimeout(() => window.location.reload(), ms);
+
+    return () => clearTimeout(timeout);
+  });
 
   return (
     <div>
@@ -39,7 +48,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
         }}
       >
         <div className={styles.layer_logo} />
-        <AppBar elevation={0} sx={{ position: 'absolute' }}>
+        <AppBar elevation={0} sx={{ position: 'relative' }}>
           <div style={{ width: '100%', maxWidth: '1400px', margin: 'auto' }}>
             <Toolbar>
               <Box sx={{ flex: 1 }}>

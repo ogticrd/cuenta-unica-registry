@@ -50,7 +50,7 @@ export default async function RootLayout({ children, params }: Props) {
             <NavBar intl={intl} />
 
             <div style={{ padding: '50px 0px' }}>
-              <ReCaptchaProvider useEnterprise>
+              <ReCaptchaProvider language={params.lang} useEnterprise>
                 <SnackAlert>
                   <BoxContentCenter>
                     <CardAuth

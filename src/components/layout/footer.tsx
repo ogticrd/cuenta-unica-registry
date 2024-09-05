@@ -11,12 +11,12 @@ import logoOGTIC from '@public/assets/logoOGTIC.svg';
 import logoGOB from '@public/assets/logoGOB.svg';
 
 import { GridContainer, GridItem } from '../elements/grid';
-import type { getDictionary } from '@/dictionaries';
+import type { Dictionary } from '@/dictionaries';
 import DivGrow from '../elements/divGrow';
 
 import styles from './styles.module.css';
 
-type Props = { intl: Awaited<ReturnType<typeof getDictionary>> };
+type Props = { intl: Dictionary };
 
 export default async function Footer({ intl }: Props) {
   return (

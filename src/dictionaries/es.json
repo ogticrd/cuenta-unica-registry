@@ -69,6 +69,7 @@
     "create": "CREAR CUENTA ÚNICA",
     "resendEmail": "REENVIAR CORREO",
     "verifyAccount": "Verificar cuenta",
+    "verifyEmail": "Enviar verificación email",
     "myAccount": "IR A MI CUENTA",
     "close": "Cerrar"
   },
