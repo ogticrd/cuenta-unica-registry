@@ -17,7 +17,7 @@ export default async function LivenessPage({ params: { lang } }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
-  if (!citizen) return redirect('identification');
+  if (!citizen?.name) return redirect('identification');
 
   return (
     <div>
