@@ -11,10 +11,10 @@ import { Counter } from './counter';
 import AccountCreated from '@public/assets/account-created.svg';
 import styles from './page.module.css';
 
-type Props = { searchParams: { cedula: string }; lang: Locale };
+type Props = { searchParams: { cedula: string }; params: { lang: Locale } };
 
-export default async function RedirectionPage({ searchParams, lang }: Props) {
-  const intl = await getDictionary(lang);
+export default async function RedirectionPage({ searchParams, params }: Props) {
+  const intl = await getDictionary(params.lang);
   const cedula = searchParams.cedula;
 
   if (!cedula) redirect('identification');
