@@ -34,7 +34,10 @@ async function findAccountInBackoffice(cedula: string) {
   const url = new URL('v1/accounts', process.env.BACKOFFICE_API_URL);
   url.searchParams.append('term', cedula);
 
-  const resp = await fetch(url, withCredentials());
+  const resp = await fetch(url, withCredentials()).catch((e) => ({
+    ok: false,
+    json: () => Promise.resolve(e.cause),
+  }));
 
   if (resp.ok) {
     return resp
