@@ -8,6 +8,11 @@
     "policy": "Política de privacidad",
     "faq": "Preguntas frecuentes"
   },
+  "redirection": {
+    "title": "Ya estás registrado",
+    "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b>.",
+    "counter": "Redirigiendo en <b>{count}</b> segundos..."
+  },
   "confirmation": {
     "title": "Te hemos enviado un correo",
     "subtitle": "Revisa tu correo electrónico y haz clic en el enlace de confirmación o utiliza el código de confirmación.",

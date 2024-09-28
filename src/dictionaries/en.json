@@ -8,6 +8,11 @@
     "policy": "Privacy Policy",
     "faq": "Frequently Asked Questions"
   },
+  "redirection": {
+    "title": "You are already registered",
+    "body": "You can start logging in with your ID <b>{id}</b> in a few seconds.",
+    "counter": "Redirecting in <b>{count}</b> seconds..."
+  },
   "confirmation": {
     "title": "We have sent you an email",
     "subtitle": "Check your email and click on the confirmation link or use the confirmation code.",

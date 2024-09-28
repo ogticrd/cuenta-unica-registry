@@ -30,7 +30,7 @@ export async function identifyAccount(
   const { exists } = await findIamCitizen(cedula);
 
   if (exists) {
-    return { message: 'errors.cedula.exists' };
+    return redirect(`redirection?cedula=${cedula}`);
   }
 
   const citizen = await findCitizen(cedula).catch(() => null);
