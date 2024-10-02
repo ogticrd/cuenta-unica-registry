@@ -32,7 +32,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        message: 'intl.errors.liveness.lowConfidence',
+        message: 'errors.liveness.lowConfidence',
         isLive,
       },
       { status: 403 },
@@ -47,9 +47,9 @@ export async function GET(
   });
 
   if (response?.ReferenceImage?.Bytes) {
-    const targetImageBuffer = await fetchPhotoBuffer(cedula);
-
     try {
+      const targetImageBuffer = await fetchPhotoBuffer(cedula);
+
       const params: CompareFacesCommandInput = {
         SourceImage: {
           Bytes: Buffer.from(response.ReferenceImage.Bytes),
@@ -71,7 +71,7 @@ export async function GET(
 
         return NextResponse.json(
           {
-            message: 'intl.errors.liveness.noMatch',
+            message: 'errors.liveness.noMatch',
             isMatch: false,
           },
           {
@@ -93,7 +93,7 @@ export async function GET(
 
       return NextResponse.json(
         {
-          message: 'intl.errors.liveness.noMatch',
+          message: 'errors.liveness.noMatch',
           isMatch: false,
         },
         { status: 500 },

@@ -1,20 +1,43 @@
 import { Typography, Box } from '@mui/material';
 import { redirect } from 'next/navigation';
 
+import { createSearchParams } from '@/common/helpers';
 import { getDictionary } from '@/dictionaries';
+import { RegistrationFlow } from '@ory/client';
 import { Steps } from '@/components/Steps';
-import { Locale } from '@/i18n-config';
 import { CitizenCookie } from '@/types';
+import { ory } from '@/common/lib/ory';
+import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 import { Form } from './form';
 
-type Props = { params: { lang: Locale } };
+type Props = {
+  params: { lang: Locale };
+  searchParams: { flow: string; return_to: string };
+};
 
-export default async function RegisterPage({ params: { lang } }: Props) {
+export default async function RegisterPage({
+  params: { lang },
+  searchParams: { flow, return_to: returnTo },
+}: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
   if (!citizen) return redirect('identification');
+
+  let registration: RegistrationFlow = await ory
+    .getRegistrationFlow({ id: flow })
+    .catch(() => ory.createNativeRegistrationFlow({ returnTo }))
+    .then((response) => response.data);
+
+  if (flow !== registration?.id) {
+    const search = createSearchParams({
+      flow: registration.id,
+      return_to: returnTo,
+    });
+
+    redirect(`register?${search}`);
+  }
 
   return (
     <div>
@@ -27,7 +50,8 @@ export default async function RegisterPage({ params: { lang } }: Props) {
       >
         <Box sx={{ fontWeight: 500 }}>{intl.step3.completeForm}</Box>
       </Typography>
-      <Form cedula={citizen?.id} />
+
+      <Form cedula={citizen?.id} flow={registration.id} returnTo={returnTo} />
     </div>
   );
 }
