@@ -30,18 +30,18 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
       icon: gobdo,
     },
     {
+      ready: true,
+      name: 'Soy Yo RD',
+      url: 'https://soyyord.gob.do',
+      description: intl.registered.descriptions.soyyo,
+      icon: soyyo,
+    },
+    {
       ready: false,
       name: 'Beca tu Futuro',
       url: 'https://becas.gob.do',
       description: intl.registered.descriptions.becas,
       icon: becas,
-    },
-    {
-      ready: false,
-      name: 'Soy Yo',
-      url: '#',
-      description: intl.registered.descriptions.soyyo,
-      icon: soyyo,
     },
   ];
 

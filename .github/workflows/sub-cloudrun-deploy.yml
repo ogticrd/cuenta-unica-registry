@@ -96,7 +96,7 @@ jobs:
 
       - name: Deploy to cloud run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2.6.0
+        uses: google-github-actions/deploy-cloudrun@v2.7.1
         with:
           image: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ inputs.app_name }}@${{ inputs.image_digest }}
           service: ${{ inputs.app_name }}-${{ needs.versioning.outputs.version || env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}
@@ -118,6 +118,8 @@ jobs:
             SENTRY_ORG=${{ vars.SENTRY_ORG }},
             SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }},
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},
+            BACKOFFICE_API_URL=${{ vars.BACKOFFICE_API_URL }},
+            BACKOFFICE_API_KEY=${{ secrets.BACKOFFICE_API_KEY }},
           flags: |
             --min-instances=${{ inputs.min_instances }}
             --max-instances=${{ inputs.max_instances }}

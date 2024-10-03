@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 
 import { useSnackAlert } from '@/components/elements/alert';
+import { localizeString, unwrap } from '@/common/helpers';
 import { useLanguage } from '@/app/[lang]/provider';
 import { useLocalizedText } from './localizedText';
-import { unwrap } from '@/common/helpers';
 
 import styles from './styles.module.css';
 
@@ -20,7 +20,7 @@ export function LivenessQuickStart({ cedula }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const { AlertError } = useSnackAlert();
+  const { AlertError, AlertWarning } = useSnackAlert();
   const router = useRouter();
 
   const { intl } = useLanguage();
@@ -73,7 +73,7 @@ export function LivenessQuickStart({ cedula }: Props) {
     if (!error) return;
 
     const message: string =
-      error.message.split('.').reduce<any>((prev, k) => prev[k], { intl }) ||
+      localizeString(intl, error.message) ||
       error.message ||
       intl.errors.unknown;
 
@@ -99,7 +99,7 @@ export function LivenessQuickStart({ cedula }: Props) {
           region="us-east-1"
           onUserCancel={onUserCancel}
           onError={({ error, state }) => {
-            let message = error.message;
+            let message = error?.message ?? state;
 
             if (message.includes('{"Message"')) {
               message = JSON.parse(message).Message?.split(':')[0];
@@ -111,6 +111,10 @@ export function LivenessQuickStart({ cedula }: Props) {
 
             if (state === 'CAMERA_ACCESS_ERROR') {
               AlertError(intl.liveness.camera.notFound.heading);
+            }
+
+            if (state === 'MOBILE_LANDSCAPE_ERROR') {
+              AlertWarning(intl.liveness.error.landscape.message);
             }
 
             Sentry.captureMessage(message, {
