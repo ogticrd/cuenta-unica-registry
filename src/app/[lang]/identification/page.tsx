@@ -24,21 +24,28 @@ export default async function ValidationPage({ params: { lang } }: Props) {
     .then((resp) => resp.data)
     .catch(() => ({}) as Session);
 
-  if (user.identity?.verifiable_addresses?.find((id) => !id.verified)) {
-    // console.log('NO VERIFICADO');
-  } else if (user.active) {
-    // Donde deberia ir si ya está creada
+  for (const addr of user.identity?.verifiable_addresses ?? []) {
+    if (!addr.verified) redirect(`confirmation?email=${addr.value}`);
+  }
+
+  if (user.active) {
     return redirect(SETTINGS_URL);
   }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Steps step={0} />
-      <Typography component="div" color="primary" textAlign="center">
-        <Box sx={{ fontWeight: 500, fontSize: '14px', my: 4 }}>
+
+      <Box sx={{ my: 4 }}>
+        <Typography
+          color="primary"
+          textAlign="center"
+          fontWeight={500}
+          fontSize="14px"
+        >
           {intl.step1.description}
-        </Box>
-      </Typography>
+        </Typography>
+      </Box>
 
       <Form />
     </Box>

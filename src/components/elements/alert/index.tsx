@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, use, useState } from 'react';
+import Alert, { AlertProps } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Grow from '@mui/material/Grow';
 
 // Snackbar state and methods interface
 interface SnackbarState {
@@ -27,7 +28,7 @@ interface SnackAlertProps {
 const SnackAlertContext = createContext<SnackAlertMethods | null>(null);
 
 export const useSnackAlert = () => {
-  const context = useContext(SnackAlertContext);
+  const context = use(SnackAlertContext);
   if (!context) {
     throw new Error('useSnackAlert must be used within SnackAlert');
   }
@@ -67,16 +68,23 @@ const SnackAlert: React.FC<SnackAlertProps> = ({ children }) => {
       value={{ AlertError, AlertWarning, AlertSuccess }}
     >
       {children}
-      <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        onClose={handleClose}
-        key={`${vertical}-${horizontal}`}
-      >
-        <MuiAlert onClose={handleClose} severity={severity} variant="filled">
-          {content}
-        </MuiAlert>
-      </Snackbar>
+      <Grow in={open} style={{ transformOrigin: 'bottom left' }}>
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          key={`${vertical}-${horizontal}`}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={severity}
+            variant="filled"
+            sx={{ maxWidth: '37rem', lineHeight: '1.4rem' }}
+          >
+            {content}
+          </Alert>
+        </Snackbar>
+      </Grow>
     </SnackAlertContext.Provider>
   );
 };
