@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
 
       - run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
         shell: bash
@@ -67,7 +67,7 @@ jobs:
           version: 9
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
