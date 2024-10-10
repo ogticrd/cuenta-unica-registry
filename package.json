@@ -54,7 +54,7 @@
     "check-password-strength": "^2.0.10",
     "hibp": "^14.1.2",
     "negotiator": "^0.6.3",
-    "next": "^14.2.8",
+    "next": "^14.2.10",
     "next-recaptcha-v3": "^1.4.1",
     "react": "^18.3.1",
     "react-gtm-module": "^2.0.11",
