@@ -39,8 +39,6 @@
     "@aws-amplify/ui-react": "^6.5.3",
     "@aws-amplify/ui-react-liveness": "^3.1.13",
     "@aws-sdk/client-rekognition": "^3.668.0",
-    "@aws-sdk/client-sso-oidc": "^3.668.0",
-    "@aws-sdk/client-sts": "^3.668.0",
     "@emotion/cache": "^11.13.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -93,5 +91,9 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "vitest": "^2.1.2"
+  },
+  "peerDependencies": {
+    "@aws-sdk/client-sso-oidc": "^3.668.0",
+    "@aws-sdk/client-sts": "^3.668.0"
   }
 }
