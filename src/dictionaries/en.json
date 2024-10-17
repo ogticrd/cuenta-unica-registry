@@ -10,7 +10,7 @@
   },
   "redirection": {
     "title": "You are already registered",
-    "body": "You can start logging in with your ID <b>{id}</b> in a few seconds.",
+    "body": "You can start logging in with your ID <b>{id}</b> or the registered email in a few seconds.",
     "counter": "Redirecting in <b>{count}</b> seconds..."
   },
   "confirmation": {
