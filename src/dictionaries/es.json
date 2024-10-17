@@ -10,7 +10,7 @@
   },
   "redirection": {
     "title": "Ya estás registrado",
-    "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b>.",
+    "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b> o el correo electrónico registrado.",
     "counter": "Redirigiendo en <b>{count}</b> segundos..."
   },
   "confirmation": {
