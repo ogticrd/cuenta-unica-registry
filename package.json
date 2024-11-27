@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "^1.2.29",
+    "@aws-amplify/adapter-nextjs": "^1.2.30",
     "@aws-amplify/ui-react": "^6.7.0",
     "@aws-amplify/ui-react-liveness": "^3.1.17",
     "@aws-sdk/client-rekognition": "^3.699.0",
@@ -53,7 +53,7 @@
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "4.22.0",
-    "aws-amplify": "^6.9.0",
+    "aws-amplify": "^6.10.0",
     "check-password-strength": "^2.0.10",
     "hibp": "^14.1.2",
     "negotiator": "^0.6.4",
@@ -72,13 +72,13 @@
     "@testing-library/react": "^16.0.1",
     "@types/cookie": "^0.6.0",
     "@types/negotiator": "^0.6.3",
-    "@types/node": "^20.17.7",
+    "@types/node": "^20.17.8",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/react-google-recaptcha": "^2.1.9",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "aws-crt": "^1.24.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.18",
@@ -89,8 +89,8 @@
     "husky": "^9.1.7",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "vitest": "^2.1.5"
+    "prettier": "^3.4.1",
+    "vitest": "^2.1.6"
   },
   "peerDependencies": {
     "@aws-sdk/client-sso-oidc": "^3.668.0",
