@@ -37,7 +37,7 @@ export default async function ConfirmationPage({ params: { lang } }: Props) {
       icon: soyyo,
     },
     {
-      ready: false,
+      ready: true,
       name: 'Beca tu Futuro',
       url: 'https://becas.gob.do',
       description: intl.registered.descriptions.becas,
