@@ -1,11 +1,10 @@
 'use client';
 
 import { passwordStrength } from 'check-password-strength';
+import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useFormState } from 'react-dom';
 import { z } from 'zod';
 
 import {
@@ -50,7 +49,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const [state, action] = useFormState(registerAccount, { message: '' });
+  const [state, action] = useActionState(registerAccount, { message: '' });
 
   const {
     register,

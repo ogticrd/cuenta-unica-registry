@@ -3,11 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Tooltip } from '@mui/material';
 import { useReCaptcha } from 'next-recaptcha-v3';
+import React, { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFormState } from 'react-dom';
 import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
-import React from 'react';
 import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -36,7 +35,7 @@ export function Form() {
       resolver: zodResolver(createCedulaSchema(intl)),
     });
 
-  const [state, action] = useFormState(identifyAccount, { message: '' });
+  const [state, action] = useActionState(identifyAccount, { message: '' });
 
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const cedula = target.value.replace(/-/g, '');

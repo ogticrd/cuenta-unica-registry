@@ -1,11 +1,10 @@
 'use client';
 
-import { createRef, useEffect, useRef, useState } from 'react';
+import { createRef, useEffect, useRef, useState, useActionState } from 'react';
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useFormState } from 'react-dom';
 import Image from 'next/image';
 import { z } from 'zod';
 
@@ -43,7 +42,7 @@ export function Form({ flow, returnTo, code }: Props) {
   const [otp, setOtp] = useState(parseOTP(code));
   const inputRefs = useRef(otp.map(createRef<HTMLInputElement>));
 
-  const [state, action] = useFormState(verifyAccount, { message: '' });
+  const [state, action] = useActionState(verifyAccount, { message: '' });
 
   useEffect(() => {
     if (state?.message) {
