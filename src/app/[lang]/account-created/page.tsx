@@ -15,11 +15,11 @@ import { CitizenCookie } from '@/types';
 import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 
-type Props = { params: { lang: Locale } };
+type Props = { params: Promise<{ lang: Locale }> };
 
-export default async function ConfirmationPage({ params: { lang } }: Props) {
+export default async function ConfirmationPage({ params }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
-  const intl = await getDictionary(lang);
+  const intl = await getDictionary((await params).lang);
 
   const sites = [
     {

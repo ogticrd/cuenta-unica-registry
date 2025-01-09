@@ -9,10 +9,11 @@ import NotFound404 from '@public/assets/not-found.svg';
 import { getDictionary } from '@/dictionaries';
 import { Locale } from '@/i18n-config';
 
-type Props = { params: { lang: Locale } };
+type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function NotFound({ params }: Props) {
-  const intl = await getDictionary(params.lang);
+  const { lang } = await params;
+  const intl = await getDictionary(lang);
 
   return (
     <GridContainer>
@@ -43,7 +44,7 @@ export default async function NotFound({ params }: Props) {
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <Link href={`/${params.lang}/identification`}>
+        <Link href={`/${lang}/identification`}>
           <ButtonApp>{intl.notFound.returnHome}</ButtonApp>
         </Link>
       </GridItem>

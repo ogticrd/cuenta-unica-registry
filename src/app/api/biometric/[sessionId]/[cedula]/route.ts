@@ -4,12 +4,11 @@ import * as Sentry from '@sentry/nextjs';
 
 import { getRekognitionClient } from '@/common/helpers';
 
-type Props = { params: { sessionId: string; cedula: string } };
+type Props = { params: Promise<{ sessionId: string; cedula: string }> };
 
-export async function GET(
-  req: NextRequest,
-  { params: { sessionId, cedula } }: Props,
-) {
+export async function GET(req: NextRequest, { params }: Props) {
+  const { sessionId, cedula } = await params;
+
   const client = await getRekognitionClient(req);
   const response = await client.getFaceLivenessSessionResults({
     SessionId: sessionId,

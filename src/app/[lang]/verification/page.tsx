@@ -6,12 +6,11 @@ import { ory } from '@/common/lib/ory';
 import { Form } from './form';
 
 type Props = {
-  searchParams: { flow: string; returnTo?: string; code: string };
+  searchParams: Promise<{ flow: string; returnTo?: string; code: string }>;
 };
 
-export default async function VerificationPage({
-  searchParams: { flow = '', returnTo, code },
-}: Props) {
+export default async function VerificationPage({ searchParams }: Props) {
+  const { flow, returnTo, code } = await searchParams;
   const validated = z.string().length(6).safeParse(code);
 
   if (code && validated.data !== code) {
