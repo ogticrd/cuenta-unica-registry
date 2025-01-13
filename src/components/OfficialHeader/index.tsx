@@ -9,6 +9,7 @@ export default function OfficialHeader() {
       />
 
       <div style={{ minHeight: 27, background: 'white' }}>
+        {/* @ts-ignore */}
         <official-header />
       </div>
     </>
