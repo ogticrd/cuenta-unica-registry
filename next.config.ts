@@ -15,7 +15,19 @@ const nextConfig: NextConfig = {
       );
     }
 
-    if (!isServer) config.externals = ['dtrace-provider'];
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+      config.externals = ['dtrace-provider'];
+    }
+
+    config.cache = {
+      type: 'filesystem',
+      store: 'pack',
+      compression: 'gzip',
+    };
 
     return config;
   },
