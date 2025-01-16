@@ -23,7 +23,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
-  if (!citizen) return redirect('identification');
+  if (!citizen) return redirect('/identification');
 
   let registration: RegistrationFlow = await ory
     .getRegistrationFlow({ id: flow })
@@ -36,7 +36,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
       return_to: returnTo,
     });
 
-    redirect(`register?${search}`);
+    redirect(`/register?${search}`);
   }
 
   return (
