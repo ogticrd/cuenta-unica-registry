@@ -20,7 +20,7 @@ export default async function RedirectionPage({ searchParams, params }: Props) {
   const intl = await getDictionary((await params).lang);
   const cedula = (await searchParams).cedula;
 
-  if (!cedula) redirect('identification');
+  if (!cedula) redirect('/identification');
 
   return (
     <GridContainer>

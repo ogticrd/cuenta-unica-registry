@@ -26,7 +26,7 @@ export default async function ValidationPage({ params }: Props) {
     .catch(() => ({}) as Session);
 
   for (const addr of user.identity?.verifiable_addresses ?? []) {
-    if (!addr.verified) redirect(`confirmation?email=${addr.value}`);
+    if (!addr.verified) redirect(`/confirmation?email=${addr.value}`);
   }
 
   if (user.active) {

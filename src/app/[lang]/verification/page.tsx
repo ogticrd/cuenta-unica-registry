@@ -19,7 +19,7 @@ export default async function VerificationPage({ searchParams }: Props) {
       return_to: returnTo || '',
     });
 
-    redirect(`verification?${search}`);
+    redirect(`/verification?${search}`);
   }
 
   const verificationFlow = await ory
@@ -33,7 +33,7 @@ export default async function VerificationPage({ searchParams }: Props) {
         case 403:
         case 404:
           // Status code 403 implies some other issue (e.g. CSRF) - let's reload!
-          return redirect('confirmation');
+          return redirect('/confirmation');
       }
     });
 
