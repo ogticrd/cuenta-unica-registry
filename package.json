@@ -38,7 +38,7 @@
     "@aws-amplify/adapter-nextjs": "^1.4.1",
     "@aws-amplify/ui-react": "^6.9.0",
     "@aws-amplify/ui-react-liveness": "^3.3.0",
-    "@aws-sdk/client-rekognition": "^3.731.0",
+    "@aws-sdk/client-rekognition": "^3.731.1",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
