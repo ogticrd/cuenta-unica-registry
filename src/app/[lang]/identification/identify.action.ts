@@ -30,7 +30,7 @@ export async function identifyAccount(
   const { exists } = await findIamCitizen(cedula);
 
   if (exists) {
-    return redirect(`redirection?cedula=${cedula}`);
+    return redirect(`../redirection?cedula=${cedula}`);
   }
 
   const citizen = await findCitizen(cedula).catch(() => null);
@@ -41,5 +41,5 @@ export async function identifyAccount(
 
   await setCookie('citizen', citizen);
 
-  redirect('liveness');
+  redirect('../liveness');
 }

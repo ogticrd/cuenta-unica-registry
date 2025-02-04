@@ -12,18 +12,18 @@ import { getCookie } from '@/actions';
 import { Form } from './form';
 
 type Props = {
-  params: { lang: Locale };
-  searchParams: { flow: string; return_to: string };
+  params: Promise<{ lang: Locale }>;
+  searchParams: Promise<{ flow: string; return_to: string }>;
 };
 
-export default async function RegisterPage({
-  params: { lang },
-  searchParams: { flow, return_to: returnTo },
-}: Props) {
+export default async function RegisterPage({ params, searchParams }: Props) {
+  const { lang } = await params;
+  const { flow, return_to: returnTo } = await searchParams;
+
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
 
-  if (!citizen) return redirect('identification');
+  if (!citizen) return redirect('/identification');
 
   let registration: RegistrationFlow = await ory
     .getRegistrationFlow({ id: flow })
@@ -36,7 +36,7 @@ export default async function RegisterPage({
       return_to: returnTo,
     });
 
-    redirect(`register?${search}`);
+    redirect(`/register?${search}`);
   }
 
   return (

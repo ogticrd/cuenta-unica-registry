@@ -11,13 +11,16 @@ import { Counter } from './counter';
 import AccountCreated from '@public/assets/account-created.svg';
 import styles from './page.module.css';
 
-type Props = { searchParams: { cedula: string }; params: { lang: Locale } };
+type Props = {
+  searchParams: Promise<{ cedula: string }>;
+  params: Promise<{ lang: Locale }>;
+};
 
 export default async function RedirectionPage({ searchParams, params }: Props) {
-  const intl = await getDictionary(params.lang);
-  const cedula = searchParams.cedula;
+  const intl = await getDictionary((await params).lang);
+  const cedula = (await searchParams).cedula;
 
-  if (!cedula) redirect('identification');
+  if (!cedula) redirect('/identification');
 
   return (
     <GridContainer>

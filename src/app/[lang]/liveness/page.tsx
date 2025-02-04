@@ -12,13 +12,13 @@ import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 import { Form } from './form';
 
-type Props = { params: { lang: Locale } };
+type Props = { params: Promise<{ lang: Locale }> };
 
-export default async function LivenessPage({ params: { lang } }: Props) {
+export default async function LivenessPage({ params }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
-  const intl = await getDictionary(lang);
+  const intl = await getDictionary((await params).lang);
 
-  if (!citizen?.name) return redirect('identification');
+  if (!citizen?.name) return redirect('/identification');
 
   const photo = await fetchPhotoBuffer(citizen?.id);
 

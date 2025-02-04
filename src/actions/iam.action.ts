@@ -21,7 +21,7 @@ export async function findIamCitizen(cedula: string) {
   // se espera que `identities` sea de longitud <= 1
   for (const account of identities) {
     for (const addr of account.verifiable_addresses ?? []) {
-      if (!addr.verified) redirect(`confirmation?email=${addr.value}`);
+      if (!addr.verified) redirect(`/confirmation?email=${addr.value}`);
     }
   }
 

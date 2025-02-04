@@ -31,15 +31,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-type Props = { children: React.ReactNode; params: { lang: Locale } };
+type Props = { children: React.ReactNode; params: Promise<{ lang: Locale }> };
 
 export default async function RootLayout({ children, params }: Props) {
-  const intl = await getDictionary(params.lang);
+  const { lang } = await params;
+  const intl = await getDictionary(lang);
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
 
   return (
-    <html lang={params.lang}>
+    <html lang={lang}>
       <GoogleTagManager gtmId={gtmId} />
 
       <body suppressHydrationWarning={true}>
@@ -50,7 +51,7 @@ export default async function RootLayout({ children, params }: Props) {
             <NavBar intl={intl} />
 
             <div style={{ padding: '50px 0px' }}>
-              <ReCaptchaProvider language={params.lang} useEnterprise>
+              <ReCaptchaProvider language={lang} useEnterprise>
                 <SnackAlert>
                   <BoxContentCenter>
                     <CardAuth

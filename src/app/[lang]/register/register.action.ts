@@ -49,7 +49,7 @@ export async function verifyUser(prev: State, form: FormData): Promise<State> {
       return_to,
     });
 
-    redirect(`verification?${search}`);
+    redirect(`../verification?${search}`);
   }
 
   return { message: 'Failed to send mail' };
@@ -74,7 +74,7 @@ export async function registerAccount(
       return_to: String(form.get('return_to')),
     });
 
-    redirect(`verification?${search}`);
+    redirect(`../verification?${search}`);
   }
 
   const citizen = await findCitizen(cedula, true);
@@ -123,7 +123,7 @@ export async function registerAccount(
           return_to: String(form.get('return_to')),
         });
 
-        redirect(`verification?${search}`);
+        redirect(`../verification?${search}`);
       }
     }
   }

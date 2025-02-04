@@ -7,13 +7,16 @@ import { getDictionary } from '@/dictionaries';
 import { ConfirmationForm } from './form';
 import { Locale } from '@/i18n-config';
 
-type Props = { params: { lang: Locale }; searchParams: { email: string } };
+type Props = {
+  params: Promise<{ lang: Locale }>;
+  searchParams: Promise<{ email: string }>;
+};
 
 export default async function ConfirmationPage({
-  params: { lang },
-  searchParams: { email },
+  params,
+  searchParams,
 }: Props) {
-  const intl = await getDictionary(lang);
+  const intl = await getDictionary((await params).lang);
 
   return (
     <GridContainer>
@@ -41,7 +44,7 @@ export default async function ConfirmationPage({
       </GridItem>
 
       <GridItem md={12} lg={12}>
-        <ConfirmationForm defaultValue={email} />
+        <ConfirmationForm defaultValue={(await searchParams).email} />
       </GridItem>
     </GridContainer>
   );

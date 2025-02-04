@@ -97,13 +97,16 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
                 disabled={sent}
                 error={Boolean(errors.cedula)}
                 helperText={errors?.cedula?.message}
-                inputProps={{
-                  inputMode: 'numeric',
-                }}
-                InputProps={{
-                  inputComponent: CustomTextMask,
-                }}
                 fullWidth
+                slotProps={{
+                  input: {
+                    inputComponent: CustomTextMask,
+                  },
+
+                  htmlInput: {
+                    inputMode: 'numeric',
+                  },
+                }}
               />
             </GridItem>
 
