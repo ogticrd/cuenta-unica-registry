@@ -156,19 +156,21 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
             <PasswordLevel password={password} />
@@ -186,21 +188,27 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               disabled={passwordStrength(password).id < 3}
               helperText={errors.passwordConfirm?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() =>
-                        setShowPasswordConfirm(!showPasswordConfirm)
-                      }
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() =>
+                          setShowPasswordConfirm(!showPasswordConfirm)
+                        }
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPasswordConfirm ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </GridItem>

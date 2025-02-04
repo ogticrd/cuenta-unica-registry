@@ -104,14 +104,17 @@ export function Form() {
               autoComplete="off"
               error={Boolean(formState.errors.cedula)}
               helperText={formState.errors?.cedula?.message}
-              inputProps={{
-                inputMode: 'numeric',
-              }}
-              InputProps={{
-                inputComponent: CustomTextMask,
-                endAdornment: <LoadingAdornment />,
-              }}
               fullWidth
+              slotProps={{
+                input: {
+                  inputComponent: CustomTextMask,
+                  endAdornment: <LoadingAdornment />,
+                },
+
+                htmlInput: {
+                  inputMode: 'numeric',
+                },
+              }}
             />
           </Tooltip>
         </GridItem>
