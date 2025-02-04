@@ -32,8 +32,8 @@ export async function verifyAccount(prev: State, form: FormData) {
       flow: verification.use_flow_id,
     });
 
-    redirect(`verification?${search}`);
+    redirect(`/verification?${search}`);
   }
 
-  redirect('account-created');
+  redirect('/account-created');
 }

@@ -1,11 +1,10 @@
 'use client';
 
 import { passwordStrength } from 'check-password-strength';
+import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useFormState } from 'react-dom';
 import { z } from 'zod';
 
 import {
@@ -50,7 +49,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const [state, action] = useFormState(registerAccount, { message: '' });
+  const [state, action] = useActionState(registerAccount, { message: '' });
 
   const {
     register,
@@ -157,19 +156,21 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
             <PasswordLevel password={password} />
@@ -187,21 +188,27 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               disabled={passwordStrength(password).id < 3}
               helperText={errors.passwordConfirm?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() =>
-                        setShowPasswordConfirm(!showPasswordConfirm)
-                      }
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() =>
+                          setShowPasswordConfirm(!showPasswordConfirm)
+                        }
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPasswordConfirm ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </GridItem>

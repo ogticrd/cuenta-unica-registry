@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 # ===================== Create base stage =====================
 ARG NODE_VERSION=lts
-ARG ALPINE_VERSION=3.16
 ARG WORK_DIR=/app
 FROM node:${NODE_VERSION}-slim AS base
 
@@ -44,6 +43,9 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
+# Install latest versions of pnpm and corepack
+RUN npm install -g pnpm@latest corepack@latest
 RUN corepack enable
 
 # ===================== Install Deps =====================
