@@ -138,15 +138,17 @@ export function Form({ flow, returnTo, code }: Props) {
                     required
                     placeholder="0"
                     autoComplete="off"
-                    inputProps={{
-                      maxLength: 1,
-                      inputMode: 'numeric',
-                      style: {
-                        textAlign: 'center',
-                      },
-                    }}
                     className={styles.verification_input}
                     sx={{ caretColor: 'transparent' }}
+                    slotProps={{
+                      htmlInput: {
+                        maxLength: 1,
+                        inputMode: 'numeric',
+                        style: {
+                          textAlign: 'center',
+                        },
+                      },
+                    }}
                   />
                 </Tooltip>
               ))}
