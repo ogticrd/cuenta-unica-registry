@@ -18,5 +18,9 @@ export function localizeString(
   dict: Dictionary,
   path: LocalizedPath | (string & {}),
 ): string {
-  return path ? path.split('.').reduce<any>((o, k) => o[k], dict) : '';
+  try {
+    return path ? path.split('.').reduce<any>((o, k) => o[k], dict) : path;
+  } catch (error) {
+    return path;
+  }
 }
