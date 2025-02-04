@@ -43,6 +43,9 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
+# Install latest versions of pnpm and corepack
+RUN npm install -g pnpm@latest corepack@latest
 RUN corepack enable
 
 # ===================== Install Deps =====================
