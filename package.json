@@ -72,7 +72,7 @@
     "@commitlint/config-conventional": "^19.7.1",
     "@testing-library/react": "^16.2.0",
     "@types/negotiator": "^0.6.3",
-    "@types/node": "^22.13.0",
+    "@types/node": "^22.13.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/react-google-recaptcha": "^2.1.9",
