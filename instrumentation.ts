@@ -7,7 +7,8 @@ export function register() {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     tracesSampleRate: 1,
     debug: false,
-    environment: process.env.NODE_ENV,
+    environment:
+      process.env.APP_ENV === 'production' ? 'production' : 'development',
     enabled: process.env.NODE_ENV === 'production',
 
     release: `${name}@${version}`,
