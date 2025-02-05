@@ -97,16 +97,23 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
       <form
         action={action}
         onSubmit={async (e) => {
-          setLoading(true);
-          if (!isValid) {
-            e.preventDefault();
+          e.preventDefault();
 
+          if (!isValid) {
             await trigger();
-            return false;
+            setLoading(false);
+            return;
           }
 
-          checkPwned(password).then(setIsPwned);
-          e.currentTarget.requestSubmit();
+          setLoading(true);
+          const pwned = await checkPwned(password);
+          setIsPwned(pwned);
+
+          if (!pwned) {
+            (e.target as HTMLFormElement).submit();
+          } else {
+            setLoading(false);
+          }
         }}
       >
         <input type="hidden" name="flow" value={flow} />
