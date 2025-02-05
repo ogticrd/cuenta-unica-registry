@@ -6,12 +6,11 @@ import { ory } from '@/common/lib/ory';
 import { Form } from './form';
 
 type Props = {
-  searchParams: { flow: string; returnTo?: string; code: string };
+  searchParams: Promise<{ flow: string; returnTo?: string; code: string }>;
 };
 
-export default async function VerificationPage({
-  searchParams: { flow = '', returnTo, code },
-}: Props) {
+export default async function VerificationPage({ searchParams }: Props) {
+  const { flow, returnTo, code } = await searchParams;
   const validated = z.string().length(6).safeParse(code);
 
   if (code && validated.data !== code) {
@@ -20,7 +19,7 @@ export default async function VerificationPage({
       return_to: returnTo || '',
     });
 
-    redirect(`verification?${search}`);
+    redirect(`/verification?${search}`);
   }
 
   const verificationFlow = await ory
@@ -34,7 +33,7 @@ export default async function VerificationPage({
         case 403:
         case 404:
           // Status code 403 implies some other issue (e.g. CSRF) - let's reload!
-          return redirect('confirmation');
+          return redirect('/confirmation');
       }
     });
 
