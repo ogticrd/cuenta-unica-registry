@@ -89,7 +89,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
       resetField('passwordConfirm');
       setValue('passwordConfirm', '');
     }
-  }, [password, resetField, setValue]);
+  }, [password]);
 
   return (
     <>
