@@ -42,9 +42,11 @@ interface FormProps {
 
 export function Form({ cedula, flow, returnTo }: FormProps) {
   const [isPwned, setIsPwned] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const [loading, transition] = React.useTransition();
+  const ref = React.useRef<HTMLFormElement>(null);
 
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
@@ -67,7 +69,6 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 
   useEffect(() => {
     if (state?.message) {
-      setLoading(false);
       const message = localizeString(intl, state.message) || state.message;
 
       Sentry.captureMessage(message, {
@@ -95,25 +96,26 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
     <>
       {loading ? <LoadingBackdrop /> : null}
       <form
+        ref={ref}
         action={action}
         onSubmit={async (e) => {
           e.preventDefault();
+          e.stopPropagation();
 
-          if (!isValid) {
-            await trigger();
-            setLoading(false);
-            return;
-          }
+          transition(async () => {
+            if (!isValid) {
+              await trigger();
 
-          setLoading(true);
-          const pwned = await checkPwned(password);
-          setIsPwned(pwned);
+              return;
+            }
 
-          if (!pwned) {
-            (e.target as HTMLFormElement).submit();
-          } else {
-            setLoading(false);
-          }
+            const pwned = await checkPwned(password);
+            setIsPwned(pwned);
+
+            if (!pwned) {
+              ref.current?.submit();
+            }
+          });
         }}
       >
         <input type="hidden" name="flow" value={flow} />
