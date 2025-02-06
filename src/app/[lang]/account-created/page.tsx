@@ -10,16 +10,17 @@ import styles from './page.module.css';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
+import { getCookie, removeCookie } from '@/actions';
 import { getDictionary } from '@/dictionaries';
 import { CitizenCookie } from '@/types';
 import { Locale } from '@/i18n-config';
-import { getCookie } from '@/actions';
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function ConfirmationPage({ params }: Props) {
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary((await params).lang);
+  removeCookie('citizen');
 
   const sites = [
     {
