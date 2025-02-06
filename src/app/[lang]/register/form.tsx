@@ -194,7 +194,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               color="primary"
               error={Boolean(errors.passwordConfirm)}
               placeholder="*********"
-              disabled={passwordStrength(password).id < 3}
+              disabled={Boolean(errors.password)}
               helperText={errors.passwordConfirm?.message}
               fullWidth
               slotProps={{
