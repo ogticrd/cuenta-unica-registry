@@ -146,6 +146,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               type="email"
               color={errors.emailConfirm ? 'error' : 'primary'}
               label={intl.step3.email.confirm}
+              error={Boolean(errors.emailConfirm)}
               helperText={errors.emailConfirm?.message}
               autoComplete="off"
               fullWidth
