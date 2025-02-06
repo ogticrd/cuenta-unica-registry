@@ -54,7 +54,7 @@
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "4.22.0",
     "aws-amplify": "^6.12.3",
-    "check-password-strength": "^2.0.10",
+    "check-password-strength": "^3.0.0",
     "hibp": "^14.1.3",
     "negotiator": "^1.0.0",
     "next": "^15.1.6",

@@ -35,7 +35,7 @@ export const createRegisterSchema = (
       message: validations.password.noMatch,
       path: ['passwordConfirm'],
     })
-    .refine(({ password }) => !(passwordStrength(password).id !== 3), {
-      message: 'Weak password',
+    .refine(({ password }) => !(passwordStrength(password).id !== 2), {
+      message: validations.password.weak,
       path: ['password'],
     });
