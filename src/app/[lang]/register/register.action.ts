@@ -3,7 +3,7 @@
 import type { RegistrationFlow, VerificationFlow } from '@ory/client';
 import { redirect } from 'next/navigation';
 
-import { findCitizen, findIamCitizen, removeCookie } from '@/actions';
+import { findCitizen, findIamCitizen } from '@/actions';
 import { createSearchParams } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
 import { State } from '@/types';
@@ -123,8 +123,6 @@ export async function registerAccount(
           return_to: String(form.get('return_to')),
         });
 
-        removeCookie('_sid');
-        removeCookie('citizen');
         redirect(`../verification?${search}`);
       }
     }

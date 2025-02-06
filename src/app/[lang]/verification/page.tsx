@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { createSearchParams } from '@/common/helpers';
+import { removeCookie } from '@/actions';
 import { ory } from '@/common/lib/ory';
 import { Form } from './form';
 
@@ -12,6 +13,7 @@ type Props = {
 export default async function VerificationPage({ searchParams }: Props) {
   const { flow, returnTo, code } = await searchParams;
   const validated = z.string().length(6).safeParse(code);
+  removeCookie('_sid');
 
   if (code && validated.data !== code) {
     const search = createSearchParams({
