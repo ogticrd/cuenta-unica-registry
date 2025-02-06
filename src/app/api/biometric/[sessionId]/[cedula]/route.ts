@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 
 import { getRekognitionClient } from '@/common/helpers';
+import { setCookie } from '@/actions';
 
 type Props = { params: Promise<{ sessionId: string; cedula: string }> };
 
@@ -78,6 +79,8 @@ export async function GET(req: NextRequest, { params }: Props) {
           },
         );
       }
+
+      await setCookie('_sid', 342 ** sessionId.length);
 
       Sentry.captureMessage('High similarity', {
         user: { id: cedula },
