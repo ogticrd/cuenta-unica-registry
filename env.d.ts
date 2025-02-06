@@ -20,6 +20,7 @@ namespace NodeJS {
     NEXT_PUBLIC_SENTRY_DSN?: string;
     SENTRY_ORG?: string;
     SENTRY_PROJECT?: string;
+    SENTRY_ENV?: 'development' | 'production';
     BACKOFFICE_API_URL?: string;
     BACKOFFICE_API_KEY?: string;
   }
