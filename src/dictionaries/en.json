@@ -259,7 +259,8 @@
       "empty": "Password cannot be empty",
       "noMatch": "Passwords do not match",
       "minimum": "The Password must contain at least 10 characters.",
-      "similarity": "The Password cannot contain parts of your ID or Email"
+      "similarity": "The Password cannot contain parts of your ID or Email",
+      "weak": "The Password is weak"
     },
     "required": "Required field"
   },

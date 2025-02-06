@@ -259,7 +259,8 @@
       "empty": "La Contraseña no puede estar vacía",
       "noMatch": "Las Contraseñas no coinciden",
       "minimum": "La Contraseña debe contener al menos 10 caracteres.",
-      "similarity": "La Contraseña no puede contener partes de su cédula o Correo Electrónico."
+      "similarity": "La Contraseña no puede contener partes de su cédula o Correo Electrónico.",
+      "weak": "La Contraseña es débil"
     },
     "required": "Campo requerido"
   },
