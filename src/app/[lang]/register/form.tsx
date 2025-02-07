@@ -112,9 +112,9 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
             const pwned = await checkPwned(password);
             setIsPwned(pwned);
 
-            if (!pwned) {
-              ref.current?.submit();
-            }
+            if (pwned) return;
+
+            ref.current?.submit();
           });
         }}
       >
