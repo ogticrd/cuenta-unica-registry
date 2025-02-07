@@ -10,12 +10,13 @@ import { Locale } from '@/i18n-config';
 import { ory } from '@/common/lib/ory';
 import { Form } from './form';
 
-type Props = { params: { lang: Locale } };
+type Props = { params: Promise<{ lang: Locale }> };
 
-export default async function ValidationPage({ params: { lang } }: Props) {
+export default async function ValidationPage({ params }: Props) {
+  const { lang } = await params;
   const intl = await getDictionary(lang);
 
-  const cookie = cookies()
+  const cookie = (await cookies())
     .getAll()
     .find((key) => key.name.includes('ory_session'));
 
@@ -25,7 +26,7 @@ export default async function ValidationPage({ params: { lang } }: Props) {
     .catch(() => ({}) as Session);
 
   for (const addr of user.identity?.verifiable_addresses ?? []) {
-    if (!addr.verified) redirect(`confirmation?email=${addr.value}`);
+    if (!addr.verified) redirect(`/confirmation?email=${addr.value}`);
   }
 
   if (user.active) {

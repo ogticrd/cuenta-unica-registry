@@ -2,9 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Tooltip } from '@mui/material';
+import React, { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFormState } from 'react-dom';
-import React from 'react';
 import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -30,7 +29,7 @@ export function ConfirmationForm({ defaultValue }: Props) {
     resolver: zodResolver(createConfirmationSchema(intl)),
   });
 
-  const [state, action] = useFormState(verifyUser, { message: '' });
+  const [state, action] = useActionState(verifyUser, { message: '' });
 
   React.useEffect(() => {
     if (state.message) {

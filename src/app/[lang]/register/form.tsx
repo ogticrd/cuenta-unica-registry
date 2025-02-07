@@ -1,11 +1,10 @@
 'use client';
 
 import { passwordStrength } from 'check-password-strength';
+import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useFormState } from 'react-dom';
 import { z } from 'zod';
 
 import {
@@ -43,14 +42,16 @@ interface FormProps {
 
 export function Form({ cedula, flow, returnTo }: FormProps) {
   const [isPwned, setIsPwned] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const [loading, transition] = React.useTransition();
+  const ref = React.useRef<HTMLFormElement>(null);
 
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const [state, action] = useFormState(registerAccount, { message: '' });
+  const [state, action] = useActionState(registerAccount, { message: '' });
 
   const {
     register,
@@ -68,7 +69,6 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 
   useEffect(() => {
     if (state?.message) {
-      setLoading(false);
       const message = localizeString(intl, state.message) || state.message;
 
       Sentry.captureMessage(message, {
@@ -90,24 +90,32 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
       resetField('passwordConfirm');
       setValue('passwordConfirm', '');
     }
-  }, [password, resetField, setValue]);
+  }, [password]);
 
   return (
     <>
       {loading ? <LoadingBackdrop /> : null}
       <form
+        ref={ref}
         action={action}
         onSubmit={async (e) => {
-          setLoading(true);
-          if (!isValid) {
-            e.preventDefault();
+          e.preventDefault();
+          e.stopPropagation();
 
-            await trigger();
-            return false;
-          }
+          transition(async () => {
+            if (!isValid) {
+              await trigger();
 
-          checkPwned(password).then(setIsPwned);
-          e.currentTarget.requestSubmit();
+              return;
+            }
+
+            const pwned = await checkPwned(password);
+            setIsPwned(pwned);
+
+            if (!pwned) {
+              ref.current?.submit();
+            }
+          });
         }}
       >
         <input type="hidden" name="flow" value={flow} />
@@ -157,19 +165,21 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
             <PasswordLevel password={password} />
@@ -187,21 +197,27 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               disabled={passwordStrength(password).id < 3}
               helperText={errors.passwordConfirm?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() =>
-                        setShowPasswordConfirm(!showPasswordConfirm)
-                      }
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() =>
+                          setShowPasswordConfirm(!showPasswordConfirm)
+                        }
+                        onMouseDown={doNothing}
+                        edge="end"
+                      >
+                        {showPasswordConfirm ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </GridItem>
