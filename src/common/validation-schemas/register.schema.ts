@@ -2,9 +2,10 @@ import { passwordStrength } from 'check-password-strength';
 import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
+import { pwnedPassword } from 'hibp';
 
 export const createRegisterSchema = (
-  { validations }: Context['intl'],
+  { validations, warnings }: Context['intl'],
   cedula: string,
 ) =>
   z
@@ -38,4 +39,12 @@ export const createRegisterSchema = (
     .refine(({ password }) => passwordStrength(password).id >= 2, {
       message: validations.password.weak,
       path: ['password'],
-    });
+    })
+    .refine(
+      ({ password }) =>
+        pwnedPassword(password).then((exposure) => exposure == 0),
+      {
+        message: warnings.breachedPassword,
+        path: ['password'],
+      },
+    );

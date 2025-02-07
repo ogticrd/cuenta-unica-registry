@@ -1,6 +1,5 @@
 'use client';
 
-import { passwordStrength } from 'check-password-strength';
 import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -29,7 +28,6 @@ import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { registerAccount } from './register.action';
 import { localizeString } from '@/common/helpers';
-import { verifyPassword } from '@/actions';
 import { useLanguage } from '../provider';
 
 type RegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
@@ -41,25 +39,20 @@ interface FormProps {
 }
 
 export function Form({ cedula, flow, returnTo }: FormProps) {
-  const [isPwned, setIsPwned] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-
-  const [loading, transition] = React.useTransition();
-  const ref = React.useRef<HTMLFormElement>(null);
 
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const [state, action] = useActionState(registerAccount, { message: '' });
+  const [state, action, pending] = useActionState(registerAccount, {
+    message: '',
+  });
 
   const {
     register,
-    formState: { errors, isValid },
-    setValue,
-    resetField,
+    formState: { errors },
     watch,
-    trigger,
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: zodResolver(createRegisterSchema(intl, cedula)),
@@ -82,42 +75,10 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
     // eslint-disable-next-line
   }, [state]);
 
-  useEffect(() => {
-    setIsPwned(false);
-
-    if (!password) {
-      resetField('password');
-      resetField('passwordConfirm');
-      setValue('passwordConfirm', '');
-    }
-  }, [password]);
-
   return (
     <>
-      {loading ? <LoadingBackdrop /> : null}
-      <form
-        ref={ref}
-        action={action}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-
-          transition(async () => {
-            if (!isValid) {
-              await trigger();
-
-              return;
-            }
-
-            const pwned = await checkPwned(password);
-            setIsPwned(pwned);
-
-            if (pwned) return;
-
-            ref.current?.submit();
-          });
-        }}
-      >
+      {pending ? <LoadingBackdrop /> : null}
+      <form action={action}>
         <input type="hidden" name="flow" value={flow} />
         <input type="hidden" name="cedula" value={cedula} />
         <input type="hidden" name="return_to" value={returnTo || ''} />
@@ -175,6 +136,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
                         onClick={() => setShowPassword(!showPassword)}
                         onMouseDown={doNothing}
                         edge="end"
+                        tabIndex={-1}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -209,6 +171,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
                         }
                         onMouseDown={doNothing}
                         edge="end"
+                        tabIndex={-1}
                       >
                         {showPasswordConfirm ? (
                           <VisibilityOff />
@@ -224,17 +187,13 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <Collapse in={isPwned}>
+            {/* <Collapse in={isPwned}>
               <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
-            </Collapse>
+            </Collapse> */}
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <ButtonApp
-              submit
-              endIcon={<CheckCircleOutlineOutlined />}
-              disabled={isPwned}
-            >
+            <ButtonApp submit endIcon={<CheckCircleOutlineOutlined />}>
               {intl.actions.create}
             </ButtonApp>
           </GridItem>
@@ -247,8 +206,4 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 function doNothing<T extends React.SyntheticEvent>(e: T) {
   e.preventDefault();
   return false;
-}
-
-async function checkPwned(password: string) {
-  return verifyPassword(password).then((exposure) => exposure !== 0);
 }
