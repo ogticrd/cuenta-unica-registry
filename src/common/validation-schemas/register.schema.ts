@@ -2,9 +2,10 @@ import { passwordStrength } from 'check-password-strength';
 import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
+import { pwnedPassword } from 'hibp';
 
 export const createRegisterSchema = (
-  { validations }: Context['intl'],
+  { validations, warnings }: Context['intl'],
   cedula: string,
 ) =>
   z
@@ -14,16 +15,20 @@ export const createRegisterSchema = (
       password: z.string().min(10, validations.password.minimum),
       passwordConfirm: z.string().min(10, validations.password.minimum),
     })
+    .refine((data) => !data.password.includes(cedula), {
+      message: validations.password.cedulaSimilarity,
+      path: ['password'],
+    })
     .refine(
       (data) => {
         const [email] = data.email.split('@');
-        return (
-          !data.password.includes(cedula) &&
-          !data.password.toLowerCase().includes(email.toLowerCase())
-        );
+
+        if (!email) return true;
+
+        return !data.password.toLowerCase().includes(email.toLowerCase());
       },
       {
-        message: validations.password.similarity,
+        message: validations.password.emailSimilarity,
         path: ['password'],
       },
     )
@@ -35,7 +40,15 @@ export const createRegisterSchema = (
       message: validations.password.noMatch,
       path: ['passwordConfirm'],
     })
-    .refine(({ password }) => !(passwordStrength(password).id !== 3), {
-      message: 'Weak password',
+    .refine(({ password }) => passwordStrength(password).id >= 2, {
+      message: validations.password.weak,
       path: ['password'],
-    });
+    })
+    .refine(
+      ({ password }) =>
+        pwnedPassword(password).then((exposure) => exposure == 0),
+      {
+        message: warnings.breachedPassword,
+        path: ['password'],
+      },
+    );

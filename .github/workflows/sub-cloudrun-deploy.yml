@@ -117,6 +117,7 @@ jobs:
             LIVENESS_SIMILARITY_THRESHOLD=${{ vars.LIVENESS_SIMILARITY_THRESHOLD }},
             SENTRY_ORG=${{ vars.SENTRY_ORG }},
             SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }},
+            SENTRY_ENV=${{ inputs.environment }},
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},
             BACKOFFICE_API_URL=${{ vars.BACKOFFICE_API_URL }},
             BACKOFFICE_API_KEY=${{ secrets.BACKOFFICE_API_KEY }},
