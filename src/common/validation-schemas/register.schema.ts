@@ -15,16 +15,18 @@ export const createRegisterSchema = (
       password: z.string().min(10, validations.password.minimum),
       passwordConfirm: z.string().min(10, validations.password.minimum),
     })
+    .refine((data) => !data.password.includes(cedula), {
+      message: validations.password.cedulaSimilarity,
+      path: ['password'],
+    })
     .refine(
       (data) => {
         const [email] = data.email.split('@');
-        return (
-          !data.password.includes(cedula) &&
-          !data.password.toLowerCase().includes(email.toLowerCase())
-        );
+
+        return !data.password.toLowerCase().includes(email.toLowerCase());
       },
       {
-        message: validations.password.similarity,
+        message: validations.password.emailSimilarity,
         path: ['password'],
       },
     )
