@@ -22,8 +22,10 @@ export default async function RegisterPage({ params, searchParams }: Props) {
 
   const citizen = await getCookie<CitizenCookie>('citizen');
   const intl = await getDictionary(lang);
+  const sid = await getCookie<number>('_sid');
 
   if (!citizen) return redirect('/identification');
+  if (!Boolean(sid)) redirect('/liveness');
 
   let registration: RegistrationFlow = await ory
     .getRegistrationFlow({ id: flow })
