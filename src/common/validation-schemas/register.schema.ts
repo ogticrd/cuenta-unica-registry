@@ -23,6 +23,8 @@ export const createRegisterSchema = (
       (data) => {
         const [email] = data.email.split('@');
 
+        if (!email) return true;
+
         return !data.password.toLowerCase().includes(email.toLowerCase());
       },
       {
