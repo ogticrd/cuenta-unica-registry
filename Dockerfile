@@ -40,6 +40,8 @@ ENV SENTRY_ORG=${SENTRY_ORG}
 ARG SENTRY_PROJECT
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 
+ENV SENTRY_ENV=${SENTRY_ENV}
+
 # Install corepack and set pnpm as default package manager
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
