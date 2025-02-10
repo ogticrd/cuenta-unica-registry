@@ -1,11 +1,9 @@
 'use client';
 
-import { passwordStrength } from 'check-password-strength';
+import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
-import { useFormState } from 'react-dom';
 import { z } from 'zod';
 
 import {
@@ -30,7 +28,6 @@ import { useSnackAlert } from '@/components/elements/alert';
 import { ButtonApp } from '@/components/elements/button';
 import { registerAccount } from './register.action';
 import { localizeString } from '@/common/helpers';
-import { verifyPassword } from '@/actions';
 import { useLanguage } from '../provider';
 
 type RegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
@@ -42,23 +39,20 @@ interface FormProps {
 }
 
 export function Form({ cedula, flow, returnTo }: FormProps) {
-  const [isPwned, setIsPwned] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const [state, action] = useFormState(registerAccount, { message: '' });
+  const [state, action, pending] = useActionState(registerAccount, {
+    message: '',
+  });
 
   const {
     register,
-    formState: { errors, isValid },
-    setValue,
-    resetField,
+    formState: { errors },
     watch,
-    trigger,
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: zodResolver(createRegisterSchema(intl, cedula)),
@@ -68,7 +62,6 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 
   useEffect(() => {
     if (state?.message) {
-      setLoading(false);
       const message = localizeString(intl, state.message) || state.message;
 
       Sentry.captureMessage(message, {
@@ -82,34 +75,10 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
     // eslint-disable-next-line
   }, [state]);
 
-  useEffect(() => {
-    setIsPwned(false);
-
-    if (!password) {
-      resetField('password');
-      resetField('passwordConfirm');
-      setValue('passwordConfirm', '');
-    }
-  }, [password, resetField, setValue]);
-
   return (
     <>
-      {loading ? <LoadingBackdrop /> : null}
-      <form
-        action={action}
-        onSubmit={async (e) => {
-          setLoading(true);
-          if (!isValid) {
-            e.preventDefault();
-
-            await trigger();
-            return false;
-          }
-
-          checkPwned(password).then(setIsPwned);
-          e.currentTarget.requestSubmit();
-        }}
-      >
+      {pending ? <LoadingBackdrop /> : null}
+      <form action={action}>
         <input type="hidden" name="flow" value={flow} />
         <input type="hidden" name="cedula" value={cedula} />
         <input type="hidden" name="return_to" value={returnTo || ''} />
@@ -138,6 +107,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               type="email"
               color={errors.emailConfirm ? 'error' : 'primary'}
               label={intl.step3.email.confirm}
+              error={Boolean(errors.emailConfirm)}
               helperText={errors.emailConfirm?.message}
               autoComplete="off"
               fullWidth
@@ -157,19 +127,22 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               placeholder="*********"
               helperText={errors.password?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={doNothing}
+                        edge="end"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
             <PasswordLevel password={password} />
@@ -184,40 +157,43 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               color="primary"
               error={Boolean(errors.passwordConfirm)}
               placeholder="*********"
-              disabled={passwordStrength(password).id < 3}
+              disabled={Boolean(errors.password)}
               helperText={errors.passwordConfirm?.message}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={intl.step3.password.toggleVisibility}
-                      onClick={() =>
-                        setShowPasswordConfirm(!showPasswordConfirm)
-                      }
-                      onMouseDown={doNothing}
-                      edge="end"
-                    >
-                      {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={intl.step3.password.toggleVisibility}
+                        onClick={() =>
+                          setShowPasswordConfirm(!showPasswordConfirm)
+                        }
+                        onMouseDown={doNothing}
+                        edge="end"
+                        tabIndex={-1}
+                      >
+                        {showPasswordConfirm ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <Collapse in={isPwned}>
+            {/* <Collapse in={isPwned}>
               <Alert severity="warning">{intl.warnings.breachedPassword}</Alert>
-            </Collapse>
+            </Collapse> */}
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <ButtonApp
-              submit
-              endIcon={<CheckCircleOutlineOutlined />}
-              disabled={isPwned}
-            >
+            <ButtonApp submit endIcon={<CheckCircleOutlineOutlined />}>
               {intl.actions.create}
             </ButtonApp>
           </GridItem>
@@ -230,8 +206,4 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 function doNothing<T extends React.SyntheticEvent>(e: T) {
   e.preventDefault();
   return false;
-}
-
-async function checkPwned(password: string) {
-  return verifyPassword(password).then((exposure) => exposure !== 0);
 }

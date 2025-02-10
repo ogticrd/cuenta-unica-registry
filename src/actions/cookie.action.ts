@@ -3,7 +3,9 @@
 import { cookies } from 'next/headers';
 
 export async function setCookie<T>(key: string, data: T) {
-  cookies().set(key, JSON.stringify(data), {
+  const payload = JSON.stringify(data);
+
+  (await cookies()).set(key, btoa(payload), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 10,
@@ -13,12 +15,15 @@ export async function setCookie<T>(key: string, data: T) {
 }
 
 export async function getCookie<T>(key: string) {
-  let data = cookies().get(key)?.value;
+  let data = (await cookies()).get(key)?.value;
 
   try {
-    data = JSON.parse(data || '{}');
-    return data as T;
+    return JSON.parse(atob(data as string)) as T;
   } catch (err) {
     return null;
   }
+}
+
+export async function removeCookie(key: string) {
+  (await cookies()).delete(key);
 }

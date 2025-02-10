@@ -10,7 +10,7 @@
   },
   "redirection": {
     "title": "Ya estás registrado",
-    "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b>.",
+    "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b> o el correo electrónico registrado.",
     "counter": "Redirigiendo en <b>{count}</b> segundos..."
   },
   "confirmation": {
@@ -36,7 +36,7 @@
     "subtitle": "Prueba de vida",
     "description": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
     "unavailable": "¡Lo sentimos! No podemos validar tu identidad en estos momentos. Por favor, intentalo más tarde.",
-    "camera": "Utilizar un dispositivo que posea <b>cámara</b> integrada.",
+    "camera": "Utilizar un dispositivo que posea <b>cámara frontal</b> integrada.",
     "face": "Permitir que tomemos capturas de <b>tu rostro.</b>",
     "photosensitivity": "Esta verificación muestra <b>luces de colores.</b> Tenga cuidado si es fotosensible."
   },
@@ -259,7 +259,9 @@
       "empty": "La Contraseña no puede estar vacía",
       "noMatch": "Las Contraseñas no coinciden",
       "minimum": "La Contraseña debe contener al menos 10 caracteres.",
-      "similarity": "La Contraseña no puede contener partes de su cédula o Correo Electrónico."
+      "emailSimilarity": "La Contraseña no puede contener partes de su Correo Electrónico.",
+      "cedulaSimilarity": "La Contraseña no puede contener partes de su cédula.",
+      "weak": "La Contraseña es débil"
     },
     "required": "Campo requerido"
   },

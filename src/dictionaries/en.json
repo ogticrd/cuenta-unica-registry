@@ -10,7 +10,7 @@
   },
   "redirection": {
     "title": "You are already registered",
-    "body": "You can start logging in with your ID <b>{id}</b> in a few seconds.",
+    "body": "You can start logging in with your ID <b>{id}</b> or the registered email in a few seconds.",
     "counter": "Redirecting in <b>{count}</b> seconds..."
   },
   "confirmation": {
@@ -36,7 +36,7 @@
     "subtitle": "Life proof",
     "description": "Next, we will validate your identity through facial verification and life test. Make sure to meet the following conditions:",
     "unavailable": "Sorry! We are unable to validate your identity at the moment. Please try again later.",
-    "camera": "Use a device that has an integrated <b>camera</b>.",
+    "camera": "Use a device that has an integrated <b>front camera</b>.",
     "face": "Allow us to take captures of <b>your face.</b>",
     "photosensitivity": "This verification displays <b>colored lights.</b> Be careful if you are photosensitive."
   },
@@ -259,7 +259,9 @@
       "empty": "Password cannot be empty",
       "noMatch": "Passwords do not match",
       "minimum": "The Password must contain at least 10 characters.",
-      "similarity": "The Password cannot contain parts of your ID or Email"
+      "emailSimilarity": "The Password cannot contain parts of your Email",
+      "cedulaSimilarity": "The Password cannot contain parts of your ID",
+      "weak": "The Password is weak"
     },
     "required": "Required field"
   },

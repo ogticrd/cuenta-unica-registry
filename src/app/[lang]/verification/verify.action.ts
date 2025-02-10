@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { createSearchParams } from '@/common/helpers';
 import { ory } from '@/common/lib/ory';
+import { setCookie } from '@/actions';
 
 type State = { message: string };
 
@@ -32,8 +33,9 @@ export async function verifyAccount(prev: State, form: FormData) {
       flow: verification.use_flow_id,
     });
 
-    redirect(`verification?${search}`);
+    redirect(`/verification?${search}`);
   }
 
-  redirect('account-created');
+  setCookie('_sid', 0);
+  redirect('/account-created');
 }
