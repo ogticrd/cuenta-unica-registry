@@ -37,6 +37,5 @@ export async function verifyAccount(prev: State, form: FormData) {
   }
 
   setCookie('_sid', 0);
-  setCookie('citizen', 0);
   redirect('/account-created');
 }
