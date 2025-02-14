@@ -7,7 +7,7 @@ export function register() {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     tracesSampleRate: 1,
     debug: false,
-    environment: process.env.SENTRY_ENV,
+    environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
     enabled: process.env.NODE_ENV === 'production',
     release: `${name}@${version}`,
   });
