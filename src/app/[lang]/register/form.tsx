@@ -51,7 +51,7 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
   } = useForm<RegisterForm>({
     mode: 'onChange',
@@ -193,7 +193,11 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
           </GridItem>
 
           <GridItem lg={12} md={12}>
-            <ButtonApp submit endIcon={<CheckCircleOutlineOutlined />}>
+            <ButtonApp
+              submit
+              endIcon={<CheckCircleOutlineOutlined />}
+              disabled={!isValid}
+            >
               {intl.actions.create}
             </ButtonApp>
           </GridItem>
