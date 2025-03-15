@@ -34,7 +34,10 @@
       ]
     },
     "onlyBuiltDependencies": [
-      "@sentry/cli"
+      "@sentry/cli",
+      "aws-crt",
+      "core-js-pure",
+      "esbuild"
     ]
   },
   "dependencies": {
