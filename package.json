@@ -60,7 +60,7 @@
     "check-password-strength": "^3.0.0",
     "hibp": "^14.1.3",
     "negotiator": "^1.0.0",
-    "next": "^15.1.7",
+    "next": "^15.2.3",
     "next-recaptcha-v3": "^1.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
