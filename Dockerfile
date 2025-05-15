@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 ARG AWS_EXPORTS_JSON
-RUN echo "${AWS_EXPORTS_JSON}" | base64 -d > src/amplifyconfiguration.json
+RUN echo $AWS_EXPORTS_JSON | base64 -d > src/amplifyconfiguration.json
 
 RUN pnpm run build
 
