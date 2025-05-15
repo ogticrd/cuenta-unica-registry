@@ -72,7 +72,7 @@ COPY . .
 COPY . ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/amplifyconfiguration.json \
+RUN --mount=type=secret,id=AWS_EXPORTS_JSON cat /run/secrets/AWS_EXPORTS_JSON \
     pnpm run build
 
 # ===================== App Runner Stage =====================
