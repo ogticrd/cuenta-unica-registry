@@ -18,8 +18,10 @@ import { getCookie } from '@/actions';
 type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function ConfirmationPage({ params }: Props) {
-  const citizen = await getCookie<CitizenCookie>('citizen');
-  const intl = await getDictionary((await params).lang);
+  const [intl, citizen] = await Promise.all([
+    getDictionary((await params).lang),
+    getCookie<CitizenCookie>('citizen'),
+  ]);
 
   const sites = [
     {
