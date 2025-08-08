@@ -15,8 +15,10 @@ import { Form } from './form';
 type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function LivenessPage({ params }: Props) {
-  const citizen = await getCookie<CitizenCookie>('citizen');
-  const intl = await getDictionary((await params).lang);
+  const [citizen, intl] = await Promise.all([
+    getCookie<CitizenCookie>('citizen'),
+    getDictionary((await params).lang),
+  ]);
 
   if (!citizen?.name) return redirect('/identification');
 

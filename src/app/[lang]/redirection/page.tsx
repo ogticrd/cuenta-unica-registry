@@ -17,8 +17,8 @@ type Props = {
 };
 
 export default async function RedirectionPage({ searchParams, params }: Props) {
-  const intl = await getDictionary((await params).lang);
-  const cedula = (await searchParams).cedula;
+  const [{ lang }, { cedula }] = await Promise.all([params, searchParams]);
+  const intl = await getDictionary(lang);
 
   if (!cedula) redirect('/identification');
 
