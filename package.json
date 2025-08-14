@@ -87,7 +87,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
-    "@vitejs/plugin-react": "^5.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "aws-crt": "^1.27.3",
     "eslint": "^9.33.0",
     "eslint-config-next": "^15.4.6",
