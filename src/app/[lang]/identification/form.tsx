@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Tooltip } from '@mui/material';
-import { useReCaptcha } from 'next-recaptcha-v3';
 import React, { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
@@ -19,6 +18,7 @@ import { localizeString } from '@/common/helpers';
 import { SubmitButton } from './submit.button';
 import { LoadingAdornment } from './adornment';
 import theme from '@/components/themes/theme';
+import { useRecaptchaToken } from '@/hooks';
 import { useLanguage } from '../provider';
 import { LOGIN_URL } from '@/common';
 
@@ -26,16 +26,28 @@ type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const { AlertError } = useSnackAlert();
-  const { executeRecaptcha, loaded } = useReCaptcha();
+  const allowRef = React.useRef(false);
   const { intl } = useLanguage();
 
-  const { formState, setValue, register, trigger, clearErrors, watch } =
-    useForm<CedulaForm>({
-      reValidateMode: 'onChange',
-      resolver: zodResolver(createCedulaSchema(intl)),
-    });
+  const [state, action, pending] = useActionState(identifyAccount, undefined);
 
-  const [state, action] = useActionState(identifyAccount, { message: '' });
+  const {
+    formState,
+    setValue,
+    register,
+    trigger,
+    clearErrors,
+    watch,
+    control,
+  } = useForm<CedulaForm>({
+    reValidateMode: 'onChange',
+    resolver: zodResolver(createCedulaSchema(intl)),
+  });
+
+  const { ensureValidToken, hasFreshToken } = useRecaptchaToken({
+    setValue,
+    control,
+  });
 
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const cedula = target.value.replace(/-/g, '');
@@ -50,17 +62,7 @@ export function Form() {
     }
   };
 
-  const [token, setToken] = React.useState('');
   React.useEffect(() => {
-    if (loaded && !token) {
-      executeRecaptcha('form_submit')
-        .then(setToken)
-        .catch(() => '');
-    }
-  }, [token, loaded, executeRecaptcha]);
-
-  React.useEffect(() => {
-    // For some reason `state.message` is undefined in safari
     if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
 
@@ -75,22 +77,52 @@ export function Form() {
     // eslint-disable-next-line
   }, [state]);
 
+  const handleSubmit = React.useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      const form = e.currentTarget;
+      // If this submit was re-triggered programmatically, allow it to proceed
+      if (allowRef.current) {
+        allowRef.current = false;
+        return;
+      }
+
+      // Otherwise, intercept native submit while we validate
+      e.preventDefault();
+
+      if (pending) return;
+
+      // Ensure form is valid; trigger validation if needed
+      const isValid = formState.isValid || (await trigger());
+      if (!isValid) return;
+
+      // Ensure we have a fresh token before dispatching the server action
+      const validToken = hasFreshToken ? true : await ensureValidToken();
+      if (!validToken) {
+        AlertError(intl.errors.recaptcha.issues);
+        return;
+      }
+
+      // Give React a tick to flush hidden input updates to the DOM
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+      // Re-submit natively so the form action context is preserved (useFormStatus works)
+      allowRef.current = true;
+      form?.requestSubmit();
+    },
+    [
+      pending,
+      formState.isValid,
+      trigger,
+      ensureValidToken,
+      hasFreshToken,
+      AlertError,
+      intl,
+    ],
+  );
+
   return (
-    <form
-      action={action}
-      onSubmit={async (e) => {
-        if (!formState.isValid) {
-          e.preventDefault();
-          trigger();
-          return false;
-        }
-
-        await executeRecaptcha('form_submit').then(setToken);
-
-        e.currentTarget?.requestSubmit();
-      }}
-    >
-      <input type="hidden" name="token" value={token} />
+    <form action={action} onSubmit={handleSubmit}>
+      <input type="hidden" {...register('token')} />
       <input type="hidden" {...register('cedula')} />
 
       <GridContainer>

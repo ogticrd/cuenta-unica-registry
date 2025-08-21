@@ -12,3 +12,5 @@ export function register() {
     release: `${name}@${version}`,
   });
 }
+
+export const onRequestError = Sentry.captureRequestError;
