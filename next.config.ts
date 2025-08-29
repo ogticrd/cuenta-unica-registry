@@ -4,7 +4,6 @@ import { NextConfig } from 'next';
 const { version, name } = require('./package.json');
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   serverExternalPackages: ['@aws-amplify/adapter-nextjs', 'aws-amplify'],
   output: 'standalone',
   webpack: (config, { webpack, isServer, nextRuntime }) => {
@@ -22,6 +21,14 @@ const nextConfig: NextConfig = {
       };
       config.externals = ['dtrace-provider'];
     }
+
+    // Fix XState compatibility issues with AWS Amplify UI
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      xstate: require.resolve(
+        './node_modules/.pnpm/xstate@4.38.3/node_modules/xstate',
+      ),
+    };
 
     config.cache = {
       type: 'filesystem',
