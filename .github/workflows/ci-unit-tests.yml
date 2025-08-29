@@ -62,10 +62,10 @@ jobs:
         env:
           AWS_EXPORTS_JSON: ${{secrets.AWS_EXPORTS_JSON}}
 
-      - uses: pnpm/action-setup@v4.1.0
+      - uses: pnpm/action-setup@v4
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
