@@ -52,7 +52,7 @@ RUN npm install -g pnpm@latest corepack@latest \
 FROM base AS deps
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --prod --frozen-lockfile
+    pnpm install --frozen-lockfile
 
 # ===================== Build Stage =====================
 FROM base AS build
@@ -65,12 +65,11 @@ COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+    --mount=type=cache,id=nextjs,target=/app/.next/cache \
+    pnpm run build
 
 ARG AWS_EXPORTS_JSON
 RUN echo $AWS_EXPORTS_JSON | base64 -d > src/amplifyconfiguration.json
-
-RUN pnpm run build
 
 # ===================== App Runner Stage =====================
 FROM base AS runner
