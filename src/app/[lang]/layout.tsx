@@ -31,11 +31,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-type Props = { children: React.ReactNode; params: Promise<{ lang: Locale }> };
+type Props = { children: React.ReactNode; params: Promise<{ lang: string }> };
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
-  const intl = await getDictionary(lang);
+  const intl = await getDictionary(lang as Locale);
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
 

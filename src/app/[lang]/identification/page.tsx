@@ -14,16 +14,15 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function ValidationPage({ params }: Props) {
   const { lang } = await params;
-  const intl = await getDictionary(lang);
 
-  const cookie = (await cookies())
+  const [intl, cks] = await Promise.all([getDictionary(lang), cookies()]);
+  const userCookie = cks
     .getAll()
     .find((key) => key.name.includes('ory_session'));
-
   const user: Session = await ory
-    .toSession({ cookie: `${cookie?.name}=${cookie?.value}` })
+    .toSession({ cookie: `${userCookie?.name}=${userCookie?.value}` })
     .then((resp) => resp.data)
-    .catch(() => ({}) as Session);
+    .catch(() => ({}) as never);
 
   for (const addr of user.identity?.verifiable_addresses ?? []) {
     if (!addr.verified) redirect(`/confirmation?email=${addr.value}`);

@@ -25,12 +25,12 @@ import { ButtonApp, ButtonTextApp } from '@/components/elements/button';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { createTermsSchema } from '@/common/validation-schemas';
 import { LivenessModal } from '@/components/LivenessModal';
+import theme from '@/components/themes/theme';
 import { useLanguage } from '../provider';
 
 import styles from './styles.module.css';
 
 type TermsForm = z.infer<ReturnType<typeof createTermsSchema>>;
-import theme from '@/components/themes/theme';
 
 type Props = {
   cedula: string;
