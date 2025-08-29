@@ -20,9 +20,11 @@ export default async function RegisterPage({ params, searchParams }: Props) {
   const { lang } = await params;
   const { flow, return_to: returnTo } = await searchParams;
 
-  const citizen = await getCookie<CitizenCookie>('citizen');
-  const intl = await getDictionary(lang);
-  const sid = await getCookie<number>('_sid');
+  const [citizen, intl, sid] = await Promise.all([
+    getCookie<CitizenCookie>('citizen'),
+    getDictionary(lang),
+    getCookie<number>('_sid'),
+  ]);
 
   if (!citizen) return redirect('/identification');
   if (!Boolean(sid)) redirect('/liveness');

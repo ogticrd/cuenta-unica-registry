@@ -40,10 +40,14 @@ export function LivenessModal({ cedula, setOpen }: Props) {
         fullScreen
         open={true}
         onClose={closeModal}
-        TransitionComponent={Transition}
-        PaperProps={{
-          style: {
-            backgroundColor: theme.palette.primary.main,
+        slots={{
+          transition: Transition,
+        }}
+        slotProps={{
+          paper: {
+            style: {
+              backgroundColor: theme.palette.primary.main,
+            },
           },
         }}
       >

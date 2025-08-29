@@ -11,7 +11,7 @@ import {
 import { State } from '@/types';
 
 export async function identifyAccount(
-  prev: State,
+  prev: State = { message: '' },
   form: FormData,
 ): Promise<State> {
   const cedula = form.get('cedula') as string;
