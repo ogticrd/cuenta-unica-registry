@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  webpack: 5.94.0
+  xstate: 4.38.3
+
 importers:
 
   .:
@@ -270,7 +274,7 @@ packages:
     peerDependencies:
       '@aws-amplify/core': '*'
       aws-amplify: ^6.14.3
-      xstate: ^4.33.6
+      xstate: 4.38.3
     peerDependenciesMeta:
       xstate:
         optional: true
@@ -2192,7 +2196,7 @@ packages:
     resolution: {integrity: sha512-2lPuvJhbiEOd/NAQv5EL8at9QVKchkEmWFDioDsOG6csFqbZ8hdWtTcbsXnhzH9j+CM1LmdeDNVjIF+SMoxCNg==}
     engines: {node: '>= 14'}
     peerDependencies:
-      webpack: '>=4.40.0'
+      webpack: 5.94.0
 
   '@smithy/abort-controller@3.1.9':
     resolution: {integrity: sha512-yiW0WI30zj8ZKoSYNx90no7ugVn3khlyH/z5W8qtKBtVE6awRALbhSG+2SAHA1r6bO/6M9utxYKVZ3PCJ1rWxw==}
@@ -3021,7 +3025,7 @@ packages:
     peerDependencies:
       '@xstate/fsm': ^2.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      xstate: ^4.37.2
+      xstate: 4.38.3
     peerDependenciesMeta:
       '@xstate/fsm':
         optional: true
@@ -5311,7 +5315,7 @@ packages:
       '@swc/core': '*'
       esbuild: '*'
       uglify-js: '*'
-      webpack: ^5.1.0
+      webpack: 5.94.0
     peerDependenciesMeta:
       '@swc/core':
         optional: true

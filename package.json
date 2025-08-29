@@ -41,7 +41,11 @@
       "sharp",
       "tldjs",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "webpack": "5.94.0",
+      "xstate": "4.38.3"
+    }
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.6.8",
