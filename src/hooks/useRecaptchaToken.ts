@@ -22,7 +22,7 @@ export function useRecaptchaToken({
   action = 'form_submit',
 }: UseRecaptchaTokenProps) {
   const { executeRecaptcha, loaded } = useReCaptcha();
-  const tokenTimeRef = React.useRef<number | null>(null);
+  const [tokenTimestamp, setTokenTimestamp] = React.useState<number | null>(null);
   const watchedToken = useWatch<TokenForm>({ control, name: 'token' });
 
   const generateToken = React.useCallback(async (): Promise<string | null> => {
@@ -31,7 +31,7 @@ export function useRecaptchaToken({
     try {
       const token = await executeRecaptcha(action);
       setValue('token', token);
-      tokenTimeRef.current = Date.now();
+      setTokenTimestamp(Date.now());
       return token;
     } catch (error) {
       return null;
@@ -39,10 +39,10 @@ export function useRecaptchaToken({
   }, [loaded, executeRecaptcha, setValue, action]);
 
   const isTokenExpired = React.useCallback((): boolean => {
-    if (!tokenTimeRef.current) return true;
-    const tokenAge = (Date.now() - tokenTimeRef.current) / 1000;
+    if (!tokenTimestamp) return true;
+    const tokenAge = (Date.now() - tokenTimestamp) / 1000;
     return tokenAge > TOKEN_EXPIRY_BUFFER;
-  }, []);
+  }, [tokenTimestamp]);
 
   const ensureValidToken = React.useCallback(async (): Promise<boolean> => {
     const currentToken = watchedToken;
