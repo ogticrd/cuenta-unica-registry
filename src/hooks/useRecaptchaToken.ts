@@ -11,8 +11,8 @@ type TokenForm = {
 };
 
 interface UseRecaptchaTokenProps {
-  setValue: UseFormSetValue<any>;
-  control: Control<any>;
+  setValue: UseFormSetValue<TokenForm>;
+  control: Control<TokenForm>;
   action?: string;
 }
 
@@ -22,10 +22,12 @@ export function useRecaptchaToken({
   action = 'form_submit',
 }: UseRecaptchaTokenProps) {
   const { executeRecaptcha, loaded } = useReCaptcha();
-  const [tokenTimestamp, setTokenTimestamp] = React.useState<number | null>(null);
-  const watchedToken = useWatch<TokenForm>({ control, name: 'token' });
+  const [tokenTimestamp, setTokenTimestamp] = React.useState<number | null>(
+    null,
+  );
+  const watchedToken = useWatch({ control, name: 'token' });
 
-  const generateToken = React.useCallback(async (): Promise<string | null> => {
+  const generateToken = React.useCallback(async () => {
     if (!loaded || !executeRecaptcha) return null;
 
     try {
