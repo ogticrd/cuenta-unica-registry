@@ -14,8 +14,7 @@ export async function getOAuth2Client(id: string) {
     .getOAuth2Client({ id })
     .then((res) => res.data)
     .catch((e) => {
-      console.log(e.status);
-      console.log(e.response?.data);
+      console.error(e.response?.data);
       return null;
     });
 }
