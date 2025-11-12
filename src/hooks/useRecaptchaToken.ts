@@ -1,6 +1,12 @@
 'use client';
 
-import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
+import {
+  type Control,
+  type Path,
+  type PathValue,
+  type UseFormSetValue,
+  useWatch,
+} from 'react-hook-form';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import React from 'react';
 
@@ -10,29 +16,29 @@ type TokenForm = {
   token: string;
 };
 
-interface UseRecaptchaTokenProps {
-  setValue: UseFormSetValue<TokenForm>;
-  control: Control<TokenForm>;
+interface UseRecaptchaTokenProps<T extends TokenForm> {
+  setValue: UseFormSetValue<T>;
+  control: Control<T>;
   action?: string;
 }
 
-export function useRecaptchaToken({
+export function useRecaptchaToken<T extends TokenForm>({
   setValue,
   control,
   action = 'form_submit',
-}: UseRecaptchaTokenProps) {
+}: UseRecaptchaTokenProps<T>) {
   const { executeRecaptcha, loaded } = useReCaptcha();
   const [tokenTimestamp, setTokenTimestamp] = React.useState<number | null>(
     null,
   );
-  const watchedToken = useWatch({ control, name: 'token' });
+  const watchedToken = useWatch({ control, name: 'token' as Path<T> });
 
   const generateToken = React.useCallback(async () => {
     if (!loaded || !executeRecaptcha) return null;
 
     try {
       const token = await executeRecaptcha(action);
-      setValue('token', token);
+      setValue('token' as Path<T>, token as PathValue<T, Path<T>>);
       setTokenTimestamp(Date.now());
       return token;
     } catch (error) {

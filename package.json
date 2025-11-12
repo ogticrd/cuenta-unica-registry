@@ -14,8 +14,8 @@
     "url": "git+https://github.com/opticrd/cuenta-unica-registry.git"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "build:docker": "scripts/docker-build.sh",
     "start": "next start",
     "lint": "eslint .",
