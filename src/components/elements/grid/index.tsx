@@ -38,7 +38,7 @@ interface Props {
 }
 
 export const GridItem = ({ children, sx, sm = 12, md = 6, lg = 4 }: Props) => (
-  <Grid item sx={sx ? sx : null} xs={12} sm={sm} md={md} lg={lg}>
+  <Grid sx={sx ? sx : null} size={{ xs: 12, sm, md, lg }}>
     {children}
   </Grid>
 );
