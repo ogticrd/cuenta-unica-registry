@@ -18,9 +18,13 @@ body {
   color: #03397775;
 }
 
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary-color) !important;
+}
+
 div:has(
-    > div.amplify-flex.amplify-alert.amplify-liveness-start-screen-warning
-  ) {
+  > div.amplify-flex.amplify-alert.amplify-liveness-start-screen-warning
+) {
   display: none;
 }
 
