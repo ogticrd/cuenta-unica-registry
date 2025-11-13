@@ -14,8 +14,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 WORKDIR ${WORK_DIR}
 
-# ==== App specific variables
-
+# ==== App specific variables (igual que antes) ====
 ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
 
@@ -43,23 +42,19 @@ ENV SENTRY_ORG=${SENTRY_ORG}
 ARG SENTRY_PROJECT
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 
-# Install corepack and set pnpm as default package manager
+# Install corepack y pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-
-# Install latest versions of pnpm and corepack
-RUN npm install -g pnpm@latest corepack@latest
-RUN corepack enable
+RUN npm install -g pnpm@latest corepack@latest \
+    && corepack enable
 
 # ===================== Install Deps =====================
 FROM base AS deps
-
 COPY package.json pnpm-lock.yaml ./
-# By caching the content-addressable store we stop downloading the same packages again and again
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
 
 # ===================== Build Stage =====================
-# Rebuild the source code only when needed
 FROM base AS build
 
 RUN apt-get update \
@@ -69,33 +64,29 @@ RUN apt-get update \
 COPY --from=deps ${WORK_DIR}/node_modules ./node_modules
 COPY . .
 
-COPY . ./
+ARG AWS_EXPORTS_JSON
+RUN echo $AWS_EXPORTS_JSON | base64 -d > src/amplifyconfiguration.json
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN --mount=type=secret,id=AWS_EXPORTS_JSON,target=./src/amplifyconfiguration.json \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    --mount=type=cache,id=nextjs,target=/app/.next/cache \
     pnpm run build
 
 # ===================== App Runner Stage =====================
 FROM base AS runner
 
-RUN addgroup --gid 1001 --system nodejs && \
-    adduser --system --no-create-home --uid 1001 nextjs
+RUN addgroup --gid 1001 --system nodejs \
+    && adduser --system --no-create-home --uid 1001 nextjs
 
-# Copy all necessary files
 COPY --from=build ${WORK_DIR}/public ./public
-
-# Automatically leverage output traces to reduce image size 
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=build --chown=nextjs:nodejs ${WORK_DIR}/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs ${WORK_DIR}/.next/static ./.next/static
 
 USER nextjs
 
 EXPOSE ${PORT}
-
 ENV PORT=${PORT}
 ENV HOSTNAME=0.0.0.0
 
-HEALTHCHECK CMD wget -q localhost:3000
+HEALTHCHECK CMD wget -q localhost:${PORT}
 
 CMD ["node", "server.js"]
