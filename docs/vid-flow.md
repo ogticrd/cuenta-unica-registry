@@ -1,6 +1,6 @@
 # Flujo VID estilo OAuth
 
-Este documento describe cómo los sistemas confiables pueden invocar el **flujo VID (Video Identity)** de Cuenta Única y obtener señales sólidas de identidad redirigiendo a sus usuarios hacia un endpoint similar a OAuth. La experiencia replica una solicitud de autorización clásica: la aplicación construye una URL con parámetros definidos, el Registro de Cuenta Única valida al ciudadano y ejecuta la prueba biométrica de vida, y finalmente redirige al usuario a uno de los redirect URIs registrados para el cliente.
+Este documento describe cómo los sistemas confiables pueden invocar el **flujo VID (Verificador de Identidad Dominicano)** de Cuenta Única y obtener señales sólidas de identidad redirigiendo a sus usuarios hacia un endpoint similar a OAuth. La experiencia replica una solicitud de autorización clásica: la aplicación construye una URL con parámetros definidos, el Registro de Cuenta Única valida al ciudadano y ejecuta la prueba biométrica de vida, y finalmente redirige al usuario a uno de los redirect URIs registrados para el cliente.
 
 ## Prerrequisitos
 
@@ -16,12 +16,12 @@ GET /{lang}/vid?client_id=UUID&redirect_uri=URL&cedula=NNNNNNNNNNN
 Host: cuentaunica.gob.do
 ```
 
-| Parámetro      | Requerido | Descripción                                                                                                   |
-| -------------- | --------- | ------------------------------------------------------------------------------------------------------------- |
-| `lang`         | ✅        | Idioma ISO usado en la app (`es`, `en`, …). Controla toda la localización del flujo.                           |
-| `client_id`    | ✅        | UUID del cliente OAuth2 en Ory. El backend verifica su existencia.                                            |
+| Parámetro      | Requerido | Descripción                                                                                                                  |
+| -------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `lang`         | ✅        | Idioma ISO usado en la app (`es`, `en`, …). Controla toda la localización del flujo.                                         |
+| `client_id`    | ✅        | UUID del cliente OAuth2 en Ory. El backend verifica su existencia.                                                           |
 | `redirect_uri` | ✅        | Debe coincidir exactamente con uno de los URIs configurados para `client_id`. URLs absolutas generan redirecciones externas. |
-| `cedula`       | ✅        | Cédula dominicana de 11 dígitos. Se valida con LUHN y se consulta en la API antes de renderizar la vista.     |
+| `cedula`       | ✅        | Cédula dominicana de 11 dígitos. Se valida con LUHN y se consulta en la API antes de renderizar la vista.                    |
 
 Si algún parámetro falla (LUHN inválido, ciudadano inexistente, redirect no autorizado, cliente inexistente) se lanza `notFound()` y se muestra `src/app/[lang]/vid/not-found.tsx`, informando que la solicitud no puede continuar.
 
@@ -66,13 +66,13 @@ Como el flujo actúa igual que la fase de redirección de OAuth, usted es respon
 
 ## Superficies de error y recuperación
 
-| Etapa                   | Disparador                                                               | Qué ve el usuario / cómo recupera                                                           |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Validación de URL       | LUHN inválido, ciudadano no encontrado, cliente desconocido, redirect inválido | Página `vid/not-found` con instrucciones localizadas. Corregir parámetros y reintentar.     |
-| Creación de sesión      | Falla `/api/biometric` (red, AWS, etc.)                                   | SnackAlert con el error localizado + registro en Sentry. El modal queda abierto para reintentar. |
-| Problemas de dispositivo| Permisos de cámara negados, cámara no soportada                           | Mensajes específicos `intl.liveness.camera.*`; el usuario ajusta permisos y reintenta.      |
-| No coincidencia biométrica | El rostro no coincide con la foto de la JCE o baja confianza          | Mensaje (ej. `liveness.noMatch`), reseteo automático de la sesión para otro intento.        |
-| Timeout                 | El usuario tomó demasiado tiempo en posicionarse                         | Recarga automática tras `LIVENESS_TIMEOUT_SECONDS`; inicia una sesión nueva.                |
+| Etapa                      | Disparador                                                                     | Qué ve el usuario / cómo recupera                                                                |
+| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Validación de URL          | LUHN inválido, ciudadano no encontrado, cliente desconocido, redirect inválido | Página `vid/not-found` con instrucciones localizadas. Corregir parámetros y reintentar.          |
+| Creación de sesión         | Falla `/api/biometric` (red, AWS, etc.)                                        | SnackAlert con el error localizado + registro en Sentry. El modal queda abierto para reintentar. |
+| Problemas de dispositivo   | Permisos de cámara negados, cámara no soportada                                | Mensajes específicos `intl.liveness.camera.*`; el usuario ajusta permisos y reintenta.           |
+| No coincidencia biométrica | El rostro no coincide con la foto de la JCE o baja confianza                   | Mensaje (ej. `liveness.noMatch`), reseteo automático de la sesión para otro intento.             |
+| Timeout                    | El usuario tomó demasiado tiempo en posicionarse                               | Recarga automática tras `LIVENESS_TIMEOUT_SECONDS`; inicia una sesión nueva.                     |
 
 ## Referencias de implementación
 
