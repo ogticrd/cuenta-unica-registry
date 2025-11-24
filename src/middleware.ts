@@ -6,22 +6,17 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.match('/api/*')) {
-    // First, handle internationalization
     const i18nResponse = internationalize(request);
     if (i18nResponse) {
       return i18nResponse;
     }
 
-    // Expose the current pathname via request headers so server components can read it
     const headers = new Headers(request.headers);
     headers.set('x-pathname', request.nextUrl.pathname);
 
     const response = NextResponse.next({
       request: { headers },
     });
-
-    // Optional: also surface it on the response for debugging or client-side usage
-    response.headers.set('x-pathname', request.nextUrl.pathname);
 
     return response;
   }
