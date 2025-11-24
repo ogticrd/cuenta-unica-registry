@@ -78,7 +78,7 @@
     "react-hook-form": "^7.66.1",
     "react-imask": "^7.6.1",
     "typescript": "^5.9.3",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
@@ -104,7 +104,7 @@
     "jsdom": "^27.2.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
-    "vitest": "^4.0.12"
+    "vitest": "^4.0.13"
   },
   "peerDependencies": {
     "@aws-sdk/client-sso-oidc": "^3.668.0",
