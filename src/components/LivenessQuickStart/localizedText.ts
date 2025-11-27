@@ -6,7 +6,7 @@ import type {
   InstructionDisplayText,
   StreamDisplayText,
   ErrorDisplayText,
-} from '@aws-amplify/ui-react-liveness/dist/types/components/FaceLivenessDetector/displayText';
+} from 'node_modules/@aws-amplify/ui-react-liveness/dist/types/components/FaceLivenessDetector/displayText';
 
 export const useLocalizedText = ({
   liveness: { hints, camera, instructions, stream, error },
