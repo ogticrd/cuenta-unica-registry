@@ -1,6 +1,7 @@
 import { GoogleTagManager } from '@next/third-parties/google';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 
 import LandingChica from '@public/assets/landingChica.svg';
 import '@aws-amplify/ui-react/styles.css';
@@ -39,6 +40,11 @@ export default async function RootLayout({ children, params }: Props) {
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
 
+  // Get the current pathname to check if it's the vid route
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') ?? '';
+  const isVidRoute = pathname.includes('/vid');
+
   return (
     <html lang={lang}>
       <GoogleTagManager gtmId={gtmId} />
@@ -48,7 +54,7 @@ export default async function RootLayout({ children, params }: Props) {
 
         <ThemeRegistry>
           <LanguageProvider intl={intl}>
-            <NavBar intl={intl} />
+            {!isVidRoute && <NavBar intl={intl} />}
 
             <div style={{ padding: '50px 0px' }}>
               <ReCaptchaProvider language={lang} useEnterprise>
@@ -68,7 +74,7 @@ export default async function RootLayout({ children, params }: Props) {
             </div>
 
             <UserFeedback />
-            <Footer intl={intl} />
+            {!isVidRoute && <Footer intl={intl} />}
           </LanguageProvider>
         </ThemeRegistry>
       </body>
