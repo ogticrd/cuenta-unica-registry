@@ -3,14 +3,14 @@
 import { Configuration, IdentityApi } from '@ory/client';
 import { redirect } from 'next/navigation';
 
-export async function findIamCitizen(cedula: string) {
-  const backend = new IdentityApi(
-    new Configuration({
-      basePath: process.env.NEXT_PUBLIC_ORY_SDK_URL,
-      accessToken: process.env.ORY_SDK_TOKEN,
-    }),
-  );
+const backend = new IdentityApi(
+  new Configuration({
+    basePath: process.env.NEXT_PUBLIC_ORY_SDK_URL,
+    accessToken: process.env.ORY_SDK_TOKEN,
+  }),
+);
 
+export async function findIamCitizen(cedula: string) {
   const { data: identities } = await backend
     .listIdentities({
       credentialsIdentifier: cedula,
@@ -28,6 +28,16 @@ export async function findIamCitizen(cedula: string) {
   return {
     exists: identities.length !== 0,
   };
+}
+
+export async function findIdentityById(id: string) {
+  return backend
+    .getIdentity({ id })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error(error?.response?.data || error?.message || error);
+      return null;
+    });
 }
 
 async function findAccountInBackoffice(cedula: string) {

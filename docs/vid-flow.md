@@ -12,7 +12,7 @@ Este documento describe cómo los sistemas confiables pueden invocar el **flujo 
 ## 1. Construya la solicitud de autorización
 
 ```
-GET /{lang}/vid?client_id=UUID&redirect_uri=URL&cedula=NNNNNNNNNNN
+GET /{lang}/vid?client_id=UUID&redirect_uri=URL&access_token=TOKEN
 Host: cuentaunica.gob.do
 ```
 
@@ -21,21 +21,21 @@ Host: cuentaunica.gob.do
 | `lang`         | ✅        | Idioma ISO usado en la app (`es`, `en`, …). Controla toda la localización del flujo.                                         |
 | `client_id`    | ✅        | UUID del cliente OAuth2 en Ory. El backend verifica su existencia.                                                           |
 | `redirect_uri` | ✅        | Debe coincidir exactamente con uno de los URIs configurados para `client_id`. URLs absolutas generan redirecciones externas. |
-| `cedula`       | ✅        | Cédula dominicana de 11 dígitos. Se valida con LUHN y se consulta en la API antes de renderizar la vista.                    |
+| `access_token` | ✅        | `access_token` de la sesión ciudadana emitido por CUC. El backend lo introspecciona para obtener la cédula asociada.         |
 
-Si algún parámetro falla (LUHN inválido, ciudadano inexistente, redirect no autorizado, cliente inexistente) se lanza `notFound()` y se muestra `src/app/[lang]/vid/not-found.tsx`, informando que la solicitud no puede continuar.
+Si algún parámetro falla (token inactivo, ciudadano inexistente, cédula inválida, redirect no autorizado, cliente inexistente) se lanza `notFound()` y se muestra `src/app/[lang]/vid/not-found.tsx`, informando que la solicitud no puede continuar.
 
 ### Ejemplo
 
 ```
-https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&cedula=00112345678
+https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&access_token=eyJhbGciOi...
 ```
 
 ## 2. Validación previa y saludo
 
 Una vez aceptada la URL:
 
-1. La página solicita el perfil del ciudadano (`findCitizen`) y usa el primer nombre para personalizar el saludo (`src/app/[lang]/vid/page.tsx`).
+1. La página introspecciona el `access_token`, extrae la identidad ciudadana y solicita el perfil en la API de cédulas (`findCitizen`) para personalizar el saludo (`src/app/[lang]/vid/page.tsx`).
 2. El redirect URI validado se propaga a los componentes cliente (`Form` → `LivenessModal` → `LivenessQuickStart`).
 3. La UI muestra la lista de condiciones (`intl.step2.*`) para que el usuario confirme que tiene cámara, permite capturas del rostro y entiende la advertencia sobre luces intermitentes.
 

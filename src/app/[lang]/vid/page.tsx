@@ -13,7 +13,7 @@ type Props = {
   params: Promise<{ lang: Locale }>;
   searchParams: Promise<{
     redirect_uri?: string;
-    cedula?: string;
+    access_token?: string;
     client_id?: string;
   }>;
 };
@@ -24,7 +24,10 @@ export default async function VidPage({ params, searchParams }: Props) {
 
   const input = await createInputSchema(intl)
     .parseAsync(search)
-    .catch(() => notFound());
+    .catch((error) => {
+      console.error('VID input validation failed', error);
+      return notFound();
+    });
 
   return (
     <main>
