@@ -4,8 +4,8 @@ Este documento describe cómo los sistemas confiables pueden invocar el **flujo 
 
 ## Prerrequisitos
 
-- Contar con un cliente OAuth2 creado en Ory. Guarde el `client_id` y configure al menos un redirect URI porque el flujo VID reutiliza esa misma información (`src/common/lib/oauth.ts`).
-- El redirect URI debe ser una URL HTTPS absoluta o una ruta interna de Cuenta Única. Las rutas internas pueden ser relativas (por ejemplo, `/es/register/callback`); las URLs externas tienen que coincidir exactamente con lo configurado en Ory.
+- Contar con un cliente OAuth2 creado en Cuenta Única. Guarde el `client_id` y configure al menos un redirect URI porque el flujo VID reutiliza esa misma información (`src/common/lib/oauth.ts`).
+- El redirect URI debe ser una URL HTTPS absoluta o una ruta interna de Cuenta Única. Las rutas internas pueden ser relativas (por ejemplo, `/es/register/callback`); las URLs externas tienen que coincidir exactamente con lo configurado en Cuenta Única.
 - El ciudadano debe existir en el padrón (API de Cédula) ya que la pantalla VID consulta sus datos básicos antes de mostrar el saludo (`findCitizen` en `src/actions/citizen.action.ts`).
 - (Opcional) Si necesita procesar automáticamente el resultado de la prueba de vida, asegúrese de que el endpoint detrás de su redirect URI pueda recibir cualquier contexto adicional que usted codifique en sus propios parámetros o estado (el flujo VID no agrega estado adicional).
 
@@ -19,7 +19,7 @@ Host: cuentaunica.gob.do
 | Parámetro      | Requerido | Descripción                                                                                                                  |
 | -------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `lang`         | ✅        | Idioma ISO usado en la app (`es`, `en`, …). Controla toda la localización del flujo.                                         |
-| `client_id`    | ✅        | UUID del cliente OAuth2 en Ory. El backend verifica su existencia.                                                           |
+| `client_id`    | ✅        | UUID del cliente OAuth2 en Cuenta Única. El backend verifica su existencia.                                                  |
 | `redirect_uri` | ✅        | Debe coincidir exactamente con uno de los URIs configurados para `client_id`. URLs absolutas generan redirecciones externas. |
 | `access_token` | ✅        | `access_token` de la sesión ciudadana emitido por CUC. El backend lo introspecciona para obtener la cédula asociada.         |
 
@@ -83,7 +83,7 @@ Como el flujo actúa igual que la fase de redirección de OAuth, usted es respon
 
 ## Checklist de pruebas para integradores
 
-1. Registre un redirect URI en Ory que controle y prepare una cédula de pruebas.
+1. Registre un redirect URI en Cuenta Única que controle y prepare una cédula de pruebas.
 2. Navegue manualmente a la URL VID para validar que aparece el saludo y la lista de condiciones.
 3. Ejecute una captura completa en un dispositivo compatible y confirme que llega a su redirect URI.
 4. Simule fallas (bloquear cámara, cancelar sesión, usar sesión expirada) para asegurar que su UX explica el reintento.
