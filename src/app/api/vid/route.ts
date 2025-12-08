@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
 
   // Validate all params are present
   if (!params.access_token || !params.client_id || !params.redirect_uri) {
-    return NextResponse.redirect(new URL(`/${lang}/vid`, request.url));
+    // Use relative redirect to avoid leaking the internal Cloud Run host (0.0.0.0:8080)
+    return NextResponse.redirect(`/${lang}/vid`);
   }
 
   try {
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
     const result = await createInputSchema(intl).safeParseAsync(params);
 
     if (!result.success) {
-      return NextResponse.redirect(new URL(`/${lang}/vid`, request.url));
+      return NextResponse.redirect(`/${lang}/vid`);
     }
 
     const { citizen, redirectUri } = result.data;
@@ -61,11 +62,9 @@ export async function GET(request: NextRequest) {
     );
 
     // Redirect to clean URL
-    return NextResponse.redirect(
-      new URL(`/${lang}/vid?flow=${flowId}`, request.url),
-    );
+    return NextResponse.redirect(`/${lang}/vid?flow=${flowId}`);
   } catch (error) {
     console.error('VID flow creation failed:', error);
-    return NextResponse.redirect(new URL(`/${lang}/vid`, request.url));
+    return NextResponse.redirect(`/${lang}/vid`);
   }
 }
