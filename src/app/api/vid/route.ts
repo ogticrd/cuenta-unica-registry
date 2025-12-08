@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
 
   // Validate all params are present
   if (!params.access_token || !params.client_id || !params.redirect_uri) {
-    // Use relative redirect to avoid leaking the internal Cloud Run host (0.0.0.0:8080)
     return NextResponse.redirect(`/${lang}/vid`);
   }
 
