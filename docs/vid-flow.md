@@ -28,20 +28,40 @@ Si algún parámetro falla (token inactivo, ciudadano inexistente, cédula invá
 ### Ejemplo
 
 ```
-https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&access_token=eyJhbGciOi...
+https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&access_token=ory_at_...
 ```
 
-## 2. Validación previa y saludo
+## 2. Redirección a URL limpia (Flow ID)
 
-Una vez aceptada la URL:
+Por seguridad, el sistema **no mantiene el `access_token` visible en la barra de direcciones**. Tras validar los parámetros iniciales:
 
-1. La página introspecciona el `access_token`, extrae la identidad ciudadana y solicita el perfil en la API de cédulas (`findCitizen`) para personalizar el saludo (`src/app/[lang]/vid/page.tsx`).
-2. El redirect URI validado se propaga a los componentes cliente (`Form` → `LivenessModal` → `LivenessQuickStart`).
+1. El servidor crea una sesión temporal (flow) con TTL de 120 segundos.
+2. Los datos validados (cédula, nombre, redirect URI) se almacenan en una cookie httpOnly.
+3. El usuario es redirigido automáticamente a una URL limpia:
+
+```
+/{lang}/vid?flow=abc123-def456-...
+```
+
+Este diseño evita que el token aparezca en:
+
+- El historial del navegador
+- Capturas de pantalla accidentales
+- URLs compartidas por error
+
+Si el flow expira o es inválido, se muestra la página `not-found`.
+
+## 3. Validación previa y saludo
+
+Una vez establecido el flow:
+
+1. La página recupera los datos validados de la cookie del flow.
+2. El redirect URI se propaga a los componentes cliente (`Form` → `LivenessModal` → `LivenessQuickStart`).
 3. La UI muestra la lista de condiciones (`intl.step2.*`) para que el usuario confirme que tiene cámara, permite capturas del rostro y entiende la advertencia sobre luces intermitentes.
 
 No se inicia ninguna captura biométrica hasta que el usuario haga clic en **INICIAR PROCESO**.
 
-## 3. Lanzamiento de la sesión VID
+## 4. Lanzamiento de la sesión VID
 
 Al iniciar, el modal (`LivenessModal`) abre y monta el `FaceLivenessDetector` de AWS:
 
@@ -54,7 +74,7 @@ Detalles técnicos:
 - El detector recarga automáticamente la página después de `LIVENESS_TIMEOUT_SECONDS` para evitar sesiones obsoletas.
 - Los errores de cámara, firmas, uso en horizontal, etc., se traducen a mensajes específicos antes de mostrarse al usuario.
 
-## 4. Manejo del redirect (respuesta estilo OAuth)
+## 5. Manejo del redirect (respuesta estilo OAuth)
 
 Cuando la coincidencia es positiva `handleSuccessfulMatch` ejecuta la estrategia de redirección (`src/components/LivenessQuickStart/index.tsx`):
 
@@ -69,6 +89,7 @@ Como el flujo actúa igual que la fase de redirección de OAuth, usted es respon
 | Etapa                      | Disparador                                                                     | Qué ve el usuario / cómo recupera                                                                |
 | -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | Validación de URL          | LUHN inválido, ciudadano no encontrado, cliente desconocido, redirect inválido | Página `vid/not-found` con instrucciones localizadas. Corregir parámetros y reintentar.          |
+| Flow expirado              | Han pasado más de 120 segundos desde la validación inicial                     | Página `vid/not-found`. Reiniciar el flujo desde el sistema origen.                              |
 | Creación de sesión         | Falla `/api/biometric` (red, AWS, etc.)                                        | SnackAlert con el error localizado + registro en Sentry. El modal queda abierto para reintentar. |
 | Problemas de dispositivo   | Permisos de cámara negados, cámara no soportada                                | Mensajes específicos `intl.liveness.camera.*`; el usuario ajusta permisos y reintenta.           |
 | No coincidencia biométrica | El rostro no coincide con la foto de la JCE o baja confianza                   | Mensaje (ej. `liveness.noMatch`), reseteo automático de la sesión para otro intento.             |
@@ -77,6 +98,7 @@ Como el flujo actúa igual que la fase de redirección de OAuth, usted es respon
 ## Referencias de implementación
 
 - Entrada y validaciones: `src/app/[lang]/vid/page.tsx` y `src/app/[lang]/vid/input.schema.ts`
+- Gestión de flows: `src/app/[lang]/vid/flow.action.ts`
 - Modal y detector: `src/components/LivenessModal` y `src/components/LivenessQuickStart`
 - Middleware que expone `x-pathname`: `src/proxy.ts` (permite ajustar layout y navegación en `/vid`)
 - Consulta del cliente OAuth: `src/common/lib/oauth.ts`
@@ -85,8 +107,10 @@ Como el flujo actúa igual que la fase de redirección de OAuth, usted es respon
 
 1. Registre un redirect URI en Cuenta Única que controle y prepare una cédula de pruebas.
 2. Navegue manualmente a la URL VID para validar que aparece el saludo y la lista de condiciones.
-3. Ejecute una captura completa en un dispositivo compatible y confirme que llega a su redirect URI.
-4. Simule fallas (bloquear cámara, cancelar sesión, usar sesión expirada) para asegurar que su UX explica el reintento.
-5. Monitoree los logs de su endpoint de redirect para confirmar que puede correlacionar al usuario que regresa (por ejemplo, con su token `state`).
+3. Verifique que la URL cambia a `?flow=...` sin mostrar el token.
+4. Ejecute una captura completa en un dispositivo compatible y confirme que llega a su redirect URI.
+5. Simule fallas (bloquear cámara, cancelar sesión, usar sesión expirada) para asegurar que su UX explica el reintento.
+6. Pruebe que el flow expira después de 120 segundos mostrando la página not-found.
+7. Monitoree los logs de su endpoint de redirect para confirmar que puede correlacionar al usuario que regresa (por ejemplo, con su token `state`).
 
 Siguiendo estos pasos, su integración VID se comportará como un bucle OAuth estándar mientras aprovecha la verificación biométrica administrada por el gobierno.
