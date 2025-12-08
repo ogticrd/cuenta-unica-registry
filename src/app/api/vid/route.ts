@@ -11,6 +11,7 @@ const VID_FLOW_TTL = 120;
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const lang = (searchParams.get('lang') as Locale) || 'es';
+  const baseUrl = getBaseUrl(request);
 
   const params = {
     access_token: searchParams.get('access_token'),
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   // Validate all params are present
   if (!params.access_token || !params.client_id || !params.redirect_uri) {
-    return NextResponse.redirect(`/${lang}/vid`);
+    return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
   }
 
   try {
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
     const result = await createInputSchema(intl).safeParseAsync(params);
 
     if (!result.success) {
-      return NextResponse.redirect(`/${lang}/vid`);
+      return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
     }
 
     const { citizen, redirectUri } = result.data;
@@ -61,9 +62,27 @@ export async function GET(request: NextRequest) {
     );
 
     // Redirect to clean URL
-    return NextResponse.redirect(`/${lang}/vid?flow=${flowId}`);
+    return NextResponse.redirect(
+      new URL(`/${lang}/vid?flow=${flowId}`, baseUrl),
+    );
   } catch (error) {
     console.error('VID flow creation failed:', error);
-    return NextResponse.redirect(`/${lang}/vid`);
+    return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
   }
+}
+
+/**
+ * Get the base URL from the request, preferring
+ * X-Forwarded-Host header.
+ */
+function getBaseUrl(request: NextRequest): string {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const forwardedProto = request.headers.get('x-forwarded-proto') ?? 'https';
+
+  if (forwardedHost) {
+    return `${forwardedProto}://${forwardedHost}`;
+  }
+
+  // Fallback to request origin
+  return request.nextUrl.origin;
 }
