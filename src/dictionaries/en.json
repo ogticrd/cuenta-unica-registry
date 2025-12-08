@@ -271,6 +271,7 @@
   "notFound": {
     "title": "Page not found",
     "description": "Could not find requested resource",
-    "returnHome": "Return Home"
+    "returnHome": "Return Home",
+    "helpText": "Please verify that the link is correct and that all required parameters are present."
   }
 }
