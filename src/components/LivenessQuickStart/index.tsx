@@ -14,9 +14,9 @@ import { useLocalizedText } from './localizedText';
 
 import styles from './styles.module.css';
 
-type Props = { cedula: string };
+type Props = { cedula: string; redirectUri?: string };
 
-export function LivenessQuickStart({ cedula }: Props) {
+export function LivenessQuickStart({ cedula, redirectUri }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -50,13 +50,32 @@ export function LivenessQuickStart({ cedula }: Props) {
     fetchCreateLiveness();
   };
 
+  const handleSuccessfulMatch = () => {
+    if (!redirectUri) {
+      router.push('register');
+      return;
+    }
+
+    const isExternal = /^https?:\/\//i.test(redirectUri);
+    const destination = redirectUri.startsWith('/')
+      ? redirectUri
+      : `/${redirectUri}`;
+
+    if (isExternal) {
+      window.location.assign(redirectUri);
+      return;
+    }
+
+    router.push(destination);
+  };
+
   const handleAnalysisComplete: () => Promise<void> = async () => {
     const data = await fetch(`/api/biometric/${sessionId}/${cedula}`).then(
       unwrap,
     );
 
     if (data?.isMatch === true) {
-      router.push('register');
+      handleSuccessfulMatch();
     } else {
       setError(data);
       setSessionId(null);

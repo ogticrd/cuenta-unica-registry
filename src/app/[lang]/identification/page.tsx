@@ -1,13 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import { redirect } from 'next/navigation';
-import type { Session } from '@ory/client';
-import { cookies } from 'next/headers';
 
 import { getDictionary } from '@/dictionaries';
 import { Steps } from '@/components/Steps';
 import { SETTINGS_URL } from '@/common';
 import { Locale } from '@/i18n-config';
-import { ory } from '@/common/lib/ory';
+import { session } from '@/common/lib';
 import { Form } from './form';
 
 type Props = { params: Promise<{ lang: Locale }> };
@@ -15,14 +13,7 @@ type Props = { params: Promise<{ lang: Locale }> };
 export default async function ValidationPage({ params }: Props) {
   const { lang } = await params;
 
-  const [intl, cks] = await Promise.all([getDictionary(lang), cookies()]);
-  const userCookie = cks
-    .getAll()
-    .find((key) => key.name.includes('ory_session'));
-  const user: Session = await ory
-    .toSession({ cookie: `${userCookie?.name}=${userCookie?.value}` })
-    .then((resp) => resp.data)
-    .catch(() => ({}) as never);
+  const [intl, user] = await Promise.all([getDictionary(lang), session()]);
 
   for (const addr of user.identity?.verifiable_addresses ?? []) {
     if (!addr.verified) redirect(`/confirmation?email=${addr.value}`);

@@ -1,6 +1,12 @@
 'use client';
 
-import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
+import {
+  type Control,
+  type Path,
+  type PathValue,
+  type UseFormSetValue,
+  useWatch,
+} from 'react-hook-form';
 import { useReCaptcha } from 'next-recaptcha-v3';
 import React from 'react';
 
@@ -10,28 +16,30 @@ type TokenForm = {
   token: string;
 };
 
-interface UseRecaptchaTokenProps {
-  setValue: UseFormSetValue<any>;
-  control: Control<any>;
+interface UseRecaptchaTokenProps<T extends TokenForm> {
+  setValue: UseFormSetValue<T>;
+  control: Control<T>;
   action?: string;
 }
 
-export function useRecaptchaToken({
+export function useRecaptchaToken<T extends TokenForm>({
   setValue,
   control,
   action = 'form_submit',
-}: UseRecaptchaTokenProps) {
+}: UseRecaptchaTokenProps<T>) {
   const { executeRecaptcha, loaded } = useReCaptcha();
-  const tokenTimeRef = React.useRef<number | null>(null);
-  const watchedToken = useWatch<TokenForm>({ control, name: 'token' });
+  const [tokenTimestamp, setTokenTimestamp] = React.useState<number | null>(
+    null,
+  );
+  const watchedToken = useWatch({ control, name: 'token' as Path<T> });
 
-  const generateToken = React.useCallback(async (): Promise<string | null> => {
+  const generateToken = React.useCallback(async () => {
     if (!loaded || !executeRecaptcha) return null;
 
     try {
       const token = await executeRecaptcha(action);
-      setValue('token', token);
-      tokenTimeRef.current = Date.now();
+      setValue('token' as Path<T>, token as PathValue<T, Path<T>>);
+      setTokenTimestamp(Date.now());
       return token;
     } catch (error) {
       return null;
@@ -39,10 +47,10 @@ export function useRecaptchaToken({
   }, [loaded, executeRecaptcha, setValue, action]);
 
   const isTokenExpired = React.useCallback((): boolean => {
-    if (!tokenTimeRef.current) return true;
-    const tokenAge = (Date.now() - tokenTimeRef.current) / 1000;
+    if (!tokenTimestamp) return true;
+    const tokenAge = (Date.now() - tokenTimestamp) / 1000;
     return tokenAge > TOKEN_EXPIRY_BUFFER;
-  }, []);
+  }, [tokenTimestamp]);
 
   const ensureValidToken = React.useCallback(async (): Promise<boolean> => {
     const currentToken = watchedToken;
