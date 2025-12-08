@@ -47,7 +47,6 @@ export async function GET(request: NextRequest) {
       createdAt: Date.now(),
     };
 
-    // Set cookie
     const cookieStore = await cookies();
     cookieStore.set(
       `${VID_FLOW_PREFIX}${flowId}`,
@@ -56,7 +55,7 @@ export async function GET(request: NextRequest) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: VID_FLOW_TTL,
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
       },
     );
