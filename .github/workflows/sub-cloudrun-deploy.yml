@@ -26,17 +26,17 @@ on:
         required: false
         type: string
         description: The minimum number of instances to deploy
-        default: '0'
+        default: "0"
       max_instances:
         required: false
         type: string
         description: The maximum number of instances to deploy
-        default: '100'
+        default: "100"
       cpu:
         required: false
         type: string
         description: The number of CPUs to use for the service
-        default: '1'
+        default: "1"
       memory:
         required: false
         type: string
@@ -82,17 +82,17 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v5.0.0
+        uses: rlespinasse/github-slug-action@v5.3.0
 
       - name: Authenticate to GCP
         id: auth
-        uses: google-github-actions/auth@v2.1.2
+        uses: google-github-actions/auth@v3
         with:
           project_id: ${{ vars.GOOGLE_PROJECT_ID || inputs.project_id }}
           credentials_json: ${{ secrets.GAR_JSON_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2.1.0
+        uses: google-github-actions/setup-gcloud@v3
 
       - name: Deploy to cloud run
         id: deploy
@@ -103,6 +103,8 @@ jobs:
           region: ${{ inputs.region }}
           env_vars: |
             ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN }},
+            ORY_API_URL=${{ vars.ORY_API_URL }},
+            ORY_API_TOKEN=${{ secrets.ORY_API_TOKEN }},
             CEDULA_API=${{ secrets.CEDULA_API }},
             CEDULA_API_KEY=${{ secrets.CEDULA_API_KEY }},
             JCE_PHOTO_API=${{ secrets.JCE_PHOTO_API }},

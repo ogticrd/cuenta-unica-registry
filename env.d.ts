@@ -23,5 +23,7 @@ namespace NodeJS {
     NEXT_PUBLIC_SENTRY_ENV?: 'development' | 'production';
     BACKOFFICE_API_URL?: string;
     BACKOFFICE_API_KEY?: string;
+    ORY_API_URL?: string;
+    ORY_API_TOKEN?: string;
   }
 }

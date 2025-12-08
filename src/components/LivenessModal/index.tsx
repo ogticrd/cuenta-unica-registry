@@ -21,9 +21,10 @@ import { Transition } from './Transition';
 type Props = {
   cedula: string;
   setOpen: (isOpen: boolean) => void;
+  redirectUri?: string;
 };
 
-export function LivenessModal({ cedula, setOpen }: Props) {
+export function LivenessModal({ cedula, setOpen, redirectUri }: Props) {
   const closeModal = () => setOpen(false);
   const { intl } = useLanguage();
 
@@ -71,7 +72,7 @@ export function LivenessModal({ cedula, setOpen }: Props) {
           </div>
         </AppBar>
         <div className={styles.liveness_container}>
-          <LivenessQuickStart cedula={cedula} />
+          <LivenessQuickStart cedula={cedula} redirectUri={redirectUri} />
         </div>
       </Dialog>
     </div>
