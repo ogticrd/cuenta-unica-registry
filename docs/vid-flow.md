@@ -1,4 +1,4 @@
-# Flujo VID estilo OAuth
+# Flujo VID
 
 Este documento describe cómo los sistemas confiables pueden invocar el **flujo VID (Verificador de Identidad Dominicano)** de Cuenta Única y obtener señales sólidas de identidad redirigiendo a sus usuarios hacia un endpoint similar a OAuth. La experiencia replica una solicitud de autorización clásica: la aplicación construye una URL con parámetros definidos, el Registro de Cuenta Única valida al ciudadano y ejecuta la prueba biométrica de vida, y finalmente redirige al usuario a uno de los redirect URIs registrados para el cliente.
 
