@@ -271,6 +271,7 @@
   "notFound": {
     "title": "Página no encontrada",
     "description": "No se pudo encontrar el recurso solicitado",
-    "returnHome": "Volver al inicio"
+    "returnHome": "Volver al inicio",
+    "helpText": "Por favor, verifica que el enlace sea correcto y que todos los parámetros requeridos estén presentes."
   }
 }
