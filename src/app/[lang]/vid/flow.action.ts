@@ -9,6 +9,7 @@ export type VidFlowData = {
   cedula: string;
   citizenName: string;
   redirectUri: string;
+  state?: string;
   createdAt: number;
 };
 
