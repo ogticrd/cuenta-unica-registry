@@ -17,9 +17,10 @@ import styles from '../liveness/styles.module.css';
 type Props = {
   cedula: string;
   redirectUri?: string;
+  state?: string;
 };
 
-export function Form({ cedula, redirectUri }: Props) {
+export function Form({ cedula, redirectUri, state }: Props) {
   const [open, setOpen] = useState(false);
   const { intl } = useLanguage();
 
@@ -63,6 +64,7 @@ export function Form({ cedula, redirectUri }: Props) {
             cedula={cedula}
             setOpen={setOpen}
             redirectUri={redirectUri}
+            state={state}
           />
         ) : null}
       </GridItem>
