@@ -21,6 +21,7 @@ type Props = {
     redirect_uri?: string;
     access_token?: string;
     client_id?: string;
+    state?: string;
   }>;
 };
 
@@ -36,6 +37,9 @@ export default async function VidPage({ params, searchParams }: Props) {
       client_id: search.client_id,
       redirect_uri: search.redirect_uri,
     });
+    if (search.state) {
+      params.set('state', search.state);
+    }
     redirect(`/api/vid?${params.toString()}`);
   }
 
@@ -68,7 +72,7 @@ export default async function VidPage({ params, searchParams }: Props) {
         <Box>{intl.step2.description}</Box>
       </Typography>
 
-      <Form cedula={flowData.cedula} redirectUri={flowData.redirectUri} />
+      <Form cedula={flowData.cedula} redirectUri={flowData.redirectUri} state={flowData.state} />
     </main>
   );
 }

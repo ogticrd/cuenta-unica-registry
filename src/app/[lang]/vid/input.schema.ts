@@ -11,6 +11,7 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
       access_token: z.string(),
       redirect_uri: z.url(),
       client_id: z.uuid(),
+      state: z.string().optional(),
     })
     .transform(async (data) => {
       const { findCitizen, findIdentityById } = await import('@/actions');
@@ -102,5 +103,6 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
       return {
         citizen,
         redirectUri: data.redirect_uri,
+        state: data.state,
       };
     });

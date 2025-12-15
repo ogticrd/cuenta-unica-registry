@@ -14,9 +14,9 @@ import { useLocalizedText } from './localizedText';
 
 import styles from './styles.module.css';
 
-type Props = { cedula: string; redirectUri?: string };
+type Props = { cedula: string; redirectUri?: string; state?: string };
 
-export function LivenessQuickStart({ cedula, redirectUri }: Props) {
+export function LivenessQuickStart({ cedula, redirectUri, state }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -57,16 +57,36 @@ export function LivenessQuickStart({ cedula, redirectUri }: Props) {
     }
 
     const isExternal = /^https?:\/\//i.test(redirectUri);
+
+    // Build final URL with state parameter if provided
+    const buildUrlWithState = (baseUrl: string): string => {
+      if (!state) return baseUrl;
+
+      try {
+        const url = new URL(baseUrl, window.location.origin);
+        url.searchParams.set('state', state);
+        return isExternal ? url.toString() : `${url.pathname}${url.search}`;
+      } catch {
+        // Fallback for simple paths
+        const separator = baseUrl.includes('?') ? '&' : '?';
+        return `${baseUrl}${separator}state=${encodeURIComponent(state)}`;
+      }
+    };
+
     const destination = redirectUri.startsWith('/')
       ? redirectUri
-      : `/${redirectUri}`;
+      : isExternal
+        ? redirectUri
+        : `/${redirectUri}`;
+
+    const finalUrl = buildUrlWithState(destination);
 
     if (isExternal) {
-      window.location.assign(redirectUri);
+      window.location.assign(finalUrl);
       return;
     }
 
-    router.push(destination);
+    router.push(finalUrl);
   };
 
   const handleAnalysisComplete: () => Promise<void> = async () => {
