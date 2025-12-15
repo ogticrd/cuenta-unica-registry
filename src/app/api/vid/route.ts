@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     access_token: searchParams.get('access_token'),
     client_id: searchParams.get('client_id'),
     redirect_uri: searchParams.get('redirect_uri'),
+    state: searchParams.get('state') ?? undefined,
   };
 
   // Validate all params are present
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
     }
 
-    const { citizen, redirectUri } = result.data;
+    const { citizen, redirectUri, state } = result.data;
 
     // Create flow
     const flowId = randomUUID();
@@ -44,6 +45,7 @@ export async function GET(request: NextRequest) {
       cedula: citizen.id,
       citizenName: citizen.name ?? '',
       redirectUri,
+      state,
       createdAt: Date.now(),
     };
 
