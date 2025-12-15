@@ -12,7 +12,7 @@ Este documento describe cómo los sistemas confiables pueden invocar el **flujo 
 ## 1. Construya la solicitud de autorización
 
 ```
-GET /{lang}/vid?client_id=UUID&redirect_uri=URL&access_token=TOKEN
+GET /{lang}/vid?client_id=UUID&redirect_uri=URL&access_token=TOKEN&state=STATE
 Host: cuentaunica.gob.do
 ```
 
@@ -22,13 +22,14 @@ Host: cuentaunica.gob.do
 | `client_id`    | ✅        | UUID del cliente OAuth2 en Cuenta Única. El backend verifica su existencia.                                                  |
 | `redirect_uri` | ✅        | Debe coincidir exactamente con uno de los URIs configurados para `client_id`. URLs absolutas generan redirecciones externas. |
 | `access_token` | ✅        | `access_token` de la sesión ciudadana emitido por CUC. El backend lo introspecciona para obtener la cédula asociada.         |
+| `state`        | ❌        | Valor opaco que se devuelve sin modificación al `redirect_uri`. Úselo para correlacionar la respuesta con la solicitud original y prevenir ataques CSRF. |
 
 Si algún parámetro falla (token inactivo, ciudadano inexistente, cédula inválida, redirect no autorizado, cliente inexistente) se lanza `notFound()` y se muestra `src/app/[lang]/vid/not-found.tsx`, informando que la solicitud no puede continuar.
 
 ### Ejemplo
 
 ```
-https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&access_token=ory_at_...
+https://cuentaunica.gob.do/es/vid?client_id=7f87...&redirect_uri=https%3A%2F%2Fpartner.gov.do%2Fvid%2Fcallback&access_token=ory_at_...&state=abc123
 ```
 
 ## 2. Redirección a URL limpia (Flow ID)
@@ -82,7 +83,23 @@ Cuando la coincidencia es positiva `handleSuccessfulMatch` ejecuta la estrategia
 - **Redirects relativos** (`/es/register/success`): navegación interna con el router de Next.js.
 - **Redirect faltante** (no debería ocurrir si la URL se construyó bien): redirige por defecto a `register`.
 
-Como el flujo actúa igual que la fase de redirección de OAuth, usted es responsable de codificar cualquier estado adicional dentro del mismo `redirect_uri` (por ejemplo, `https://partner.gov.do/vid/callback?state=abc123`). Guarde `state` en su sistema antes de redirigir y recupérelo cuando el usuario regrese.
+### Parámetro `state`
+
+El flujo VID soporta el parámetro `state` de forma nativa, similar a OAuth2:
+
+1. El sistema externo envía un `state` único al invocar VID.
+2. El valor se almacena en la cookie del flow junto con los demás datos validados.
+3. Al completar la verificación exitosa, el `state` se agrega automáticamente como query parameter al `redirect_uri`.
+
+**Ejemplo de respuesta:**
+```
+https://partner.gov.do/vid/callback?state=abc123
+```
+
+**Beneficios del `state`:**
+- **Correlación**: Permite vincular la respuesta con la operación original.
+- **Seguridad CSRF**: Valide que el `state` recibido coincide con el enviado.
+- **Contexto**: Puede codificar información adicional (ID de transacción, etc.).
 
 ## Superficies de error y recuperación
 
