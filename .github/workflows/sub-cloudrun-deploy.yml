@@ -57,7 +57,7 @@ jobs:
           result-encoding: string
           script: |
             return context.payload.release.tag_name.substring(0,2)
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check if release matches package version
         if: ${{ github.event_name == 'release' }}
         run: |
