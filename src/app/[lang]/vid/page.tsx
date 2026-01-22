@@ -1,4 +1,4 @@
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Container, Alert } from '@mui/material';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 
@@ -22,12 +22,68 @@ type Props = {
     access_token?: string;
     client_id?: string;
     state?: string;
+    error?: string;
   }>;
 };
 
 export default async function VidPage({ params, searchParams }: Props) {
   const { lang } = await params;
   const [intl, search] = await Promise.all([getDictionary(lang), searchParams]);
+
+  // If validation error is present, display error message
+  if (search.error) {
+    const errorMessage = decodeURIComponent(search.error);
+    return (
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '60vh',
+            textAlign: 'center',
+            py: 4,
+          }}
+        >
+          <Image src={Verification.src} alt="Logo" width="190" height="162" />
+          <Typography
+            color="primary"
+            sx={{
+              fontSize: '24px',
+              fontWeight: '700',
+              mt: 4,
+              mb: 2,
+            }}
+          >
+            {intl.errors.unknown}
+          </Typography>
+
+          <Typography
+            color="text.secondary"
+            sx={{
+              fontSize: '16px',
+              mb: 4,
+            }}
+          >
+            {intl.notFound.description}
+          </Typography>
+
+          <Alert severity="error" sx={{ mt: 4, maxWidth: '100%' }}>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: '16px',
+                fontWeight: 500,
+              }}
+            >
+              {errorMessage}
+            </Typography>
+          </Alert>
+        </Box>
+      </Container>
+    );
+  }
 
   // If OAuth params are present (no flow), redirect to API route for validation
   if (search.access_token && search.client_id && search.redirect_uri) {
@@ -72,7 +128,11 @@ export default async function VidPage({ params, searchParams }: Props) {
         <Box>{intl.step2.description}</Box>
       </Typography>
 
-      <Form cedula={flowData.cedula} redirectUri={flowData.redirectUri} state={flowData.state} />
+      <Form
+        cedula={flowData.cedula}
+        redirectUri={flowData.redirectUri}
+        state={flowData.state}
+      />
     </main>
   );
 }
