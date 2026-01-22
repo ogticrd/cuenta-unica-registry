@@ -116,7 +116,12 @@
     },
     "createIdentity": "An error occurred trying to create the citizen account. Please, try again later.",
     "decryption": "Error decrypting:",
-    "noEnv": "Invalid or undefined environment variable"
+    "noEnv": "Invalid or undefined environment variable",
+    "vid": {
+      "invalidParameters": "Invalid parameters",
+      "invalidClient": "Invalid OAuth2 client",
+      "invalidRedirectUri": "Invalid redirect_uri"
+    }
   },
   "terms": {
     "accept": "Accept terms and privacy policies",

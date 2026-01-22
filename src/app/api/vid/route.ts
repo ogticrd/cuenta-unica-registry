@@ -22,7 +22,12 @@ export async function GET(request: NextRequest) {
 
   // Validate all params are present
   if (!params.access_token || !params.client_id || !params.redirect_uri) {
-    return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
+    const errorMessage = encodeURIComponent(
+      'Missing required parameters: access_token, client_id, and redirect_uri are required',
+    );
+    return NextResponse.redirect(
+      new URL(`/${lang}/vid?error=${errorMessage}`, baseUrl),
+    );
   }
 
   try {
@@ -34,7 +39,15 @@ export async function GET(request: NextRequest) {
     const result = await createInputSchema(intl).safeParseAsync(params);
 
     if (!result.success) {
-      return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
+      // Extract first error message from Zod validation
+      // Zod uses 'issues' array, not 'errors'
+      const firstIssue = result.error.issues?.[0];
+      const errorMessage =
+        firstIssue?.message || result.error.message || 'Invalid parameters';
+      const encodedError = encodeURIComponent(errorMessage);
+      return NextResponse.redirect(
+        new URL(`/${lang}/vid?error=${encodedError}`, baseUrl),
+      );
     }
 
     const { citizen, redirectUri, state } = result.data;
@@ -68,7 +81,15 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error('VID flow creation failed:', error);
-    return NextResponse.redirect(new URL(`/${lang}/vid`, baseUrl));
+    // Extract error message from caught error
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : 'An error occurred during validation';
+    const encodedError = encodeURIComponent(errorMessage);
+    return NextResponse.redirect(
+      new URL(`/${lang}/vid?error=${encodedError}`, baseUrl),
+    );
   }
 }
 
