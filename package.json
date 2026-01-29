@@ -1,7 +1,7 @@
 {
   "name": "cuenta-unica-registry",
   "description": "Portal de registro de Cuenta Única",
-  "version": "v1.5.10",
+  "version": "v1.5.11",
   "private": false,
   "author": "OGTIC",
   "license": "MIT",
