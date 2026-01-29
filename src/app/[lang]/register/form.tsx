@@ -36,9 +36,10 @@ interface FormProps {
   cedula: string;
   flow: string;
   returnTo?: string;
+  isRecoveryMode?: boolean;
 }
 
-export function Form({ cedula, flow, returnTo }: FormProps) {
+export function Form({ cedula, flow, returnTo, isRecoveryMode }: FormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
@@ -198,7 +199,9 @@ export function Form({ cedula, flow, returnTo }: FormProps) {
               endIcon={<CheckCircleOutlineOutlined />}
               disabled={!isValid}
             >
-              {intl.actions.create}
+              {isRecoveryMode
+                ? intl.accountRecovery?.recreateAccount
+                : intl.actions.create}
             </ButtonApp>
           </GridItem>
         </GridContainer>

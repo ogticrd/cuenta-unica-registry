@@ -1,6 +1,7 @@
 import { Typography, Box } from '@mui/material';
 import { redirect } from 'next/navigation';
 
+import { RecoveryBanner } from '@/components/RecoveryBanner';
 import { createSearchParams } from '@/common/helpers';
 import { getDictionary } from '@/dictionaries';
 import { RegistrationFlow } from '@ory/client';
@@ -8,7 +9,7 @@ import { Steps } from '@/components/Steps';
 import { CitizenCookie } from '@/types';
 import { ory } from '@/common/lib/ory';
 import { Locale } from '@/i18n-config';
-import { getCookie } from '@/actions';
+import { getCookie, isRecoveryMode } from '@/actions';
 import { Form } from './form';
 
 type Props = {
@@ -20,10 +21,11 @@ export default async function RegisterPage({ params, searchParams }: Props) {
   const { lang } = await params;
   const { flow, return_to: returnTo } = await searchParams;
 
-  const [citizen, intl, sid] = await Promise.all([
+  const [citizen, intl, sid, recoveryMode] = await Promise.all([
     getCookie<CitizenCookie>('citizen'),
     getDictionary(lang),
     getCookie<number>('_sid'),
+    isRecoveryMode(),
   ]);
 
   if (!citizen) return redirect('/identification');
@@ -45,6 +47,8 @@ export default async function RegisterPage({ params, searchParams }: Props) {
 
   return (
     <div>
+      {recoveryMode && <RecoveryBanner lang={lang} />}
+
       <Steps step={2} />
       <Typography
         component="div"
@@ -55,7 +59,12 @@ export default async function RegisterPage({ params, searchParams }: Props) {
         <Box sx={{ fontWeight: 500 }}>{intl.step3.completeForm}</Box>
       </Typography>
 
-      <Form cedula={citizen?.id} flow={registration.id} returnTo={returnTo} />
+      <Form
+        cedula={citizen?.id}
+        flow={registration.id}
+        returnTo={returnTo}
+        isRecoveryMode={recoveryMode}
+      />
     </div>
   );
 }
