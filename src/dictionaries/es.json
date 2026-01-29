@@ -8,6 +8,16 @@
     "policy": "Política de privacidad",
     "faq": "Preguntas frecuentes"
   },
+  "accountRecovery": {
+    "title": "Recuperación de Cuenta",
+    "description": "Si olvidaste tu correo electrónico o necesitas cambiar tus credenciales, ingresa tu número de cédula para iniciar el proceso de recuperación.",
+    "banner": "Modo Recuperación: Deberás verificar tu identidad con una prueba de vida.",
+    "startRecovery": "INICIAR RECUPERACIÓN",
+    "noAccount": "¿No tienes una cuenta?",
+    "registerHere": "Regístrate aquí.",
+    "success": "Cuenta recuperada exitosamente. Ahora puedes iniciar sesión con tus nuevas credenciales.",
+    "recreateAccount": "RECUPERAR CUENTA"
+  },
   "redirection": {
     "title": "Ya estás registrado",
     "body": "Podrás iniciar sesión enseguida con tu cédula <b>{id}</b> o el correo electrónico registrado.",
@@ -94,6 +104,11 @@
     "cedula": {
       "invalid": "Al parecer ha introducido una numeración de cédula inválida.",
       "exists": "Esta cédula ya ha sido registrada."
+    },
+    "recovery": {
+      "notFound": "No existe una cuenta registrada con esta cédula. Si deseas crear una cuenta, usa el proceso de registro.",
+      "deleteFailed": "No se pudo recuperar la cuenta. Por favor, intente más tarde.",
+      "sessionExpired": "La sesión de recuperación ha expirado. Por favor, inicie el proceso nuevamente."
     },
     "password": {
       "validation": "Al parecer ha ocurrido un error al intentar validar su contraseña, inténtelo de nuevo más tarde."
