@@ -9,6 +9,8 @@ export const createCedulaSchema = ({ validations, errors }: Context['intl']) =>
       .string()
       .min(11, validations.cedula.min)
       .max(11, validations.cedula.max)
-      .refine(validLuhn, { message: errors.cedula.invalid }),
+      .refine(async (cedula) => validLuhn(cedula), {
+        message: errors.cedula.invalid,
+      }),
     token: z.string(),
   });
