@@ -14,8 +14,8 @@
     "url": "git+https://github.com/opticrd/cuenta-unica-registry.git"
   },
   "scripts": {
-    "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "dev": "next dev --turbopack",
+    "build": "next build",
     "build:docker": "scripts/docker-build.sh",
     "start": "next start",
     "lint": "eslint .",
@@ -26,22 +26,6 @@
   "engines": {
     "npm": ">=10.1.0 <11.0.0",
     "node": ">=20.9.0 <25.0.0"
-  },
-  "pnpm": {
-    "auditConfig": {
-      "ignoreCves": [
-        "CVE-2024-34351"
-      ]
-    },
-    "onlyBuiltDependencies": [
-      "@sentry/cli",
-      "aws-crt",
-      "core-js-pure",
-      "esbuild",
-      "sharp",
-      "tldjs",
-      "unrs-resolver"
-    ]
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.7.1",
@@ -106,9 +90,7 @@
     "@aws-sdk/client-sso-oidc": "^3.943.0",
     "@aws-sdk/client-sts": "^3.943.0"
   },
-  "packageManager": "pnpm@10.23.0",
   "overrides": {
-    "webpack": "5.94.0",
     "xstate": "4.38.3"
   }
 }

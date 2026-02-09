@@ -21,4 +21,4 @@
 !*.json
 !*.lock
 !*.env
-!pnpm-lock.yaml
+!bun.lock
