@@ -2,15 +2,17 @@ version: '3.9'
 services:
   cuenta_unica:
     container_name: cuenta_unica
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
       args:
+        - WORK_DIR=/app
         - SENTRY_ORG
         - SENTRY_PROJECT
         - SENTRY_AUTH_TOKEN
         - NEXT_PUBLIC_SENTRY_DSN
         - NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+        - AWS_EXPORTS_JSON
     restart: unless-stopped
     networks:
       - cuenta_unica_network
