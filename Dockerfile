@@ -3,7 +3,7 @@
 # ===================== Base stage =====================
 FROM oven/bun:1 AS base
 
-ARG WORK_DIR
+ARG WORK_DIR=/app
 ARG APP_ENV=production
 ARG PORT=3000
 
