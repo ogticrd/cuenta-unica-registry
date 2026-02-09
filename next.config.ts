@@ -4,39 +4,23 @@ import { NextConfig } from 'next';
 const { version, name } = require('./package.json');
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['@aws-amplify/adapter-nextjs', 'aws-amplify'],
+  serverExternalPackages: [
+    '@aws-amplify/adapter-nextjs',
+    'aws-amplify',
+    'aws-crt', // Avoid AWS SDK Node.js require issue
+    'dtrace-provider',
+  ],
+  transpilePackages: [
+    '@tensorflow-models/face-detection',
+    '@mediapipe/face-detection',
+  ],
   output: 'standalone',
-  webpack: (config, { webpack, isServer, nextRuntime }) => {
-    // Avoid AWS SDK Node.js require issue
-    if (isServer && nextRuntime === 'nodejs') {
-      config.plugins.push(
-        new webpack.IgnorePlugin({ resourceRegExp: /^aws-crt$/ }),
-      );
-    }
-
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-      config.externals = ['dtrace-provider'];
-    }
-
-    // Fix XState compatibility issues with AWS Amplify UI
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      xstate: require.resolve(
-        './node_modules/.pnpm/xstate@4.38.3/node_modules/xstate',
-      ),
-    };
-
-    config.cache = {
-      type: 'filesystem',
-      store: 'pack',
-      compression: 'gzip',
-    };
-
-    return config;
+  // Turbopack configuration for module aliasing
+  turbopack: {
+    resolveAlias: {
+      // Fix XState compatibility issues with AWS Amplify UI
+      xstate: './node_modules/.pnpm/xstate@4.38.3/node_modules/xstate',
+    },
   },
 };
 
