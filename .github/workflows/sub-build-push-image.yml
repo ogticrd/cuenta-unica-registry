@@ -46,16 +46,16 @@ jobs:
         with:
           short-length: 7
 
-      - name: Cache Node.js dependencies
+      - name: Cache Bun dependencies
         uses: actions/cache@v5
         with:
           path: |
-            ~/.pnpm-store
+            ~/.bun/install/cache
             node_modules
             .next/cache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-bun-
 
       # Automatic tag management and OCI Image Format Specification for labels
       - name: Docker meta
@@ -103,6 +103,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           build-args: |
+            WORK_DIR=/app
             NEXT_PUBLIC_LIVENESS_TIMEOUT_SECONDS=${{ vars.NEXT_PUBLIC_LIVENESS_TIMEOUT_SECONDS }}
             NEXT_PUBLIC_LUHN_EXCEPTION_HASHES=${{ vars.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES }}
             NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
