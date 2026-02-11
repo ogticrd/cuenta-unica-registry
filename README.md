@@ -50,13 +50,13 @@ docker build --target runner -t cuenta-unica .
 docker run -d cuenta-unica
 ```
 
-La segunda es utilizando `pnpm`:
+La segunda es utilizando `bun`:
 
 ```bash
 git clone https://github.com/opticrd/cuenta-unica-registry.git
 cd cuenta-unica-registry
-pnpm install
-pnpm start
+bun install
+bun start
 ```
 
 ### Dependencias
@@ -127,7 +127,6 @@ Para detener un contenedor de desarrollo en Visual Studio Code, puede seguir est
 Alternativamente, puede ir a la esquina inferior derecha de la ventana de VS Code donde verá el ícono verde "><". Al hacer clic en él, se mostrará el Explorador remoto. Desde allí, puede hacer clic derecho en el contenedor asociado con su proyecto y seleccionar `"Remote: Close Remote Conenction"`. Esta acción detendrá el contenedor asociado con su proyecto. Si desea iniciarlo de nuevo, puede utilizar el comando `"Dev Containers: Open Folder in Container"`.
 
 Tener en cuenta que detener el contenedor no lo eliminará; simplemente lo detiene. Si desea eliminar el contenedor por completo, puede hacerlo usando los comandos de Docker en la terminal o usando una herramienta GUI de Docker.
-
 
 ## Autor/es
 
