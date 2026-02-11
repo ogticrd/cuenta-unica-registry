@@ -1,2 +1,2 @@
-pnpm lint-staged
-pnpm install --frozen-lockfile
+bun lint-staged
+bun install --frozen-lockfile

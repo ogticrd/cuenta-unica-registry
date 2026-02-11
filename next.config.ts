@@ -8,14 +8,14 @@ const nextConfig: NextConfig = {
     '@aws-amplify/adapter-nextjs',
     'aws-amplify',
     'aws-crt',
-    'dtrace-provider'
+    'dtrace-provider',
   ],
 
   output: 'standalone',
 
   turbopack: {
     resolveAlias: {
-      xstate: './node_modules/.pnpm/xstate@4.38.3/node_modules/xstate',
+      xstate: './node_modules/xstate',
     },
   },
 };
