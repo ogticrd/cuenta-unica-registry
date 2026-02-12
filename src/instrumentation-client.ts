@@ -3,17 +3,30 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { version, name } from '../package.json';
 
 Sentry.init({
-  dsn: "https://ed6e1c11f9473fd35746d8c7b7d69a45@o4510833463328768.ingest.us.sentry.io/4510833468178432",
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  integrations: [Sentry.replayIntegration({
+    // Additional Replay configuration goes in here, for example:
+    maskAllText: false,
+    blockAllMedia: true,
+  })],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
   // Enable logs to be sent to Sentry
   enableLogs: true,
+
+  debug: false,
+
+  enabled: process.env.NODE_ENV === 'production',
+
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
+
+  release: `${name}@${version}`,
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while
@@ -29,3 +42,4 @@ Sentry.init({
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+export const onRequestError = Sentry.captureRequestError;
