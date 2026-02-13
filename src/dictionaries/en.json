@@ -8,6 +8,16 @@
     "policy": "Privacy Policy",
     "faq": "Frequently Asked Questions"
   },
+  "accountRecovery": {
+    "title": "Account Recovery",
+    "description": "If you forgot your email or need to change your credentials, enter your ID number to start the recovery process.",
+    "banner": "Recovery Mode: You will need to verify your identity with a liveness check.",
+    "startRecovery": "START RECOVERY",
+    "noAccount": "Don't have an account?",
+    "registerHere": "Register here.",
+    "success": "Account recovered successfully. You can now log in with your new credentials.",
+    "recreateAccount": "RECOVER ACCOUNT"
+  },
   "redirection": {
     "title": "You are already registered",
     "body": "You can start logging in with your ID <b>{id}</b> or the registered email in a few seconds.",
@@ -94,6 +104,11 @@
     "cedula": {
       "invalid": "It seems you have entered an invalid ID number.",
       "exists": "This ID has already been registered."
+    },
+    "recovery": {
+      "notFound": "No account is registered with this ID. If you want to create an account, use the registration process.",
+      "deleteFailed": "Could not recover the account. Please try again later.",
+      "sessionExpired": "The recovery session has expired. Please start the process again."
     },
     "password": {
       "validation": "It seems there has been an error trying to validate your password, please try again later."

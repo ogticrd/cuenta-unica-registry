@@ -4,20 +4,24 @@ import Image from 'next/image';
 
 import Verification from '@public/assets/verification.svg';
 
+import { RecoveryBanner } from '@/components/RecoveryBanner';
 import { fetchPhotoBuffer } from './get-photo.action';
 import { getDictionary } from '@/dictionaries';
 import { Steps } from '@/components/Steps';
 import { CitizenCookie } from '@/types';
 import { Locale } from '@/i18n-config';
-import { getCookie } from '@/actions';
+import { getCookie, isRecoveryMode } from '@/actions';
 import { Form } from './form';
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function LivenessPage({ params }: Props) {
-  const [citizen, intl] = await Promise.all([
+  const { lang } = await params;
+
+  const [citizen, intl, recoveryMode] = await Promise.all([
     getCookie<CitizenCookie>('citizen'),
-    getDictionary((await params).lang),
+    getDictionary(lang),
+    isRecoveryMode(),
   ]);
 
   if (!citizen?.name) return redirect('/identification');
@@ -26,6 +30,8 @@ export default async function LivenessPage({ params }: Props) {
 
   return (
     <div>
+      {recoveryMode && <RecoveryBanner lang={lang} />}
+
       <Steps step={1} />
       <br />
       <div style={{ display: 'flex', justifyContent: 'center' }}>

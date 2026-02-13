@@ -81,7 +81,7 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
         normalize(traits?.preferred_username) ||
         normalize(identityId);
 
-      if (!cedula || cedula.length !== 11 || !validLuhn(cedula)) {
+      if (!cedula || cedula.length !== 11 || !(await validLuhn(cedula))) {
         throw new Error(errors.cedula.invalid);
       }
 
