@@ -1,6 +1,6 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
-import { version, name } from './package.json';
+import { version, name } from '../package.json';
 
 export function register() {
   Sentry.init({

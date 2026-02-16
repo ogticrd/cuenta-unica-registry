@@ -202,7 +202,7 @@ Temporary Items
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+
 
 # local env files
 .env*.local
@@ -399,3 +399,6 @@ $RECYCLE.BIN/
 
 # Sentry Config File
 .sentryclirc
+
+# Sentry Config File
+.env.sentry-build-plugin

@@ -16,6 +16,7 @@ on:
       - '**.js*'
       - '**.ts*'
       - package*.json
+      - bun.lock
       - .github/workflows/ci-unit-tests.yml
 
   push:
@@ -25,6 +26,7 @@ on:
       - '**.js*'
       - '**.ts*'
       - package*.json
+      - bun.lock
       - .github/workflows/ci-unit-tests.yml
 
 concurrency:
@@ -44,36 +46,30 @@ env:
 
 jobs:
   test:
-    name: Test with Node.js ${{ matrix.node }}
+    name: Test with Bun
     timeout-minutes: 10
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        node: [lts/*, latest]
 
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
+      - name: Create AWS exports file
+        run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
         shell: bash
         env:
           AWS_EXPORTS_JSON: ${{secrets.AWS_EXPORTS_JSON}}
 
-      - uses: pnpm/action-setup@v4
-
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v6
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: ${{ matrix.node }}
-          cache: pnpm
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Audit for vulnerabilities
-        run: pnpm audit
+        run: bun audit
 
-      - name: Install and Build
-        run: |
-          pnpm install
-          pnpm test
+      - name: Run tests
+        run: bun run test
