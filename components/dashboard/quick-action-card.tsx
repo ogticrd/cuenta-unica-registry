@@ -1,0 +1,46 @@
+import Link from "next/link"
+import type { ReactNode } from "react"
+
+interface QuickActionCardProps {
+  title: string
+  description: string
+  icon: ReactNode
+  href: string
+  badge?: {
+    text: string
+    variant: "info" | "warning" | "success"
+  }
+}
+
+export function QuickActionCard({ title, description, icon, href, badge }: QuickActionCardProps) {
+  const badgeClasses = {
+    info: "bg-blue-100 text-blue-800 border border-blue-200",
+    warning: "bg-orange-100 text-orange-800 border border-orange-200",
+    success: "bg-green-100 text-green-800 border border-green-200",
+  }
+
+  return (
+    <Link href={href} className="block group">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 h-full">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="text-primary group-hover:text-primary/80 transition-colors">
+              {icon}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                {title}
+              </h3>
+            </div>
+          </div>
+          {badge && (
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${badgeClasses[badge.variant]}`}>
+              {badge.text}
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+      </div>
+    </Link>
+  )
+}
