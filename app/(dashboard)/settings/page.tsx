@@ -1,14 +1,13 @@
 import { Suspense } from "react"
-import { Settings } from "@ory/elements-react/theme"
 import { getSettingsFlow, OryPageParams } from "@ory/nextjs/app"
 import config from "@/ory.config"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Settings as SettingsIcon } from "lucide-react"
+import OrySettings from "./ory-settings"
 
 async function SettingsFlowComponent({ searchParams }: OryPageParams) {
   const flow = await getSettingsFlow(config, searchParams)
+  console.log(flow)
 
   if (!flow) {
     return (
@@ -19,22 +18,11 @@ async function SettingsFlowComponent({ searchParams }: OryPageParams) {
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <div className="flex items-center gap-2">
-          <SettingsIcon className="w-5 h-5 text-primary" />
-          <CardTitle>Configuración de Seguridad y Cuenta</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* We use the imported Settings component from @ory/elements-react/theme */}
-        <Settings flow={flow as any} config={config} />
-      </CardContent>
-    </Card>
+    <OrySettings flow={flow as any} />
   )
 }
 
-export default async function PrivacyPage(props: OryPageParams) {
+export default async function SettingsPage(props: OryPageParams) {
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">

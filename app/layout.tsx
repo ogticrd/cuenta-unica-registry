@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import "@ory/elements-react/theme/styles.css"
 import "../styles/ory-theme.css"
-import { AuthProvider } from "@/lib/auth-context"
+import { Providers } from "@/components/providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

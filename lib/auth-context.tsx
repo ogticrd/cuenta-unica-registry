@@ -60,7 +60,6 @@ function mapIdentityToUser(identity: {
     nationality: (traits.nationality as string) || "",
     birthDate: (traits.birthdate as string) || "",
     gender: (traits.gender as string) || "",
-    traits: identity.traits as Record<string, unknown>,
   }
 }
 
