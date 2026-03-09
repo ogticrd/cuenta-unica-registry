@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
 
 export function Header() {
   return (
@@ -17,7 +17,7 @@ export function Header() {
             />
           </div>
           <div className="flex items-center space-x-2">
-            <ThemeToggle />
+            <AnimatedThemeToggler />
           </div>
         </div>
       </div>

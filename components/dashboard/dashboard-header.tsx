@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Bell, Grid3X3, Menu } from 'lucide-react'
+import { Bell, Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { NotificationDrawer } from "./notification-drawer"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
 
 
 interface DashboardHeaderProps {
@@ -42,7 +42,7 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
 
           {/* Right side - Notifications and Menu */}
           <div className="flex items-center space-x-2">
-            <ThemeToggle />
+            <AnimatedThemeToggler />
             <Button
               variant="ghost"
               size="sm"
