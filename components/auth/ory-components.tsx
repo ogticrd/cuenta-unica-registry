@@ -86,7 +86,7 @@ export function CucRecoveryFooter(_props: OryCardFooterProps) {
         <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
                 ¿Recuerdas sus credenciales?{" "}
-                <Link href="/login" className="font-medium text-[#0087FF] dark:text-blue-400">
+                <Link href="/login" className="font-medium !text-secondary dark:!text-blue-400">
                     Inicia sesión
                 </Link>
             </p>
