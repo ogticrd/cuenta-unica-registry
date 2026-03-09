@@ -13,7 +13,7 @@ import type { PropsWithChildren } from "react"
 export function CucCardContent(_props: PropsWithChildren) {
     return (
         <div className="text-center">
-            <p className="text-gray-600">Contenido de la tarjeta</p>
+            <p className="text-gray-600 dark:text-gray-400">Contenido de la tarjeta</p>
         </div>
     )
 }
@@ -24,10 +24,10 @@ export function CucCardHeader(_props: PropsWithChildren) {
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
-            <h1 className="text-xl font-semibold text-[#003876]" style={{ marginTop: "20px" }}>
+            <h1 className="text-xl font-semibold text-[#003876] dark:text-blue-400" style={{ marginTop: "20px" }}>
                 Acceso Cuenta Única
             </h1>
-            <p className="text-sm text-gray-600" style={{ marginTop: "8px" }}>
+            <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
                 Puedes acceder a tu cuenta con tu número de identidad
                 &quot;Cédula&quot; o correo electrónico registrado
             </p>
@@ -42,8 +42,8 @@ export function CucCardHeader(_props: PropsWithChildren) {
 export function CucCardFooter(_props: OryCardFooterProps) {
     return (
         <div className="text-center">
-            <p className="text-sm text-gray-600" style={{ marginBottom: "20px" }}>
-                <span className="font-medium text-[#0087FF]">
+            <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginBottom: "20px" }}>
+                <span className="font-medium text-[#0087FF] dark:text-blue-400">
                     ¿No tienes cuenta?
                 </span>{" "}
                 Registrate, accede a los servicios del Estado Dominicano con un
@@ -68,10 +68,10 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
-            <h1 className="text-xl font-semibold text-[#003876]" style={{ marginTop: "20px" }}>
+            <h1 className="text-xl font-semibold text-[#003876] dark:text-blue-400" style={{ marginTop: "20px" }}>
                 Restablecer contraseña
             </h1>
-            <p className="text-sm text-gray-600" style={{ marginTop: "8px" }}>
+            <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
                 Para restablecer la contraseña, ingrese su correo electrónico registrado
             </p>
         </div>
@@ -84,9 +84,9 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
 export function CucRecoveryFooter(_props: OryCardFooterProps) {
     return (
         <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
                 ¿Recuerdas sus credenciales?{" "}
-                <Link href="/login" className="font-medium" style={{ color: "#0087FF" }}>
+                <Link href="/login" className="font-medium text-[#0087FF] dark:text-blue-400">
                     Inicia sesión
                 </Link>
             </p>

@@ -40,13 +40,13 @@ export default function SupportPage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl">
-        <h1 className="text-2xl font-bold text-primary mb-8">Información de contacto</h1>
+        <h1 className="text-2xl font-bold text-primary dark:text-blue-400 mb-8">Información de contacto</h1>
 
         <div>
           <div className="mb-8">
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               ¿Tienes dudas o necesitas ayuda con su{" "}
-              <span className="text-accent font-bold">Cuenta Única Ciudadana</span>? Contáctanos por correo o
+              <span className="text-accent dark:text-red-400 font-bold">Cuenta Única Ciudadana</span>? Contáctanos por correo o
               teléfono. ¡Estamos aquí para ayudarte y asegurar que su experiencia sea rápida y segura!
             </p>
           </div>
@@ -72,9 +72,9 @@ export default function SupportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <h2 className="text-xl font-bold text-primary mb-6">
-            Preguntas frecuentes <span className="text-accent">(FAQs)</span>
+        <div className="bg-white dark:bg-background rounded-lg shadow-sm p-8 border border-transparent dark:border-border">
+          <h2 className="text-xl font-bold text-primary dark:text-blue-400 mb-6">
+            Preguntas frecuentes <span className="text-accent dark:text-red-400">(FAQs)</span>
           </h2>
 
           <div className="space-y-0">

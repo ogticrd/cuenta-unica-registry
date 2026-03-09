@@ -4,15 +4,15 @@ export function WelcomeSection() {
   return (
     <div className="flex flex-col justify-center space-y-6 text-left">
       <div className="space-y-4">
-        <h1 className="text-3xl lg:text-4xl font-medium text-primary leading-tight">
-          ¡Bienvenido a la Plataforma Única de Autenticación <span className="text-accent font-bold">Ciudadana</span>!
+        <h1 className="text-3xl lg:text-4xl font-medium text-primary dark:text-blue-400 leading-tight">
+          ¡Bienvenido a la Plataforma Única de Autenticación <span className="text-accent dark:text-red-400 font-bold">Ciudadana</span>!
         </h1>
 
-        <p className="text-lg text-primary font-medium leading-relaxed">
+        <p className="text-lg text-primary dark:text-blue-200 font-medium leading-relaxed">
           Accede o registrate con un unico usuario y contrasena, para consultar todos los servicios gubernamentales disponibles.
         </p>
 
-        <p className="text-base text-gray-600 leading-relaxed">
+        <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed">
           Una manera facil y comoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin
           necesidad de trasladarte a los organismos gubernamentales.
         </p>

@@ -9,8 +9,8 @@ interface ContactItemProps {
 export function ContactItem({ icon, children, className = "" }: ContactItemProps) {
   return (
     <div className={`flex items-start space-x-4 ${className}`}>
-      <div className="flex-shrink-0 text-secondary mt-1">{icon}</div>
-      <div className="text-secondary font-medium">{children}</div>
+      <div className="flex-shrink-0 text-secondary dark:text-blue-400 mt-1">{icon}</div>
+      <div className="text-secondary dark:text-blue-400 font-medium">{children}</div>
     </div>
   )
 }

@@ -38,7 +38,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#eff7ff]">
+    <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
       <Header />
 
       <main className="flex-1">

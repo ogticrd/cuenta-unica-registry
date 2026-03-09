@@ -16,7 +16,7 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
   if (!flow) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-600">Cargando formulario de recuperación...</p>
+        <p className="text-gray-600 dark:text-gray-400">Cargando formulario de recuperación...</p>
       </div>
     )
   }
@@ -37,7 +37,7 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
 
 export default async function ForgotPasswordPage(props: OryPageParams) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#eff7ff]">
+    <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12">
@@ -46,8 +46,8 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
             <Suspense
               fallback={
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="mt-2 text-gray-600">Cargando...</p>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-blue-400 mx-auto"></div>
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">Cargando...</p>
                 </div>
               }
             >

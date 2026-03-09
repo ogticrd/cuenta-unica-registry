@@ -41,9 +41,9 @@ export function ConfirmationModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="relative">
-          <DialogTitle className="text-lg font-semibold text-primary pr-8">{title}</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-primary dark:text-blue-400 pr-8">{title}</DialogTitle>
           {description && (
-            <DialogDescription className="text-sm text-gray-900 mt-2">
+            <DialogDescription className="text-sm text-gray-900 dark:text-gray-300 mt-2">
               {description}
             </DialogDescription>
           )}

@@ -89,19 +89,19 @@ export default function AboutPage() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl p-6 border border-gray-200 text-center hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-background rounded-xl p-6 border border-gray-200 dark:border-border text-center hover:shadow-lg dark:hover:shadow-gray-800/30 transition-shadow"
             >
-              <div className="flex justify-center mb-3 text-blue-600">{stat.icon}</div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">{stat.number}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+              <div className="flex justify-center mb-3 text-blue-600 dark:text-blue-400">{stat.icon}</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{stat.number}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl p-8 border border-gray-200">
+        <div className="bg-white dark:bg-background rounded-2xl p-8 border border-gray-200 dark:border-border">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">¿Cómo funciona tu Cuenta Única?</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">¿Cómo funciona tu Cuenta Única?</h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Este video te muestra paso a paso todas las funcionalidades y herramientas que tendrás disponibles una vez
               hayas iniciado sesión con tu cuenta.
             </p>
@@ -109,8 +109,8 @@ export default function AboutPage() {
           <YouTubeVideo title="Cuenta Única Ciudadana - Guía Completa de Funcionalidades" />
         </div>
 
-        <div className="bg-white rounded-2xl p-8 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Funcionalidades Principales</h2>
+        <div className="bg-white dark:bg-background rounded-2xl p-8 border border-gray-200 dark:border-border">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Funcionalidades Principales</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
               <PlatformFeature
@@ -123,13 +123,13 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Beneficios de usar la Cuenta Única</h2>
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/10 dark:to-blue-900/10 rounded-2xl p-8 border border-gray-200 dark:border-border">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Beneficios de usar la Cuenta Única</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start space-x-3">
-                <CheckCircle size={20} className="text-green-600 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">{benefit}</span>
+                <CheckCircle size={20} className="text-green-600 dark:text-green-500 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700 dark:text-gray-300">{benefit}</span>
               </div>
             ))}
           </div>
@@ -141,7 +141,7 @@ export default function AboutPage() {
             Explora todas las funcionalidades disponibles y descubre como la tecnologia puede simplificar tu experiencia con los servicios del Estado.
           </p>
           <button
-            onClick={() => (window.location.href = "/dashboard")}
+            onClick={() => (window.location.href = "/")}
             className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
           >
             Ir al Dashboard

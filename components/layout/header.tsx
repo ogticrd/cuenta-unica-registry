@@ -1,8 +1,9 @@
 import Image from "next/image"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   return (
-    <header className="bg-white border-b border-gray-200">
+    <header className="bg-white dark:bg-background border-b border-gray-200 dark:border-border">
       <div className="container w-full mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Left side - Cuenta Única Logo */}
@@ -14,6 +15,9 @@ export function Header() {
               height={40}
               className="h-10 w-auto"
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
           </div>
         </div>
       </div>

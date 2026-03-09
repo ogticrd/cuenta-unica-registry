@@ -171,7 +171,7 @@ export default function HistoryPage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto px-4 sm:px-0">
-        <h1 className="text-xl sm:text-2xl font-bold text-primary mb-6 sm:mb-8">Historial de actividad</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-primary dark:text-blue-400 mb-6 sm:mb-8">Historial de actividad</h1>
 
         <div className="space-y-6 sm:space-y-8">
           {/* Dispositivos Section */}
@@ -228,17 +228,17 @@ export default function HistoryPage() {
           confirmVariant="destructive"
           isLoading={unlinkPortalModal.isLoading}
         >
-          <ul className="space-y-2 text-sm text-gray-600">
+          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             <li className="flex items-start">
-              <span className="text-gray-400 mr-2">•</span>
+              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
               <span>Perderás acceso directo a este portal desde tu cuenta.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-gray-400 mr-2">•</span>
+              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
               <span>Deberás autenticarte nuevamente para acceder al portal.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-gray-400 mr-2">•</span>
+              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
               <span>Podrás volver a vincular el portal cuando lo necesites.</span>
             </li>
           </ul>

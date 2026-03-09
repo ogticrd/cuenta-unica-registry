@@ -67,9 +67,31 @@
   --interface-foreground-brand-primary: #003876;
 }
 
+.text-interface-foreground-default-primary {
+  color: #003876 !important;
+  font-weight: 600 !important;
+}
+
+.text-interface-foreground-default-secondary {
+  color: #0087FF !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
 .ory-elements>div {
   width: 100% !important;
   border: none !important;
+}
+
+.ory-elements>div>form {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.ory-elements>div>form>div {
+  background-color: #fff !important;
+  border: 1px solid #dadada !important;
 }
 
 .ory-elements>div>div {
@@ -227,4 +249,110 @@ button.text-button-link-brand-brand {
   .ory-elements>div>div {
     padding: 16px !important;
   }
+}
+
+/* ===== Dark Mode Overrides ===== */
+.dark {
+  --ui-white: var(--background);
+  --ui-black: var(--foreground);
+  --interface-background-brand-primary: var(--primary);
+  --interface-foreground-brand-primary: var(--primary-foreground);
+}
+
+.dark .ory-elements>div>div {
+  background-color: var(--card) !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.dark .text-interface-foreground-default-primary {
+  color: #60a5fa !important;
+}
+
+.dark .text-interface-foreground-default-secondary {
+  color: #93c5fd !important;
+}
+
+.dark .ory-elements>div>form {
+  background-color: var(--card) !important;
+  /* border: 1px solid #485468 !important; */
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ory-elements>div>form>div {
+  background-color: var(--card) !important;
+  border: 1px solid #1e293b !important;
+}
+
+.dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: #1e293b !important;
+}
+
+.dark .ory-elements label {
+  color: var(--foreground) !important;
+}
+
+.dark .text-input-foreground-primary span {
+  color: #60a5fa !important;
+}
+
+.dark .ory-elements [data-testid*="error"],
+.dark .ory-elements [data-testid*="message"] {
+  color: #f87171 !important;
+}
+
+.dark button.bg-button-primary-background-default {
+  background-color: #2563eb !important;
+}
+
+.dark button.hover\:bg-button-primary-background-hover:hover {
+  background-color: #1d4ed8 !important;
+}
+
+.dark a.text-button-link-brand-brand,
+.dark svg.text-button-link-default-secondary,
+.dark button.text-button-link-brand-brand {
+  color: #3b82f6 !important;
+}
+
+.bg-interface-background-default-secondary {
+  background-color: #1e293b !important;
+}
+
+.dark .cuc-register-button {
+  border-color: #3b82f6;
+  color: #3b82f6 !important;
+}
+
+.dark .cuc-register-button:hover {
+  background: #3b82f6;
+  color: #ffffff !important;
+}
+
+/* ===== OTP Input Dark Mode Overrides ===== */
+.dark .ory-elements input[data-input-otp="true"] {
+  color: var(--foreground) !important;
+}
+
+.dark .ory-elements div.bg-input-background-default {
+  background-color: var(--background) !important;
+}
+
+.dark .ory-elements div.border-input-border-default {
+  border-color: var(--border) !important;
+}
+
+.dark .ory-elements div.text-input-foreground-primary {
+  color: var(--foreground) !important;
+}
+
+.dark .ory-elements div.border-input-border-focus {
+  border-color: #3b82f6 !important;
+  box-shadow: inset 0 0 0 1px #3b82f6 !important;
+}
+
+.dark input[data-input-otp="true"] {
+  opacity: 0 !important;
 }

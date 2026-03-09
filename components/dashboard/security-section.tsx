@@ -12,7 +12,7 @@ export function SecuritySection({ title, children, hasInfoIcon = false, classNam
   return (
     <div className={`${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 mb-6">
-        <h2 className="text-xl font-semibold text-primary">{title}</h2>
+        <h2 className="text-xl font-semibold text-primary dark:text-blue-400">{title}</h2>
         {hasInfoIcon && <Info size={20} className="text-yellow-500 flex-shrink-0" />}
       </div>
       {children}

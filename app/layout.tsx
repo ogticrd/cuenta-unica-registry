@@ -1,5 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { ThemeProvider } from "@/components/theme-provider"
+
 import { Inter } from "next/font/google"
 import "./globals.css"
 import "@ory/elements-react/theme/styles.css"
@@ -22,10 +24,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   )
+
 }

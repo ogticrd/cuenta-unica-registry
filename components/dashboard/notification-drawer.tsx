@@ -78,17 +78,17 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
   }
 
   const getNotificationBgColor = (type: Notification["type"], isRead: boolean) => {
-    if (isRead) return "bg-gray-50"
+    if (isRead) return "bg-gray-50 dark:bg-gray-800/50"
 
     switch (type) {
       case "success":
-        return "bg-green-50 border-l-4 border-green-500"
+        return "bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500"
       case "warning":
-        return "bg-orange-50 border-l-4 border-orange-500"
+        return "bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500"
       case "reminder":
-        return "bg-blue-50 border-l-4 border-blue-500"
+        return "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500"
       default:
-        return "bg-blue-50 border-l-4 border-primary"
+        return "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary dark:border-blue-400"
     }
   }
 
@@ -99,20 +99,20 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
   return (
     <>
       {/* Overlay with fade animation */}
-      <div 
+      <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-40 animate-in fade-in duration-300`}
-        onClick={onClose} 
+        onClick={onClose}
       />
 
       {/* Drawer with slide animation */}
-      <div className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl z-50 animate-in slide-in-from-right duration-300 ease-out">
+      <div className="fixed right-0 top-0 h-full w-96 bg-white dark:bg-background shadow-xl z-50 animate-in slide-in-from-right duration-300 ease-out border-l border-transparent dark:border-border">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 animate-in fade-in slide-in-from-top duration-500 delay-150">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-border animate-in fade-in slide-in-from-top duration-500 delay-150">
           <div className="flex items-center space-x-3">
-            <Bell size={24} className="text-primary" />
+            <Bell size={24} className="text-primary dark:text-blue-400" />
             <div>
-              <h2 className="text-lg font-semibold text-primary">Notificaciones</h2>
-              {unreadCount > 0 && <p className="text-sm text-gray-600">{unreadCount} sin leer</p>}
+              <h2 className="text-lg font-semibold text-primary dark:text-white">Notificaciones</h2>
+              {unreadCount > 0 && <p className="text-sm text-gray-600 dark:text-gray-400">{unreadCount} sin leer</p>}
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={onClose} className="p-2 hover:bg-accent-100 hover:scale-110 transition-all duration-200">
@@ -121,10 +121,10 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
         </div>
 
         {/* Actions */}
-        <div className="p-4 border-b border-gray-200 animate-in fade-in slide-in-from-top duration-500 delay-300">
+        <div className="p-4 border-b border-gray-200 dark:border-border animate-in fade-in slide-in-from-top duration-500 delay-300">
           <div className="flex space-x-2">
             <Button variant="outline" size="sm"
-              className="border-secondary text-secondary hover:bg-secondary hover:text-white bg-transparent hover:scale-105 transition-all duration-200">
+              className="border-secondary text-secondary dark:border-blue-400 dark:text-blue-400 hover:bg-secondary dark:hover:bg-blue-400 hover:text-white dark:hover:text-blue-900 bg-transparent hover:scale-105 transition-all duration-200">
               Marcar todas como leídas
             </Button>
           </div>
@@ -142,9 +142,8 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
               notifications.map((notification, index) => (
                 <div
                   key={notification.id}
-                  className={`p-4 rounded-lg cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-in slide-in-from-right fade-in ${
-                    getNotificationBgColor(notification.type, notification.isRead)
-                  }`}
+                  className={`p-4 rounded-lg cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-in slide-in-from-right fade-in ${getNotificationBgColor(notification.type, notification.isRead)
+                    }`}
                   style={{
                     animationDelay: `${400 + index * 100}ms`,
                     animationDuration: '400ms'
@@ -157,7 +156,7 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <h3
-                          className={`text-sm font-semibold ${notification.isRead ? "text-gray-700" : "text-gray-900"}`}
+                          className={`text-sm font-semibold ${notification.isRead ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"}`}
                         >
                           {notification.title}
                         </h3>
@@ -166,11 +165,11 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
                         )}
                       </div>
                       <p
-                        className={`text-sm leading-relaxed ${notification.isRead ? "text-gray-600" : "text-gray-800"}`}
+                        className={`text-sm leading-relaxed ${notification.isRead ? "text-gray-600 dark:text-gray-400" : "text-gray-800 dark:text-gray-300"}`}
                       >
                         {notification.message}
                       </p>
-                      <p className="text-xs text-gray-500 mt-2">{notification.time}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{notification.time}</p>
                     </div>
                   </div>
                 </div>
@@ -180,7 +179,7 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 animate-in fade-in slide-in-from-bottom duration-500 delay-700">
+        <div className="p-4 border-t border-gray-200 dark:border-border animate-in fade-in slide-in-from-bottom duration-500 delay-700">
           <Button variant="outline" className="w-full text-sm bg-transparent hover:scale-105 transition-transform duration-200">
             Ver todas las notificaciones
           </Button>

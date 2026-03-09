@@ -63,28 +63,28 @@ export function Footer() {
           </div>
         </div>
       </footer>
-      <div className="bg-white">
-        <div className="container mx-auto p-4 bg-white">
+      <div className="bg-white dark:bg-background">
+        <div className="container mx-auto p-4 bg-white dark:bg-background border-t border-gray-100 dark:border-border">
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-3">
-              <p className="text-xs text-primary">© 2025 Todos los Derechos Reservados. Desarrollado por</p>
+              <p className="text-xs text-primary dark:text-gray-400">© 2025 Todos los Derechos Reservados. Desarrollado por</p>
               <Image src="/images/ogtic-logo.png" alt="OGTIC" width={60} height={20} />
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-xs font-bold text-primary font-medium">SÍGUENOS</span>
+              <span className="text-xs font-bold text-primary dark:text-gray-300 font-medium">SÍGUENOS</span>
               <div className="flex space-x-2">
-                <Link href="#" className="text-primary hover:text-primary transition-colors">
+                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
                   <Facebook size={16} />
                 </Link>
-                <Link href="#" className="text-primary hover:text-primary transition-colors">
+                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
                   <Youtube size={16} />
                 </Link>
-                <Link href="#" className="text-primary hover:text-primary transition-colors">
+                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
                   <Twitter size={16} />
                 </Link>
-                <Link href="#" className="text-primary hover:text-primary transition-colors">
+                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
                   <Instagram size={16} />
                 </Link>
               </div>

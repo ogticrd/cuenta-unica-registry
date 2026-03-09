@@ -30,7 +30,7 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
         md:sticky md:top-16 md:z-auto
         w-72 h-full md:h-[calc(100vh-4rem)]
         md:flex-shrink-0
-        bg-white border-r border-gray-200
+        bg-white dark:bg-background border-r border-gray-200 dark:border-border
         transform transition-transform duration-300 ease-in-out
         overflow-y-auto
       `}>
@@ -40,26 +40,26 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
             variant="ghost"
             size="sm"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 hover:bg-gray-100"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
           >
-            <X size={20} className="text-gray-600" />
+            <X size={20} className="text-gray-600 dark:text-gray-400" />
           </Button>
         </div>
 
         {/* User Profile Section */}
-        <div className="p-4 md:p-6 border-b border-gray-200 md:border-b-0">
+        <div className="p-4 md:p-6 border-b border-gray-200 dark:border-border md:border-b-0">
           <div className="flex items-center space-x-3">
             <Avatar className="relative overflow-visible" size="lg">
               {/* <AvatarImage
                 src="https://github.com/evilrabbit.png"
                 alt="@evilrabbit"
               /> */}
-              <AvatarFallback>{user?.name?.trim()?.[0]?.toUpperCase()}</AvatarFallback>
-              <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+              <AvatarFallback className="dark:bg-gray-800">{user?.name?.trim()?.[0]?.toUpperCase()}</AvatarFallback>
+              <AvatarBadge className="bg-green-600 dark:bg-green-500 border-white dark:border-gray-900" />
             </Avatar>
             <div className="min-w-0">
-              <h3 className="font-extrabold text-primary truncate">{user?.name}</h3>
-              <p className="text-sm text-gray-600">{user?.cedula}</p>
+              <h3 className="font-extrabold text-primary dark:text-white truncate">{user?.name}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{user?.cedula}</p>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
                   <Link
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${isActive ? "text-primary" : "text-gray-700 hover:bg-gray-50"
+                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${isActive ? "text-primary dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20" : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       }`}
                   >
                     <Icon size={20} />
@@ -89,14 +89,14 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
         </nav>
 
         {/* Logout Button */}
-        <div className="p-2 md:p-4 border-t border-gray-200 md:border-t-0">
+        <div className="p-2 md:p-4 border-t border-gray-200 dark:border-border md:border-t-0">
           <Button
             variant="ghost"
             onClick={() => {
               logout()
               setIsMobileMenuOpen(false)
             }}
-            className="w-full justify-start text-secondary hover:text-secondary hover:bg-blue-50"
+            className="w-full justify-start text-secondary dark:text-blue-400 hover:text-secondary dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
           >
             <LogOut size={20} className="mr-3" />
             Cerrar la sesión

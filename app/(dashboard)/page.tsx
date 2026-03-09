@@ -179,7 +179,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Actividad Reciente"
             action={
-              <ActionButton variant="secondary" onClick={() => window.location.href = '/dashboard/history'}>
+              <ActionButton variant="secondary" onClick={() => window.location.href = '/history'}>
                 Ver todo
               </ActionButton>
             }
@@ -208,32 +208,32 @@ export default function DashboardPage() {
             }
           >
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                 <div className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-green-600" />
+                  <CheckCircle size={20} className="text-green-600 dark:text-green-400" />
                   <div>
-                    <p className="text-sm font-medium text-green-900">Autenticación de dos factores</p>
-                    <p className="text-xs text-green-700">Activada - Correo electrónico</p>
+                    <p className="text-sm font-medium text-green-900 dark:text-green-300">Autenticación de dos factores</p>
+                    <p className="text-xs text-green-700 dark:text-green-400">Activada - Correo electrónico</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center space-x-3">
-                  <Info size={20} className="text-blue-600" />
+                  <Info size={20} className="text-blue-600 dark:text-blue-400" />
                   <div>
-                    <p className="text-sm font-medium text-blue-900">Contraseña</p>
-                    <p className="text-xs text-blue-700">Última actualización: Hace 2 meses</p>
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-300">Contraseña</p>
+                    <p className="text-xs text-blue-700 dark:text-blue-400">Última actualización: Hace 2 meses</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
                 <div className="flex items-center space-x-3">
-                  <AlertTriangle size={20} className="text-orange-600" />
+                  <AlertTriangle size={20} className="text-orange-600 dark:text-orange-400" />
                   <div>
-                    <p className="text-sm font-medium text-orange-900">Passkeys</p>
-                    <p className="text-xs text-orange-700">Recomendado configurar</p>
+                    <p className="text-sm font-medium text-orange-900 dark:text-orange-300">Passkeys</p>
+                    <p className="text-xs text-orange-700 dark:text-orange-400">Recomendado configurar</p>
                   </div>
                 </div>
               </div>
@@ -259,14 +259,14 @@ export default function DashboardPage() {
         {/* Important Notifications */}
         <DashboardCard title="Notificaciones Importantes">
           <div className="space-y-4">
-            <div className="flex items-start space-x-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <AlertTriangle size={20} className="text-orange-600 mt-0.5" />
+            <div className="flex items-start space-x-4 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+              <AlertTriangle size={20} className="text-orange-600 dark:text-orange-400 mt-0.5" />
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-orange-900 mb-1">
+                <h4 className="text-sm font-medium text-orange-900 dark:text-orange-300 mb-1">
                   Revisa tu seguridad
                 </h4>
-                <p className="text-sm text-orange-800 mb-2">
-                  Te recomendamos activar la autenticacion de dos factores y configurar un Passkey para mayor proteccion de tu cuenta.
+                <p className="text-sm text-orange-800 dark:text-orange-400 mb-2">
+                  Te recomendamos activar la autenticacion de dos factores y configurar un Passkey para mayor protección de tu cuenta.
                 </p>
                 <ActionButton variant="primary" onClick={() => window.location.href = '/settings'}>
                   Ir a Seguridad
@@ -274,13 +274,13 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <Info size={20} className="text-blue-600 mt-0.5" />
+            <div className="flex items-start space-x-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <Info size={20} className="text-blue-600 dark:text-blue-400 mt-0.5" />
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-blue-900 mb-1">
+                <h4 className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
                   Nueva Funcionalidad Disponible
                 </h4>
-                <p className="text-sm text-blue-800 mb-2">
+                <p className="text-sm text-blue-800 dark:text-blue-400 mb-2">
                   Ahora puedes usar Passkeys para acceder sin contraseña. Configúralo para mayor seguridad.
                 </p>
                 <ActionButton variant="secondary" onClick={() => window.location.href = '/settings'}>
