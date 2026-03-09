@@ -21,7 +21,7 @@ export function QuickActionCard({ title, description, icon, href, badge }: Quick
 
   return (
     <Link href={href} className="block group">
-      <div className="bg-white dark:bg-background rounded-lg border border-gray-200 dark:border-border p-6 hover:shadow-md dark:hover:shadow-gray-800/30 transition-shadow duration-200 h-full">
+      <div className="bg-card text-card-foreground rounded-lg border border-gray-200 dark:border-border p-6 hover:shadow-md dark:hover:shadow-gray-800/30 transition-shadow duration-200 h-full">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="text-primary dark:text-blue-400 group-hover:text-primary/80 dark:group-hover:text-blue-300 transition-colors">

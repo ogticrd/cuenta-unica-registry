@@ -89,7 +89,7 @@ export default function AboutPage() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-background rounded-xl p-6 border border-gray-200 dark:border-border text-center hover:shadow-lg dark:hover:shadow-gray-800/30 transition-shadow"
+              className="bg-card text-card-foreground rounded-xl p-6 border border-gray-200 dark:border-border text-center hover:shadow-lg dark:hover:shadow-gray-800/30 transition-shadow"
             >
               <div className="flex justify-center mb-3 text-blue-600 dark:text-blue-400">{stat.icon}</div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{stat.number}</div>
@@ -98,7 +98,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div className="bg-white dark:bg-background rounded-2xl p-8 border border-gray-200 dark:border-border">
+        <div className="bg-card text-card-foreground rounded-2xl p-8 border border-gray-200 dark:border-border">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">¿Cómo funciona tu Cuenta Única?</h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -109,7 +109,7 @@ export default function AboutPage() {
           <YouTubeVideo title="Cuenta Única Ciudadana - Guía Completa de Funcionalidades" />
         </div>
 
-        <div className="bg-white dark:bg-background rounded-2xl p-8 border border-gray-200 dark:border-border">
+        <div className="bg-card text-card-foreground rounded-2xl p-8 border border-gray-200 dark:border-border">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Funcionalidades Principales</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {features.map((feature, index) => (

@@ -31,17 +31,6 @@ export default function NotFound() {
             </p>
           </div>
 
-          {/* Government Seal */}
-          <div className="mb-8">
-            <Image
-              src="/images/government-seal.png"
-              alt="Sello Gubernamental"
-              width={120}
-              height={120}
-              className="mx-auto opacity-20"
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button

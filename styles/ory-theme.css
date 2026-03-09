@@ -254,14 +254,14 @@ button.text-button-link-brand-brand {
 
 /* ===== Dark Mode Overrides ===== */
 .dark {
-  --ui-white: var(--background);
-  --ui-black: var(--foreground);
-  --interface-background-brand-primary: var(--primary);
-  --interface-foreground-brand-primary: var(--primary-foreground);
+  --ui-white: hsl(var(--card));
+  --ui-black: hsl(var(--foreground));
+  --interface-background-brand-primary: hsl(var(--primary));
+  --interface-foreground-brand-primary: hsl(var(--primary-foreground));
 }
 
 .dark .ory-elements>div>div {
-  background-color: var(--card) !important;
+  background-color: hsl(var(--card)) !important;
   border: 1px solid #1e293b !important;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
@@ -275,24 +275,24 @@ button.text-button-link-brand-brand {
 }
 
 .dark .ory-elements>div>form {
-  background-color: var(--card) !important;
+  background-color: hsl(var(--card)) !important;
   /* border: 1px solid #485468 !important; */
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: none !important;
 }
 
 .dark .ory-elements>div>form>div {
-  background-color: var(--card) !important;
+  background-color: transparent !important;
   border: 1px solid #1e293b !important;
 }
 
 .dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
-  background-color: var(--background) !important;
-  color: var(--foreground) !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
   border-color: #1e293b !important;
 }
 
 .dark .ory-elements label {
-  color: var(--foreground) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 .dark .text-input-foreground-primary span {
@@ -334,19 +334,19 @@ button.text-button-link-brand-brand {
 
 /* ===== OTP Input Dark Mode Overrides ===== */
 .dark .ory-elements input[data-input-otp="true"] {
-  color: var(--foreground) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 .dark .ory-elements div.bg-input-background-default {
-  background-color: var(--background) !important;
+  background-color: hsl(var(--background)) !important;
 }
 
 .dark .ory-elements div.border-input-border-default {
-  border-color: var(--border) !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 .dark .ory-elements div.text-input-foreground-primary {
-  color: var(--foreground) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 .dark .ory-elements div.border-input-border-focus {

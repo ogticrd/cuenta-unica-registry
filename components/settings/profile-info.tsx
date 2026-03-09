@@ -180,15 +180,15 @@ export function ProfileInfo() {
                                 sincronizada con las bases de datos gubernamentales.
                             </p>
                             <div className="flex flex-wrap gap-2">
-                                <Badge variant="outline" className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 bg-white dark:bg-background">
+                                <Badge variant="outline" className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 bg-card">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     JCE - Junta Central Electoral
                                 </Badge>
-                                <Badge variant="outline" className="text-green-600 dark:text-green-400 border-green-200 dark:border-green-800 bg-white dark:bg-background">
+                                <Badge variant="outline" className="text-green-600 dark:text-green-400 border-green-200 dark:border-green-800 bg-card">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     TSS - Tesorería de la Seguridad Social
                                 </Badge>
-                                <Badge variant="outline" className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800 bg-white dark:bg-background">
+                                <Badge variant="outline" className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800 bg-card">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     DGII - Dirección General de Impuestos Internos
                                 </Badge>

@@ -72,7 +72,7 @@ export default function SupportPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-background rounded-lg shadow-sm p-8 border border-transparent dark:border-border">
+        <div className="bg-card text-card-foreground rounded-lg shadow-sm p-8 border border-transparent dark:border-border">
           <h2 className="text-xl font-bold text-primary dark:text-blue-400 mb-6">
             Preguntas frecuentes <span className="text-accent dark:text-red-400">(FAQs)</span>
           </h2>
