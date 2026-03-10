@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, User, HelpCircle, Info, Shield, Clock, LogOut, X } from 'lucide-react'
+import { Home, User, HelpCircle, Info, Shield, Clock, LogOut, X, Loader2 } from 'lucide-react'
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { DashboardSidebarProps } from './dashboard-sidebar-props'
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar"
 
 export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: DashboardSidebarProps) {
-  const { user, logout } = useAuth()
+  const { user, logout, isLoggingOut } = useAuth()
   const pathname = usePathname()
   console.log(user)
   return (
@@ -96,10 +96,15 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
               logout()
               setIsMobileMenuOpen(false)
             }}
-            className="w-full justify-start text-secondary dark:text-blue-400 hover:text-secondary dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+            disabled={isLoggingOut}
+            className="w-full justify-start text-secondary dark:text-blue-400 hover:text-secondary dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50"
           >
-            <LogOut size={20} className="mr-3" />
-            Cerrar la sesión
+            {isLoggingOut ? (
+              <Loader2 size={20} className="mr-3 animate-spin" />
+            ) : (
+              <LogOut size={20} className="mr-3" />
+            )}
+            {isLoggingOut ? "Cerrando sesión..." : "Cerrar la sesión"}
           </Button>
         </div>
       </aside>

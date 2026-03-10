@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface User {
   id: string
@@ -19,10 +20,12 @@ interface User {
 
 interface AuthContextType {
   user: User | null
+  session: Record<string, any> | null
   login: (identifier: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
   refreshSession: () => Promise<void>
   isLoading: boolean
+  isLoggingOut: boolean
   isAuthenticated: boolean
 }
 
@@ -65,7 +68,9 @@ function mapIdentityToUser(identity: {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Record<string, any> | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
 
   const refreshSession = useCallback(async () => {
@@ -77,12 +82,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (data.isAuthenticated && data.identity) {
         setUser(mapIdentityToUser(data.identity))
+        setSession(data.session ? { ...data.session, other_sessions: data.otherSessions || [] } : null)
       } else {
         setUser(null)
+        setSession(null)
       }
     } catch (error) {
       console.error("Failed to fetch session:", error)
       setUser(null)
+      setSession(null)
     } finally {
       setIsLoading(false)
     }
@@ -107,6 +115,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = async () => {
+    if (isLoggingOut) return
+    setIsLoggingOut(true)
+    const toastId = toast.loading("Cerrando sesión...")
     try {
       const response = await fetch("/api/ory/logout", {
         method: "POST",
@@ -115,6 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json()
 
       setUser(null)
+      toast.success("Sesión cerrada correctamente", { id: toastId })
 
       if (data.redirect_to) {
         router.push(data.redirect_to)
@@ -124,7 +136,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Logout error:", error)
       setUser(null)
+      toast.error("Error al cerrar sesión", { id: toastId })
       router.push("/login")
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
@@ -132,10 +147,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        session,
         login,
         logout,
         refreshSession,
         isLoading,
+        isLoggingOut,
         isAuthenticated: user !== null,
       }}
     >

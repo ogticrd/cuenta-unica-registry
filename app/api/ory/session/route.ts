@@ -21,6 +21,14 @@ export async function GET() {
             cookie,
         })
 
+        let otherSessions: any[] = []
+        try {
+            const { data } = await oryClient.listMySessions({ cookie })
+            otherSessions = data
+        } catch (e) {
+            console.error("[/api/ory/session] Could not fetch other sessions:", e)
+        }
+
         return NextResponse.json({
             isAuthenticated: true,
             identity: {
@@ -28,8 +36,8 @@ export async function GET() {
                 traits: session.identity?.traits,
                 schema_id: session.identity?.schema_id,
             },
-            session_id: session.id,
-            expires_at: session.expires_at,
+            session: session, // Devolvemos la sesión actual
+            otherSessions: otherSessions, // Devolvemos las demás sesiones activas
         })
     } catch (error: unknown) {
         // 401/403 means no valid session — not an error, just unauthenticated

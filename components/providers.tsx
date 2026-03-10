@@ -1,6 +1,6 @@
 "use client"
 
-import { SessionProvider } from "@ory/elements-react/client"
+// import { SessionProvider } from "@ory/elements-react/client"
 import { AuthProvider } from "@/lib/auth-context"
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -11,11 +11,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             defaultTheme="light"
             disableTransitionOnChange
         >
-            <SessionProvider>
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
-            </SessionProvider>
+            {/* <SessionProvider> */}
+            <AuthProvider>
+                {children}
+            </AuthProvider>
+            {/* </SessionProvider> */}
         </ThemeProvider>
     )
 }

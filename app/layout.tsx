@@ -6,6 +6,7 @@ import "./globals.css"
 import "@ory/elements-react/theme/styles.css"
 import "../styles/ory-theme.css"
 import { Providers } from "@/components/providers"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   )

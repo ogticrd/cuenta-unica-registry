@@ -260,6 +260,10 @@ button.text-button-link-brand-brand {
   --interface-foreground-brand-primary: hsl(var(--primary-foreground));
 }
 
+.dark .text-input-foreground-primary {
+  color: #fff !important;
+}
+
 .dark .ory-elements>div>div {
   background-color: hsl(var(--card)) !important;
   border: 1px solid #1e293b !important;

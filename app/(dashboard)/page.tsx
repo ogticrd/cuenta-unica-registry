@@ -10,7 +10,24 @@ import { useAuth } from "@/lib/auth-context"
 import { User, Shield, Clock, Bell, Smartphone, Globe, CheckCircle, AlertTriangle, Info, Calendar, Activity, Lock } from 'lucide-react'
 
 export default function DashboardPage() {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
+  console.log(session)
+  console.log(user)
+  // -- Dynamic Session Data --
+  let lastAccessStr = "Cargando..."
+  if (session?.authenticated_at) {
+    const authDate = new Date(session.authenticated_at)
+    lastAccessStr = authDate.toLocaleString("es-DO", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    })
+  }
+
+  const isVerified = session?.identity?.verifiable_addresses?.some((addr: any) => addr.verified === true) || false
+  const devicesCount = session ? 1 + (session.other_sessions?.length || 0) : 1
+  const isAal2 = session?.authenticator_assurance_level === "aal2"
+  const securityLevel = isAal2 ? "Alto" : "Estándar"
+  const securityDesc = isAal2 ? "2FA activado" : "Contraseña"
 
   const quickActions = [
     {
@@ -113,11 +130,11 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm">
                 <div className="flex items-center space-x-2">
                   <Calendar size={16} />
-                  <span>Último acceso: Hoy, 2:30 PM</span>
+                  <span>Último acceso: {lastAccessStr}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Lock size={16} />
-                  <span>Cuenta verificada</span>
+                  <span>{isVerified ? "Cuenta verificada" : "Cuenta no verificada"}</span>
                 </div>
               </div>
             </div>
@@ -133,9 +150,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <StatsCard
             title="Dispositivos Conectados"
-            value="4"
+            value={devicesCount.toString()}
             icon={<Smartphone size={24} />}
-            description="Dispositivos activos"
+            description={devicesCount === 1 ? "Dispositivo activo" : "Dispositivos activos"}
           />
           <StatsCard
             title="Servicios Utilizados"
@@ -148,13 +165,13 @@ export default function DashboardPage() {
             title="Acciones Realizadas"
             value="8"
             icon={<Activity size={24} />}
-            description="Ultimos 30 dias"
+            description="Últimos 30 días"
           />
           <StatsCard
             title="Nivel de Seguridad"
-            value="Alto"
+            value={securityLevel}
             icon={<Shield size={24} />}
-            description="2FA activado"
+            description={securityDesc}
           />
         </div>
 

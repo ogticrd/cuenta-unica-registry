@@ -7,12 +7,15 @@ import { DeviceItem } from "@/components/dashboard/device-item"
 import { PortalItem } from "@/components/dashboard/portal-item"
 import { UnlinkDeviceModal } from "@/components/dashboard/unlink-device-modal"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
+import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
 
 export default function HistoryPage() {
+  const { session, refreshSession } = useAuth()
   const [unlinkDeviceModal, setUnlinkDeviceModal] = useState<{
     isOpen: boolean
     deviceName: string
-    deviceId: number | null
+    deviceId: string | null
     isLoading: boolean
   }>({
     isOpen: false,
@@ -33,44 +36,39 @@ export default function HistoryPage() {
     isLoading: false,
   })
 
-  const devices = [
-    {
-      id: 1,
-      device: "Mac OS X100 / Chrome / 108.00",
-      ipAddress: "190.122.100.10",
-      location: "Santo Domingo Este, Rep. Dom.",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
-      provider: "Google",
-      status: { text: "SESIÓN ACTIVA", variant: "current" as const },
-    },
-    {
-      id: 2,
-      device: "Mac OS X100 / Chrome / 108.00",
-      ipAddress: "190.122.100.10",
-      location: "Santo Domingo Este, Rep. Dom.",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
-      provider: "Google",
-      status: { text: "ACTIVO", variant: "active" as const },
-    },
-    {
-      id: 3,
-      device: "Mac OS X100 / Chrome / 108.00",
-      ipAddress: "190.122.100.10",
-      location: "Santo Domingo Este, Rep. Dom.",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
-      provider: "Google",
-      status: { text: "ACTIVO", variant: "active" as const },
-    },
-    {
-      id: 4,
-      device: "Mac OS X100 / Chrome / 108.00",
-      ipAddress: "190.122.100.10",
-      location: "Santo Domingo Este, Rep. Dom.",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
-      provider: "Google",
-      status: { text: "ACTIVO", variant: "active" as const },
-    },
-  ]
+  // -- Dynamic Devices from Ory Session --
+  const allSessions: any[] = []
+  if (session) {
+    allSessions.push(session)
+    if (session.other_sessions && Array.isArray(session.other_sessions)) {
+      allSessions.push(...session.other_sessions)
+    }
+  }
+
+  const dynamicDevices = allSessions.map((sess: any, index: number) => {
+    const dev = sess.devices?.[0] || {}
+    const isCurrentSession = index === 0
+
+    return {
+      id: sess.id || `fallback-${index}`, // The REAL SESSION ID
+      device: dev.user_agent || "Dispositivo Desconocido",
+      ipAddress: dev.ip_address || "IP Desconocida",
+      location: dev.location || "Ubicación Desconocida",
+      lastAccess: sess.authenticated_at
+        ? new Date(sess.authenticated_at).toLocaleString("es-DO")
+        : "Reciente",
+      expirationDate: sess.expires_at
+        ? new Date(sess.expires_at).toLocaleString("es-DO")
+        : "Indefinido",
+      isCurrentSession,
+      status: isCurrentSession
+        ? { text: "SESIÓN ACTIVA", variant: "current" as const }
+        : { text: "ACTIVO", variant: "active" as const }
+    }
+  })
+
+  // Fallback to empty state if array is empty (instead of static data)
+  const devices = dynamicDevices;
 
   const portals = [
     {
@@ -100,7 +98,7 @@ export default function HistoryPage() {
     },
   ]
 
-  const handleOpenUnlinkDeviceModal = (deviceId: number, deviceName: string) => {
+  const handleOpenUnlinkDeviceModal = (deviceId: string, deviceName: string) => {
     setUnlinkDeviceModal({
       isOpen: true,
       deviceName,
@@ -119,17 +117,29 @@ export default function HistoryPage() {
   }
 
   const handleConfirmUnlinkDevice = async () => {
+    if (!unlinkDeviceModal.deviceId) return
+
     setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: true }))
+    const toastId = toast.loading("Desvinculando dispositivo...")
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log("Desvincular dispositivo:", unlinkDeviceModal.deviceId)
+      const response = await fetch(`/api/ory/sessions/${unlinkDeviceModal.deviceId}`, {
+        method: "DELETE",
+      })
 
-      // Close modal after successful unlink
+      if (!response.ok) {
+        throw new Error("Failed to unlink device")
+      }
+
+      toast.success("Dispositivo desvinculado correctamente", { id: toastId })
+
+      // Refresh context to reload the devices list
+      await refreshSession()
+
       handleCloseUnlinkDeviceModal()
     } catch (error) {
       console.error("Error al desvincular dispositivo:", error)
+      toast.error("Ocurrió un error al desvincular el dispositivo", { id: toastId })
       setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }))
     }
   }
@@ -177,18 +187,24 @@ export default function HistoryPage() {
           {/* Dispositivos Section */}
           <SecuritySection title="Dispositivos">
             <div className="space-y-0">
-              {devices.map((device) => (
-                <DeviceItem
-                  key={device.id}
-                  device={device.device}
-                  ipAddress={device.ipAddress}
-                  location={device.location}
-                  lastAccess={device.lastAccess}
-                  provider={device.provider}
-                  status={device.status}
-                  onUnlink={() => handleOpenUnlinkDeviceModal(device.id, device.device)}
-                />
-              ))}
+              {devices.length > 0 ? (
+                devices.map((device: any) => (
+                  <DeviceItem
+                    key={device.id}
+                    device={device.device}
+                    ipAddress={device.ipAddress}
+                    location={device.location}
+                    lastAccess={device.lastAccess}
+                    expirationDate={device.expirationDate}
+                    status={device.status}
+                    onUnlink={device.isCurrentSession ? undefined : () => handleOpenUnlinkDeviceModal(device.id, device.device)}
+                  />
+                ))
+              ) : (
+                <div className="p-4 text-sm text-gray-500 text-center">
+                  No se han detectado dispositivos activos.
+                </div>
+              )}
             </div>
           </SecuritySection>
 
