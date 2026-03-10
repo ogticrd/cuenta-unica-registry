@@ -118,23 +118,32 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between">
+        <div className="py-6 sm:py-8 border-b dark:border-border">
+          <div className="flex flex-col gap-4">
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-bold mb-2">
-                ¡Bienvenido, {user?.name}!
+              <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">
+                ¡Bienvenido, <span className="text-secondary dark:text-blue-400">{user?.name}</span>!
               </h1>
-              <p className="text-blue-100 mb-4">
+              <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-6">
                 Administra tu identidad digital, revisa tu seguridad y accede a los servicios del Estado desde un solo lugar.
               </p>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm">
-                <div className="flex items-center space-x-2">
-                  <Calendar size={16} />
-                  <span>Último acceso: {lastAccessStr}</span>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 bg-secondary/10 px-3 py-1.5 rounded-full dark:bg-secondary/20">
+                  <Calendar size={16} className="text-secondary" />
+                  <span className="font-medium text-secondary">Último acceso: {lastAccessStr}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Lock size={16} />
-                  <span>{isVerified ? "Cuenta verificada" : "Cuenta no verificada"}</span>
+                <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
+                  {isVerified ? (
+                    <>
+                      <CheckCircle size={16} className="text-green-600 dark:text-green-400" />
+                      <span className="font-medium text-green-600 dark:text-green-400">Cuenta verificada</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={16} className="text-orange-600 dark:text-orange-400" />
+                      <span className="font-medium text-orange-700 dark:text-orange-400">Cuenta no verificada</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -154,7 +163,6 @@ export default function DashboardPage() {
             value="12"
             icon={<Globe size={24} />}
             description="Este mes"
-            trend={{ value: "+3", isPositive: true }}
           />
           <StatsCard
             title="Acciones Realizadas"
@@ -220,32 +228,38 @@ export default function DashboardPage() {
             }
           >
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-green-600 dark:text-green-400" />
+              <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl border border-transparent dark:border-border/50 hover:bg-secondary/10 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 p-2 rounded-full">
+                    <CheckCircle size={18} />
+                  </div>
                   <div>
-                    <p className="text-sm font-medium text-green-900 dark:text-green-300">Autenticación de dos factores</p>
-                    <p className="text-xs text-green-700 dark:text-green-400">Activada - Correo electrónico</p>
+                    <p className="text-sm font-bold text-foreground">Autenticación de dos factores</p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">Activada - Correo electrónico</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center space-x-3">
-                  <Info size={20} className="text-blue-600 dark:text-blue-400" />
+              <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl border border-transparent dark:border-border/50 hover:bg-secondary/10 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 p-2 rounded-full">
+                    <Info size={18} />
+                  </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-900 dark:text-blue-300">Contraseña</p>
-                    <p className="text-xs text-blue-700 dark:text-blue-400">Última actualización: Hace 2 meses</p>
+                    <p className="text-sm font-bold text-foreground">Contraseña</p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">Última actualización: Hace 2 meses</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                <div className="flex items-center space-x-3">
-                  <AlertTriangle size={20} className="text-orange-600 dark:text-orange-400" />
+              <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl border border-transparent dark:border-border/50 hover:bg-secondary/10 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 p-2 rounded-full">
+                    <AlertTriangle size={18} />
+                  </div>
                   <div>
-                    <p className="text-sm font-medium text-orange-900 dark:text-orange-300">Passkeys</p>
-                    <p className="text-xs text-orange-700 dark:text-orange-400">Recomendado configurar</p>
+                    <p className="text-sm font-bold text-foreground">Passkeys</p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">Recomendado configurar</p>
                   </div>
                 </div>
               </div>
@@ -271,14 +285,16 @@ export default function DashboardPage() {
         {/* Important Notifications */}
         <DashboardCard title="Notificaciones Importantes">
           <div className="space-y-4">
-            <div className="flex items-start space-x-4 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-              <AlertTriangle size={20} className="text-orange-600 dark:text-orange-400 mt-0.5" />
-              <div className="flex-1">
-                <h4 className="text-sm font-medium text-orange-900 dark:text-orange-300 mb-1">
+            <div className="flex items-start gap-4 p-5 bg-secondary/5 rounded-2xl border border-transparent dark:border-border/50 transition-colors hover:bg-secondary/10">
+              <div className="bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 p-2.5 rounded-full flex-shrink-0">
+                <AlertTriangle size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-base font-bold text-foreground mb-1">
                   Revisa tu seguridad
                 </h4>
-                <p className="text-sm text-orange-800 dark:text-orange-400 mb-2">
-                  Te recomendamos activar la autenticacion de dos factores y configurar un Passkey para mayor protección de tu cuenta.
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Te recomendamos activar la autenticación de dos factores y configurar un Passkey para mayor protección de tu cuenta.
                 </p>
                 <ActionButton variant="primary" onClick={() => window.location.href = '/settings'}>
                   Ir a Seguridad
@@ -286,16 +302,22 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex items-start space-x-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <Info size={20} className="text-blue-600 dark:text-blue-400 mt-0.5" />
-              <div className="flex-1">
-                <h4 className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
+            <div className="flex items-start gap-4 p-5 bg-secondary/5 rounded-2xl border border-transparent dark:border-border/50 transition-colors hover:bg-secondary/10">
+              <div className="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 p-2.5 rounded-full flex-shrink-0">
+                <Info size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-base font-bold text-foreground mb-1">
                   Nueva Funcionalidad Disponible
                 </h4>
-                <p className="text-sm text-blue-800 dark:text-blue-400 mb-2">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   Ahora puedes usar Passkeys para acceder sin contraseña. Configúralo para mayor seguridad.
                 </p>
-                <ActionButton variant="secondary" onClick={() => window.location.href = '/settings'}>
+                <ActionButton
+                  variant="secondary"
+                  onClick={() => window.location.href = '/settings'}
+                  className="hover:bg-secondary/10"
+                >
                   Configurar Ahora
                 </ActionButton>
               </div>

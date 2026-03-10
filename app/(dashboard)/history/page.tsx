@@ -197,7 +197,7 @@ export default function HistoryPage() {
 
         <div className="space-y-12">
           {/* Dispositivos Section */}
-          <SecuritySection title="Dispositivos vinculados" hasInfoIcon={true}>
+          <SecuritySection title="Dispositivos vinculados">
             <div className="space-y-0">
               {devices.length > 0 ? (
                 devices.map((device: any) => (

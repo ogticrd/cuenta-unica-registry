@@ -5,32 +5,18 @@ interface StatsCardProps {
   value: string | number
   icon: ReactNode
   description?: string
-  trend?: {
-    value: string
-    isPositive: boolean
-  }
 }
 
-export function StatsCard({ title, value, icon, description, trend }: StatsCardProps) {
+export function StatsCard({ title, value, icon, description }: StatsCardProps) {
   return (
-    <div className="bg-card text-card-foreground rounded-lg border border-gray-200 dark:border-border p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{value}</p>
-          {description && <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>}
-          {trend && (
-            <div className="flex items-center mt-2">
-              <span className={`text-xs font-medium ${trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                {trend.isPositive ? '↗' : '↘'} {trend.value}
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="text-primary dark:text-blue-400 opacity-80">
-          {icon}
-        </div>
+    <div className="flex flex-col items-center justify-center p-5 bg-gray-50 dark:bg-card/50 rounded-2xl border border-transparent dark:border-border/50 text-center hover:bg-gray-100 dark:hover:bg-card/80 transition-colors">
+      <div className="text-secondary mb-3 bg-secondary/5 dark:bg-secondary/20 p-2.5 rounded-full">
+        {icon}
       </div>
+      <p className="text-3xl font-bold text-primary mb-1 tracking-tight dark:text-white">{value}</p>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">{title}</p>
+
+      {description && <p className="text-xs text-muted-foreground/80">{description}</p>}
     </div>
   )
 }
