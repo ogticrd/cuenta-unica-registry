@@ -1,6 +1,6 @@
 "use client"
 
-import { X, Bell, CheckCircle, AlertCircle, Info, Calendar } from 'lucide-react'
+import { X, Bell, CheckCircle, AlertTriangle, Info, Calendar } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -67,28 +67,28 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
   const getNotificationIcon = (type: Notification["type"]) => {
     switch (type) {
       case "success":
-        return <CheckCircle size={20} className="text-green-600" />
+        return <CheckCircle size={18} className="text-green-600 dark:text-green-400" />
       case "warning":
-        return <AlertCircle size={20} className="text-orange-600" />
+        return <AlertTriangle size={18} className="text-orange-600 dark:text-orange-400" />
       case "reminder":
-        return <Calendar size={20} className="text-blue-600" />
+        return <Calendar size={18} className="text-blue-600 dark:text-blue-400" />
       default:
-        return <Info size={20} className="text-primary" />
+        return <Info size={18} className="text-secondary" />
     }
   }
 
   const getNotificationBgColor = (type: Notification["type"], isRead: boolean) => {
-    if (isRead) return "bg-gray-50 dark:bg-gray-800/50"
+    if (isRead) return "bg-gray-50/50 dark:bg-card/30"
 
     switch (type) {
       case "success":
-        return "bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500"
+        return "bg-green-50/80 dark:bg-green-900/10"
       case "warning":
-        return "bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500"
+        return "bg-orange-50/80 dark:bg-orange-900/10"
       case "reminder":
-        return "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500"
+        return "bg-blue-50/80 dark:bg-blue-900/10"
       default:
-        return "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary dark:border-blue-400"
+        return "bg-secondary/5"
     }
   }
 
@@ -100,76 +100,77 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
     <>
       {/* Overlay with fade animation */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 animate-in fade-in duration-300`}
+        className={`fixed inset-0 bg-background/80 backdrop-blur-sm z-40 animate-in fade-in duration-300`}
         onClick={onClose}
       />
 
       {/* Drawer with slide animation */}
-      <div className="fixed right-0 top-0 h-full w-96 bg-white dark:bg-background shadow-xl z-50 animate-in slide-in-from-right duration-300 ease-out border-l border-transparent dark:border-border">
+      <div className="fixed right-0 top-0 h-full w-full sm:w-[400px] bg-background shadow-2xl z-50 animate-in slide-in-from-right duration-300 ease-out border-l border-border flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-border animate-in fade-in slide-in-from-top duration-500 delay-150">
-          <div className="flex items-center space-x-3">
-            <Bell size={24} className="text-primary dark:text-blue-400" />
+        <div className="flex items-center justify-between p-6 pb-4 border-b border-border">
+          <div className="flex items-center gap-3">
+            <div className="bg-secondary/10 p-2 rounded-full">
+              <Bell size={20} className="text-secondary" />
+            </div>
             <div>
-              <h2 className="text-lg font-semibold text-primary dark:text-white">Notificaciones</h2>
-              {unreadCount > 0 && <p className="text-sm text-gray-600 dark:text-gray-400">{unreadCount} sin leer</p>}
+              <h2 className="text-lg font-bold text-foreground">Notificaciones</h2>
+              {unreadCount > 0 ? (
+                <p className="text-xs font-medium text-secondary mt-0.5">{unreadCount} nuevas sin leer</p>
+              ) : (
+                <p className="text-xs text-muted-foreground mt-0.5">Al día</p>
+              )}
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="p-2 hover:bg-accent-100 hover:scale-110 transition-all duration-200">
-            <X size={20} className="text-accent hover:rotate-90 transition-transform duration-200" />
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full text-muted-foreground hover:text-white">
+            <X size={20} />
           </Button>
         </div>
 
         {/* Actions */}
-        <div className="p-4 border-b border-gray-200 dark:border-border animate-in fade-in slide-in-from-top duration-500 delay-300">
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm"
-              className="border-secondary text-secondary dark:border-blue-400 dark:text-blue-400 hover:bg-secondary dark:hover:bg-blue-400 hover:text-white dark:hover:text-blue-900 bg-transparent hover:scale-105 transition-all duration-200">
-              Marcar todas como leídas
-            </Button>
-          </div>
+        <div className="px-6 py-3 border-b border-border flex justify-end">
+          <button className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">
+            Marcar todas como leídas
+          </button>
         </div>
 
         {/* Notifications List */}
-        <ScrollArea className="flex-1 h-[calc(100vh-180px)]">
-          <div className="p-4 space-y-3">
+        <ScrollArea className="flex-1">
+          <div className="p-4 space-y-2">
             {notifications.length === 0 ? (
-              <div className="text-center py-12 animate-in fade-in duration-500 delay-500">
-                <Bell size={48} className="text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No tienes notificaciones</p>
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="bg-secondary/5 p-4 rounded-full mb-4">
+                  <Bell size={32} className="text-muted-foreground/50" />
+                </div>
+                <p className="text-foreground font-medium mb-1">Todo al día</p>
+                <p className="text-sm text-muted-foreground">No tienes notificaciones pendientes</p>
               </div>
             ) : (
-              notifications.map((notification, index) => (
+              notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 rounded-lg cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 animate-in slide-in-from-right fade-in ${getNotificationBgColor(notification.type, notification.isRead)
-                    }`}
-                  style={{
-                    animationDelay: `${400 + index * 100}ms`,
-                    animationDuration: '400ms'
-                  }}
+                  className={`p-4 rounded-2xl transition-colors cursor-pointer border border-transparent hover:border-border/50 ${getNotificationBgColor(notification.type, notification.isRead)}`}
                 >
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 mt-1 hover:scale-110 transition-transform duration-200">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 mt-0.5 bg-background p-1.5 rounded-full shadow-sm">
                       {getNotificationIcon(notification.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-start justify-between gap-2 mb-1">
                         <h3
-                          className={`text-sm font-semibold ${notification.isRead ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"}`}
+                          className={`text-sm font-bold truncate ${notification.isRead ? "text-muted-foreground" : "text-foreground"}`}
                         >
                           {notification.title}
                         </h3>
                         {!notification.isRead && (
-                          <div className="w-2 h-2 bg-accent rounded-full flex-shrink-0 animate-pulse"></div>
+                          <div className="w-2 h-2 bg-secondary rounded-full flex-shrink-0 mt-1.5"></div>
                         )}
                       </div>
                       <p
-                        className={`text-sm leading-relaxed ${notification.isRead ? "text-gray-600 dark:text-gray-400" : "text-gray-800 dark:text-gray-300"}`}
+                        className={`text-sm leading-relaxed mb-2 ${notification.isRead ? "text-muted-foreground/80" : "text-muted-foreground"}`}
                       >
                         {notification.message}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{notification.time}</p>
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/60">{notification.time}</p>
                     </div>
                   </div>
                 </div>
@@ -179,9 +180,9 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-border animate-in fade-in slide-in-from-bottom duration-500 delay-700">
-          <Button variant="outline" className="w-full text-sm bg-transparent hover:scale-105 transition-transform duration-200">
-            Ver todas las notificaciones
+        <div className="p-4 border-t border-border">
+          <Button variant="outline" className="w-full rounded-xl bg-transparent border-border hover:bg-secondary/5 hover:text-secondary">
+            Ver todas
           </Button>
         </div>
       </div>

@@ -78,7 +78,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
     }
 
     if (lowerMessage.includes("cédula") || lowerMessage.includes("cedula") || lowerMessage.includes("identidad")) {
-      return "Puedes usar tu numero de cedula para iniciar sesion en la plataforma. Tu cedula es tu identificador principal para acceder a los servicios del Estado."
+      return "Puedes usar tu numero de cédula para iniciar sesión en la plataforma. Tu cédula es tu identificador principal para acceder a los servicios del Estado."
     }
 
     if (lowerMessage.includes("datos") || lowerMessage.includes("información") || lowerMessage.includes("perfil")) {
@@ -172,66 +172,90 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
   return (
     <>
       {/* Overlay - only show when not minimized */}
-      {!isMinimized && <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />}
+      {!isMinimized && <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 animate-in fade-in duration-300" onClick={onClose} />}
 
       {/* Chat Modal */}
       <div
-        className={`fixed z-50 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out ${
-          isMinimized ? "bottom-6 right-20 w-80 h-16" : "bottom-6 right-6 w-[400px] h-[500px]"
-        }`}
+        className={`fixed z-50 bg-background border border-border shadow-2xl transition-all duration-300 ease-in-out flex flex-col ${isMinimized ? "bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-80 h-16 rounded-2xl cursor-pointer hover:bg-secondary/5" : "bottom-0 right-0 left-0 w-full h-[85vh] sm:left-auto sm:bottom-6 sm:right-6 sm:w-[400px] sm:h-[600px] sm:max-h-[85vh] rounded-t-3xl sm:rounded-3xl border-b-0 sm:border-b"
+          }`}
+        onClick={isMinimized ? () => setIsMinimized(false) : undefined}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-primary text-white rounded-t-lg">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <Bot size={16} className="text-primary" />
+        {!isMinimized ? (
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="bg-secondary/10 p-2.5 rounded-full">
+                <Bot size={20} className="text-secondary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground text-sm">Asistente Virtual</h3>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">Siempre activo</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-sm">Asistente Virtual</h3>
-              <p className="text-xs opacity-90">Cuenta Única Ciudadana</p>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsMinimized(true)
+                }}
+                className="text-muted-foreground hover:text-foreground hover:bg-gray-100 hover:dark:bg-gray-100/10 rounded-full w-8 h-8"
+              >
+                <Minimize2 size={16} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onClose()
+                }}
+                className="text-muted-foreground hover:text-foreground hover:bg-gray-100 hover:dark:bg-gray-100/10 rounded-full w-8 h-8"
+              >
+                <X size={16} />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMinimized(!isMinimized)}
-              className="p-1 hover:bg-white/20 text-white h-6 w-6"
-            >
-              {isMinimized ? <Maximize2 size={14} /> : <Minimize2 size={14} />}
-            </Button>
-            <Button variant="ghost" size="sm" onClick={onClose} className="p-1 hover:bg-white/20 text-white h-6 w-6">
-              <X size={14} />
-            </Button>
+        ) : (
+          <div className="flex items-center justify-between p-4 h-full">
+            <div className="flex items-center gap-3">
+              <div className="bg-secondary/10 p-2 rounded-full relative">
+                <Bot size={18} className="text-secondary" />
+                <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background"></span>
+              </div>
+              <span className="text-sm font-bold text-foreground">Asistente Virtual</span>
+            </div>
+            <Maximize2 size={16} className="text-muted-foreground" />
           </div>
-        </div>
+        )}
 
         {/* Chat Content - only show when not minimized */}
         {!isMinimized && (
           <>
             {/* Messages */}
-            <div className="flex-1 h-[380px] overflow-y-auto bg-gray-50">
-              <div className="p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto bg-secondary/5 p-6 pb-2">
+              <div className="space-y-6">
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`flex items-start space-x-2 max-w-[85%]`}>
+                    <div className={`flex items-end gap-2 max-w-[85%]`}>
                       {message.type === "ai" && (
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                          <Bot size={14} className="text-white" />
+                        <div className="w-8 h-8 bg-background border border-border shadow-sm rounded-full flex items-center justify-center flex-shrink-0 mb-5">
+                          <Bot size={14} className="text-secondary" />
                         </div>
                       )}
                       <div className="flex flex-col">
                         <div
-                          className={`px-4 py-3 rounded-2xl ${
-                            message.type === "user"
-                              ? "bg-blue-500 text-white rounded-br-md"
-                              : "bg-white text-gray-800 rounded-bl-md border border-gray-200"
-                          }`}
+                          className={`px-5 py-3 rounded-2xl ${message.type === "user"
+                            ? "bg-secondary text-primary-foreground"
+                            : "bg-background text-foreground border border-border shadow-sm"
+                            }`}
                         >
-                          <p className="text-sm leading-relaxed">{message.content}</p>
+                          <p className="text-[13px] leading-relaxed font-medium">{message.content}</p>
                         </div>
                         <p
-                          className={`text-xs mt-1 px-2 ${message.type === "user" ? "text-right text-gray-500" : "text-left text-gray-500"}`}
+                          className={`text-[10px] uppercase tracking-wider font-semibold mt-1.5 px-1 ${message.type === "user" ? "text-right text-muted-foreground/60" : "text-left text-muted-foreground/60"
+                            }`}
                         >
                           {formatTime(message.timestamp)}
                         </p>
@@ -239,67 +263,65 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
                     </div>
                   </div>
                 ))}
+
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="flex items-start space-x-2">
-                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Bot size={14} className="text-white" />
+                    <div className="flex items-end gap-2">
+                      <div className="w-8 h-8 bg-background border border-border shadow-sm rounded-full flex items-center justify-center flex-shrink-0 mb-1">
+                        <Bot size={14} className="text-secondary" />
                       </div>
-                      <div className="bg-white border border-gray-200 px-4 py-3 rounded-2xl rounded-bl-md">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="bg-background border border-border px-4 py-4 rounded-2xl shadow-sm">
+                        <div className="flex gap-1.5">
+                          <div className="w-1.5 h-1.5 bg-secondary/40 rounded-full animate-bounce"></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                            style={{ animationDelay: "0.1s" }}
+                            className="w-1.5 h-1.5 bg-secondary/60 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.15s" }}
                           ></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                            style={{ animationDelay: "0.2s" }}
+                            className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce"
+                            style={{ animationDelay: "0.3s" }}
                           ></div>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} className="h-1" />
               </div>
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t border-gray-200 rounded-b-lg">
-              <div className="flex space-x-2">
+            <div className="p-4 bg-background border-t border-border mt-auto">
+              <div className="flex items-center gap-2 bg-secondary/5 border border-border rounded-full pr-2 pl-4 py-1.5 focus-within:ring-1 focus-within:ring-secondary focus-within:border-secondary transition-all">
                 <Input
                   ref={inputRef}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Escribe tu pregunta aquí..."
+                  placeholder="Escribe tu mensaje..."
                   disabled={isLoading}
-                  className="flex-1 border-gray-300 rounded-full px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 border-0 bg-transparent px-0 py-2 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-sm h-10"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputMessage.trim() || isLoading}
-                  className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-10 h-10 p-0 flex items-center justify-center"
+                  size="icon"
+                  className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors ${inputMessage.trim() && !isLoading
+                    ? 'bg-secondary hover:bg-secondary/90 text-primary-foreground'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    }`}
                 >
-                  <Send size={16} />
+                  <Send size={15} className={inputMessage.trim() && !isLoading ? 'ml-0.5' : ''} />
                 </Button>
+              </div>
+              <div className="text-center mt-3">
+                <span className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
+                  <Bot size={10} />
+                  IA Generativa
+                </span>
               </div>
             </div>
           </>
-        )}
-
-        {/* Minimized State */}
-        {isMinimized && (
-          <div className="flex items-center justify-between p-4 cursor-pointer" onClick={() => setIsMinimized(false)}>
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <Bot size={16} className="text-white" />
-              </div>
-              <span className="text-sm font-medium text-primary">Asistente Virtual</span>
-            </div>
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-          </div>
         )}
       </div>
     </>

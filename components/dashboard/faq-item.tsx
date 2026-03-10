@@ -19,7 +19,7 @@ export function FAQItem({ question, answer, defaultOpen = false }: FAQItemProps)
         className="flex items-center justify-between w-full text-left focus:outline-none group"
         aria-expanded={isOpen}
       >
-        <span className={`text-base font-bold transition-colors ${isOpen ? 'text-secondary' : 'text-primary group-hover:text-secondary'} pr-4`}>
+        <span className={`text-base font-bold transition-colors dark:text-secondary ${isOpen ? 'text-secondary dark:text-white' : 'text-primary group-hover:text-secondary'} pr-4`}>
           {question}
         </span>
         <div className="flex-shrink-0 ml-2">

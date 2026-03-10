@@ -17,7 +17,7 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50"
+          className="md:hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 animate-in fade-in duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -30,43 +30,41 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
         md:sticky md:top-16 md:z-auto
         w-72 h-full md:h-[calc(100vh-4rem)]
         md:flex-shrink-0
-        bg-white dark:bg-background border-r border-gray-200 dark:border-border
+        bg-background border-r border-border
         transform transition-transform duration-300 ease-in-out
-        overflow-y-auto
+        overflow-y-auto flex flex-col
       `}>
         {/* Mobile Close Button */}
         <div className="md:hidden flex justify-end p-4">
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-muted-foreground hover:bg-secondary/10 hover:text-foreground rounded-full"
           >
-            <X size={20} className="text-gray-600 dark:text-gray-400" />
+            <X size={20} />
           </Button>
         </div>
 
         {/* User Profile Section */}
-        <div className="p-4 md:p-6 border-b border-gray-200 dark:border-border md:border-b-0">
-          <div className="flex items-center space-x-3">
+        <div className="p-6 md:pt-8 md:pb-6">
+          <div className="flex items-center gap-3 bg-secondary/5 rounded-2xl p-4 border border-transparent hover:border-border/50 transition-colors">
             <Avatar className="relative overflow-visible" size="lg">
-              {/* <AvatarImage
-                src="https://github.com/evilrabbit.png"
-                alt="@evilrabbit"
-              /> */}
-              <AvatarFallback className="dark:bg-gray-800">{user?.name?.trim()?.[0]?.toUpperCase()}</AvatarFallback>
-              <AvatarBadge className="bg-green-600 dark:bg-green-500 border-white dark:border-gray-900" />
+              <AvatarFallback className="bg-background border border-border text-foreground font-semibold">
+                {user?.name?.trim()?.[0]?.toUpperCase()}
+              </AvatarFallback>
+              <AvatarBadge className="bg-green-500 border-background" />
             </Avatar>
             <div className="min-w-0">
-              <h3 className="font-extrabold text-primary dark:text-white truncate">{user?.name}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{user?.cedula}</p>
+              <h3 className="font-bold text-foreground truncate text-sm">{user?.name}</h3>
+              <p className="text-[11px] font-medium text-muted-foreground mt-0.5">{user?.cedula}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 p-2 md:p-4">
-          <ul className="space-y-2">
+        <nav className="flex-1 px-4 pb-4">
+          <ul className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -76,11 +74,13 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
                   <Link
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${isActive ? "text-primary dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20" : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                        ? "text-secondary bg-secondary/10 font-bold"
+                        : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground font-medium"
                       }`}
                   >
-                    <Icon size={20} />
-                    <span className={`${isActive ? "font-extrabold" : "font-medium"}`}>{item.label}</span>
+                    <Icon size={18} className={isActive ? "text-secondary" : ""} />
+                    <span className="text-sm">{item.label}</span>
                   </Link>
                 </li>
               )
@@ -89,7 +89,7 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
         </nav>
 
         {/* Logout Button */}
-        <div className="p-2 md:p-4 border-t border-gray-200 dark:border-border md:border-t-0">
+        <div className="p-4 mt-auto border-t border-border">
           <Button
             variant="ghost"
             onClick={() => {
@@ -97,14 +97,16 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
               setIsMobileMenuOpen(false)
             }}
             disabled={isLoggingOut}
-            className="w-full justify-start text-secondary dark:text-blue-400 hover:text-secondary dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50"
+            className="w-full justify-start text-muted-foreground hover:text-red-500 hover:bg-red-500/10 dark:hover:text-red-400 dark:hover:bg-red-900/20 rounded-xl px-4 py-6"
           >
             {isLoggingOut ? (
-              <Loader2 size={20} className="mr-3 animate-spin" />
+              <Loader2 size={18} className="mr-3 animate-spin text-red-500" />
             ) : (
-              <LogOut size={20} className="mr-3" />
+              <LogOut size={18} className="mr-3" />
             )}
-            {isLoggingOut ? "Cerrando sesión..." : "Cerrar la sesión"}
+            <span className="font-semibold text-sm">
+              {isLoggingOut ? "Cerrando sesión..." : "Cerrar sesión"}
+            </span>
           </Button>
         </div>
       </aside>
