@@ -1,6 +1,6 @@
 "use client"
 
-import { Monitor } from 'lucide-react'
+import { Monitor, Smartphone } from 'lucide-react'
 import { ActionButton } from "./action-button"
 
 interface DeviceItemProps {
@@ -17,62 +17,59 @@ interface DeviceItemProps {
 }
 
 export function DeviceItem({ device, ipAddress, location, lastAccess, expirationDate, status, onUnlink }: DeviceItemProps) {
-  const statusClasses = {
-    active: "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800",
-    current: "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800",
-  }
+  const isMobile = device.toLowerCase().includes("mobile") || device.toLowerCase().includes("android") || device.toLowerCase().includes("iphone")
 
   return (
-    <div className="flex flex-col space-y-4 py-4 border-b border-gray-100 dark:border-border last:border-b-0">
-
+    <div className="flex flex-col space-y-4 py-5 border-b border-border last:border-b-0">
       {/* Top Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
         {/* Left: Icon and Details */}
-        <div className="flex items-start sm:items-center space-x-4 flex-1 min-w-0">
-          <div className="flex-shrink-0 mt-1 sm:mt-0">
-            <Monitor size={20} className="text-gray-400 dark:text-gray-500" />
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="flex-shrink-0 text-muted-foreground bg-gray-100 p-2 rounded-full dark:bg-gray-800">
+            {isMobile ? <Smartphone size={18} /> : <Monitor size={18} />}
           </div>
 
-          <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
-
-            {/* Device Name */}
-            <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1" title={device}>
-              {device}
-            </h3>
-
-            {/* Right: Badge + Action Button (Always inline) */}
-            <div className="flex flex-row items-center gap-3 mt-1 sm:mt-0">
-              <span className={`px-2 py-1 text-xs font-medium rounded-full min-w-32 text-center whitespace-nowrap ${statusClasses[status.variant]}`}>
-                {status.text}
-              </span>
-              {onUnlink && (
-                <ActionButton variant="danger" onClick={onUnlink} className="shrink-0">
-                  Desvincular
-                </ActionButton>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-0.5">
+              <h3 className="font-medium text-foreground truncate max-w-full" title={device}>
+                {device}
+              </h3>
+              {status.variant === "current" && (
+                <span className="px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  Sesión Actual
+                </span>
               )}
             </div>
-
           </div>
         </div>
+
+        {/* Action Button */}
+        {onUnlink && (
+          <div className="flex-shrink-0">
+            <ActionButton variant="danger" onClick={onUnlink} className="w-full sm:w-auto dark:hover:bg-red-600/25">
+              Desvincular
+            </ActionButton>
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600 dark:text-gray-400 ml-0 sm:ml-12">
+      {/* Details Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-foreground sm:ml-12 bg-gray-50 p-4 rounded-lg dark:bg-card">
         <div>
-          <div className="font-semibold text-primary dark:text-gray-200 mb-1">IP address</div>
-          <div className="break-all">{ipAddress}</div>
+          <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">Dirección IP</div>
+          <div className="break-all font-medium">{ipAddress}</div>
         </div>
         <div>
-          <div className="font-semibold text-primary dark:text-gray-200 mb-1">Ubicación</div>
-          <div>{location}</div>
+          <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">Ubicación</div>
+          <div className="font-medium">{location}</div>
         </div>
         <div>
-          <div className="font-semibold text-primary dark:text-gray-200 mb-1">Inició sesión el</div>
-          <div>{lastAccess}</div>
+          <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">Último Acceso</div>
+          <div className="font-medium">{lastAccess}</div>
         </div>
         <div>
-          <div className="font-semibold text-primary dark:text-gray-200 mb-1">Expira el</div>
-          <div>{expirationDate}</div>
+          <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">Expira el</div>
+          <div className="font-medium">{expirationDate}</div>
         </div>
       </div>
     </div>

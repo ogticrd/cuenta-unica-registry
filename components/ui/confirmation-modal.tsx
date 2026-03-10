@@ -56,7 +56,7 @@ export function ConfirmationModal({
             variant="outline"
             onClick={onClose}
             disabled={isLoading}
-            className="border-secondary text-secondary hover:bg-secondary hover:text-white font-medium px-6 bg-transparent"
+            className="border-secondary text-secondary hover:bg-secondary hover:text-white font-medium px-6 bg-transparent dark:hover:bg-secondary/25"
           >
             {cancelText}
           </Button>

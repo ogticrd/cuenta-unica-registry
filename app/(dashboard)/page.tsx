@@ -138,11 +138,6 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div className="hidden md:block">
-              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
-                <User size={40} className="text-white" />
-              </div>
-            </div>
           </div>
         </div>
 

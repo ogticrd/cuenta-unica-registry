@@ -9,6 +9,7 @@ import { UnlinkDeviceModal } from "@/components/dashboard/unlink-device-modal"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
+import { History } from "lucide-react"
 
 export default function HistoryPage() {
   const { session, refreshSession } = useAuth()
@@ -180,12 +181,23 @@ export default function HistoryPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-0">
-        <h1 className="text-xl sm:text-2xl font-bold text-primary dark:text-blue-400 mb-6 sm:mb-8">Historial de actividad</h1>
+      <div className="max-w-4xl mx-auto space-y-12 pb-12">
+        {/* Header Section */}
+        <div className="pt-4 pb-8 border-b dark:border-border">
+          <div className="flex items-center gap-3 mb-3">
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">Historial de Actividad</h1>
+            <div className="bg-primary/10 text-primary p-2 rounded-full">
+              <History size={24} />
+            </div>
+          </div>
+          <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed">
+            Consulta y gestiona los dispositivos y portales institucionales vinculados a tu cuenta.
+          </p>
+        </div>
 
-        <div className="space-y-6 sm:space-y-8">
+        <div className="space-y-12">
           {/* Dispositivos Section */}
-          <SecuritySection title="Dispositivos">
+          <SecuritySection title="Dispositivos vinculados" hasInfoIcon={true}>
             <div className="space-y-0">
               {devices.length > 0 ? (
                 devices.map((device: any) => (
@@ -201,7 +213,7 @@ export default function HistoryPage() {
                   />
                 ))
               ) : (
-                <div className="p-4 text-sm text-gray-500 text-center">
+                <div className="py-8 text-muted-foreground text-center border dark:border-border rounded-lg bg-card">
                   No se han detectado dispositivos activos.
                 </div>
               )}
@@ -244,19 +256,10 @@ export default function HistoryPage() {
           confirmVariant="destructive"
           isLoading={unlinkPortalModal.isLoading}
         >
-          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li className="flex items-start">
-              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
-              <span>Perderás acceso directo a este portal desde tu cuenta.</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
-              <span>Deberás autenticarte nuevamente para acceder al portal.</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
-              <span>Podrás volver a vincular el portal cuando lo necesites.</span>
-            </li>
+          <ul className="space-y-2 text-sm text-muted-foreground mt-4 mb-2 pl-4 border-l-2 border-primary/20 dark:border-primary/25 dark:text-white">
+            <li>• Perderás acceso directo a este portal desde tu cuenta.</li>
+            <li>• Deberás autenticarte nuevamente para acceder al portal.</li>
+            <li>• Podrás volver a vincular el portal cuando lo necesites.</li>
           </ul>
         </ConfirmationModal>
       </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, X } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 interface FAQItemProps {
   question: string
@@ -13,14 +13,31 @@ export function FAQItem({ question, answer, defaultOpen = false }: FAQItemProps)
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
-    <div className="border-b border-gray-200 dark:border-border py-4">
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center justify-between w-full text-left">
-        <span className="text-primary dark:text-blue-400 font-bold pr-4">{question}</span>
-        <div className="flex-shrink-0">
-          {isOpen ? <X size={20} className="text-gray-500 dark:text-gray-400" /> : <Plus size={20} className="text-gray-500 dark:text-gray-400" />}
+    <div className="border-b border-border last:border-0 py-3">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full text-left focus:outline-none group"
+        aria-expanded={isOpen}
+      >
+        <span className={`text-base font-bold transition-colors ${isOpen ? 'text-secondary' : 'text-primary group-hover:text-secondary'} pr-4`}>
+          {question}
+        </span>
+        <div className="flex-shrink-0 ml-2">
+          <ChevronDown
+            size={18}
+            className={`text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          />
         </div>
       </button>
-      {isOpen && <div className="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">{answer}</div>}
+      <div
+        className={`grid transition-all duration-200 ease-in-out ${isOpen ? 'grid-rows-[1fr] mt-3 opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+      >
+        <div className="overflow-hidden">
+          <p className="text-muted-foreground text-sm leading-relaxed pr-8 pb-3">
+            {answer}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

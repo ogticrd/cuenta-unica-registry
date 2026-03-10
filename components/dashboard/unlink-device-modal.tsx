@@ -29,7 +29,7 @@ export function UnlinkDeviceModal({
       confirmVariant="destructive"
       isLoading={isLoading}
     >
-      <ul className="space-y-2 text-sm text-gray-800">
+      <ul className="space-y-2 text-sm text-gray-800 dark:text-gray-200">
         <li className="flex items-start">
           <span className="text-gray-600 mr-2">•</span>
           <span>Este dispositivo perderá acceso a tu cuenta.</span>
