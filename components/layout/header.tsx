@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+import { LanguageToggle } from "@/components/ui/language-toggle"
 
 export function Header() {
   return (
@@ -17,6 +20,7 @@ export function Header() {
             />
           </div>
           <div className="flex items-center space-x-2">
+            <LanguageToggle />
             <AnimatedThemeToggler />
           </div>
         </div>

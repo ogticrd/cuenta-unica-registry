@@ -56,7 +56,23 @@
 
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse at bottom right,
+        hsl(var(--secondary) / 0.85) 0%,
+        hsl(var(--secondary) / 0.4) 20%,
+        transparent 25%);
+    background-attachment: fixed;
   }
+
+  .dark body {
+    background-image:
+      radial-gradient(ellipse at bottom right,
+        hsl(221 70% 20% / 0.6) 0%,
+        hsl(224 60% 14% / 0.35) 25%,
+        transparent 50%);
+    background-attachment: fixed;
+  }
+
 
   /* Custom button styling with 67px border radius */
   button,

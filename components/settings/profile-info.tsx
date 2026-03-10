@@ -2,7 +2,7 @@
 
 import { PersonalInfoField } from "@/components/dashboard/personal-info-field"
 import { useAuth } from "@/lib/auth-context"
-import { Shield, CheckCircle, User, Mail, Calendar, MapPin, Hash, Users } from "lucide-react"
+import { Shield, CheckCircle, User, Mail, Calendar, MapPin, Hash, Users, Book } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export function ProfileInfo() {
@@ -17,8 +17,8 @@ export function ProfileInfo() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pt-4 pb-8 border-b dark:border-border">
                 <div className="relative">
-                    <Avatar className="w-24 h-24 text-4xl border border-border shadow-sm">
-                        <AvatarFallback className="bg-primary text-secondary-foreground font-medium text-3xl">
+                    <Avatar className="w-24 h-24 text-4xl border border-border shadow-sm ring-4 ring-primary/10">
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-3xl">
                             {user?.name?.trim()?.[0]?.toUpperCase()}
                         </AvatarFallback>
                     </Avatar>
@@ -32,7 +32,7 @@ export function ProfileInfo() {
                     <div className="flex flex-col md:flex-row items-center gap-3 mt-3 text-muted-foreground">
                         <span className="text-lg">Cédula: {user.cedula}</span>
                         <span className="hidden md:inline text-border">•</span>
-                        <div className="flex items-center justify-center text-sm font-medium text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-500/10 px-3 py-1 rounded-full w-max mx-auto md:mx-0">
+                        <div className="flex items-center justify-center text-sm font-medium text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-500/10 px-3 py-1 rounded-full w-max mx-auto md:mx-0 border border-green-200 dark:border-green-500/20">
                             <Shield className="w-4 h-4 mr-1.5" />
                             Identidad verificada
                         </div>
@@ -43,7 +43,10 @@ export function ProfileInfo() {
             {/* Personal Information Grid */}
             <div className="space-y-8">
                 <div>
-                    <h2 className="text-xl font-semibold mb-5 text-foreground">Información Personal</h2>
+                    <h2 className="text-xl font-semibold mb-5 text-foreground flex items-center gap-2.5">
+                        <span className="inline-block w-1 h-5 rounded-full bg-primary"></span>
+                        Información Personal
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <PersonalInfoField
                             label="Nombre"
@@ -61,6 +64,11 @@ export function ProfileInfo() {
                             icon={<Hash className="w-4 h-4 text-muted-foreground/70" />}
                         />
                         <PersonalInfoField
+                            label="Pasaporte"
+                            value={user.passport || "No registrado"}
+                            icon={<Book className="w-4 h-4 text-muted-foreground/70" />}
+                        />
+                        <PersonalInfoField
                             label="Sexo"
                             value={user.gender || ""}
                             icon={<Users className="w-4 h-4 text-muted-foreground/70" />}
@@ -72,14 +80,17 @@ export function ProfileInfo() {
                         />
                         <PersonalInfoField
                             label="Nacionalidad"
-                            value={user.nationality || ""}
+                            value={user.nationality || "No registrado"}
                             icon={<MapPin className="w-4 h-4 text-muted-foreground/70" />}
                         />
                     </div>
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold mb-5 text-foreground">Información de Contacto</h2>
+                    <h2 className="text-xl font-semibold mb-5 text-foreground flex items-center gap-2.5">
+                        <span className="inline-block w-1 h-5 rounded-full bg-primary"></span>
+                        Información de Contacto
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <PersonalInfoField
                             label="Correo electrónico"

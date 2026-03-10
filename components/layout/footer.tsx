@@ -1,11 +1,15 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Facebook, Youtube, Twitter, Instagram } from "lucide-react"
 
 export function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <>
-      <footer className="bg-primary text-white">
+      <footer className="bg-primary text-primary-foreground dark:bg-card dark:text-foreground dark:border-t dark:border-border">
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             {/* Government Logo Section */}
@@ -64,11 +68,11 @@ export function Footer() {
         </div>
       </footer>
       <div className="bg-white dark:bg-background">
-        <div className="container mx-auto p-4 bg-white dark:bg-background border-t border-gray-100 dark:border-border">
+        <div className="container mx-auto p-4 bg-white dark:bg-background">
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-3">
-              <p className="text-xs text-primary dark:text-gray-400">© 2025 Todos los Derechos Reservados. Desarrollado por</p>
+              <p className="text-xs text-primary dark:text-muted-foreground">© {currentYear} Todos los Derechos Reservados. Desarrollado por</p>
               <Image src="/images/ogtic-logo.png" alt="OGTIC" width={60} height={20} />
             </div>
 

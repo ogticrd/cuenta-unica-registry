@@ -11,6 +11,7 @@ interface User {
   lastName?: string
   fullName?: string
   cedula?: string
+  passport?: string
   nationality?: string
   birthDate?: string
   gender?: string
@@ -60,6 +61,7 @@ function mapIdentityToUser(identity: {
     lastName: lastName,
     fullName: `${firstName} ${lastName}`.trim(),
     cedula: (traits.username as string) || "",
+    passport: (traits.passport as string) || "",
     nationality: (traits.nationality as string) || "",
     birthDate: (traits.birthdate as string) || "",
     gender: (traits.gender as string) || "",

@@ -24,7 +24,7 @@ export function CucCardHeader(_props: PropsWithChildren) {
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
-            <h1 className="text-xl font-semibold text-[#003876] dark:text-blue-400" style={{ marginTop: "20px" }}>
+            <h1 className="text-xl font-bold text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
                 Acceso Cuenta Única
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
@@ -68,7 +68,7 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
-            <h1 className="text-xl font-semibold text-[#003876] dark:text-blue-400" style={{ marginTop: "20px" }}>
+            <h1 className="text-xl font-bold text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
                 Restablecer contraseña
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>

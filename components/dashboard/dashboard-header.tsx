@@ -6,6 +6,7 @@ import { Bell, Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { NotificationDrawer } from "./notification-drawer"
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+import { LanguageToggle } from "@/components/ui/language-toggle"
 
 
 interface DashboardHeaderProps {
@@ -42,6 +43,7 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
 
           {/* Right side - Notifications and Menu */}
           <div className="flex items-center space-x-2">
+            <LanguageToggle />
             <AnimatedThemeToggler />
             <Button
               variant="ghost"
