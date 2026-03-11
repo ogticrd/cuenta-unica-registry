@@ -8,10 +8,22 @@ import { ROUTES } from "@/lib/constants/routes"
 import { Button } from "@/components/ui/button"
 import { DashboardSidebarProps } from './dashboard-sidebar-props'
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar"
+import { useT } from "@/hooks/use-t"
 
 export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: DashboardSidebarProps) {
   const { user, logout, isLoggingOut } = useAuth()
   const pathname = usePathname()
+  const t = useT("sidebar")
+
+  const menuItems = [
+    { icon: Home, label: t("home"), href: ROUTES.dashboard },
+    { icon: User, label: t("personal_data"), href: ROUTES.profile },
+    { icon: HelpCircle, label: t("support"), href: ROUTES.support },
+    { icon: Info, label: t("about"), href: ROUTES.about },
+    { icon: Shield, label: t("security"), href: ROUTES.settings },
+    { icon: Clock, label: t("history"), href: ROUTES.history },
+  ]
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -105,7 +117,7 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
               <LogOut size={18} className="mr-3" />
             )}
             <span className="font-semibold text-sm">
-              {isLoggingOut ? "Cerrando sesión..." : "Cerrar sesión"}
+              {isLoggingOut ? t("logging_out") : t("logout")}
             </span>
           </Button>
         </div>
@@ -113,12 +125,3 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
     </>
   )
 }
-
-const menuItems = [
-  { icon: Home, label: "Inicio", href: ROUTES.dashboard },
-  { icon: User, label: "Datos personales", href: ROUTES.profile },
-  { icon: HelpCircle, label: "Soporte y ayuda", href: ROUTES.support },
-  { icon: Info, label: "Conoce la plataforma", href: ROUTES.about },
-  { icon: Shield, label: "Privacidad y seguridad", href: ROUTES.settings },
-  { icon: Clock, label: "Historial de actividad", href: ROUTES.history },
-]

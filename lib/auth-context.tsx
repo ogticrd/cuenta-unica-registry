@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { ROUTES } from "@/lib/constants/routes"
 import { authService } from "@/lib/services/ory/auth.service"
 import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
+import { useT } from "@/hooks/use-t"
 
 interface User {
   id: string
@@ -73,6 +74,7 @@ function mapIdentityToUser(identity: {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const t = useT("auth")
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<OrySession | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -105,23 +107,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     if (isLoggingOut) return
     setIsLoggingOut(true)
-    const toastId = toast.loading("Cerrando sesión...")
+    const toastId = toast.loading(t("logging_out"))
 
     authService
       .logout()
       .then((data) => {
         setUser(null)
-        toast.success("Sesión cerrada correctamente", { id: toastId })
+        toast.success(t("logout_success"), { id: toastId })
         router.push(data.redirect_to ?? ROUTES.login)
       })
       .catch(() => {
         setUser(null)
-        toast.error("Error al cerrar sesión", { id: toastId })
+        toast.error(t("logout_error"), { id: toastId })
         router.push(ROUTES.login)
       })
       .finally(() => setIsLoggingOut(false))
   }
-
 
   return (
     <AuthContext.Provider

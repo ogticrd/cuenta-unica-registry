@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 
@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from "react"
 import { X, Send, Bot, Minimize2, Maximize2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useLocale, useT } from "@/hooks/use-t"
+import { DEFAULT_LOCALE } from "@/lib/constants/locales"
 
 interface ChatMessage {
   id: string
@@ -20,12 +22,15 @@ interface AIChatModalProps {
 }
 
 export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const t = useT("assistant")
+  const locale = useLocale()
+  const timeLocale = locale === DEFAULT_LOCALE ? "es-DO" : "en-US"
+
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
       id: "welcome",
       type: "ai",
-      content:
-        "Hola! Soy tu asistente virtual de Cuenta Unica Ciudadana. Estoy aqui para ayudarte con cualquier pregunta sobre la plataforma, seguridad de tu cuenta o como usar nuestros servicios. En que puedo ayudarte hoy?",
+      content: t("welcome_message"),
       timestamp: new Date(),
     },
   ])
@@ -50,14 +55,12 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
   }, [isOpen, isMinimized])
 
   const getAIResponse = async (userMessage: string): Promise<string> => {
-    // Simulate AI processing time
     await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000))
 
     const lowerMessage = userMessage.toLowerCase()
 
-    // Predefined responses for common topics
-    if (lowerMessage.includes("contraseña") || lowerMessage.includes("password")) {
-      return "Para cambiar tu contraseña, ve a 'Privacidad y seguridad' en el menú lateral y selecciona 'Cambiar contraseña'. Te recomendamos usar una contraseña segura con al menos 8 caracteres, incluyendo mayúsculas, minúsculas y números."
+    if (lowerMessage.includes("contraseña") || lowerMessage.includes("contrasena") || lowerMessage.includes("password")) {
+      return t("response_password")
     }
 
     if (
@@ -66,51 +69,51 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
       lowerMessage.includes("dos factores") ||
       lowerMessage.includes("2fa")
     ) {
-      return "La autenticación de dos factores agrega una capa extra de seguridad a tu cuenta. Puedes configurarla en 'Privacidad y seguridad' > 'Autenticación multifactor'. Puedes elegir entre correo electrónico, SMS o una aplicación de autenticación."
+      return t("response_2fa")
     }
 
-    if (lowerMessage.includes("passkey") || lowerMessage.includes("biométrico")) {
-      return "Los Passkeys te permiten acceder sin contraseña usando tu huella dactilar, Face ID o PIN del dispositivo. Para configurarlos, ve a 'Privacidad y seguridad' > 'Creación y administración de Passkeys'. Es más seguro y conveniente que las contraseñas tradicionales."
+    if (lowerMessage.includes("passkey") || lowerMessage.includes("biométrico") || lowerMessage.includes("biometrico")) {
+      return t("response_passkey")
     }
 
-    if (lowerMessage.includes("trámite") || lowerMessage.includes("servicio") || lowerMessage.includes("documento")) {
-      return "Con tu Cuenta Unica puedes acceder a todos los servicios gubernamentales digitales. Cada institucion tiene sus propios servicios disponibles a traves de sus portales enlazados con tu cuenta."
+    if (lowerMessage.includes("trámite") || lowerMessage.includes("tramite") || lowerMessage.includes("servicio") || lowerMessage.includes("documento")) {
+      return t("response_services")
     }
 
     if (lowerMessage.includes("cédula") || lowerMessage.includes("cedula") || lowerMessage.includes("identidad")) {
-      return "Puedes usar tu numero de cédula para iniciar sesión en la plataforma. Tu cédula es tu identificador principal para acceder a los servicios del Estado."
+      return t("response_identity")
     }
 
-    if (lowerMessage.includes("datos") || lowerMessage.includes("información") || lowerMessage.includes("perfil")) {
-      return "Tus datos personales se encuentran en la sección 'Datos personales' del menú. Allí puedes ver tu información registrada. Para modificar datos oficiales como nombre o fecha de nacimiento, debes acudir a las oficinas correspondientes."
+    if (lowerMessage.includes("datos") || lowerMessage.includes("información") || lowerMessage.includes("informacion") || lowerMessage.includes("perfil")) {
+      return t("response_profile")
     }
 
     if (
       lowerMessage.includes("seguridad") ||
       lowerMessage.includes("privacidad") ||
-      lowerMessage.includes("protección")
+      lowerMessage.includes("protección") ||
+      lowerMessage.includes("proteccion")
     ) {
-      return "Tu seguridad es nuestra prioridad. Utilizamos encriptación de datos, autenticación multifactor y monitoreo de accesos. En 'Privacidad y seguridad' puedes revisar tus dispositivos conectados, cambiar contraseñas y configurar medidas adicionales de protección."
+      return t("response_security")
     }
 
-    if (lowerMessage.includes("dispositivo") || lowerMessage.includes("sesión") || lowerMessage.includes("acceso")) {
-      return "En 'Historial de actividad' puedes ver todos los dispositivos desde donde has accedido a tu cuenta. Si detectas algún acceso sospechoso, puedes desvincular dispositivos y cambiar tu contraseña inmediatamente."
+    if (lowerMessage.includes("dispositivo") || lowerMessage.includes("sesión") || lowerMessage.includes("sesion") || lowerMessage.includes("acceso")) {
+      return t("response_devices")
     }
 
     if (lowerMessage.includes("ayuda") || lowerMessage.includes("soporte") || lowerMessage.includes("contacto")) {
-      return "Para soporte adicional puedes: 1) Llamar al (809)-123-4567, 2) Escribir a soporte@cuentaciudadana.gob.do, 3) Visitar la sección 'Soporte y ayuda' en el menú, o 4) consultar las preguntas frecuentes (FAQs)."
+      return t("response_support")
     }
 
     if (lowerMessage.includes("hola") || lowerMessage.includes("buenos") || lowerMessage.includes("buenas")) {
-      return "¡Hola! Me da mucho gusto saludarte. Estoy aquí para ayudarte con cualquier duda sobre tu Cuenta Única Ciudadana. ¿Hay algo específico en lo que pueda asistirte?"
+      return t("response_greeting")
     }
 
     if (lowerMessage.includes("gracias") || lowerMessage.includes("thank")) {
-      return "¡De nada! Es un placer ayudarte. Si tienes más preguntas sobre tu Cuenta Única Ciudadana, no dudes en preguntarme. Estoy aquí para hacer tu experiencia más fácil y segura."
+      return t("response_thanks")
     }
 
-    // Default response
-    return "Entiendo tu consulta. Te recomiendo revisar las secciones del menú lateral para encontrar la información que necesitas, o puedes contactar a nuestro soporte técnico al (809)-123-4567 o soporte@cuentaciudadana.gob.do para asistencia personalizada. ¿Hay algo más específico en lo que pueda ayudarte?"
+    return t("response_default")
   }
 
   const handleSendMessage = async () => {
@@ -140,8 +143,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: "ai",
-        content:
-          "Lo siento, hubo un error procesando tu mensaje. Por favor intenta nuevamente o contacta a soporte técnico.",
+        content: t("response_error"),
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, errorMessage])
@@ -158,29 +160,30 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
   }
 
   const formatTime = (date: Date) => {
-    return date
-      .toLocaleTimeString("es-DO", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-      .replace(/AM|PM/, (match) => (match.toLowerCase() === "am" ? "a. m." : "p. m."))
+    const formattedTime = date.toLocaleTimeString(timeLocale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+
+    if (locale === DEFAULT_LOCALE) {
+      return formattedTime.replace(/AM|PM/, (match) => (match.toLowerCase() === "am" ? "a. m." : "p. m."))
+    }
+
+    return formattedTime
   }
 
   if (!isOpen) return null
 
   return (
     <>
-      {/* Overlay - only show when not minimized */}
       {!isMinimized && <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 animate-in fade-in duration-300" onClick={onClose} />}
 
-      {/* Chat Modal */}
       <div
         className={`fixed z-50 bg-background border border-border shadow-2xl transition-all duration-300 ease-in-out flex flex-col ${isMinimized ? "bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-80 h-16 rounded-2xl cursor-pointer hover:bg-secondary/5" : "bottom-0 right-0 left-0 w-full h-[85vh] sm:left-auto sm:bottom-6 sm:right-6 sm:w-[400px] sm:h-[600px] sm:max-h-[85vh] rounded-t-3xl sm:rounded-3xl border-b-0 sm:border-b"
           }`}
         onClick={isMinimized ? () => setIsMinimized(false) : undefined}
       >
-        {/* Header */}
         {!isMinimized ? (
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
@@ -188,8 +191,8 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
                 <Bot size={20} className="text-secondary" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground text-sm">Asistente Virtual</h3>
-                <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">Siempre activo</p>
+                <h3 className="font-bold text-foreground text-sm">{t("title")}</h3>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">{t("status_active")}</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -224,16 +227,14 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
                 <Bot size={18} className="text-secondary" />
                 <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background"></span>
               </div>
-              <span className="text-sm font-bold text-foreground">Asistente Virtual</span>
+              <span className="text-sm font-bold text-foreground">{t("title")}</span>
             </div>
             <Maximize2 size={16} className="text-muted-foreground" />
           </div>
         )}
 
-        {/* Chat Content - only show when not minimized */}
         {!isMinimized && (
           <>
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto bg-secondary/5 p-6 pb-2">
               <div className="space-y-6">
                 {messages.map((message) => (
@@ -290,7 +291,6 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
               </div>
             </div>
 
-            {/* Input */}
             <div className="p-4 bg-background border-t border-border mt-auto">
               <div className="flex items-center gap-2 bg-secondary/5 border border-border rounded-full pr-2 pl-4 py-1.5 focus-within:ring-1 focus-within:ring-secondary focus-within:border-secondary transition-all">
                 <Input
@@ -298,7 +298,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Escribe tu mensaje..."
+                  placeholder={t("input_placeholder")}
                   disabled={isLoading}
                   className="flex-1 border-0 bg-transparent px-0 py-2 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-sm h-10"
                 />
@@ -307,17 +307,17 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
                   disabled={!inputMessage.trim() || isLoading}
                   size="icon"
                   className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors ${inputMessage.trim() && !isLoading
-                    ? 'bg-secondary hover:bg-secondary/90 text-primary-foreground'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    ? "bg-secondary hover:bg-secondary/90 text-primary-foreground"
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
                     }`}
                 >
-                  <Send size={15} className={inputMessage.trim() && !isLoading ? 'ml-0.5' : ''} />
+                  <Send size={15} className={inputMessage.trim() && !isLoading ? "ml-0.5" : ""} />
                 </Button>
               </div>
               <div className="text-center mt-3">
                 <span className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
                   <Bot size={10} />
-                  IA Generativa
+                  {t("generative_ai")}
                 </span>
               </div>
             </div>

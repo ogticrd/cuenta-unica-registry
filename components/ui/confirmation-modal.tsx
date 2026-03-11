@@ -1,8 +1,7 @@
-"use client"
+﻿"use client"
 
 import type React from "react"
 
-import { X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { useT } from "@/hooks/use-t"
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -32,11 +32,13 @@ export function ConfirmationModal({
   title,
   description,
   confirmText,
-  cancelText = "CANCELAR",
+  cancelText,
   confirmVariant = "destructive",
   children,
   isLoading = false,
 }: ConfirmationModalProps) {
+  const t = useT("common")
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -58,7 +60,7 @@ export function ConfirmationModal({
             disabled={isLoading}
             className="border-secondary text-secondary hover:bg-secondary hover:text-white font-medium px-6 bg-transparent dark:hover:bg-secondary/25"
           >
-            {cancelText}
+            {cancelText || t("cancel")}
           </Button>
           <Button
             variant={confirmVariant}
@@ -70,7 +72,7 @@ export function ConfirmationModal({
                 : "bg-primary hover:bg-primary/90 text-white font-medium px-6"
             }
           >
-            {isLoading ? "Procesando..." : confirmText}
+            {isLoading ? t("processing") : confirmText}
           </Button>
         </div>
       </DialogContent>

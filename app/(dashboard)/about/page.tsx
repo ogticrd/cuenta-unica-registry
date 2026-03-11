@@ -4,46 +4,48 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { PlatformFeature } from "@/components/dashboard/platform-feature"
 import { YouTubeVideo } from "@/components/dashboard/youtube-video"
 import { User, Headphones, Shield, FileText, Bell, Bot, Users, Clock, Globe } from "lucide-react"
+import { useT } from "@/hooks/use-t"
 
 export default function AboutPage() {
+  const t = useT("about")
   const features = [
     {
       icon: <User size={24} className="text-blue-600 dark:text-blue-400" />,
-      title: "Datos personales",
-      description: "Accede a los datos personales asociados a su cuenta de forma segura y actualizada.",
+      title: t("features_list.personal_data.title"),
+      description: t("features_list.personal_data.desc"),
     },
     {
       icon: <FileText size={24} className="text-purple-600 dark:text-purple-400" />,
-      title: "Historial completo",
-      description: "Consulta y revisa todos los movimientos y acciones realizadas en la plataforma.",
+      title: t("features_list.history.title"),
+      description: t("features_list.history.desc"),
     },
     {
       icon: <Shield size={24} className="text-red-600 dark:text-red-400" />,
-      title: "Seguridad avanzada",
-      description: "Mantén tu cuenta protegida con autenticación de dos factores y revisión de accesos.",
+      title: t("features_list.security.title"),
+      description: t("features_list.security.desc"),
     },
     {
       icon: <Bell size={24} className="text-orange-600 dark:text-orange-400" />,
-      title: "Notificaciones",
-      description: "Recibe alertas importantes y actualizaciones sobre los servicios que utilizas.",
+      title: t("features_list.notifications.title"),
+      description: t("features_list.notifications.desc"),
     },
     {
       icon: <Bot size={24} className="text-indigo-600 dark:text-indigo-400" />,
-      title: "Asistente virtual (IA)",
-      description: "Recibe ayuda instantánea para resolver dudas sobre la plataforma rápidamente.",
+      title: t("features_list.ai_assistant.title"),
+      description: t("features_list.ai_assistant.desc"),
     },
     {
       icon: <Headphones size={24} className="text-green-600 dark:text-green-400" />,
-      title: "Soporte técnico",
-      description: "Encuentra ayuda especializada y múliples canales de contacto para cualquier problema.",
+      title: t("features_list.support.title"),
+      description: t("features_list.support.desc"),
     },
   ]
 
   const stats = [
-    { number: "2.5M+", label: "Ciudadanos registrados", icon: <Users size={20} /> },
-    { number: "15M+", label: "Consultas realizadas", icon: <FileText size={20} /> },
-    { number: "99.9%", label: "Tiempo de actividad", icon: <Clock size={20} /> },
-    { number: "24/7", label: "Disponibilidad", icon: <Globe size={20} /> },
+    { number: "2.5M+", label: t("stats_list.citizens"), icon: <Users size={20} /> },
+    { number: "15M+", label: t("stats_list.queries"), icon: <FileText size={20} /> },
+    { number: "99.9%", label: t("stats_list.uptime"), icon: <Clock size={20} /> },
+    { number: "24/7", label: t("stats_list.availability"), icon: <Globe size={20} /> },
   ]
 
   return (
@@ -52,11 +54,10 @@ export default function AboutPage() {
         {/* Minimalist Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
-            Acerca de tu Cuenta Única Ciudadana
+            {t("title")}
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            La plataforma oficial del gobierno, diseñada para que interactúes con el Estado de
-            manera centralizada, segura y eficiente desde cualquier lugar.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -77,9 +78,9 @@ export default function AboutPage() {
         {/* Video Tutorial */}
         <div className="pt-8 border-t dark:border-border">
           <div className="text-center mb-8">
-            <h2 className="text-xl font-bold text-foreground mb-3">Conoce la plataforma</h2>
+            <h2 className="text-xl font-bold text-foreground mb-3">{t("video_title")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Descubre en este video cómo utilizar todas las herramientas que tienes a tu disposición una vez inicias sesión.
+              {t("video_desc")}
             </p>
           </div>
           <div className="rounded-2xl overflow-hidden border dark:border-border">
@@ -89,7 +90,7 @@ export default function AboutPage() {
 
         {/* Clean Features Grid */}
         <div className="pt-8 border-t dark:border-border">
-          <h2 className="text-xl font-bold text-foreground mb-8 text-center">¿Qué puedes hacer?</h2>
+          <h2 className="text-xl font-bold text-foreground mb-8 text-center">{t("features_title")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {features.map((feature, index) => (
               <PlatformFeature

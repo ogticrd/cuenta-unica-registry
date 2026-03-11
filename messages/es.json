@@ -31,5 +31,349 @@
         "faq": "Preguntas Frecuentes",
         "copyright": "© {year} Todos los Derechos Reservados. Desarrollado por",
         "follow_us": "SÍGUENOS"
+    },
+    "settings": {
+        "title": "Privacidad y seguridad",
+        "subtitle": "Administra tu contraseña, autenticación de dos factores y otros factores de seguridad.",
+        "loading": "Cargando configuración de seguridad..."
+    },
+    "error": {
+        "title": "Ocurrió un problema de autenticación",
+        "default_reason": "No se pudo completar el flujo de autenticación.",
+        "default_details": "Intenta nuevamente desde la pantalla de inicio de sesión.",
+        "back_to_login": "Volver al inicio de sesión"
+    },
+    "dashboard": {
+        "welcome": "¡Bienvenido, <highlight>{name}</highlight>!",
+        "subtitle": "Administra tu identidad digital, revisa tu seguridad y accede a los servicios del Estado desde un solo lugar.",
+        "loading": "Cargando...",
+        "last_access": "Último acceso: {date}",
+        "account_verified": "Cuenta verificada",
+        "account_unverified": "Cuenta no verificada",
+        "quick_actions": "Accesos Rápidos",
+        "recent_activity": "Actividad Reciente",
+        "view_all": "Ver todo",
+        "security_status": "Estado de Seguridad",
+        "configure": "Configurar",
+        "gov_services": "Servicios Gubernamentales Populares",
+        "notifications": "Notificaciones Importantes",
+        "quick_actions_list": {
+            "personal_data": {
+                "title": "Datos Personales",
+                "desc": "Consulta y actualiza tu información personal registrada"
+            },
+            "privacy": {
+                "title": "Privacidad y Seguridad",
+                "desc": "Configura la seguridad de tu cuenta y revisa accesos"
+            },
+            "history": {
+                "title": "Historial de Actividad",
+                "desc": "Revisa dispositivos conectados y actividad reciente"
+            },
+            "support": {
+                "title": "Soporte y Ayuda",
+                "desc": "Encuentra ayuda y contacta con nuestro equipo de soporte"
+            }
+        },
+        "recent_activities_list": {
+            "login_success": {
+                "title": "Inicio de sesion exitoso",
+                "desc": "Accediste desde Chrome en Windows",
+                "time": "Hace 2 horas"
+            },
+            "security_updated": {
+                "title": "Configuracion de seguridad actualizada",
+                "desc": "Se activo la autenticacion de dos factores",
+                "time": "Hace 1 dia"
+            },
+            "new_device": {
+                "title": "Nuevo dispositivo detectado",
+                "desc": "Se registro un nuevo inicio de sesion desde iPhone 15",
+                "time": "Hace 2 dias"
+            },
+            "password_updated": {
+                "title": "Contrasena actualizada",
+                "desc": "Tu contrasena fue cambiada exitosamente",
+                "time": "Hace 5 dias"
+            }
+        },
+        "gov_services_list": {
+            "insurance": {
+                "title": "Consulta de Seguro",
+                "desc": "Verifica tu estado en el sistema de seguridad social"
+            },
+            "portal": {
+                "title": "Portal de Servicios",
+                "desc": "Accede a los portales de servicios gubernamentales"
+            },
+            "history": {
+                "title": "Mi Historial",
+                "desc": "Revisa tu historial de actividad y accesos recientes"
+            },
+            "settings": {
+                "title": "Configuracion de Cuenta",
+                "desc": "Administra la seguridad y privacidad de tu cuenta"
+            }
+        },
+        "stats_cards": {
+            "devices": {
+                "title": "Dispositivos Conectados",
+                "desc_singular": "Dispositivo activo",
+                "desc_plural": "Dispositivos activos"
+            },
+            "services": {
+                "title": "Servicios Utilizados",
+                "desc": "Este mes"
+            },
+            "actions": {
+                "title": "Acciones Realizadas",
+                "desc": "Últimos 30 días"
+            },
+            "security": {
+                "title": "Nivel de Seguridad",
+                "level_high": "Alto",
+                "level_standard": "Estándar",
+                "desc_2fa": "2FA activado",
+                "desc_password": "Contraseña"
+            }
+        },
+        "security_status_items": {
+            "2fa": {
+                "title": "Autenticación de dos factores",
+                "desc": "Activada - Correo electrónico"
+            },
+            "password": {
+                "title": "Contraseña",
+                "desc": "Última actualización: Hace 2 meses"
+            },
+            "passkeys": {
+                "title": "Passkeys",
+                "desc": "Recomendado configurar"
+            }
+        },
+        "notifications_list": {
+            "security": {
+                "title": "Revisa tu seguridad",
+                "desc": "Te recomendamos activar la autenticación de dos factores y configurar un Passkey para mayor protección de tu cuenta.",
+                "action": "Ir a Seguridad"
+            },
+            "new_feature": {
+                "title": "Nueva Funcionalidad Disponible",
+                "desc": "Ahora puedes usar Passkeys para acceder sin contraseña. Configúralo para mayor seguridad.",
+                "action": "Configurar Ahora"
+            }
+        }
+    },
+    "history": {
+        "title": "Historial de actividad",
+        "subtitle": "Consulta y gestiona los dispositivos y portales institucionales vinculados a tu cuenta.",
+        "linked_devices": "Dispositivos vinculados",
+        "no_devices": "No se han detectado dispositivos activos.",
+        "institutional_portals": "Portales institucionales",
+        "unlink": "Desvincular",
+        "session_active": "SESIÓN ACTIVA",
+        "active": "ACTIVO",
+        "session_current_badge": "Sesión actual",
+        "device_unknown": "Dispositivo desconocido",
+        "ip_unknown": "IP desconocida",
+        "location_unknown": "Ubicación desconocida",
+        "recent": "Reciente",
+        "indefinite": "Indefinido",
+        "ip_address": "Dirección IP",
+        "location": "Ubicación",
+        "last_access": "Último acceso",
+        "expires_on": "Expira el",
+        "last_access_prefix": "Último acceso",
+        "cancel": "Cancelar",
+        "unlinking_device": "Desvinculando dispositivo...",
+        "device_unlinked_success": "Dispositivo desvinculado correctamente",
+        "device_unlink_error": "Ocurrió un error al desvincular el dispositivo",
+        "unlink_device_title": "¿Deseas desvincular \"{deviceName}\"?",
+        "unlink_device_description": "Se cerrará la sesión activa en este dispositivo.",
+        "unlink_portal_title": "¿Deseas desvincular el portal \"{portalName}\"?",
+        "unlink_portal_description": "Si desvinculas este portal:",
+        "unlink_portal_consequence_1": "Perderás acceso directo a este portal desde tu cuenta.",
+        "unlink_portal_consequence_2": "Deberás autenticarte nuevamente para acceder al portal.",
+        "unlink_portal_consequence_3": "Podrás volver a vincular el portal cuando lo necesites.",
+        "portals": {
+            "single_investment_window": "Ventanilla Única de Inversión",
+            "scholarship_portal": "Portal de Becas",
+            "public_health_ministry": "Ministerio de Salud Pública y Asistencia Social",
+            "state_reform_council": "Consejo Nacional de la Reforma del Estado"
+        }
+    },
+    "about": {
+        "title": "Acerca de tu Cuenta Única Ciudadana",
+        "subtitle": "La plataforma oficial del gobierno, diseñada para que interactúes con el Estado de manera centralizada, segura y eficiente desde cualquier lugar.",
+        "video_title": "Conoce la plataforma",
+        "video_desc": "Descubre en este video cómo utilizar todas las herramientas que tienes a tu disposición una vez inicias sesión.",
+        "features_title": "¿Qué puedes hacer?",
+        "features_list": {
+            "personal_data": {
+                "title": "Datos personales",
+                "desc": "Accede a los datos personales asociados a su cuenta de forma segura y actualizada."
+            },
+            "history": {
+                "title": "Historial completo",
+                "desc": "Consulta y revisa todos los movimientos y acciones realizadas en la plataforma."
+            },
+            "security": {
+                "title": "Seguridad avanzada",
+                "desc": "Mantén tu cuenta protegida con autenticación de dos factores y revisión de accesos."
+            },
+            "notifications": {
+                "title": "Notificaciones",
+                "desc": "Recibe alertas importantes y actualizaciones sobre los servicios que utilizas."
+            },
+            "ai_assistant": {
+                "title": "Asistente virtual (IA)",
+                "desc": "Recibe ayuda instantánea para resolver dudas sobre la plataforma rápidamente."
+            },
+            "support": {
+                "title": "Soporte técnico",
+                "desc": "Encuentra ayuda especializada y múliples canales de contacto para cualquier problema."
+            }
+        },
+        "stats_list": {
+            "citizens": "Ciudadanos registrados",
+            "queries": "Consultas realizadas",
+            "uptime": "Tiempo de actividad",
+            "availability": "Disponibilidad"
+        }
+    },
+    "support": {
+        "title": "Soporte y Contacto",
+        "subtitle": "¿Tienes dudas o necesitas ayuda con tu Cuenta Única Ciudadana? Estamos aquí para ayudarte y asegurar que tu experiencia sea rápida y segura.",
+        "channels_title": "Canales de Atención",
+        "faqs_title": "Preguntas Frecuentes",
+        "video_tutorials": "Ver tutoriales en video",
+        "faqs_list": {
+            "q1": {
+                "q": "¿Cómo inicio sesión en mi Cuenta Única Ciudadana?",
+                "a": "Para iniciar sesión en tu Cuenta Única Ciudadana, dirígete a la página de inicio de sesión e ingresa tu cédula de identidad o correo electrónico registrado junto con tu contraseña. Si es tu primera vez, deberás crear una cuenta primero."
+            },
+            "q2": {
+                "q": "Olvidé mi contraseña, ¿cómo la recupero?",
+                "a": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            "q3": {
+                "q": "¿Qué servicios puedo acceder con mi Cuenta Única?",
+                "a": "Con tu Cuenta Unica Ciudadana puedes acceder a todos los servicios digitales del gobierno dominicano, incluyendo consultas de estado, verificacion de identidad, y acceso a los portales de las instituciones gubernamentales."
+            },
+            "q4": {
+                "q": "¿Cómo actualizo mis datos personales?",
+                "a": "Puedes actualizar tus datos personales accediendo a la sección 'Datos personales' en tu panel de usuario. Allí podrás modificar tu información de contacto, dirección y otros datos relevantes."
+            },
+            "q5": {
+                "q": "¿Es segura mi información en la plataforma?",
+                "a": "Sí, tu información está protegida con los más altos estándares de seguridad. Utilizamos encriptación de datos y medidas de protección avanzadas para garantizar la privacidad y seguridad de tu información personal."
+            }
+        },
+        "contact": {
+            "phone_label": "Teléfono principal",
+            "email_label": "Correo electrónico",
+            "hours_label": "Horario de atención",
+            "hours_value": "Lunes a Viernes, 8:00 a.m. - 5:00 p.m.",
+            "office_label": "Oficina Central",
+            "office_value": "Av. Rómulo Betancourt #311, edificio corporativo vista 311, Santo Domingo, D.N."
+        }
+    },
+    "notification_drawer": {
+        "title": "Notificaciones",
+        "unread": "{count} nuevas sin leer",
+        "up_to_date": "Al día",
+        "mark_all_read": "Marcar todas como leídas",
+        "all_caught_up": "Todo al día",
+        "no_pending": "No tienes notificaciones pendientes",
+        "view_all": "Ver todas",
+        "items": {
+            "n1": {
+                "title": "Actualización de seguridad",
+                "message": "Se ha actualizado la política de seguridad de tu cuenta. Revisa los cambios en la sección de privacidad.",
+                "time": "Hace 2 horas"
+            },
+            "n2": {
+                "title": "Verificación completada",
+                "message": "Tu autenticación de dos factores ha sido configurada exitosamente.",
+                "time": "Hace 1 día"
+            },
+            "n3": {
+                "title": "Revisión de seguridad",
+                "message": "Te recomendamos revisar los dispositivos conectados a tu cuenta periódicamente.",
+                "time": "Hace 2 días"
+            },
+            "n4": {
+                "title": "Intento de acceso sospechoso",
+                "message": "Se detectó un intento de acceso desde una ubicación no reconocida. Si no fuiste tú, cambia tu contraseña.",
+                "time": "Hace 3 días"
+            },
+            "n5": {
+                "title": "Nueva funcionalidad disponible",
+                "message": "Ya puedes usar passkeys para acceder a tu cuenta sin contraseña. Configúralo en ajustes de seguridad.",
+                "time": "Hace 1 semana"
+            }
+        }
+    },
+    "sidebar": {
+        "home": "Inicio",
+        "personal_data": "Datos Personales",
+        "support": "Soporte y Ayuda",
+        "about": "Acerca de",
+        "security": "Seguridad",
+        "history": "Historial",
+        "logout": "Cerrar sesión",
+        "logging_out": "Cerrando sesión..."
+    },
+    "common": {
+        "cancel": "Cancelar",
+        "processing": "Procesando...",
+        "loading": "Cargando...",
+        "unlink": "Desvincular"
+    },
+    "profile": {
+        "id_number": "Cédula",
+        "identity_verified": "Identidad verificada",
+        "personal_information": "Información personal",
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "identity_card": "Cédula de identidad",
+        "passport": "Pasaporte",
+        "sex": "Sexo",
+        "birth_date": "Fecha de nacimiento",
+        "nationality": "Nacionalidad",
+        "contact_information": "Información de contacto",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "official_records_note": "La información mostrada proviene de registros oficiales (JCE, TSS, DGII) y está sincronizada con el sistema. Para modificar tus datos, debes dirigirte a las oficinas correspondientes de la Junta Central Electoral.",
+        "not_registered": "No registrado",
+        "verified": "Verificado",
+        "gender_male": "Masculino",
+        "gender_female": "Femenino",
+        "gender_other": "Otro"
+    },
+    "assistant": {
+        "title": "Asistente virtual",
+        "status_active": "Siempre activo",
+        "welcome_message": "¡Hola! Soy tu asistente virtual de Cuenta Única Ciudadana. Estoy aquí para ayudarte con cualquier pregunta sobre la plataforma, seguridad de tu cuenta o cómo usar nuestros servicios. ¿En qué puedo ayudarte hoy?",
+        "response_password": "Para cambiar tu contraseña, ve a 'Privacidad y seguridad' en el menú lateral y selecciona 'Cambiar contraseña'. Te recomendamos usar una contraseña segura con al menos 8 caracteres, incluyendo mayúsculas, minúsculas y números.",
+        "response_2fa": "La autenticación de dos factores agrega una capa extra de seguridad a tu cuenta. Puedes configurarla en 'Privacidad y seguridad' > 'Autenticación multifactor'. Puedes elegir entre correo electrónico, SMS o una aplicación de autenticación.",
+        "response_passkey": "Los Passkeys te permiten acceder sin contraseña usando tu huella dactilar, Face ID o PIN del dispositivo. Para configurarlos, ve a 'Privacidad y seguridad' > 'Creación y administración de Passkeys'. Es más seguro y conveniente que las contraseñas tradicionales.",
+        "response_services": "Con tu Cuenta Única puedes acceder a todos los servicios gubernamentales digitales. Cada institución tiene sus propios servicios disponibles a través de sus portales enlazados con tu cuenta.",
+        "response_identity": "Puedes usar tu número de cédula para iniciar sesión en la plataforma. Tu cédula es tu identificador principal para acceder a los servicios del Estado.",
+        "response_profile": "Tus datos personales se encuentran en la sección 'Datos personales' del menú. Allí puedes ver tu información registrada. Para modificar datos oficiales como nombre o fecha de nacimiento, debes acudir a las oficinas correspondientes.",
+        "response_security": "Tu seguridad es nuestra prioridad. Utilizamos encriptación de datos, autenticación multifactor y monitoreo de accesos. En 'Privacidad y seguridad' puedes revisar tus dispositivos conectados, cambiar contraseñas y configurar medidas adicionales de protección.",
+        "response_devices": "En 'Historial de actividad' puedes ver todos los dispositivos desde donde has accedido a tu cuenta. Si detectas algún acceso sospechoso, puedes desvincular dispositivos y cambiar tu contraseña inmediatamente.",
+        "response_support": "Para soporte adicional puedes: 1) Llamar al (809)-123-4567, 2) Escribir a soporte@cuentaciudadana.gob.do, 3) Visitar la sección 'Soporte y ayuda' en el menú, o 4) consultar las preguntas frecuentes (FAQs).",
+        "response_greeting": "¡Hola! Me da mucho gusto saludarte. Estoy aquí para ayudarte con cualquier duda sobre tu Cuenta Única Ciudadana. ¿Hay algo específico en lo que pueda asistirte?",
+        "response_thanks": "¡De nada! Es un placer ayudarte. Si tienes más preguntas sobre tu Cuenta Única Ciudadana, no dudes en preguntarme. Estoy aquí para hacer tu experiencia más fácil y segura.",
+        "response_default": "Entiendo tu consulta. Te recomiendo revisar las secciones del menú lateral para encontrar la información que necesitas, o puedes contactar a nuestro soporte técnico al (809)-123-4567 o soporte@cuentaciudadana.gob.do para asistencia personalizada. ¿Hay algo más específico en lo que pueda ayudarte?",
+        "response_error": "Lo siento, hubo un error procesando tu mensaje. Por favor intenta nuevamente o contacta a soporte técnico.",
+        "input_placeholder": "Escribe tu mensaje...",
+        "generative_ai": "IA generativa"
+    },
+    "auth": {
+        "logging_out": "Cerrando sesión...",
+        "logout_success": "Sesión cerrada correctamente",
+        "logout_error": "Error al cerrar sesión"
     }
 }

@@ -3,6 +3,7 @@
 import { X, Bell, CheckCircle, AlertTriangle, Info, Calendar } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useT } from "@/hooks/use-t"
 
 interface Notification {
   id: string
@@ -19,47 +20,47 @@ interface NotificationDrawerProps {
 }
 
 export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps) {
+  const t = useT("notification_drawer")
+
   const notifications: Notification[] = [
     {
       id: "1",
       type: "info",
-      title: "Actualización de seguridad",
-      message:
-        "Se ha actualizado la política de seguridad de tu cuenta. Revisa los cambios en la sección de privacidad.",
-      time: "Hace 2 horas",
+      title: t("items.n1.title"),
+      message: t("items.n1.message"),
+      time: t("items.n1.time"),
       isRead: false,
     },
     {
       id: "2",
       type: "success",
-      title: "Verificacion completada",
-      message: "Tu autenticacion de dos factores ha sido configurada exitosamente.",
-      time: "Hace 1 dia",
+      title: t("items.n2.title"),
+      message: t("items.n2.message"),
+      time: t("items.n2.time"),
       isRead: false,
     },
     {
       id: "3",
       type: "reminder",
-      title: "Revision de seguridad",
-      message: "Te recomendamos revisar los dispositivos conectados a tu cuenta periodicamente.",
-      time: "Hace 2 dias",
+      title: t("items.n3.title"),
+      message: t("items.n3.message"),
+      time: t("items.n3.time"),
       isRead: true,
     },
     {
       id: "4",
       type: "warning",
-      title: "Intento de acceso sospechoso",
-      message:
-        "Se detectó un intento de acceso desde una ubicación no reconocida. Si no fuiste tú, cambia tu contraseña.",
-      time: "Hace 3 días",
+      title: t("items.n4.title"),
+      message: t("items.n4.message"),
+      time: t("items.n4.time"),
       isRead: true,
     },
     {
       id: "5",
       type: "info",
-      title: "Nueva funcionalidad disponible",
-      message: "Ya puedes usar passkeys para acceder a tu cuenta sin contraseña. Configúralo en ajustes de seguridad.",
-      time: "Hace 1 semana",
+      title: t("items.n5.title"),
+      message: t("items.n5.message"),
+      time: t("items.n5.time"),
       isRead: true,
     },
   ]
@@ -113,11 +114,11 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
               <Bell size={20} className="text-secondary" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Notificaciones</h2>
+              <h2 className="text-lg font-bold text-foreground">{t("title")}</h2>
               {unreadCount > 0 ? (
-                <p className="text-xs font-medium text-secondary mt-0.5">{unreadCount} nuevas sin leer</p>
+                <p className="text-xs font-medium text-secondary mt-0.5">{t("unread", { count: unreadCount })}</p>
               ) : (
-                <p className="text-xs text-muted-foreground mt-0.5">Al día</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("up_to_date")}</p>
               )}
             </div>
           </div>
@@ -129,7 +130,7 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
         {/* Actions */}
         <div className="px-6 py-3 border-b border-border flex justify-end">
           <button className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">
-            Marcar todas como leídas
+            {t("mark_all_read")}
           </button>
         </div>
 
@@ -141,8 +142,8 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
                 <div className="bg-secondary/5 p-4 rounded-full mb-4">
                   <Bell size={32} className="text-muted-foreground/50" />
                 </div>
-                <p className="text-foreground font-medium mb-1">Todo al día</p>
-                <p className="text-sm text-muted-foreground">No tienes notificaciones pendientes</p>
+                <p className="text-foreground font-medium mb-1">{t("all_caught_up")}</p>
+                <p className="text-sm text-muted-foreground">{t("no_pending")}</p>
               </div>
             ) : (
               notifications.map((notification) => (
@@ -182,7 +183,7 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
         {/* Footer */}
         <div className="p-4 border-t border-border">
           <Button variant="outline" className="w-full rounded-xl bg-transparent border-border hover:bg-secondary/5 hover:text-secondary">
-            Ver todas
+            {t("view_all")}
           </Button>
         </div>
       </div>

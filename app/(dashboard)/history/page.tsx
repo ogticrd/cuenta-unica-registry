@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context"
 import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
 import { toast } from "sonner"
 import { History } from "lucide-react"
+import { useLocale, useT } from "@/hooks/use-t"
 
 type DeviceStatus = {
   text: string
@@ -29,6 +30,10 @@ type DeviceRow = {
 
 export default function HistoryPage() {
   const { session, refreshSession } = useAuth()
+  const t = useT("history")
+  const locale = useLocale()
+  const dateLocale = locale === "es" ? "es-DO" : "en-US"
+
   const [unlinkDeviceModal, setUnlinkDeviceModal] = useState<{
     isOpen: boolean
     deviceName: string
@@ -57,53 +62,66 @@ export default function HistoryPage() {
     ? [session, ...(Array.isArray(session.other_sessions) ? session.other_sessions : [])]
     : []
 
+  const formatSessionDate = (value: string | undefined, fallback: string) => {
+    if (!value) return fallback
+
+    const parsedDate = new Date(value)
+    if (Number.isNaN(parsedDate.getTime())) return fallback
+
+    return parsedDate.toLocaleString(dateLocale)
+  }
+
   const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
     const device = currentSession.devices?.[0]
     const isCurrentSession = index === 0
 
     return {
       id: currentSession.id || `fallback-${index}`,
-      device: device?.user_agent || "Dispositivo Desconocido",
-      ipAddress: device?.ip_address || "IP Desconocida",
-      location: device?.location || "Ubicación Desconocida",
-      lastAccess: currentSession.authenticated_at
-        ? new Date(currentSession.authenticated_at).toLocaleString("es-DO")
-        : "Reciente",
-      expirationDate: currentSession.expires_at
-        ? new Date(currentSession.expires_at).toLocaleString("es-DO")
-        : "Indefinido",
+      device: device?.user_agent || t("device_unknown"),
+      ipAddress: device?.ip_address || t("ip_unknown"),
+      location: device?.location || t("location_unknown"),
+      lastAccess: formatSessionDate(currentSession.authenticated_at, t("recent")),
+      expirationDate: formatSessionDate(currentSession.expires_at, t("indefinite")),
       isCurrentSession,
       status: isCurrentSession
-        ? { text: "SESIÓN ACTIVA", variant: "current" }
-        : { text: "ACTIVO", variant: "active" },
+        ? { text: t("session_active"), variant: "current" }
+        : { text: t("active"), variant: "active" },
     }
+  })
+
+  const portalLastAccess = new Date("2023-01-04T13:30:00").toLocaleString(dateLocale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   })
 
   const portals = [
     {
       id: 1,
       name: "ONAPI",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
+      lastAccess: portalLastAccess,
     },
     {
       id: 2,
-      name: "Ventanilla Única de Inversión",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
+      name: t("portals.single_investment_window"),
+      lastAccess: portalLastAccess,
     },
     {
       id: 3,
-      name: "Portal de Becas",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
+      name: t("portals.scholarship_portal"),
+      lastAccess: portalLastAccess,
     },
     {
       id: 4,
-      name: "Ministerio de Salud Pública y Asistencia Social",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
+      name: t("portals.public_health_ministry"),
+      lastAccess: portalLastAccess,
     },
     {
       id: 5,
-      name: "Consejo Nacional de la Reforma del Estado",
-      lastAccess: "Enero 4, 2023 - 1:30pm",
+      name: t("portals.state_reform_council"),
+      lastAccess: portalLastAccess,
     },
   ]
 
@@ -129,17 +147,17 @@ export default function HistoryPage() {
     if (!unlinkDeviceModal.deviceId) return
 
     setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: true }))
-    const toastId = toast.loading("Desvinculando dispositivo...")
+    const toastId = toast.loading(t("unlinking_device"))
 
     sessionService
       .revokeSession(unlinkDeviceModal.deviceId)
       .then(() => {
-        toast.success("Dispositivo desvinculado correctamente", { id: toastId })
+        toast.success(t("device_unlinked_success"), { id: toastId })
         refreshSession()
         handleCloseUnlinkDeviceModal()
       })
       .catch(() => {
-        toast.error("Ocurrió un error al desvincular el dispositivo", { id: toastId })
+        toast.error(t("device_unlink_error"), { id: toastId })
       })
       .finally(() => {
         setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }))
@@ -176,22 +194,20 @@ export default function HistoryPage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-12 pb-12">
-        {/* Header Section */}
         <div className="pt-4 pb-8 border-b dark:border-border">
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">Historial de Actividad</h1>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">{t("title")}</h1>
             <div className="bg-primary/10 text-primary p-2 rounded-full">
               <History size={24} />
             </div>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed">
-            Consulta y gestiona los dispositivos y portales institucionales vinculados a tu cuenta.
+            {t("subtitle")}
           </p>
         </div>
 
         <div className="space-y-12">
-          {/* Dispositivos Section */}
-          <SecuritySection title="Dispositivos vinculados">
+          <SecuritySection title={t("linked_devices")}>
             <div className="space-y-0">
               {devices.length > 0 ? (
                 devices.map((device) => (
@@ -212,14 +228,13 @@ export default function HistoryPage() {
                 ))
               ) : (
                 <div className="py-8 text-muted-foreground text-center border dark:border-border rounded-lg bg-card">
-                  No se han detectado dispositivos activos.
+                  {t("no_devices")}
                 </div>
               )}
             </div>
           </SecuritySection>
 
-          {/* Portales institucionales Section */}
-          <SecuritySection title="Portales institucionales">
+          <SecuritySection title={t("institutional_portals")}>
             <div className="space-y-0">
               {portals.map((portal) => (
                 <PortalItem
@@ -233,35 +248,33 @@ export default function HistoryPage() {
           </SecuritySection>
         </div>
 
-        {/* Unlink Device Modal */}
         <ConfirmationModal
           isOpen={unlinkDeviceModal.isOpen}
           onClose={handleCloseUnlinkDeviceModal}
           onConfirm={handleConfirmUnlinkDevice}
-          title={`¿Deseas desvincular "${unlinkDeviceModal.deviceName}"?`}
-          description="Se cerrará la sesión activa en este dispositivo."
-          confirmText="DESVINCULAR"
-          cancelText="CANCELAR"
+          title={t("unlink_device_title", { deviceName: unlinkDeviceModal.deviceName })}
+          description={t("unlink_device_description")}
+          confirmText={t("unlink")}
+          cancelText={t("cancel")}
           confirmVariant="destructive"
           isLoading={unlinkDeviceModal.isLoading}
         />
 
-        {/* Unlink Portal Modal */}
         <ConfirmationModal
           isOpen={unlinkPortalModal.isOpen}
           onClose={handleCloseUnlinkPortalModal}
           onConfirm={handleConfirmUnlinkPortal}
-          title={`¿Deseas desvincular el portal "${unlinkPortalModal.portalName}"?`}
-          description="Si desvinculas este portal"
-          confirmText="DESVINCULAR"
-          cancelText="CANCELAR"
+          title={t("unlink_portal_title", { portalName: unlinkPortalModal.portalName })}
+          description={t("unlink_portal_description")}
+          confirmText={t("unlink")}
+          cancelText={t("cancel")}
           confirmVariant="destructive"
           isLoading={unlinkPortalModal.isLoading}
         >
           <ul className="space-y-2 text-sm text-muted-foreground mt-4 mb-2 pl-4 border-l-2 border-primary/20 dark:border-primary/25 dark:text-white">
-            <li>• Perderás acceso directo a este portal desde tu cuenta.</li>
-            <li>• Deberás autenticarte nuevamente para acceder al portal.</li>
-            <li>• Podrás volver a vincular el portal cuando lo necesites.</li>
+            <li>{t("unlink_portal_consequence_1")}</li>
+            <li>{t("unlink_portal_consequence_2")}</li>
+            <li>{t("unlink_portal_consequence_3")}</li>
           </ul>
         </ConfirmationModal>
       </div>
