@@ -2,8 +2,8 @@
     "login": {
         "loading": "Cargando formulario de acceso...",
         "spinner": "Cargando...",
-        "welcome_title": "¡Bienvenido a la Plataforma Única de Autenticación",
-        "welcome_highlight": "Ciudadana",
+        "welcome_title": "¡Bienvenido a la Plataforma Única de Autenticación <highlight>{citizen}</highlight>",
+        "citizen": "Ciudadana",
         "welcome_subtitle": "Accede o regístrate con un único usuario y contraseña, para consultar todos los servicios gubernamentales disponibles.",
         "welcome_body": "Una manera fácil y cómoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.",
         "card_title": "Acceso Cuenta Única",

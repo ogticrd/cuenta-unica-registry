@@ -2,8 +2,8 @@
     "login": {
         "loading": "Loading access form...",
         "spinner": "Loading...",
-        "welcome_title": "Welcome to the Unified Citizen Authentication",
-        "welcome_highlight": "Platform",
+        "welcome_title": "Welcome to the Unified <highlight>{citizen}</highlight> Authentication Platform",
+        "citizen": "Citizen",
         "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
         "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
         "card_title": "Cuenta Única Access",

@@ -10,10 +10,10 @@ export function WelcomeSection() {
     <div className="flex flex-col justify-center space-y-6 text-left">
       <div className="space-y-4">
         <h1 className="text-3xl lg:text-4xl font-medium text-primary dark:text-blue-400 leading-tight">
-          {t("welcome_title")}{" "}
-          <span className="text-accent dark:text-red-400 font-bold">
-            {t("welcome_highlight")}
-          </span>!
+          {t.rich("welcome_title", {
+            citizen: t("citizen"),
+            highlight: (chunks) => <span className="text-accent dark:text-red-400 font-bold">{chunks}</span>
+          })}!
         </h1>
 
         <p className="text-lg text-primary dark:text-blue-200 font-medium leading-relaxed">
