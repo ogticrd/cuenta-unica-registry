@@ -1,42 +1,27 @@
 import { Suspense } from "react"
-import { Recovery } from "@ory/elements-react/theme"
-import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app"
+import { Verification } from "@ory/elements-react/theme"
+import { getVerificationFlow, OryPageParams } from "@ory/nextjs/app"
 import { getServerOryConfig } from "@/lib/ory/server-config"
 
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import {
-  CucRecoveryHeader,
-  CucRecoveryFooter,
-} from "@/components/auth/ory-components"
 
-async function RecoveryFlow({ searchParams }: OryPageParams) {
+async function VerificationFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig()
-  const flow = await getRecoveryFlow(dynamicConfig, searchParams)
+  const flow = await getVerificationFlow(dynamicConfig, searchParams)
 
   if (!flow) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-600 dark:text-gray-400">Cargando formulario de recuperación...</p>
+        <p className="text-gray-600 dark:text-gray-400">Cargando verificación...</p>
       </div>
     )
   }
 
-  return (
-    <Recovery
-      flow={flow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucRecoveryHeader,
-          Footer: CucRecoveryFooter,
-        },
-      }}
-    />
-  )
+  return <Verification flow={flow} config={dynamicConfig} />
 }
 
-export default async function ForgotPasswordPage(props: OryPageParams) {
+export default async function VerificationPage(props: OryPageParams) {
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
       <Header />
@@ -52,9 +37,7 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
                 </div>
               }
             >
-              <RecoveryFlow
-                searchParams={props.searchParams}
-              />
+              <VerificationFlow searchParams={props.searchParams} />
             </Suspense>
           </div>
         </div>
@@ -64,4 +47,3 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
     </div>
   )
 }
-

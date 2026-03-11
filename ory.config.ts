@@ -1,8 +1,9 @@
 import type { OryClientConfiguration } from "@ory/elements-react"
+import { DEFAULT_LOCALE } from "./lib/constants/locales"
 
-const config = {
+export const getOryConfig = (locale: string = DEFAULT_LOCALE): OryClientConfiguration => ({
   intl: {
-    locale: "es",
+    locale,
   },
   project: {
     name: "Cuenta Única Ciudadana",
@@ -19,6 +20,8 @@ const config = {
     verification_enabled: true,
     locale_behavior: "respect_accept_language",
   },
-} satisfies OryClientConfiguration
+})
+
+const config = getOryConfig(DEFAULT_LOCALE)
 
 export default config

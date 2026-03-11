@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { Login } from "@ory/elements-react/theme"
 import { getLoginFlow, OryPageParams } from "@ory/nextjs/app"
-import config from "@/ory.config"
+import { getServerOryConfig } from "@/lib/ory/server-config"
 
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
@@ -12,7 +12,8 @@ import {
 } from "@/components/auth/ory-components"
 
 async function LoginFlow({ searchParams }: OryPageParams) {
-  const flow = await getLoginFlow(config, searchParams)
+  const dynamicConfig = await getServerOryConfig()
+  const flow = await getLoginFlow(dynamicConfig, searchParams)
 
   if (!flow) {
     return (
@@ -25,7 +26,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
   return (
     <Login
       flow={flow}
-      config={config}
+      config={dynamicConfig}
       components={{
         Card: {
           Header: CucCardHeader,
