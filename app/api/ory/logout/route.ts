@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { oryClient } from "@/lib/ory/client"
 import { getServerCookies, extractSetCookieHeaders } from "@/lib/ory/cookies"
+import { ROUTES } from "@/lib/constants/routes"
 
 /**
  * POST /api/ory/logout
@@ -40,7 +41,7 @@ export async function POST() {
         // Step 3: Forward Set-Cookie headers from Ory to clean up browser cookies
         const response = NextResponse.json({
             success: true,
-            redirect_to: "/login",
+            redirect_to: ROUTES.login,
         })
 
         const setCookies = extractSetCookieHeaders(logoutResponse)
@@ -61,7 +62,7 @@ export async function POST() {
         if (status === 401 || status === 403) {
             return NextResponse.json({
                 success: true,
-                redirect_to: "/login",
+                redirect_to: ROUTES.login,
             })
         }
 

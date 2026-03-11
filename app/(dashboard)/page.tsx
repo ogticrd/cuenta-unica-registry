@@ -8,6 +8,7 @@ import { RecentActivityItem } from "@/components/dashboard/recent-activity-item"
 import { ActionButton } from "@/components/dashboard/action-button"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/constants/routes"
 import { User, Shield, Clock, Bell, Smartphone, Globe, CheckCircle, AlertTriangle, Info, Calendar, Activity, Lock } from 'lucide-react'
 
 export default function DashboardPage() {
@@ -23,7 +24,7 @@ export default function DashboardPage() {
     })
   }
 
-  const isVerified = session?.identity?.verifiable_addresses?.some((addr: any) => addr.verified === true) || false
+  const isVerified = session?.identity?.verifiable_addresses?.some((addr) => addr.verified === true) || false
   const devicesCount = session ? 1 + (session.other_sessions?.length || 0) : 1
   const isAal2 = session?.authenticator_assurance_level === "aal2"
   const securityLevel = isAal2 ? "Alto" : "Estándar"
@@ -34,25 +35,25 @@ export default function DashboardPage() {
       title: "Datos Personales",
       description: "Consulta y actualiza tu información personal registrada",
       icon: <User size={24} />,
-      href: "/settings"
+      href: ROUTES.settings
     },
     {
       title: "Privacidad y Seguridad",
       description: "Configura la seguridad de tu cuenta y revisa accesos",
       icon: <Shield size={24} />,
-      href: "/settings",
+      href: ROUTES.settings,
     },
     {
       title: "Historial de Actividad",
       description: "Revisa dispositivos conectados y actividad reciente",
       icon: <Clock size={24} />,
-      href: "/history"
+      href: ROUTES.history
     },
     {
       title: "Soporte y Ayuda",
       description: "Encuentra ayuda y contacta con nuestro equipo de soporte",
       icon: <Bell size={24} />,
-      href: "/support"
+      href: ROUTES.support
     }
   ]
 
@@ -104,13 +105,13 @@ export default function DashboardPage() {
       title: "Mi Historial",
       description: "Revisa tu historial de actividad y accesos recientes",
       icon: <Activity size={20} />,
-      href: "/history"
+      href: ROUTES.history
     },
     {
       title: "Configuracion de Cuenta",
       description: "Administra la seguridad y privacidad de tu cuenta",
       icon: <Lock size={20} />,
-      href: "/settings"
+      href: ROUTES.settings
     }
   ]
 
@@ -199,7 +200,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Actividad Reciente"
             action={
-              <ActionButton variant="secondary" onClick={() => router.push('/history')}>
+              <ActionButton variant="secondary" onClick={() => router.push(ROUTES.history)}>
                 Ver todo
               </ActionButton>
             }
@@ -222,7 +223,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Estado de Seguridad"
             action={
-              <ActionButton variant="secondary" onClick={() => router.push('/settings')}>
+              <ActionButton variant="secondary" onClick={() => router.push(ROUTES.settings)}>
                 Configurar
               </ActionButton>
             }
@@ -296,7 +297,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   Te recomendamos activar la autenticación de dos factores y configurar un Passkey para mayor protección de tu cuenta.
                 </p>
-                <ActionButton variant="primary" onClick={() => router.push('/settings')}>
+                <ActionButton variant="primary" onClick={() => router.push(ROUTES.settings)}>
                   Ir a Seguridad
                 </ActionButton>
               </div>
@@ -315,7 +316,7 @@ export default function DashboardPage() {
                 </p>
                 <ActionButton
                   variant="secondary"
-                  onClick={() => router.push('/settings')}
+                  onClick={() => router.push(ROUTES.settings)}
                   className="hover:bg-secondary/10"
                 >
                   Configurar Ahora

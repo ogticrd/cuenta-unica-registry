@@ -4,6 +4,7 @@ import type React from "react"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { ROUTES } from "@/lib/constants/routes"
 
 interface ProtectedRouteProps {
     children: React.ReactNode
@@ -15,7 +16,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     useEffect(() => {
         if (!isLoading && !user) {
-            router.push("/login")
+            router.push(ROUTES.login)
         }
     }, [user, isLoading, router])
 

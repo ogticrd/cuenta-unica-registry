@@ -5,9 +5,9 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { SecuritySection } from "@/components/dashboard/security-section"
 import { DeviceItem } from "@/components/dashboard/device-item"
 import { PortalItem } from "@/components/dashboard/portal-item"
-import { UnlinkDeviceModal } from "@/components/dashboard/unlink-device-modal"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { useAuth } from "@/lib/auth-context"
+import { sessionService } from "@/lib/services/ory/session.service"
 import { toast } from "sonner"
 import { History } from "lucide-react"
 
@@ -117,32 +117,25 @@ export default function HistoryPage() {
     })
   }
 
-  const handleConfirmUnlinkDevice = async () => {
+  const handleConfirmUnlinkDevice = () => {
     if (!unlinkDeviceModal.deviceId) return
 
     setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: true }))
     const toastId = toast.loading("Desvinculando dispositivo...")
 
-    try {
-      const response = await fetch(`/api/ory/sessions/${unlinkDeviceModal.deviceId}`, {
-        method: "DELETE",
+    sessionService
+      .revokeSession(unlinkDeviceModal.deviceId)
+      .then(() => {
+        toast.success("Dispositivo desvinculado correctamente", { id: toastId })
+        refreshSession()
+        handleCloseUnlinkDeviceModal()
       })
-
-      if (!response.ok) {
-        throw new Error("Failed to unlink device")
-      }
-
-      toast.success("Dispositivo desvinculado correctamente", { id: toastId })
-
-      // Refresh context to reload the devices list
-      await refreshSession()
-
-      handleCloseUnlinkDeviceModal()
-    } catch (error) {
-      console.error("Error al desvincular dispositivo:", error)
-      toast.error("Ocurrió un error al desvincular el dispositivo", { id: toastId })
-      setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }))
-    }
+      .catch(() => {
+        toast.error("Ocurrió un error al desvincular el dispositivo", { id: toastId })
+      })
+      .finally(() => {
+        setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }))
+      })
   }
 
   const handleOpenUnlinkPortalModal = (portalId: number, portalName: string) => {
@@ -163,20 +156,13 @@ export default function HistoryPage() {
     })
   }
 
-  const handleConfirmUnlinkPortal = async () => {
+  const handleConfirmUnlinkPortal = () => {
     setUnlinkPortalModal((prev) => ({ ...prev, isLoading: true }))
 
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log("Desvincular portal:", unlinkPortalModal.portalId)
-
-      // Close modal after successful unlink
-      handleCloseUnlinkPortalModal()
-    } catch (error) {
-      console.error("Error al desvincular portal:", error)
-      setUnlinkPortalModal((prev) => ({ ...prev, isLoading: false }))
-    }
+    // TODO: replace with portalService.revokePortal() once the endpoint exists
+    new Promise((resolve) => setTimeout(resolve, 2000))
+      .then(() => handleCloseUnlinkPortalModal())
+      .finally(() => setUnlinkPortalModal((prev) => ({ ...prev, isLoading: false })))
   }
 
   return (
@@ -236,11 +222,15 @@ export default function HistoryPage() {
         </div>
 
         {/* Unlink Device Modal */}
-        <UnlinkDeviceModal
+        <ConfirmationModal
           isOpen={unlinkDeviceModal.isOpen}
           onClose={handleCloseUnlinkDeviceModal}
           onConfirm={handleConfirmUnlinkDevice}
-          deviceName={unlinkDeviceModal.deviceName}
+          title={`¿Deseas desvincular "${unlinkDeviceModal.deviceName}"?`}
+          description="Se cerrará la sesión activa en este dispositivo."
+          confirmText="DESVINCULAR"
+          cancelText="CANCELAR"
+          confirmVariant="destructive"
           isLoading={unlinkDeviceModal.isLoading}
         />
 

@@ -1,13 +1,11 @@
 "use server"
 
 import { cookies } from "next/headers"
-
-const SUPPORTED_LOCALES = ["es", "en"] as const
-type Locale = typeof SUPPORTED_LOCALES[number]
+import { LOCALES, LOCALE_COOKIE, type Locale } from "@/lib/constants/locales"
 
 export async function setLocale(locale: Locale) {
     const cookieStore = await cookies()
-    cookieStore.set("NEXT_LOCALE", locale, {
+    cookieStore.set(LOCALE_COOKIE, locale, {
         path: "/",
         maxAge: 31536000, // 1 year
         sameSite: "lax",

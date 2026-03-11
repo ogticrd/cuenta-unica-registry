@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Home, User, HelpCircle, Info, Shield, Clock, LogOut, X, Loader2 } from 'lucide-react'
 import { useAuth } from "@/lib/auth-context"
+import { ROUTES } from "@/lib/constants/routes"
 import { Button } from "@/components/ui/button"
 import { DashboardSidebarProps } from './dashboard-sidebar-props'
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar"
@@ -11,7 +12,6 @@ import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar"
 export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: DashboardSidebarProps) {
   const { user, logout, isLoggingOut } = useAuth()
   const pathname = usePathname()
-  console.log(user)
   return (
     <>
       {/* Mobile Overlay */}
@@ -75,8 +75,8 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                        ? "text-secondary bg-secondary/10 font-bold"
-                        : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground font-medium"
+                      ? "text-secondary bg-secondary/10 font-bold"
+                      : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground font-medium"
                       }`}
                   >
                     <Icon size={18} className={isActive ? "text-secondary" : ""} />
@@ -115,10 +115,10 @@ export function DashboardSidebar({ isMobileMenuOpen, setIsMobileMenuOpen }: Dash
 }
 
 const menuItems = [
-  { icon: Home, label: "Inicio", href: "/" },
-  { icon: User, label: "Datos personales", href: "/profile" },
-  { icon: HelpCircle, label: "Soporte y ayuda", href: "/support" },
-  { icon: Info, label: "Conoce la plataforma", href: "/about" },
-  { icon: Shield, label: "Privacidad y seguridad", href: "/settings" },
-  { icon: Clock, label: "Historial de actividad", href: "/history" },
+  { icon: Home, label: "Inicio", href: ROUTES.dashboard },
+  { icon: User, label: "Datos personales", href: ROUTES.profile },
+  { icon: HelpCircle, label: "Soporte y ayuda", href: ROUTES.support },
+  { icon: Info, label: "Conoce la plataforma", href: ROUTES.about },
+  { icon: Shield, label: "Privacidad y seguridad", href: ROUTES.settings },
+  { icon: Clock, label: "Historial de actividad", href: ROUTES.history },
 ]

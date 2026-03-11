@@ -3,6 +3,9 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { ROUTES } from "@/lib/constants/routes"
+import { authService } from "@/lib/services/ory/auth.service"
+import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
 
 interface User {
   id: string
@@ -22,9 +25,9 @@ interface User {
 
 interface AuthContextType {
   user: User | null
-  session: Record<string, any> | null
-  logout: () => Promise<void>
-  refreshSession: () => Promise<void>
+  session: OrySession | null
+  logout: () => void
+  refreshSession: () => void
   isLoading: boolean
   isLoggingOut: boolean
   isAuthenticated: boolean
@@ -41,7 +44,7 @@ function mapIdentityToUser(identity: {
   traits?: Record<string, unknown>
 }): User {
   const traits = (identity.traits || {}) as Record<string, unknown>
-  console.log("traits", traits)
+
   // Handle name as either a string or an object { first, last }
   let firstName = ""
   let lastName = ""
@@ -71,66 +74,54 @@ function mapIdentityToUser(identity: {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Record<string, any> | null>(null)
+  const [session, setSession] = useState<OrySession | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
 
-  const refreshSession = useCallback(async () => {
-    try {
-      const response = await fetch("/api/ory/session", {
-        credentials: "include",
+  const refreshSession = useCallback(() => {
+    sessionService
+      .getSession()
+      .then((data) => {
+        if (data.isAuthenticated && data.identity) {
+          setUser(mapIdentityToUser(data.identity))
+          setSession(data.session ? { ...data.session, other_sessions: data.otherSessions ?? [] } : null)
+        } else {
+          setUser(null)
+          setSession(null)
+        }
       })
-      const data = await response.json()
-
-      if (data.isAuthenticated && data.identity) {
-        setUser(mapIdentityToUser(data.identity))
-        setSession(data.session ? { ...data.session, other_sessions: data.otherSessions || [] } : null)
-      } else {
+      .catch(() => {
         setUser(null)
         setSession(null)
-      }
-    } catch (error) {
-      console.error("Failed to fetch session:", error)
-      setUser(null)
-      setSession(null)
-    } finally {
-      setIsLoading(false)
-    }
+      })
+      .finally(() => setIsLoading(false))
   }, [])
 
   useEffect(() => {
     refreshSession()
   }, [refreshSession])
 
-  const logout = async () => {
+  const logout = () => {
     if (isLoggingOut) return
     setIsLoggingOut(true)
     const toastId = toast.loading("Cerrando sesión...")
-    try {
-      const response = await fetch("/api/ory/logout", {
-        method: "POST",
-        credentials: "include",
+
+    authService
+      .logout()
+      .then((data) => {
+        setUser(null)
+        toast.success("Sesión cerrada correctamente", { id: toastId })
+        router.push(data.redirect_to ?? ROUTES.login)
       })
-      const data = await response.json()
-
-      setUser(null)
-      toast.success("Sesión cerrada correctamente", { id: toastId })
-
-      if (data.redirect_to) {
-        router.push(data.redirect_to)
-      } else {
-        router.push("/login")
-      }
-    } catch (error) {
-      console.error("Logout error:", error)
-      setUser(null)
-      toast.error("Error al cerrar sesión", { id: toastId })
-      router.push("/login")
-    } finally {
-      setIsLoggingOut(false)
-    }
+      .catch(() => {
+        setUser(null)
+        toast.error("Error al cerrar sesión", { id: toastId })
+        router.push(ROUTES.login)
+      })
+      .finally(() => setIsLoggingOut(false))
   }
+
 
   return (
     <AuthContext.Provider
