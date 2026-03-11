@@ -1,0 +1,28 @@
+{
+    "login": {
+        "loading": "Cargando formulario de acceso...",
+        "spinner": "Cargando...",
+        "welcome_title": "¡Bienvenido a la Plataforma Única de Autenticación",
+        "welcome_highlight": "Ciudadana",
+        "welcome_subtitle": "Accede o regístrate con un único usuario y contraseña, para consultar todos los servicios gubernamentales disponibles.",
+        "welcome_body": "Una manera fácil y cómoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.",
+        "card_title": "Acceso Cuenta Única",
+        "card_subtitle": "Puedes acceder a tu cuenta con tu número de identidad \"Cédula\" o correo electrónico registrado",
+        "no_account": "¿No tienes cuenta?",
+        "register_cta": "Regístrate, accede a los servicios del Estado Dominicano con un único usuario y contraseña, de forma segura y confiable",
+        "create_account": "CREAR SU CUENTA ÚNICA CIUDADANA"
+    },
+    "footer": {
+        "know_us": "CONÓCENOS",
+        "know_us_body": "Oficina Gubernamental de Tecnologías de la Información y Comunicación",
+        "contact": "CONTÁCTANOS",
+        "find_us": "BÚSCANOS",
+        "find_us_address": "Av. 27 de Febrero #419 casi esquina Núñez de Cáceres, Santo Domingo, R.D.",
+        "info": "INFÓRMATE",
+        "terms": "Términos de Uso",
+        "privacy": "Política de Privacidad",
+        "faq": "Preguntas Frecuentes",
+        "copyright": "© {year} Todos los Derechos Reservados. Desarrollado por",
+        "follow_us": "SÍGUENOS"
+    }
+}

@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import type { OryCardFooterProps } from "@ory/elements-react"
 import type { PropsWithChildren } from "react"
+import { useT } from "@/hooks/use-t"
 
 /**
  * Custom CUC Card Header — includes CUC logo + "Acceso Cuenta Única" title + subtitle
@@ -19,17 +20,17 @@ export function CucCardContent(_props: PropsWithChildren) {
 }
 
 export function CucCardHeader(_props: PropsWithChildren) {
+    const t = useT("login")
     return (
         <div className="text-center">
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
             <h1 className="text-xl font-bold text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
-                Acceso Cuenta Única
+                {t("card_title")}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
-                Puedes acceder a tu cuenta con tu número de identidad
-                &quot;Cédula&quot; o correo electrónico registrado
+                {t("card_subtitle")}
             </p>
         </div>
     )
@@ -40,20 +41,20 @@ export function CucCardHeader(_props: PropsWithChildren) {
  * and outline button to create account
  */
 export function CucCardFooter(_props: OryCardFooterProps) {
+    const t = useT("login")
     return (
         <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginBottom: "20px" }}>
                 <span className="font-medium text-[#0087FF] dark:text-blue-400">
-                    ¿No tienes cuenta?
+                    {t("no_account")}
                 </span>{" "}
-                Registrate, accede a los servicios del Estado Dominicano con un
-                único usuario y contraseña, de forma segura y confiable
+                {t("register_cta")}
             </p>
             <Link
                 href="/auth/register"
                 className="cuc-register-button"
             >
-                CREAR SU CUENTA ÚNICA CIUDADANA
+                {t("create_account")}
             </Link>
         </div>
     )
@@ -93,4 +94,3 @@ export function CucRecoveryFooter(_props: OryCardFooterProps) {
         </div>
     )
 }
-

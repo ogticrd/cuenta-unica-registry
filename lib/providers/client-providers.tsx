@@ -2,9 +2,13 @@
 
 // import { SessionProvider } from "@ory/elements-react/client"
 import { AuthProvider } from "@/lib/auth-context"
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "next-themes"
 
-export function Providers({ children }: { children: React.ReactNode }) {
+/**
+ * Client Component — runs on the client.
+ * Wraps children in ThemeProvider (dark/light mode) and AuthProvider (session).
+ */
+export function ClientProviders({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider
             attribute="class"

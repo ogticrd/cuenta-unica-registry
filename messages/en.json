@@ -1,0 +1,28 @@
+{
+    "login": {
+        "loading": "Loading access form...",
+        "spinner": "Loading...",
+        "welcome_title": "Welcome to the Unified Citizen Authentication",
+        "welcome_highlight": "Platform",
+        "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
+        "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
+        "card_title": "Cuenta Única Access",
+        "card_subtitle": "You can log in with your national ID \"Cédula\" or registered email address",
+        "no_account": "Don't have an account?",
+        "register_cta": "Register and access Dominican State services with a single username and password, securely and reliably",
+        "create_account": "CREATE YOUR CUENTA ÚNICA CIUDADANA"
+    },
+    "footer": {
+        "know_us": "ABOUT US",
+        "know_us_body": "Government Office of Information and Communication Technologies",
+        "contact": "CONTACT US",
+        "find_us": "FIND US",
+        "find_us_address": "Av. 27 de Febrero #419, corner Núñez de Cáceres, Santo Domingo, D.R.",
+        "info": "INFORMATION",
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy",
+        "faq": "Frequently Asked Questions",
+        "copyright": "© {year} All Rights Reserved. Developed by",
+        "follow_us": "FOLLOW US"
+    }
+}

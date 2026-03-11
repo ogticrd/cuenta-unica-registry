@@ -1,20 +1,27 @@
+"use client"
+
 import Image from "next/image"
+import { useT } from "@/hooks/use-t"
 
 export function WelcomeSection() {
+  const t = useT("login")
+
   return (
     <div className="flex flex-col justify-center space-y-6 text-left">
       <div className="space-y-4">
         <h1 className="text-3xl lg:text-4xl font-medium text-primary dark:text-blue-400 leading-tight">
-          ¡Bienvenido a la Plataforma Única de Autenticación <span className="text-accent dark:text-red-400 font-bold">Ciudadana</span>!
+          {t("welcome_title")}{" "}
+          <span className="text-accent dark:text-red-400 font-bold">
+            {t("welcome_highlight")}
+          </span>!
         </h1>
 
         <p className="text-lg text-primary dark:text-blue-200 font-medium leading-relaxed">
-          Accede o registrate con un unico usuario y contrasena, para consultar todos los servicios gubernamentales disponibles.
+          {t("welcome_subtitle")}
         </p>
 
         <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-          Una manera facil y comoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin
-          necesidad de trasladarte a los organismos gubernamentales.
+          {t("welcome_body")}
         </p>
       </div>
 
@@ -33,3 +40,4 @@ export function WelcomeSection() {
     </div>
   )
 }
+
