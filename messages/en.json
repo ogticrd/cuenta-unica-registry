@@ -38,10 +38,11 @@
         "loading": "Loading security configuration..."
     },
     "error": {
-        "title": "Authentication problem occurred",
-        "default_reason": "The authentication flow could not be completed.",
+        "title": "A problem has occurred",
+        "default_reason": "The flow could not be completed.",
         "default_details": "Please try again from the login screen.",
-        "back_to_login": "Back to login"
+        "back_to_login": "Back to login",
+        "try_again": "Try again"
     },
     "dashboard": {
         "welcome": "Welcome, <highlight>{name}</highlight>!",

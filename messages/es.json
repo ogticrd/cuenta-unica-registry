@@ -38,10 +38,11 @@
         "loading": "Cargando configuración de seguridad..."
     },
     "error": {
-        "title": "Ocurrió un problema de autenticación",
-        "default_reason": "No se pudo completar el flujo de autenticación.",
+        "title": "Ha ocurrido un problema",
+        "default_reason": "No se pudo completar el flujo.",
         "default_details": "Intenta nuevamente desde la pantalla de inicio de sesión.",
-        "back_to_login": "Volver al inicio de sesión"
+        "back_to_login": "Volver al inicio de sesión",
+        "try_again": "Reintentar"
     },
     "dashboard": {
         "welcome": "¡Bienvenido, <highlight>{name}</highlight>!",
