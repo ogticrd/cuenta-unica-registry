@@ -23,7 +23,6 @@ interface User {
 interface AuthContextType {
   user: User | null
   session: Record<string, any> | null
-  login: (identifier: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
   refreshSession: () => Promise<void>
   isLoading: boolean
@@ -104,20 +103,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshSession()
   }, [refreshSession])
 
-  /**
-   * Login is handled by Ory Elements form submission.
-   * This method is kept for backwards compatibility but is not
-   * used when Ory Elements handles the login flow.
-   * After Ory Elements completes login, the session cookie is set
-   * and refreshSession() will detect the authenticated user.
-   */
-  const login = async (_identifier: string, _password: string): Promise<boolean> => {
-    // Ory Elements handles login form submission
-    // After successful login, Ory redirects and the session is set via cookies
-    await refreshSession()
-    return user !== null
-  }
-
   const logout = async () => {
     if (isLoggingOut) return
     setIsLoggingOut(true)
@@ -152,7 +137,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         session,
-        login,
         logout,
         refreshSession,
         isLoading,

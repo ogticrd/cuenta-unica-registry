@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { AIChatModal } from "./ai-chat-modal"
 import { DashboardHeader } from "./dashboard-header"
-import { ProtectedRoute } from "@/components/auth/protected-route"
+import { ProtectedRoute } from "@/lib/protected-route"
 import { Bot } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { DashboardSidebar } from "./dashboard-sidebar"

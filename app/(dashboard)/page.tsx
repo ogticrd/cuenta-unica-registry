@@ -7,12 +7,12 @@ import { StatsCard } from "@/components/dashboard/stats-card"
 import { RecentActivityItem } from "@/components/dashboard/recent-activity-item"
 import { ActionButton } from "@/components/dashboard/action-button"
 import { useAuth } from "@/lib/auth-context"
+import { useRouter } from "next/navigation"
 import { User, Shield, Clock, Bell, Smartphone, Globe, CheckCircle, AlertTriangle, Info, Calendar, Activity, Lock } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user, session } = useAuth()
-  console.log(session)
-  console.log(user)
+  const router = useRouter()
   // -- Dynamic Session Data --
   let lastAccessStr = "Cargando..."
   if (session?.authenticated_at) {
@@ -199,7 +199,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Actividad Reciente"
             action={
-              <ActionButton variant="secondary" onClick={() => window.location.href = '/history'}>
+              <ActionButton variant="secondary" onClick={() => router.push('/history')}>
                 Ver todo
               </ActionButton>
             }
@@ -222,7 +222,7 @@ export default function DashboardPage() {
           <DashboardCard
             title="Estado de Seguridad"
             action={
-              <ActionButton variant="secondary" onClick={() => window.location.href = '/settings'}>
+              <ActionButton variant="secondary" onClick={() => router.push('/settings')}>
                 Configurar
               </ActionButton>
             }
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   Te recomendamos activar la autenticación de dos factores y configurar un Passkey para mayor protección de tu cuenta.
                 </p>
-                <ActionButton variant="primary" onClick={() => window.location.href = '/settings'}>
+                <ActionButton variant="primary" onClick={() => router.push('/settings')}>
                   Ir a Seguridad
                 </ActionButton>
               </div>
@@ -315,7 +315,7 @@ export default function DashboardPage() {
                 </p>
                 <ActionButton
                   variant="secondary"
-                  onClick={() => window.location.href = '/settings'}
+                  onClick={() => router.push('/settings')}
                   className="hover:bg-secondary/10"
                 >
                   Configurar Ahora
