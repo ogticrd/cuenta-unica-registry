@@ -1,22 +1,20 @@
 import { Suspense } from "react"
 import { getSettingsFlow, OryPageParams } from "@ory/nextjs/app"
-import config from "@/ory.config"
+import { LoadingFallback } from "@/components/ui/loading-fallback"
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import OrySettings from "./ory-settings"
+import { getServerOryConfig } from "@/lib/ory/server-config"
 
 async function SettingsFlowComponent({ searchParams }: OryPageParams) {
-  const flow = await getSettingsFlow(config, searchParams)
+  const dynamicConfig = await getServerOryConfig()
+  const flow = await getSettingsFlow(dynamicConfig, searchParams)
 
   if (!flow) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-gray-600 dark:text-gray-400">Cargando configuración de seguridad...</p>
-      </div>
-    )
+    return <LoadingFallback message="Cargando configuración de seguridad..." />
   }
 
-  return <OrySettings flow={flow} />
+  return <OrySettings flow={flow} dynamicConfig={dynamicConfig} />
 }
 
 export default async function SettingsPage(props: OryPageParams) {
@@ -30,14 +28,7 @@ export default async function SettingsPage(props: OryPageParams) {
               Administra tu contraseña, autenticación de dos factores y otros factores de seguridad.
             </p>
           </div>
-          <Suspense
-            fallback={
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-blue-400 mx-auto"></div>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">Cargando...</p>
-              </div>
-            }
-          >
+          <Suspense fallback={<LoadingFallback />}>
             <SettingsFlowComponent searchParams={props.searchParams} />
           </Suspense>
         </div>

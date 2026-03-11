@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { Recovery } from "@ory/elements-react/theme"
+import { LoadingFallback } from "@/components/ui/loading-fallback"
 import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app"
 import { getServerOryConfig } from "@/lib/ory/server-config"
 
@@ -15,11 +16,7 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
   const flow = await getRecoveryFlow(dynamicConfig, searchParams)
 
   if (!flow) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-gray-600 dark:text-gray-400">Cargando formulario de recuperación...</p>
-      </div>
-    )
+    return <LoadingFallback message="Cargando formulario de recuperación..." />
   }
 
   return (
@@ -44,14 +41,7 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="container mx-auto px-4">
           <div className="w-full max-w-md mx-auto">
-            <Suspense
-              fallback={
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-blue-400 mx-auto"></div>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">Cargando...</p>
-                </div>
-              }
-            >
+            <Suspense fallback={<LoadingFallback />}>
               <RecoveryFlow
                 searchParams={props.searchParams}
               />

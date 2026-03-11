@@ -1,19 +1,19 @@
 "use client"
 
 import { Settings } from "@ory/elements-react/theme"
-import config from "@/ory.config"
 
 type OrySettingsFlow = Parameters<typeof Settings>[0]["flow"]
 
 interface OrySettingsWrapperProps {
-  flow: unknown
+  flow: unknown;
+  dynamicConfig: any;
 }
 
-function OrySettings({ flow }: OrySettingsWrapperProps) {
+function OrySettings({ flow, dynamicConfig }: OrySettingsWrapperProps) {
   return (
     <Settings
       flow={flow as OrySettingsFlow}
-      config={config}
+      config={dynamicConfig}
       components={{
         Page: {
           Header: () => null,

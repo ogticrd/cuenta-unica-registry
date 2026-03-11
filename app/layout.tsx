@@ -30,7 +30,9 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={poppins.className}>
         <ServerProviders>
-          <ClientProviders>{children}</ClientProviders>
+          <ClientProviders>
+            {children}
+          </ClientProviders>
         </ServerProviders>
         <Toaster />
       </body>

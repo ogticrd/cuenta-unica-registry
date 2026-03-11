@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { Login } from "@ory/elements-react/theme"
+import { LoadingFallback } from "@/components/ui/loading-fallback"
 import { getLoginFlow, OryPageParams } from "@ory/nextjs/app"
 import { getServerOryConfig } from "@/lib/ory/server-config"
 
@@ -16,11 +17,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
   const flow = await getLoginFlow(dynamicConfig, searchParams)
 
   if (!flow) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-gray-600">Cargando formulario de acceso...</p>
-      </div>
-    )
+    return <LoadingFallback message="Cargando formulario de acceso..." />
   }
 
   return (
@@ -53,14 +50,7 @@ export default async function LoginPage(props: OryPageParams) {
             {/* Login Form - Ory Elements with CUC Customization */}
             <div className="flex justify-center lg:justify-end">
               <div className="w-full max-w-md">
-                <Suspense
-                  fallback={
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                      <p className="mt-2 text-gray-600">Cargando...</p>
-                    </div>
-                  }
-                >
+                <Suspense fallback={<LoadingFallback />}>
                   <LoginFlow
                     searchParams={props.searchParams}
                   />
