@@ -3,7 +3,7 @@ import { Recovery } from "@ory/elements-react/theme"
 import { LoadingFallback } from "@/components/ui/loading-fallback"
 import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app"
 import { getServerOryConfig } from "@/lib/ory/server-config"
-
+import { getTranslations } from "next-intl/server"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import {
@@ -14,9 +14,10 @@ import {
 async function RecoveryFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig()
   const flow = await getRecoveryFlow(dynamicConfig, searchParams)
+  const t = await getTranslations("login")
 
   if (!flow) {
-    return <LoadingFallback message="Cargando formulario de recuperación..." />
+    return <LoadingFallback message={t("loading_recovery")} />
   }
 
   return (

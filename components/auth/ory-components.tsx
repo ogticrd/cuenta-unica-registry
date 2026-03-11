@@ -58,16 +58,17 @@ export function CucCardFooter(_props: OryCardFooterProps) {
  * Custom CUC Recovery Header
  */
 export function CucRecoveryHeader(_props: PropsWithChildren) {
+    const t = useT("login")
     return (
         <div className="text-center">
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
             <h1 className="text-xl font-bold text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
-                Restablecer contraseña
+                {t("recovery_title")}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
-                Para restablecer la contraseña, ingrese su correo electrónico registrado
+                {t("recovery_subtitle")}
             </p>
         </div>
     )
@@ -77,12 +78,13 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
  * Custom CUC Recovery Footer
  */
 export function CucRecoveryFooter(_props: OryCardFooterProps) {
+    const t = useT("login")
     return (
         <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-                ¿Recuerdas sus credenciales?{" "}
+                {t("recovery_remember")}{" "}
                 <Link href={ROUTES.login} className="font-medium !text-secondary dark:!text-blue-400">
-                    Inicia sesión
+                    {t("recovery_login_cta")}
                 </Link>
             </p>
         </div>

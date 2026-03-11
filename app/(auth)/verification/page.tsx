@@ -3,16 +3,17 @@ import { Verification } from "@ory/elements-react/theme"
 import { LoadingFallback } from "@/components/ui/loading-fallback"
 import { getVerificationFlow, OryPageParams } from "@ory/nextjs/app"
 import { getServerOryConfig } from "@/lib/ory/server-config"
-
+import { getTranslations } from "next-intl/server"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 
 async function VerificationFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig()
   const flow = await getVerificationFlow(dynamicConfig, searchParams)
+  const t = await getTranslations("login")
 
   if (!flow) {
-    return <LoadingFallback message="Cargando verificación..." />
+    return <LoadingFallback message={t("loading_verification")} />
   }
 
   return <Verification flow={flow} config={dynamicConfig} />

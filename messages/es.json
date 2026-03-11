@@ -10,7 +10,14 @@
         "card_subtitle": "Puedes acceder a tu cuenta con tu número de identidad \"Cédula\" o correo electrónico registrado",
         "no_account": "¿No tienes cuenta?",
         "register_cta": "Regístrate, accede a los servicios del Estado Dominicano con un único usuario y contraseña, de forma segura y confiable",
-        "create_account": "CREAR SU CUENTA ÚNICA CIUDADANA"
+        "create_account": "CREAR SU CUENTA ÚNICA CIUDADANA",
+        "loading_register": "Cargando formulario de registro...",
+        "loading_recovery": "Cargando formulario de recuperación...",
+        "loading_verification": "Cargando verificación...",
+        "recovery_title": "Restablecer contraseña",
+        "recovery_subtitle": "Para restablecer la contraseña, ingrese su correo electrónico registrado",
+        "recovery_remember": "¿Recuerdas tus credenciales?",
+        "recovery_login_cta": "Inicia sesión"
     },
     "footer": {
         "know_us": "CONÓCENOS",

@@ -10,7 +10,14 @@
         "card_subtitle": "You can log in with your national ID \"Cédula\" or registered email address",
         "no_account": "Don't have an account?",
         "register_cta": "Register and access Dominican State services with a single username and password, securely and reliably",
-        "create_account": "CREATE YOUR CUENTA ÚNICA CIUDADANA"
+        "create_account": "CREATE YOUR CUENTA ÚNICA CIUDADANA",
+        "loading_register": "Loading registration form...",
+        "loading_recovery": "Loading recovery form...",
+        "loading_verification": "Loading verification...",
+        "recovery_title": "Reset password",
+        "recovery_subtitle": "To reset your password, enter your registered email address",
+        "recovery_remember": "Remember your credentials?",
+        "recovery_login_cta": "Log in"
     },
     "footer": {
         "know_us": "ABOUT US",
