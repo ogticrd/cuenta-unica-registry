@@ -9,6 +9,7 @@ import { ActionButton } from "@/components/dashboard/action-button"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/lib/constants/routes"
+import type { ReactNode } from "react"
 import { User, Shield, Clock, Bell, Smartphone, Globe, CheckCircle, AlertTriangle, Info, Calendar, Activity, Lock } from 'lucide-react'
 
 export default function DashboardPage() {
@@ -30,7 +31,18 @@ export default function DashboardPage() {
   const securityLevel = isAal2 ? "Alto" : "Estándar"
   const securityDesc = isAal2 ? "2FA activado" : "Contraseña"
 
-  const quickActions = [
+  type QuickAction = {
+    title: string
+    description: string
+    icon: ReactNode
+    href: string
+    badge?: {
+      text: string
+      variant: "info" | "warning" | "success"
+    }
+  }
+
+  const quickActions: QuickAction[] = [
     {
       title: "Datos Personales",
       description: "Consulta y actualiza tu información personal registrada",
@@ -189,7 +201,7 @@ export default function DashboardPage() {
                 description={action.description}
                 icon={action.icon}
                 href={action.href}
-                badge={(action as any).badge}
+                badge={action.badge}
               />
             ))}
           </div>
@@ -329,3 +341,7 @@ export default function DashboardPage() {
     </DashboardLayout>
   )
 }
+
+
+
+

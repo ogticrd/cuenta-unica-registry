@@ -7,7 +7,6 @@ import OrySettings from "./ory-settings"
 
 async function SettingsFlowComponent({ searchParams }: OryPageParams) {
   const flow = await getSettingsFlow(config, searchParams)
-  console.log(flow)
 
   if (!flow) {
     return (
@@ -17,16 +16,13 @@ async function SettingsFlowComponent({ searchParams }: OryPageParams) {
     )
   }
 
-  return (
-    <OrySettings flow={flow as any} />
-  )
+  return <OrySettings flow={flow} />
 }
 
 export default async function SettingsPage(props: OryPageParams) {
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">
-        {/* Security Settings Area */}
         <div className="space-y-8 max-w-6xl">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-primary dark:text-blue-400 mb-2">Privacidad y seguridad</h1>

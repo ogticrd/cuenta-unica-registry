@@ -7,9 +7,25 @@ import { DeviceItem } from "@/components/dashboard/device-item"
 import { PortalItem } from "@/components/dashboard/portal-item"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { useAuth } from "@/lib/auth-context"
-import { sessionService } from "@/lib/services/ory/session.service"
+import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
 import { toast } from "sonner"
 import { History } from "lucide-react"
+
+type DeviceStatus = {
+  text: string
+  variant: "current" | "active"
+}
+
+type DeviceRow = {
+  id: string
+  device: string
+  ipAddress: string
+  location: string
+  lastAccess: string
+  expirationDate: string
+  isCurrentSession: boolean
+  status: DeviceStatus
+}
 
 export default function HistoryPage() {
   const { session, refreshSession } = useAuth()
@@ -37,39 +53,31 @@ export default function HistoryPage() {
     isLoading: false,
   })
 
-  // -- Dynamic Devices from Ory Session --
-  const allSessions: any[] = []
-  if (session) {
-    allSessions.push(session)
-    if (session.other_sessions && Array.isArray(session.other_sessions)) {
-      allSessions.push(...session.other_sessions)
-    }
-  }
+  const allSessions: OrySession[] = session
+    ? [session, ...(Array.isArray(session.other_sessions) ? session.other_sessions : [])]
+    : []
 
-  const dynamicDevices = allSessions.map((sess: any, index: number) => {
-    const dev = sess.devices?.[0] || {}
+  const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
+    const device = currentSession.devices?.[0]
     const isCurrentSession = index === 0
 
     return {
-      id: sess.id || `fallback-${index}`, // The REAL SESSION ID
-      device: dev.user_agent || "Dispositivo Desconocido",
-      ipAddress: dev.ip_address || "IP Desconocida",
-      location: dev.location || "Ubicación Desconocida",
-      lastAccess: sess.authenticated_at
-        ? new Date(sess.authenticated_at).toLocaleString("es-DO")
+      id: currentSession.id || `fallback-${index}`,
+      device: device?.user_agent || "Dispositivo Desconocido",
+      ipAddress: device?.ip_address || "IP Desconocida",
+      location: device?.location || "Ubicación Desconocida",
+      lastAccess: currentSession.authenticated_at
+        ? new Date(currentSession.authenticated_at).toLocaleString("es-DO")
         : "Reciente",
-      expirationDate: sess.expires_at
-        ? new Date(sess.expires_at).toLocaleString("es-DO")
+      expirationDate: currentSession.expires_at
+        ? new Date(currentSession.expires_at).toLocaleString("es-DO")
         : "Indefinido",
       isCurrentSession,
       status: isCurrentSession
-        ? { text: "SESIÓN ACTIVA", variant: "current" as const }
-        : { text: "ACTIVO", variant: "active" as const }
+        ? { text: "SESIÓN ACTIVA", variant: "current" }
+        : { text: "ACTIVO", variant: "active" },
     }
   })
-
-  // Fallback to empty state if array is empty (instead of static data)
-  const devices = dynamicDevices;
 
   const portals = [
     {
@@ -186,7 +194,7 @@ export default function HistoryPage() {
           <SecuritySection title="Dispositivos vinculados">
             <div className="space-y-0">
               {devices.length > 0 ? (
-                devices.map((device: any) => (
+                devices.map((device) => (
                   <DeviceItem
                     key={device.id}
                     device={device.device}
@@ -195,7 +203,11 @@ export default function HistoryPage() {
                     lastAccess={device.lastAccess}
                     expirationDate={device.expirationDate}
                     status={device.status}
-                    onUnlink={device.isCurrentSession ? undefined : () => handleOpenUnlinkDeviceModal(device.id, device.device)}
+                    onUnlink={
+                      device.isCurrentSession
+                        ? undefined
+                        : () => handleOpenUnlinkDeviceModal(device.id, device.device)
+                    }
                   />
                 ))
               ) : (

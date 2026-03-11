@@ -5,19 +5,13 @@ import Link from "next/link"
 import type { OryCardFooterProps } from "@ory/elements-react"
 import type { PropsWithChildren } from "react"
 import { useT } from "@/hooks/use-t"
+import { ROUTES } from "@/lib/constants/routes"
 
 /**
  * Custom CUC Card Header — includes CUC logo + "Acceso Cuenta Única" title + subtitle
  * Note: Ory's DefaultCardHeader internally renders <Card.Logo />, so we
  * embed the logo directly here instead of as a separate Logo override.
  */
-export function CucCardContent(_props: PropsWithChildren) {
-    return (
-        <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-400">Contenido de la tarjeta</p>
-        </div>
-    )
-}
 
 export function CucCardHeader(_props: PropsWithChildren) {
     const t = useT("login")
@@ -51,7 +45,7 @@ export function CucCardFooter(_props: OryCardFooterProps) {
                 {t("register_cta")}
             </p>
             <Link
-                href="/auth/register"
+                href={ROUTES.register}
                 className="cuc-register-button"
             >
                 {t("create_account")}
@@ -87,10 +81,11 @@ export function CucRecoveryFooter(_props: OryCardFooterProps) {
         <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
                 ¿Recuerdas sus credenciales?{" "}
-                <Link href="/login" className="font-medium !text-secondary dark:!text-blue-400">
+                <Link href={ROUTES.login} className="font-medium !text-secondary dark:!text-blue-400">
                     Inicia sesión
                 </Link>
             </p>
         </div>
     )
 }
+

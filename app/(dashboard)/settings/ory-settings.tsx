@@ -2,24 +2,25 @@
 
 import { Settings } from "@ory/elements-react/theme"
 import config from "@/ory.config"
-import type { SettingsFlow } from "@ory/client"
+
+type OrySettingsFlow = Parameters<typeof Settings>[0]["flow"]
 
 interface OrySettingsWrapperProps {
-    flow: SettingsFlow
+  flow: unknown
 }
 
 function OrySettings({ flow }: OrySettingsWrapperProps) {
-    return (
-        <Settings
-            flow={flow as any}
-            config={config}
-            components={{
-                Page: {
-                    Header: () => null,
-                },
-            }}
-        />
-    )
+  return (
+    <Settings
+      flow={flow as OrySettingsFlow}
+      config={config}
+      components={{
+        Page: {
+          Header: () => null,
+        },
+      }}
+    />
+  )
 }
 
 export default OrySettings

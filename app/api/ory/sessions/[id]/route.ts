@@ -8,32 +8,25 @@ import { getServerCookies } from "@/lib/ory/cookies"
  * Disables a specific Ory session by its ID.
  */
 export async function DELETE(
-    request: Request,
-    { params }: { params: Promise<{ id: string }> }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
-    try {
-        const cookie = await getServerCookies()
-        const { id: sessionId } = await params
+  try {
+    const cookie = await getServerCookies()
+    const { id: sessionId } = await params
 
-        if (!sessionId) {
-            return NextResponse.json(
-                { error: "Session ID is required" },
-                { status: 400 }
-            )
-        }
-
-        // Disable the session in Ory
-        await oryClient.disableMySession({
-            id: sessionId,
-            cookie,
-        })
-
-        return NextResponse.json({ success: true })
-    } catch (error: any) {
-        console.error("[/api/ory/sessions] Error disabling session:", error)
-        return NextResponse.json(
-            { error: "Failed to disable session", details: error.message },
-            { status: 500 }
-        )
+    if (!sessionId) {
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 })
     }
+
+    await oryClient.disableMySession({
+      id: sessionId,
+      cookie,
+    })
+
+    return NextResponse.json({ success: true })
+  } catch (error: unknown) {
+    console.error("[/api/ory/sessions] Error disabling session:", error)
+    return NextResponse.json({ error: "Failed to disable session" }, { status: 500 })
+  }
 }
