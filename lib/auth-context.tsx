@@ -15,6 +15,7 @@ interface User {
   nationality?: string
   birthDate?: string
   gender?: string
+  phone?: string
   avatar?: string
   traits?: Record<string, unknown>
 }
@@ -65,6 +66,7 @@ function mapIdentityToUser(identity: {
     nationality: (traits.nationality as string) || "",
     birthDate: (traits.birthdate as string) || "",
     gender: (traits.gender as string) || "",
+    phone: (traits.phone as string) || "",
   }
 }
 

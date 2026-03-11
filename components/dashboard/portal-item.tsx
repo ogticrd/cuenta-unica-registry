@@ -25,7 +25,7 @@ export function PortalItem({ name, lastAccess, onUnlink }: PortalItemProps) {
       </div>
       {onUnlink && (
         <div className="flex-shrink-0">
-          <ActionButton variant="danger" onClick={onUnlink} className="w-full sm:w-auto dark:hover:bg-red-600/25">
+          <ActionButton variant="danger" onClick={onUnlink} className="w-full sm:w-auto dark:hover:bg-red-600/10">
             Desvincular
           </ActionButton>
         </div>

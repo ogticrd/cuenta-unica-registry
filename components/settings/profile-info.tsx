@@ -2,7 +2,7 @@
 
 import { PersonalInfoField } from "@/components/dashboard/personal-info-field"
 import { useAuth } from "@/lib/auth-context"
-import { Shield, CheckCircle, User, Mail, Calendar, MapPin, Hash, Users, Book } from "lucide-react"
+import { Shield, CheckCircle, User, Mail, Calendar, MapPin, Hash, Users, Book, Phone } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export function ProfileInfo() {
@@ -97,6 +97,11 @@ export function ProfileInfo() {
                             value={user.email || ""}
                             icon={<Mail className="w-4 h-4 text-muted-foreground/70" />}
                             verified={true}
+                        />
+                        <PersonalInfoField
+                            label="Teléfono"
+                            value={user.phone || "No registrado"}
+                            icon={<Phone className="w-4 h-4 text-muted-foreground/70" />}
                         />
                     </div>
                 </div>
