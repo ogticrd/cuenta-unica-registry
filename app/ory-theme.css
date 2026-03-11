@@ -135,11 +135,19 @@
 /* [data-testid="ory/form/node/input/identifier"] {
   border-radius: 50px !important;
   border: 2px solid #bcccdc !important;
-  font-size: 14px !important;
-  height: 45px !important;
+  font-size: 16px !important;
+  height: 55px !important;
+} */
+
+[data-testid="ory/form/node/input/identifier"]::placeholder,
+[data-testid="ory/form/node/input/email"]::placeholder,
+[data-testid="ory/form/node/input/password"]::placeholder,
+[data-testid="ory/form/node/input/webauthn_register_displayname"]::placeholder
+{
+  height: auto !important;
 }
 
-[data-testid="ory/form/node/input/identifier"]:focus {
+/* [data-testid="ory/form/node/input/identifier"]:focus {
   border-color: #0087FF !important;
 } */
 
@@ -223,8 +231,8 @@ button.text-button-link-brand-brand {
 .cuc-register-button {
   display: block;
   width: 100%;
-  padding: 8px 12px;
-  border: 2px solid #0087FF;
+  padding: 8px 12px !important;
+  border: 2px solid #0087FF !important;
   color: #0087FF !important;
   background: transparent;
   border-radius: 67px;
