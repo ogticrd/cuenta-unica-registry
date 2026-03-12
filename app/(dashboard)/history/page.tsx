@@ -193,15 +193,10 @@ export default function HistoryPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-12 pb-12">
-        <div className="pt-4 pb-8 border-b dark:border-border">
-          <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">{t("title")}</h1>
-            <div className="bg-primary/10 text-primary p-2 rounded-full">
-              <History size={24} />
-            </div>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed">
+      <div className="space-y-12 pb-12">
+        <div className="space-y-4 pb-8 border-b dark:border-border">
+          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
             {t("subtitle")}
           </p>
         </div>

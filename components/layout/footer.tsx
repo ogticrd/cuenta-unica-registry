@@ -28,7 +28,7 @@ export function Footer() {
             {/* CONÓCENOS / ABOUT US */}
             <div>
               <h4 className="font-semibold mb-3 text-sm">{t("know_us")}</h4>
-              <p className="text-xs leading-relaxed">
+              <p className="text-xs leading-relaxed font-semibold text-gray-300">
                 {t("know_us_body")}
               </p>
             </div>
@@ -36,7 +36,7 @@ export function Footer() {
             {/* CONTÁCTANOS / CONTACT US */}
             <div>
               <h4 className="font-semibold mb-3 text-sm">{t("contact")}</h4>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-1 text-xs font-semibold text-gray-300">
                 <p>Tel: (809)-286-1009</p>
                 <p>Fax: (809)-732-5465</p>
                 <p>info@ogtic.gob.do</p>
@@ -46,15 +46,15 @@ export function Footer() {
             {/* BÚSCANOS / FIND US */}
             <div>
               <h4 className="font-semibold mb-3 text-sm">{t("find_us")}</h4>
-              <div className="text-xs leading-relaxed">
-                <p>{t("find_us_address")}</p>
-              </div>
+              <p className="text-xs leading-relaxed font-semibold text-gray-300">
+                {t("find_us_address")}
+              </p>
             </div>
 
             {/* INFÓRMATE / INFORMATION */}
             <div>
               <h4 className="font-semibold mb-3 text-sm">{t("info")}</h4>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-1 text-xs font-semibold text-gray-300">
                 <Link href="/terms" className="block hover:underline">
                   {t("terms")}
                 </Link>
@@ -74,14 +74,14 @@ export function Footer() {
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-3">
-              <p className="text-xs text-primary dark:text-muted-foreground">
+              <p className="text-xs text-primary dark:text-muted-foreground font-semibold">
                 {t("copyright", { year: currentYear })}
               </p>
               <Image src="/images/ogtic-logo.png" alt="OGTIC" width={60} height={20} />
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-xs font-bold text-primary dark:text-gray-300 font-medium">{t("follow_us")}</span>
+              <span className="text-xs text-primary dark:text-gray-300 font-semibold">{t("follow_us")}</span>
               <div className="flex space-x-2">
                 <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
                   <Facebook size={16} />

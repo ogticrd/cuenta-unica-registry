@@ -20,10 +20,10 @@ export function CucCardHeader(_props: PropsWithChildren) {
             <div className="flex justify-center">
                 <Image src="/images/cuenta-unica-icon.png" alt="Cuenta Única" width={64} height={64} className="rounded-lg" />
             </div>
-            <h1 className="text-xl font-bold text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
+            <h1 className="text-xl font-bold text-foreground tracking-tight text-primary dark:text-blue-400" style={{ marginTop: "20px" }}>
                 {t("card_title")}
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginTop: "8px" }}>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400" style={{ marginTop: "8px" }}>
                 {t("card_subtitle")}
             </p>
         </div>
@@ -38,9 +38,16 @@ export function CucCardFooter(_props: OryCardFooterProps) {
     const t = useT("login")
     return (
         <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400" style={{ marginBottom: "20px" }}>
-                <span className="font-medium text-[#0087FF] dark:text-blue-400">
-                    {t("no_account")}
+            <p className="text-sm font-semibold text-secondary dark:text-blue-400" style={{ marginBottom: "20px" }}>
+                <Link href={ROUTES.recovery}>
+                    {t("forgot_password")}
+                </Link>
+            </p>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400" style={{ marginBottom: "20px" }}>
+                <span className="font-semibold text-secondary dark:text-blue-400">
+                    <Link href={ROUTES.register}>
+                        {t("no_account")}
+                    </Link>
                 </span>{" "}
                 {t("register_cta")}
             </p>

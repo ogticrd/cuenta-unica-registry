@@ -23,18 +23,16 @@ export default async function SettingsPage(props: OryPageParams) {
   const t = await getT("settings")
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto">
-        <div className="space-y-8 max-w-6xl">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-primary dark:text-blue-400 mb-2">{t("title")}</h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              {t("subtitle")}
-            </p>
-          </div>
-          <Suspense fallback={<LoadingFallback />}>
-            <SettingsFlowComponent searchParams={props.searchParams} />
-          </Suspense>
+      <div className="space-y-8">
+        <div className="space-y-4 pb-8 border-b dark:border-border">
+          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            {t("subtitle")}
+          </p>
         </div>
+        <Suspense fallback={<LoadingFallback />}>
+          <SettingsFlowComponent searchParams={props.searchParams} />
+        </Suspense>
       </div>
     </DashboardLayout>
   )

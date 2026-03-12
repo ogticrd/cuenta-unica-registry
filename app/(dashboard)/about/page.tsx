@@ -50,13 +50,13 @@ export default function AboutPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-16 pb-12 pt-6">
+      <div className="space-y-16">
         {/* Minimalist Header */}
-        <div className="text-center space-y-4">
+        <div className="space-y-4">
           <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
             {t("title")}
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             {t("subtitle")}
           </p>
         </div>

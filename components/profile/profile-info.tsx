@@ -58,8 +58,8 @@ export function ProfileInfo() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 mb-8 pb-8">
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pt-4 pb-8 border-b dark:border-border">
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pb-8 border-b dark:border-border">
         <div className="relative">
           <Avatar className="w-24 h-24 text-4xl border border-border shadow-sm ring-4 ring-primary/10">
             <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-3xl">

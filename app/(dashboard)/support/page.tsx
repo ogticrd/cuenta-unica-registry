@@ -36,16 +36,11 @@ export default async function SupportPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-12 pb-12">
+      <div className="space-y-8">
         {/* Header Section */}
-        <div className="pt-4 pb-8 border-b dark:border-border">
-          <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">{t("title")}</h1>
-            <div className="bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 p-2 rounded-full">
-              <HelpCircle size={24} />
-            </div>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed">
+        <div className="space-y-4 pb-8 border-b dark:border-border">
+          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
             {t("subtitle")}
           </p>
         </div>

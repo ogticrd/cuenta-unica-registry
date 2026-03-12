@@ -133,36 +133,34 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="py-6 sm:py-8 border-b dark:border-border">
-          <div className="flex flex-col gap-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">
-                {t.rich("welcome", {
-                  name: user?.name || "",
-                  highlight: (chunks) => <span className="text-secondary dark:text-blue-400">{chunks}</span>
-                })}
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-6">
-                {t("subtitle")}
-              </p>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2 bg-secondary/10 px-3 py-1.5 rounded-full dark:bg-secondary/20">
-                  <Calendar size={16} className="text-secondary" />
-                  <span className="font-medium text-secondary">{t("last_access", { date: lastAccessStr })}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
-                  {isVerified ? (
-                    <>
-                      <CheckCircle size={16} className="text-green-600 dark:text-green-400" />
-                      <span className="font-medium text-green-600 dark:text-green-400">{t("account_verified")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock size={16} className="text-orange-600 dark:text-orange-400" />
-                      <span className="font-medium text-orange-700 dark:text-orange-400">{t("account_unverified")}</span>
-                    </>
-                  )}
-                </div>
+        <div className="flex flex-col gap-4 pb-6 border-b dark:border-border">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">
+              {t.rich("welcome", {
+                name: user?.name || "",
+                highlight: (chunks) => <span className="text-secondary dark:text-blue-400">{chunks}</span>
+              })}
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-6">
+              {t("subtitle")}
+            </p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 bg-secondary/10 px-3 py-1.5 rounded-full dark:bg-secondary/20">
+                <Calendar size={16} className="text-secondary" />
+                <span className="font-medium text-secondary">{t("last_access", { date: lastAccessStr })}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
+                {isVerified ? (
+                  <>
+                    <CheckCircle size={16} className="text-green-600 dark:text-green-400" />
+                    <span className="font-medium text-green-600 dark:text-green-400">{t("account_verified")}</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock size={16} className="text-orange-600 dark:text-orange-400" />
+                    <span className="font-medium text-orange-700 dark:text-orange-400">{t("account_unverified")}</span>
+                  </>
+                )}
               </div>
             </div>
           </div>

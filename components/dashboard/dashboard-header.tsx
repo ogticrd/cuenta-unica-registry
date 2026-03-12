@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { NotificationDrawer } from "./notification-drawer"
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
 import { LanguageToggle } from "@/components/ui/language-toggle"
+import Link from "next/link"
+import { ROUTES } from "@/lib/constants/routes"
 
 
 interface DashboardHeaderProps {
@@ -32,13 +34,15 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
               <Menu size={20} />
             </Button>
 
-            <Image
-              src="/images/cuenta-unica-logo.png"
-              alt="Cuenta Única"
-              width={160}
-              height={40}
-              className="h-10 w-auto"
-            />
+            <Link href={ROUTES.dashboard}>
+              <Image
+                src="/images/cuenta-unica-logo.png"
+                alt="Cuenta Única"
+                width={160}
+                height={40}
+                className="h-10 w-auto"
+              />
+            </Link>
           </div>
 
           {/* Right side - Notifications and Menu */}

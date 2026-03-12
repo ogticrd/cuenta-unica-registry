@@ -4,15 +4,16 @@
  */
 export const ROUTES = {
   // Auth
-  login: "/login",
-  register: "/register",
-  verification: "/verification",
-  recovery: "/recovery",
+  login: "/self-service/login/browser",
+  register: "/self-service/registration/browser",
+  verification: "/self-service/verification/browser",
+  recovery: "/self-service/recovery/browser",
   error: "/error",
 
   // Dashboard
   dashboard: "/",
   profile: "/profile",
+  // settings: "/self-service/settings/browser",
   settings: "/settings",
   history: "/history",
   support: "/support",

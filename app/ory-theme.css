@@ -98,9 +98,9 @@
   padding: 32px 32px !important;
   margin: 0 auto !important;
   border-radius: 10px !important;
-  /* border: 1px solid #dadada !important; */
-  border: none !important;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+  border: 1px solid #dadada !important;
+  /* border: none !important; */
+  /* box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25); */
 }
 
 .text-input-foreground-primary span {
@@ -129,7 +129,6 @@
   background: #fff !important;
   color: #EE2A24 !important;
   border: none !important;
-  padding: 0px !important;
 }
 
 /* [data-testid="ory/form/node/input/identifier"] {
@@ -142,8 +141,7 @@
 [data-testid="ory/form/node/input/identifier"]::placeholder,
 [data-testid="ory/form/node/input/email"]::placeholder,
 [data-testid="ory/form/node/input/password"]::placeholder,
-[data-testid="ory/form/node/input/webauthn_register_displayname"]::placeholder
-{
+[data-testid="ory/form/node/input/webauthn_register_displayname"]::placeholder {
   height: auto !important;
 }
 
@@ -153,7 +151,11 @@
 
 button.bg-button-primary-background-default {
   background-color: #003876 !important;
-  padding: 12px 16px !important;
+  padding: 8px 12px !important;
+  text-transform: uppercase !important;
+  font-size: 14px !important;
+  height: 41px !important;
+  align-items: center !important;
 }
 
 button.text-button-primary-foreground-default {
@@ -168,11 +170,11 @@ button.hover\:bg-button-primary-background-hover:hover {
   background-color: #00285a !important;
 }
 
-a.text-button-link-brand-brand,
+/* a.text-button-link-brand-brand,
 button.text-button-link-brand-brand {
   color: #0087FF !important;
   font-size: 14px !important;
-}
+} */
 
 /* ===== Typography ===== */
 .ory-elements,
@@ -201,17 +203,25 @@ button.text-button-link-brand-brand {
 /* ===== Error/Danger text using CUC accent red ===== */
 .ory-elements [data-testid*="error"],
 .ory-elements [data-testid*="message"] {
-  color: #EE2A24;
+  color: #EE2A24 !important;
   font-size: 14px !important;
+  border: none !important;
+  border-left: 4px solid #EE2A24 !important;
+  background-color: #EE2A2425 !important;
 }
 
-/* ===== Remove default card shadow/border if wrapping in own card ===== */
-/* Uncomment if you want the Ory form to be borderless inside your layout: */
-/* .ory-elements>div>div {
-  box-shadow: none !important;
-  border: none !important;
-} */
+.dark .border-interface-border-default-primary {
+  border-color: #555555 !important;
+}
 
+.dark [data-testid="ory/form/auth-picker/password"] span svg {
+  color: #0087FF !important;
+}
+
+.dark [data-testid="ory/form/auth-picker/password"]:hover {
+  background-color: #0087FF25 !important;
+  border: none !important;
+}
 
 /* ===== Hide Ory Watermark Badge ===== */
 .ory-elements [class*="bg-ory-background-default"],
@@ -219,13 +229,6 @@ button.text-button-link-brand-brand {
   display: none !important;
 }
 
-/* ===== Submit Button Uppercase ===== */
-.ory-elements button[type="submit"],
-.ory-elements input[type="submit"] {
-  /* text-transform: uppercase !important; */
-  /* font-weight: 600 !important; */
-  /* font-size: 14px !important; */
-}
 
 /* ===== CUC Register Outline Button ===== */
 .cuc-register-button {
@@ -249,12 +252,11 @@ button.text-button-link-brand-brand {
   color: #ffffff !important;
 }
 
-@media (max-width: 640px) {
-  .cuc-register-button {
-    font-size: 10px;
-    padding: 10px 14px;
-  }
+/* [data-testid="ory/form/node/input/label/identifier"]~a.text-button-link-brand-brand {
+  display: none !important;
+} */
 
+@media (max-width: 640px) {
   .ory-elements>div>div {
     padding: 16px !important;
   }
@@ -324,10 +326,11 @@ button.text-button-link-brand-brand {
   background-color: #1d4ed8 !important;
 }
 
-.dark a.text-button-link-brand-brand,
-.dark svg.text-button-link-default-secondary,
-.dark button.text-button-link-brand-brand {
+a.text-button-link-brand-brand,
+svg.text-button-link-default-secondary,
+button.text-button-link-brand-brand {
   color: #3b82f6 !important;
+  display: none !important;
 }
 
 .bg-interface-background-default-secondary {
@@ -368,4 +371,62 @@ button.text-button-link-brand-brand {
 
 .dark input[data-input-otp="true"] {
   opacity: 0 !important;
+}
+
+/* ===== Login-Only Ory Experiments (scoped) ===== */
+.ory-login-scope {
+  /* --ory-login-surface: #ffffff; */
+  /* --ory-login-border: #d4deea; */
+  /* --ory-login-border-focus: #0087ff; */
+}
+
+/* .ory-login-scope .ory-elements>div>div {
+  border-radius: 14px !important;
+  border: 1px solid var(--ory-login-border) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+  box-shadow: 0 18px 40px -22px rgba(0, 56, 118, 0.45) !important;
+} */
+
+/* .ory-login-scope .ory-elements>div>form>div {
+  border: 1px solid var(--ory-login-border) !important;
+  border-radius: 12px !important;
+  background-color: var(--ory-login-surface) !important;
+} */
+
+.ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  min-height: 48px !important;
+  border-color: #b8cbe0 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  box-shadow: 0 0 0 3px rgba(0, 135, 255, 0.15) !important;
+}
+
+button.bg-button-primary-background-default {
+  text-transform: uppercase !important;
+}
+
+.text-interface-foreground-validation-danger {
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+
+.dark .ory-elements>div>div {
+  background: linear-gradient(180deg, #0f172a 0%, #0b1222 100%) !important;
+  border-color: #1f2a3a !important;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .ory-elements>div>form>div {
+  border-color: #1f2a3a !important;
+}
+
+.dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  border-color: #273449 !important;
+}
+
+.dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
 }
