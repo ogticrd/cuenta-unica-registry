@@ -64,7 +64,7 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
     return (
         <div className="space-y-6 flex flex-col w-full animate-in fade-in zoom-in-95 duration-300">
             <div className="text-center space-y-2 mb-2">
-                <p className="text-sm text-primary font-medium leading-relaxed">
+                <p className="text-sm text-primary dark:text-blue-100/80 font-medium leading-relaxed">
                     {t("identification.intro")}
                 </p>
             </div>
@@ -76,14 +76,14 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
                         name="cedula"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-primary font-semibold">
+                                <FormLabel className="text-primary dark:text-blue-300 font-semibold">
                                     {t("identification.id_label")} <span className="text-destructive">*</span>
                                 </FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder={t("identification.id_placeholder")}
                                         {...field}
-                                        className="h-12 focus-visible:ring-primary"
+                                        className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
                                         maxLength={11}
                                     />
@@ -96,7 +96,7 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
                     <div className="pt-2">
                         <Button
                             type="submit"
-                            className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] text-white"
+                            className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -113,9 +113,9 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
             </Form>
 
             <div className="text-center mt-6 text-sm px-4">
-                <div className="text-muted-foreground leading-relaxed">
+                <div className="text-muted-foreground dark:text-slate-400 leading-relaxed">
                     {t("identification.existing_account")}{" "}
-                    <Link href={ROUTES.login} className="text-secondary font-medium hover:underline">
+                    <Link href={ROUTES.login} className="text-secondary dark:text-blue-400 font-medium hover:underline">
                         {t("identification.login_cta")}
                     </Link>
                 </div>

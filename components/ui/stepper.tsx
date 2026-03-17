@@ -31,11 +31,11 @@ export function Stepper({ activeStep, stepLabel = "Step", steps, className, ...p
                 })}
             </div>
             <div className="mt-4 text-center animate-in fade-in zoom-in-95 duration-300">
-                <h4 className="text-sm font-bold text-primary">
+                <h4 className="text-sm font-bold text-primary dark:text-blue-400">
                     {stepLabel} {activeStep + 1}: {steps[activeStep]?.title}
                 </h4>
                 {steps[activeStep]?.description && (
-                    <p className="text-xs text-muted-foreground/80 mt-1 font-medium">
+                    <p className="text-xs text-muted-foreground/80 dark:text-slate-400 mt-1 font-medium">
                         {steps[activeStep]?.description}
                     </p>
                 )}

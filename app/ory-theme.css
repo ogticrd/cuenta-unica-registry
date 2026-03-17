@@ -274,14 +274,9 @@ button.text-button-link-brand-brand {
 }
 
 .dark .text-input-foreground-primary {
-  color: #fff !important;
+  color: #e2e8f0 !important;
 }
 
-.dark .ory-elements>div>div {
-  background-color: hsl(var(--card)) !important;
-  border: 1px solid #1e293b !important;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-}
 
 .dark .text-interface-foreground-default-primary {
   color: #60a5fa !important;
@@ -303,17 +298,17 @@ button.text-button-link-brand-brand {
 }
 
 .dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: #1e293b !important;
+  background-color: rgba(2, 6, 23, 0.6) !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 .dark .ory-elements label {
-  color: hsl(var(--foreground)) !important;
+  color: #93c5fd !important;
 }
 
 .dark .text-input-foreground-primary span {
-  color: #60a5fa !important;
+  color: #93c5fd !important;
 }
 
 .dark .ory-elements [data-testid*="error"],
@@ -356,7 +351,7 @@ button.text-button-link-brand-brand {
 }
 
 .dark .ory-elements div.bg-input-background-default {
-  background-color: hsl(var(--background)) !important;
+  background-color: rgba(2, 6, 23, 0.6) !important;
 }
 
 .dark .ory-elements div.border-input-border-default {
@@ -417,19 +412,25 @@ button.bg-button-primary-background-default {
 }
 
 .dark .ory-elements>div>div {
-  background: linear-gradient(180deg, #0f172a 0%, #0b1222 100%) !important;
-  border-color: #1f2a3a !important;
-  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8) !important;
+  background: hsl(var(--card)) !important;
+  border-color: #1e293b !important;
 }
 
 .dark .ory-elements>div>form>div {
-  border-color: #1f2a3a !important;
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  border-color: #1e293b !important;
 }
 
 .dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
-  border-color: #273449 !important;
+  background-color: rgba(2, 6, 23, 0.6) !important;
+  border-color: #334155 !important;
+}
+
+.dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"])::placeholder {
+  color: #64748b !important;
 }
 
 .dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  border-color: #3b82f6 !important;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
 }

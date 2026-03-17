@@ -47,11 +47,11 @@ export function RegisterWizard() {
     }
 
     return (
-        <Card className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border rounded bg-white">
-            <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-border mx-6">
+        <Card className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card">
+            <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-border dark:border-slate-800 mx-6">
                 <Image src="/images/cuenta-unica-icon.png" alt={t("logo_alt")} width={64} height={64} className="rounded-lg" />
 
-                <CardTitle className="text-xl font-bold text-primary">
+                <CardTitle className="text-xl font-bold text-primary dark:text-blue-400">
                     {t("title")}
                 </CardTitle>
 

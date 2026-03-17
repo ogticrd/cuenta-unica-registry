@@ -47,17 +47,17 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
             <Image src="/images/icon-step-2.svg" alt={t("verification.illustration_alt")} width={150} height={150} />
 
             <div className="text-center">
-                <h3 className="text-md font-bold text-primary">
+                <h3 className="text-md font-bold text-primary dark:text-blue-300">
                     {t("verification.greeting", { firstName })}
                 </h3>
-                <p className="text-sm text-primary font-medium max-w-md mx-auto leading-relaxed">
+                <p className="text-sm text-primary dark:text-blue-100/80 font-medium max-w-md mx-auto leading-relaxed">
                     {t("verification.intro")}
                 </p>
             </div>
 
             <div className="w-full space-y-3 mt-4">
-                <div className="bg-[#eff7ff] p-4 rounded flex items-center gap-4 text-sm text-primary">
-                    <Camera className="w-8 h-8 opacity-70 shrink-0 text-primary" />
+                <div className="bg-[#eff7ff] dark:bg-slate-900/80 dark:border dark:border-slate-800 p-4 rounded flex items-center gap-4 text-sm text-primary dark:text-slate-100">
+                    <Camera className="w-8 h-8 opacity-70 shrink-0 text-primary dark:text-blue-300" />
                     <p>
                         {t.rich("verification.requirements.device", {
                             strong: (chunks) => <strong>{chunks}</strong>,
@@ -65,8 +65,8 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
                     </p>
                 </div>
 
-                <div className="bg-[#eff7ff] p-4 rounded flex items-center gap-4 text-sm text-primary">
-                    <Smile className="w-8 h-8 opacity-70 shrink-0 text-primary" />
+                <div className="bg-[#eff7ff] dark:bg-slate-900/80 dark:border dark:border-slate-800 p-4 rounded flex items-center gap-4 text-sm text-primary dark:text-slate-100">
+                    <Smile className="w-8 h-8 opacity-70 shrink-0 text-primary dark:text-blue-300" />
                     <p>
                         {t.rich("verification.requirements.face", {
                             strong: (chunks) => <strong>{chunks}</strong>,
@@ -74,8 +74,8 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
                     </p>
                 </div>
 
-                <div className="bg-[#eff7ff] p-4 rounded flex items-center gap-4 text-sm text-primary">
-                    <ShieldAlert className="w-8 h-8 opacity-70 shrink-0 text-primary" />
+                <div className="bg-[#eff7ff] dark:bg-slate-900/80 dark:border dark:border-slate-800 p-4 rounded flex items-center gap-4 text-sm text-primary dark:text-slate-100">
+                    <ShieldAlert className="w-8 h-8 opacity-70 shrink-0 text-primary dark:text-blue-300" />
                     <p>
                         {t.rich("verification.requirements.photosensitive", {
                             strong: (chunks) => <strong>{chunks}</strong>,
@@ -93,7 +93,7 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
                 />
                 <label
                     htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-primary underline decoration-blue-200 underline-offset-4 cursor-pointer"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-primary dark:text-blue-100 underline decoration-blue-200 dark:decoration-blue-500/40 underline-offset-4 cursor-pointer"
                 >
                     {t("verification.terms_label")} <span className="text-destructive">*</span>
                 </label>
@@ -101,7 +101,7 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
 
             <Button
                 onClick={handleStartVerification}
-                className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] text-white mt-4"
+                className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4"
                 disabled={!termsAccepted}
             >
                 {t("verification.start_process")}
@@ -109,7 +109,7 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
 
             <button
                 onClick={onBack}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-6 font-medium"
+                className="flex items-center gap-2 text-sm text-muted-foreground dark:text-slate-400 dark:hover:text-slate-100 hover:text-foreground transition-colors mt-6 font-medium"
             >
                 <ArrowLeft className="w-4 h-4" />
                 {t("common.back")}

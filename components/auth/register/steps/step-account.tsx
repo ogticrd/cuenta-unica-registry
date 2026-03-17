@@ -80,7 +80,7 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
     return (
         <div className="space-y-6 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300 w-full">
             <div className="text-center space-y-2">
-                <p className="text-sm text-primary font-medium leading-relaxed">
+                <p className="text-sm text-primary dark:text-blue-100/80 font-medium leading-relaxed">
                     {t("account.intro")}
                 </p>
             </div>
@@ -92,13 +92,13 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-primary font-semibold">{t("account.email_label")} <span className="text-destructive">*</span></FormLabel>
+                                <FormLabel className="text-primary dark:text-blue-300 font-semibold">{t("account.email_label")} <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
                                     <Input
                                         type="email"
                                         placeholder={t("account.email_placeholder")}
                                         {...field}
-                                        className="h-12 focus-visible:ring-primary"
+                                        className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
                                     />
                                 </FormControl>
@@ -112,13 +112,13 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                         name="confirmEmail"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-primary font-semibold">{t("account.confirm_email_label")} <span className="text-destructive">*</span></FormLabel>
+                                <FormLabel className="text-primary dark:text-blue-300 font-semibold">{t("account.confirm_email_label")} <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
                                     <Input
                                         type="email"
                                         placeholder={t("account.email_placeholder")}
                                         {...field}
-                                        className="h-12 focus-visible:ring-primary"
+                                        className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
                                     />
                                 </FormControl>
@@ -132,21 +132,21 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-primary font-semibold">{t("account.password_label")} <span className="text-destructive">*</span></FormLabel>
+                                <FormLabel className="text-primary dark:text-blue-300 font-semibold">{t("account.password_label")} <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="********"
                                             {...field}
-                                            className="h-12 pr-10 focus-visible:ring-primary"
+                                            className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                             disabled={isLoading}
                                         />
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
                                             onClick={() => setShowPassword(!showPassword)}
                                             tabIndex={-1}
                                         >
@@ -169,21 +169,21 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                         name="confirmPassword"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-primary font-semibold">{t("account.confirm_password_label")} <span className="text-destructive">*</span></FormLabel>
+                                <FormLabel className="text-primary dark:text-blue-300 font-semibold">{t("account.confirm_password_label")} <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
                                             type={showConfirmPassword ? "text" : "password"}
                                             placeholder="********"
                                             {...field}
-                                            className="h-12 pr-10 focus-visible:ring-primary"
+                                            className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                             disabled={isLoading}
                                         />
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                             tabIndex={-1}
                                         >
@@ -205,7 +205,7 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] text-white rounded-full font-semibold"
+                            className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold"
                         >
                             {isLoading ? (
                                 <>
@@ -224,7 +224,7 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                             type="button"
                             onClick={onBack}
                             disabled={isLoading}
-                            className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium mt-2"
+                            className="flex items-center justify-center gap-2 text-sm text-muted-foreground dark:text-slate-400 dark:hover:text-slate-100 hover:text-foreground transition-colors font-medium mt-2"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             {t("common.back")}
