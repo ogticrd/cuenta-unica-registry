@@ -207,6 +207,7 @@ button.text-button-link-brand-brand {
   font-size: 14px !important;
   border: none !important;
   border-left: 4px solid #EE2A24 !important;
+  border-radius: 0px !important;
   background-color: #EE2A2425 !important;
 }
 
@@ -214,11 +215,13 @@ button.text-button-link-brand-brand {
   border-color: #555555 !important;
 }
 
-.dark [data-testid="ory/form/auth-picker/password"] span svg {
+.dark [data-testid="ory/form/auth-picker/password"] span svg,
+.dark [data-testid="ory/form/auth-picker/passkey"] span svg {
   color: #0087FF !important;
 }
 
-.dark [data-testid="ory/form/auth-picker/password"]:hover {
+.dark [data-testid="ory/form/auth-picker/password"]:hover,
+.dark [data-testid="ory/form/auth-picker/passkey"]:hover {
   background-color: #0087FF25 !important;
   border: none !important;
 }

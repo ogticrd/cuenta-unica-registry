@@ -20,6 +20,84 @@
         "recovery_remember": "Remember your credentials?",
         "recovery_login_cta": "Log in"
     },
+    "register": {
+        "title": "Cuenta \u00danica Registration",
+        "logo_alt": "Cuenta \u00danica",
+        "step_label": "Step",
+        "steps": {
+            "identification": {
+                "title": "Identification",
+                "description": "User ID"
+            },
+            "verification": {
+                "title": "Verification",
+                "description": "Liveness check"
+            },
+            "account": {
+                "title": "Registration",
+                "description": "User account"
+            }
+        },
+        "common": {
+            "back": "Back to the previous step",
+            "cancel": "Cancel"
+        },
+        "identification": {
+            "intro": "You can continue with registration by providing your \"C\u00e9dula\" identity number.",
+            "id_label": "National ID number",
+            "id_placeholder": "000-0000000-0",
+            "id_invalid_length": "The national ID must contain 11 digits",
+            "loading": "Loading...",
+            "continue": "CONTINUE",
+            "existing_account": "Already have an account?",
+            "login_cta": "Log in"
+        },
+        "verification": {
+            "illustration_alt": "Verification",
+            "greeting": "Hello, {firstName}!",
+            "intro": "Next, we will validate your identity using facial verification and a liveness check. Make sure you meet the following conditions:",
+            "requirements": {
+                "device": "Use a device with a built-in <strong>front-facing camera</strong>.",
+                "face": "Allow us to capture images of <strong>your face</strong>.",
+                "photosensitive": "This verification displays <strong>colored lights</strong>. Be careful if you are photosensitive."
+            },
+            "terms_label": "Accept terms and privacy policies",
+            "start_process": "START PROCESS",
+            "modal": {
+                "screenreader_title": "Full-screen biometric verification",
+                "screenreader_description": "Facial validation process",
+                "title": "Biometric verification",
+                "description": "Please look directly at the camera and keep your face inside the oval.",
+                "verified": "Verified!",
+                "face_position": "Position your face here",
+                "allow_camera": "Allow camera and scan",
+                "analyzing": "Analyzing facial features..."
+            }
+        },
+        "account": {
+            "intro": "To finish and complete your registration, fill in the following fields.",
+            "email_label": "Email address",
+            "email_placeholder": "your@email.com",
+            "confirm_email_label": "Confirm email",
+            "password_label": "Password",
+            "confirm_password_label": "Confirm password",
+            "toggle_password_visibility": "Show or hide password",
+            "finalizing": "Finalizing...",
+            "create_account": "CREATE ACCOUNT",
+            "success_title": "Registration completed successfully!",
+            "success_description": "Your citizen account has been created.",
+            "error": "There was an error completing the registration. Please try again.",
+            "validation": {
+                "email_invalid": "Enter a valid email address",
+                "password_min": "The password must be at least 8 characters long",
+                "password_uppercase": "It must contain at least one uppercase letter",
+                "password_lowercase": "It must contain at least one lowercase letter",
+                "password_number": "It must contain at least one number",
+                "email_mismatch": "The email addresses do not match",
+                "password_mismatch": "The passwords do not match"
+            }
+        }
+    },
     "footer": {
         "know_us": "ABOUT US",
         "know_us_body": "Government Office of Information and Communication Technologies (OGTIC)",

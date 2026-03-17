@@ -1,36 +1,15 @@
-import { Suspense } from "react"
-import { Registration } from "@ory/elements-react/theme"
-import { LoadingFallback } from "@/components/ui/loading-fallback"
-import { getRegistrationFlow, OryPageParams } from "@ory/nextjs/app"
-import { getServerOryConfig } from "@/lib/ory/server-config"
-import { getT } from "@/lib/i18n/server"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { RegisterWizard } from "@/components/auth/register/register-wizard"
 
-async function RegistrationFlow({ searchParams }: OryPageParams) {
-  const dynamicConfig = await getServerOryConfig()
-  const flow = await getRegistrationFlow(dynamicConfig, searchParams)
-  const t = await getT("login")
-
-  if (!flow) {
-    return <LoadingFallback message={t("loading_register")} />
-  }
-
-  return <Registration flow={flow} config={dynamicConfig} />
-}
-
-export default async function RegistrationPage(props: OryPageParams) {
+export default async function RegistrationPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container mx-auto px-4">
-          <div className="w-full max-w-md mx-auto">
-            <Suspense fallback={<LoadingFallback />}>
-              <RegistrationFlow searchParams={props.searchParams} />
-            </Suspense>
-          </div>
+        <div className="container mx-auto px-4 max-w-3xl">
+          <RegisterWizard />
         </div>
       </main>
 

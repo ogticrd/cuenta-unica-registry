@@ -20,6 +20,84 @@
         "recovery_remember": "¿Recuerdas tus credenciales?",
         "recovery_login_cta": "Inicia sesión"
     },
+    "register": {
+        "title": "Registro Cuenta \u00danica",
+        "logo_alt": "Cuenta \u00danica",
+        "step_label": "Paso",
+        "steps": {
+            "identification": {
+                "title": "Identificaci\u00f3n",
+                "description": "C\u00e9dula del usuario"
+            },
+            "verification": {
+                "title": "Verificaci\u00f3n",
+                "description": "Prueba de vida"
+            },
+            "account": {
+                "title": "Registro",
+                "description": "Cuenta de usuario"
+            }
+        },
+        "common": {
+            "back": "Volver al paso anterior",
+            "cancel": "Cancelar"
+        },
+        "identification": {
+            "intro": "Puedes continuar con el registro proporcionando tu n\u00famero de identidad \"C\u00e9dula\".",
+            "id_label": "N\u00famero de c\u00e9dula",
+            "id_placeholder": "000-0000000-0",
+            "id_invalid_length": "La c\u00e9dula debe tener 11 d\u00edgitos",
+            "loading": "Cargando...",
+            "continue": "CONTINUAR",
+            "existing_account": "\u00bfYa tienes cuenta?",
+            "login_cta": "Inicia sesi\u00f3n"
+        },
+        "verification": {
+            "illustration_alt": "Verificaci\u00f3n",
+            "greeting": "\u00a1Hola, {firstName}!",
+            "intro": "A continuaci\u00f3n validaremos tu identidad mediante una verificaci\u00f3n facial y prueba de vida. Aseg\u00farate de cumplir con las siguientes condiciones:",
+            "requirements": {
+                "device": "Utilizar un dispositivo que posea <strong>c\u00e1mara frontal</strong> integrada.",
+                "face": "Permitir que tomemos capturas de <strong>tu rostro</strong>.",
+                "photosensitive": "Esta verificaci\u00f3n muestra <strong>luces de colores</strong>. Ten cuidado si eres fotosensible."
+            },
+            "terms_label": "Aceptar t\u00e9rminos y pol\u00edticas de privacidad",
+            "start_process": "INICIAR PROCESO",
+            "modal": {
+                "screenreader_title": "Verificaci\u00f3n biom\u00e9trica a pantalla completa",
+                "screenreader_description": "Proceso de validaci\u00f3n facial",
+                "title": "Verificaci\u00f3n biom\u00e9trica",
+                "description": "Por favor, mira fijamente a la c\u00e1mara y mant\u00e9n tu rostro dentro del \u00f3valo.",
+                "verified": "\u00a1Verificado!",
+                "face_position": "Posiciona tu rostro aqu\u00ed",
+                "allow_camera": "Permitir c\u00e1mara y escanear",
+                "analyzing": "Analizando rasgos faciales..."
+            }
+        },
+        "account": {
+            "intro": "Para finalizar y completar tu registro, completa los siguientes campos.",
+            "email_label": "Correo electr\u00f3nico",
+            "email_placeholder": "tucorreo@ejemplo.com",
+            "confirm_email_label": "Confirmar correo",
+            "password_label": "Contrase\u00f1a",
+            "confirm_password_label": "Confirmar contrase\u00f1a",
+            "toggle_password_visibility": "Mostrar u ocultar contrase\u00f1a",
+            "finalizing": "Finalizando...",
+            "create_account": "CREAR CUENTA",
+            "success_title": "\u00a1Registro completado con \u00e9xito!",
+            "success_description": "Tu cuenta ciudadana ha sido creada.",
+            "error": "Error al completar el registro. Int\u00e9ntalo de nuevo.",
+            "validation": {
+                "email_invalid": "Ingresa un correo electr\u00f3nico v\u00e1lido",
+                "password_min": "La contrase\u00f1a debe tener al menos 8 caracteres",
+                "password_uppercase": "Debe contener al menos una may\u00fascula",
+                "password_lowercase": "Debe contener al menos una min\u00fascula",
+                "password_number": "Debe contener al menos un n\u00famero",
+                "email_mismatch": "Los correos electr\u00f3nicos no coinciden",
+                "password_mismatch": "Las contrase\u00f1as no coinciden"
+            }
+        }
+    },
     "footer": {
         "know_us": "CONÓCENOS",
         "know_us_body": "Oficina Gubernamental de Tecnologías de la Información y Comunicación (OGTIC)",
