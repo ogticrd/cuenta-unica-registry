@@ -76,6 +76,36 @@
   color: #0087FF !important;
   font-size: 14px !important;
   font-weight: 600 !important;
+  padding: 10px !important;
+}
+
+.ory-elements div div .text-interface-foreground-validation-success {
+  background-color: #0087FF25 !important;
+  display: block !important;
+  color: #0087FF !important;
+  padding: 10px !important;
+  border-left: 4px solid #0087FF !important;
+}
+
+[data-testid="ory/form/node/link/continue"] {
+  display: block !important;
+  width: 100% !important;
+  padding: 8px 12px !important;
+  background: #003876 !important;
+  border-radius: 67px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  height: 41px !important;
+  line-height: 1.5 !important;
+}
+
+[data-testid="ory/form/node/input/label/code"] {
+  color: #003876 !important;
+  font-weight: 600;
 }
 
 .ory-elements>div {
@@ -431,6 +461,58 @@ button.bg-button-primary-background-default {
 }
 
 .dark .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
+}
+
+/* ===== Auth Ory Fields aligned with Register Wizard ===== */
+.ory-auth-scope .ory-elements label,
+.ory-auth-scope .ory-elements .text-input-foreground-primary span {
+  color: #003876 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+
+.ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  min-height: 48px !important;
+  height: 48px !important;
+  border-radius: 8px !important;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"])::placeholder {
+  color: #64748b !important;
+}
+
+.ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  border-color: #003876 !important;
+  box-shadow: 0 0 0 3px rgba(0, 59, 115, 0.12) !important;
+}
+
+.dark .ory-auth-scope .ory-elements label,
+.dark .ory-auth-scope .ory-elements .text-input-foreground-primary span {
+  color: #93c5fd !important;
+}
+
+.dark .ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  background-color: rgba(2, 6, 23, 0.6) !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+.dark .ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"])::placeholder {
+  color: #64748b !important;
+}
+
+.dark .ory-auth-scope .ory-elements input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
   border-color: #3b82f6 !important;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
 }

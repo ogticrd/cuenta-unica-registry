@@ -6,6 +6,10 @@ import { getServerOryConfig } from "@/lib/ory/server-config"
 import { getT } from "@/lib/i18n/server"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import {
+  CucVerificationFooter,
+  CucVerificationHeader,
+} from "@/components/auth/ory-components"
 
 async function VerificationFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig()
@@ -16,7 +20,18 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
     return <LoadingFallback message={t("loading_verification")} />
   }
 
-  return <Verification flow={flow} config={dynamicConfig} />
+  return (
+    <Verification
+      flow={flow}
+      config={dynamicConfig}
+      components={{
+        Card: {
+          Header: CucVerificationHeader,
+          Footer: CucVerificationFooter,
+        },
+      }}
+    />
+  )
 }
 
 export default async function VerificationPage(props: OryPageParams) {

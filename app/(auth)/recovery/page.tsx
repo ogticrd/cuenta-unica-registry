@@ -41,7 +41,7 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
 
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="container mx-auto px-4">
-          <div className="w-full max-w-md mx-auto">
+          <div className="ory-auth-scope w-full max-w-md mx-auto">
             <Suspense fallback={<LoadingFallback />}>
               <RecoveryFlow
                 searchParams={props.searchParams}
@@ -55,4 +55,3 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
     </div>
   )
 }
-

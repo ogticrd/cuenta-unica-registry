@@ -50,7 +50,7 @@ export default async function LoginPage(props: OryPageParams) {
 
             {/* Login Form - Ory Elements with CUC Customization */}
             <div className="flex justify-center lg:justify-end">
-              <div className="w-full max-w-md">
+              <div className="ory-auth-scope w-full max-w-md">
                 <Suspense fallback={<LoadingFallback />}>
                   <LoginFlow
                     searchParams={props.searchParams}
