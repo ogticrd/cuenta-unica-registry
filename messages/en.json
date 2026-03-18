@@ -15,6 +15,10 @@
         "loading_register": "Loading registration form...",
         "loading_recovery": "Loading recovery form...",
         "loading_verification": "Loading verification...",
+        "verification_title": "Verify account",
+        "verification_subtitle": "Confirm your email address to complete your account activation",
+        "verification_footer_text": "Already verified your account?",
+        "verification_login_cta": "Log in",
         "recovery_title": "Reset password",
         "recovery_subtitle": "To reset your password, enter your registered email address",
         "recovery_remember": "Remember your credentials?",
@@ -90,13 +94,13 @@
             "create_account": "CREATE ACCOUNT",
             "success_title": "Registration completed successfully!",
             "success_description": "Your citizen account has been created.",
+            "identity_exists": "An account already exists for the provided information.",
             "error": "There was an error completing the registration. Please try again.",
             "validation": {
                 "email_invalid": "Enter a valid email address",
-                "password_min": "The password must be at least 8 characters long",
-                "password_uppercase": "It must contain at least one uppercase letter",
-                "password_lowercase": "It must contain at least one lowercase letter",
-                "password_number": "It must contain at least one number",
+                "password_min": "The password must be at least 10 characters long",
+                "password_cedula_similarity": "The password cannot contain the national ID",
+                "password_email_similarity": "The password cannot contain the email address",
                 "email_mismatch": "The email addresses do not match",
                 "password_mismatch": "The passwords do not match"
             }

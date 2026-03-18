@@ -1,2 +1,2 @@
 export { createCedulaSchema } from "./cedula.schema"
-export { createAccountSchema } from "./account.schema"
+export { createAccountSchema, accountRequestSchema } from "./account.schema"

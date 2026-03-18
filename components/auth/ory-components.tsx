@@ -127,7 +127,7 @@ export function CucVerificationFooter(_props: OryCardFooterProps) {
         <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
                 {t("verification_footer_text")}{" "}
-                <Link href={ROUTES.loginUi} className="font-medium !text-secondary dark:!text-blue-400">
+                <Link href={ROUTES.login} className="font-medium !text-secondary dark:!text-blue-400">
                     {t("verification_login_cta")}
                 </Link>
             </p>

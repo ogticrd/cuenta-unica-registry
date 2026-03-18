@@ -8,28 +8,35 @@ import { z } from "zod"
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useT } from "@/hooks/use-t"
-import { ROUTES } from "@/lib/constants/routes"
 import { createAccountSchema } from "@/lib/schemas/registration"
+import { accountService } from "@/lib/services/registration/account.service"
+import type { RegisterAccountErrorCode } from "@/lib/types/registration/account"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
 interface StepAccountProps {
     onBack: () => void
-    userData: { name: string; cedula: string }
+    userData: { cedula: string }
 }
 
-export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
+function preventClipboardAction<T extends React.SyntheticEvent>(event: T) {
+    event.preventDefault()
+    return false
+}
+
+export function StepAccount({ onBack, userData }: StepAccountProps) {
     const t = useT("register")
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const accountSchema = createAccountSchema(t)
+    const accountSchema = createAccountSchema(t, userData.cedula)
     type AccountValues = z.infer<typeof accountSchema>
 
     const form = useForm<AccountValues>({
         resolver: zodResolver(accountSchema),
+        reValidateMode: "onChange",
         defaultValues: {
             email: "",
             confirmEmail: "",
@@ -42,13 +49,41 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
         setIsLoading(true)
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000))
-
-            toast.success(t("account.success_title"), {
-                description: t("account.success_description"),
+            const result = await accountService.registerAccount({
+                cedula: userData.cedula,
+                email: _data.email,
+                password: _data.password,
             })
 
-            router.push(`${ROUTES.login}?registered=true`)
+            if (!result.success) {
+                const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
+                    invalid_payload: t("account.error"),
+                    invalid_cedula: t("identification.id_invalid"),
+                    citizen_not_found: t("identification.id_not_found"),
+                    identity_exists: t("account.identity_exists"),
+                    ory_validation_error: t("account.error"),
+                    unexpected_error: t("account.error"),
+                }
+
+                if (result.fieldErrors?.email) {
+                    form.setError("email", { message: result.fieldErrors.email })
+                }
+
+                if (result.fieldErrors?.password) {
+                    form.setError("password", { message: result.fieldErrors.password })
+                }
+
+                toast.error(result.formError || messageByErrorCode[result.code])
+                return
+            }
+
+            if (result.destination === "login") {
+                toast.success(t("account.success_title"), {
+                    description: t("account.success_description"),
+                })
+            }
+
+            router.push(result.redirectTo)
         } catch (error) {
             console.error("Registration error:", error)
             toast.error(t("account.error"))
@@ -78,6 +113,9 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                                         type="email"
                                         placeholder={t("account.email_placeholder")}
                                         {...field}
+                                        onPaste={preventClipboardAction}
+                                        onCopy={preventClipboardAction}
+                                        autoComplete="off"
                                         className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
                                     />
@@ -98,6 +136,9 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                                         type="email"
                                         placeholder={t("account.email_placeholder")}
                                         {...field}
+                                        onPaste={preventClipboardAction}
+                                        onCopy={preventClipboardAction}
+                                        autoComplete="off"
                                         className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
                                     />
@@ -119,6 +160,9 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                                             type={showPassword ? "text" : "password"}
                                             placeholder="********"
                                             {...field}
+                                            onPaste={preventClipboardAction}
+                                            onCopy={preventClipboardAction}
+                                            autoComplete="off"
                                             className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                             disabled={isLoading}
                                         />
@@ -156,6 +200,9 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
                                             type={showConfirmPassword ? "text" : "password"}
                                             placeholder="********"
                                             {...field}
+                                            onPaste={preventClipboardAction}
+                                            onCopy={preventClipboardAction}
+                                            autoComplete="off"
                                             className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                             disabled={isLoading}
                                         />

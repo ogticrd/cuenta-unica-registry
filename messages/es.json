@@ -15,6 +15,10 @@
         "loading_register": "Cargando formulario de registro...",
         "loading_recovery": "Cargando formulario de recuperación...",
         "loading_verification": "Cargando verificación...",
+        "verification_title": "Verificar cuenta",
+        "verification_subtitle": "Confirma tu correo electrónico para completar la activación de tu cuenta",
+        "verification_footer_text": "¿Ya verificaste tu cuenta?",
+        "verification_login_cta": "Inicia sesión",
         "recovery_title": "Restablecer contraseña",
         "recovery_subtitle": "Para restablecer la contraseña, ingrese su correo electrónico registrado",
         "recovery_remember": "¿Recuerdas tus credenciales?",
@@ -90,13 +94,13 @@
             "create_account": "CREAR CUENTA",
             "success_title": "\u00a1Registro completado con \u00e9xito!",
             "success_description": "Tu cuenta ciudadana ha sido creada.",
+            "identity_exists": "Ya existe una cuenta asociada a los datos ingresados.",
             "error": "Error al completar el registro. Int\u00e9ntalo de nuevo.",
             "validation": {
                 "email_invalid": "Ingresa un correo electr\u00f3nico v\u00e1lido",
-                "password_min": "La contrase\u00f1a debe tener al menos 8 caracteres",
-                "password_uppercase": "Debe contener al menos una may\u00fascula",
-                "password_lowercase": "Debe contener al menos una min\u00fascula",
-                "password_number": "Debe contener al menos un n\u00famero",
+                "password_min": "La contrase\u00f1a debe tener al menos 10 caracteres",
+                "password_cedula_similarity": "La contrase\u00f1a no puede contener la c\u00e9dula",
+                "password_email_similarity": "La contrase\u00f1a no puede contener el correo electr\u00f3nico",
                 "email_mismatch": "Los correos electr\u00f3nicos no coinciden",
                 "password_mismatch": "Las contrase\u00f1as no coinciden"
             }

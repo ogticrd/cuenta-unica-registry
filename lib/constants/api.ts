@@ -7,4 +7,5 @@ export const API = {
     logout: "/api/ory/logout",
     sessions: "/api/ory/sessions",
     registrationCitizen: "/api/registration/citizen",
+    registrationAccount: "/api/registration/account",
 } as const
