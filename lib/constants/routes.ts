@@ -5,7 +5,8 @@
 export const ROUTES = {
   // Auth
   login: "/self-service/login/browser",
-  register: "/self-service/registration/browser",
+  // register: "/self-service/registration/browser",
+  register: "/register",
   verification: "/self-service/verification/browser",
   recovery: "/self-service/recovery/browser",
   error: "/error",

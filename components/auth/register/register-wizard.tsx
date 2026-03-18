@@ -30,6 +30,10 @@ export function RegisterWizard() {
     const [wizardData, setWizardData] = useState({
         cedula: "",
         name: "",
+        firstName: "",
+        lastName: "",
+        birthDate: "",
+        gender: "" as "" | "M" | "F",
         email: "",
         password: "",
     })

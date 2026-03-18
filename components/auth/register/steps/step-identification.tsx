@@ -4,58 +4,82 @@ import { useState } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { Loader2 } from "lucide-react"
 import { useT } from "@/hooks/use-t"
 import { ROUTES } from "@/lib/constants/routes"
+import { createCedulaSchema } from "@/lib/schemas/registration"
+import { citizenService } from "@/lib/services/registration/citizen.service"
+import type { CitizenLookupErrorCode } from "@/lib/types/registration/citizen"
+import {
+    CEDULA_MASK_LENGTH,
+    formatCedula,
+    normalizeCedula,
+} from "@/lib/utils/cedula"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-type IdentificationValues = {
-    cedula: string
-}
-
 interface StepIdentificationProps {
     onNext: () => void
-    updateData: (data: { cedula: string; name: string }) => void
+    updateData: (data: {
+        cedula: string
+        name: string
+        firstName: string
+        lastName: string
+        birthDate: string
+        gender: "M" | "F"
+    }) => void
     defaultValues: { cedula: string }
 }
 
 export function StepIdentification({ onNext, updateData, defaultValues }: StepIdentificationProps) {
     const t = useT("register")
     const [isLoading, setIsLoading] = useState(false)
-    const identificationSchema = z.object({
-        cedula: z
-            .string()
-            .min(11, { message: t("identification.id_invalid_length") })
-            .max(11, { message: t("identification.id_invalid_length") }),
-    })
+    const identificationSchema = createCedulaSchema(t)
 
-    const form = useForm<IdentificationValues>({
+    const form = useForm({
         resolver: zodResolver(identificationSchema),
+        reValidateMode: "onChange",
         defaultValues: {
-            cedula: defaultValues.cedula || "",
+            cedula: formatCedula(defaultValues.cedula),
         },
     })
 
-    const onSubmit = async (data: IdentificationValues) => {
+    const onSubmit = async (data: { cedula: string }) => {
         setIsLoading(true)
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1500))
+            const cedula = normalizeCedula(data.cedula)
+            const result = await citizenService.identifyCitizen(cedula)
 
-            let nombreSimulado = "Ciudadano Ejemplo"
-            if (data.cedula.startsWith("402")) {
-                nombreSimulado = "Juan de los Palotes"
-            } else if (data.cedula.startsWith("001")) {
-                nombreSimulado = "Mar\u00eda P\u00e9rez Garc\u00eda"
+            if (!result.success) {
+                const messageByErrorCode: Record<CitizenLookupErrorCode, string> = {
+                    invalid_cedula: t("identification.id_invalid"),
+                    citizen_not_found: t("identification.id_not_found"),
+                    unexpected_error: t("identification.lookup_error"),
+                }
+
+                form.setError("cedula", {
+                    message: messageByErrorCode[result.code],
+                })
+
+                return
             }
 
-            updateData({ cedula: data.cedula, name: nombreSimulado })
+            updateData({
+                cedula: result.citizen.id,
+                name: `${result.citizen.firstName} ${result.citizen.lastName}`.trim(),
+                firstName: result.citizen.firstName,
+                lastName: result.citizen.lastName,
+                birthDate: result.citizen.birthDate,
+                gender: result.citizen.gender,
+            })
             onNext()
         } catch (error) {
             console.error("Error validating ID:", error)
+            form.setError("cedula", {
+                message: t("identification.lookup_error"),
+            })
         } finally {
             setIsLoading(false)
         }
@@ -83,9 +107,24 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
                                     <Input
                                         placeholder={t("identification.id_placeholder")}
                                         {...field}
+                                        value={field.value}
+                                        onChange={(event) => {
+                                            const formattedValue = formatCedula(event.target.value)
+                                            field.onChange(formattedValue)
+
+                                            if (form.formState.errors.cedula) {
+                                                form.clearErrors("cedula")
+                                            }
+
+                                            if (normalizeCedula(formattedValue).length === 11) {
+                                                void form.trigger("cedula")
+                                            }
+                                        }}
                                         className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                                         disabled={isLoading}
-                                        maxLength={11}
+                                        inputMode="numeric"
+                                        autoComplete="off"
+                                        maxLength={CEDULA_MASK_LENGTH}
                                     />
                                 </FormControl>
                                 <FormMessage />

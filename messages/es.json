@@ -46,10 +46,14 @@
             "intro": "Puedes continuar con el registro proporcionando tu n\u00famero de identidad \"C\u00e9dula\".",
             "id_label": "N\u00famero de c\u00e9dula",
             "id_placeholder": "000-0000000-0",
+            "id_required": "La c\u00e9dula es requerida",
             "id_invalid_length": "La c\u00e9dula debe tener 11 d\u00edgitos",
+            "id_invalid": "La c\u00e9dula ingresada no es v\u00e1lida",
+            "id_not_found": "No encontramos informaci\u00f3n para esta c\u00e9dula",
+            "lookup_error": "No se pudo validar la c\u00e9dula. Int\u00e9ntalo de nuevo.",
             "loading": "Cargando...",
             "continue": "CONTINUAR",
-            "existing_account": "\u00bfYa tienes cuenta?",
+            "existing_account": "\u00bfYa tienes una cuenta?",
             "login_cta": "Inicia sesi\u00f3n"
         },
         "verification": {

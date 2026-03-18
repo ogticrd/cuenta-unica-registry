@@ -4,21 +4,15 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+import { z } from "zod"
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useT } from "@/hooks/use-t"
 import { ROUTES } from "@/lib/constants/routes"
+import { createAccountSchema } from "@/lib/schemas/registration"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
-type AccountValues = {
-    email: string
-    confirmEmail: string
-    password: string
-    confirmPassword: string
-}
 
 interface StepAccountProps {
     onBack: () => void
@@ -31,22 +25,8 @@ export function StepAccount({ onBack, userData: _userData }: StepAccountProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const accountSchema = z.object({
-        email: z.string().email({ message: t("account.validation.email_invalid") }),
-        confirmEmail: z.string().email({ message: t("account.validation.email_invalid") }),
-        password: z.string()
-            .min(8, { message: t("account.validation.password_min") })
-            .regex(/[A-Z]/, { message: t("account.validation.password_uppercase") })
-            .regex(/[a-z]/, { message: t("account.validation.password_lowercase") })
-            .regex(/[0-9]/, { message: t("account.validation.password_number") }),
-        confirmPassword: z.string(),
-    }).refine((data) => data.email === data.confirmEmail, {
-        message: t("account.validation.email_mismatch"),
-        path: ["confirmEmail"],
-    }).refine((data) => data.password === data.confirmPassword, {
-        message: t("account.validation.password_mismatch"),
-        path: ["confirmPassword"],
-    })
+    const accountSchema = createAccountSchema(t)
+    type AccountValues = z.infer<typeof accountSchema>
 
     const form = useForm<AccountValues>({
         resolver: zodResolver(accountSchema),
