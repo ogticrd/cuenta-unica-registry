@@ -2,16 +2,15 @@ import { Configuration, FrontendApi } from "@ory/client"
 
 /**
  * Server-side Ory SDK client.
- * Uses ORY_SDK_URL (server-only) or NEXT_PUBLIC_ORY_SDK_URL as fallback.
+ * Uses ORY_SDK_URL (server-only) as fallback.
  * This client is used in Route Handlers for session/logout operations.
  */
 export function createOryClient() {
-    const baseUrl =
-        process.env.ORY_SDK_URL || process.env.NEXT_PUBLIC_ORY_SDK_URL
+    const baseUrl = process.env.ORY_SDK_URL
 
     if (!baseUrl) {
         throw new Error(
-            "Missing ORY_SDK_URL or NEXT_PUBLIC_ORY_SDK_URL environment variable"
+            "Missing ORY_SDK_URL environment variable"
         )
     }
 

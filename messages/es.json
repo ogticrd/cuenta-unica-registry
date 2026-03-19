@@ -53,6 +53,7 @@
             "id_required": "La c\u00e9dula es requerida",
             "id_invalid_length": "La c\u00e9dula debe tener 11 d\u00edgitos",
             "id_invalid": "La c\u00e9dula ingresada no es v\u00e1lida",
+            "account_exists": "Esta c\u00e9dula ya tiene una cuenta creada.",
             "id_not_found": "No encontramos informaci\u00f3n para esta c\u00e9dula",
             "lookup_error": "No se pudo validar la c\u00e9dula. Int\u00e9ntalo de nuevo.",
             "loading": "Cargando...",

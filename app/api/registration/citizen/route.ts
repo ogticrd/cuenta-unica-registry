@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service"
+import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service"
 import type {
   CitizenLookupRequest,
   CitizenLookupResponse,
@@ -36,6 +37,12 @@ export async function POST(request: Request) {
   }
 
   try {
+    const identityLookup = await checkCitizenIdentity(cedula)
+
+    if (identityLookup.exists) {
+      return createErrorResponse("identity_exists", 409)
+    }
+
     const citizen = await findCitizenByCedula(cedula)
 
     if (!citizen) {

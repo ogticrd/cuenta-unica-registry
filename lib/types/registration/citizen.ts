@@ -12,6 +12,7 @@ export interface CitizenLookupResult {
 
 export type CitizenLookupErrorCode =
   | "invalid_cedula"
+  | "identity_exists"
   | "citizen_not_found"
   | "unexpected_error"
 

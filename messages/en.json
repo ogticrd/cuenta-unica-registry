@@ -53,6 +53,7 @@
             "id_required": "The national ID is required",
             "id_invalid_length": "The national ID must contain 11 digits",
             "id_invalid": "The national ID entered is not valid",
+            "account_exists": "This ID already has an account created.",
             "id_not_found": "We could not find information for this national ID",
             "lookup_error": "We could not validate the national ID. Please try again.",
             "loading": "Loading...",
