@@ -22,19 +22,20 @@
         "recovery_title": "Restablecer contraseña",
         "recovery_subtitle": "Para restablecer la contraseña, ingrese su correo electrónico registrado",
         "recovery_remember": "¿Recuerdas tus credenciales?",
-        "recovery_login_cta": "Inicia sesión"
+        "recovery_login_cta": "Inicia sesión",
+        "verify_account": "Verificar cuenta"
     },
     "register": {
-        "title": "Registro Cuenta \u00danica",
-        "logo_alt": "Cuenta \u00danica",
+        "title": "Registro Cuenta Única",
+        "logo_alt": "Cuenta Única",
         "step_label": "Paso",
         "steps": {
             "identification": {
-                "title": "Identificaci\u00f3n",
-                "description": "C\u00e9dula del usuario"
+                "title": "Identificación",
+                "description": "Cédula del usuario"
             },
             "verification": {
-                "title": "Verificaci\u00f3n",
+                "title": "Verificación",
                 "description": "Prueba de vida"
             },
             "account": {
@@ -47,63 +48,70 @@
             "cancel": "Cancelar"
         },
         "identification": {
-            "intro": "Puedes continuar con el registro proporcionando tu n\u00famero de identidad \"C\u00e9dula\".",
-            "id_label": "N\u00famero de c\u00e9dula",
+            "intro": "Puedes continuar con el registro proporcionando tu número de identidad \"Cédula\".",
+            "id_label": "Número de cédula",
             "id_placeholder": "000-0000000-0",
-            "id_required": "La c\u00e9dula es requerida",
-            "id_invalid_length": "La c\u00e9dula debe tener 11 d\u00edgitos",
-            "id_invalid": "La c\u00e9dula ingresada no es v\u00e1lida",
-            "account_exists": "Esta c\u00e9dula ya tiene una cuenta creada.",
-            "id_not_found": "No encontramos informaci\u00f3n para esta c\u00e9dula",
-            "lookup_error": "No se pudo validar la c\u00e9dula. Int\u00e9ntalo de nuevo.",
+            "id_required": "La cédula es requerida",
+            "id_invalid_length": "La cédula debe tener 11 dígitos",
+            "id_invalid": "La cédula ingresada no es válida",
+            "account_exists": "Esta cédula ya tiene una cuenta creada.",
+            "id_not_found": "No encontramos información para esta cédula",
+            "lookup_error": "No se pudo validar la cédula. Inténtalo de nuevo.",
             "loading": "Cargando...",
             "continue": "CONTINUAR",
-            "existing_account": "\u00bfYa tienes una cuenta?",
-            "login_cta": "Inicia sesi\u00f3n"
+            "existing_account": "¿Ya tienes una cuenta?",
+            "login_cta": "Inicia sesión"
         },
         "verification": {
-            "illustration_alt": "Verificaci\u00f3n",
-            "greeting": "\u00a1Hola, {firstName}!",
-            "intro": "A continuaci\u00f3n validaremos tu identidad mediante una verificaci\u00f3n facial y prueba de vida. Aseg\u00farate de cumplir con las siguientes condiciones:",
+            "illustration_alt": "Verificación",
+            "greeting": "¡Hola, {firstName}!",
+            "intro": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
+            "session_error": "No se pudo continuar con la verificación. Reinicia el proceso de registro.",
             "requirements": {
-                "device": "Utilizar un dispositivo que posea <strong>c\u00e1mara frontal</strong> integrada.",
+                "device": "Utilizar un dispositivo que posea <strong>cámara frontal</strong> integrada.",
                 "face": "Permitir que tomemos capturas de <strong>tu rostro</strong>.",
-                "photosensitive": "Esta verificaci\u00f3n muestra <strong>luces de colores</strong>. Ten cuidado si eres fotosensible."
+                "photosensitive": "Esta verificación muestra <strong>luces de colores</strong>. Ten cuidado si eres fotosensible."
             },
-            "terms_label": "Aceptar t\u00e9rminos y pol\u00edticas de privacidad",
+            "terms_label": "Aceptar términos y políticas de privacidad",
             "start_process": "INICIAR PROCESO",
             "modal": {
-                "screenreader_title": "Verificaci\u00f3n biom\u00e9trica a pantalla completa",
-                "screenreader_description": "Proceso de validaci\u00f3n facial",
-                "title": "Verificaci\u00f3n biom\u00e9trica",
-                "description": "Por favor, mira fijamente a la c\u00e1mara y mant\u00e9n tu rostro dentro del \u00f3valo.",
-                "verified": "\u00a1Verificado!",
-                "face_position": "Posiciona tu rostro aqu\u00ed",
-                "allow_camera": "Permitir c\u00e1mara y escanear",
+                "screenreader_title": "Verificación biométrica a pantalla completa",
+                "screenreader_description": "Proceso de validación facial",
+                "title": "Verificación biométrica",
+                "description": "Por favor, mira fijamente a la cámara y mantén tu rostro dentro del óvalo.",
+                "verified": "¡Verificado!",
+                "face_position": "Posiciona tu rostro aquí",
+                "allow_camera": "Permitir cámara y escanear",
                 "analyzing": "Analizando rasgos faciales..."
             }
         },
         "account": {
-            "intro": "Para finalizar y completar tu registro, completa los siguientes campos.",
-            "email_label": "Correo electr\u00f3nico",
+            "intro": "Configura tu correo electrónico y contraseña para continuar con la verificación biométrica.",
+            "email_label": "Correo electrónico",
             "email_placeholder": "tucorreo@ejemplo.com",
             "confirm_email_label": "Confirmar correo",
-            "password_label": "Contrase\u00f1a",
-            "confirm_password_label": "Confirmar contrase\u00f1a",
-            "toggle_password_visibility": "Mostrar u ocultar contrase\u00f1a",
+            "password_label": "Contraseña",
+            "confirm_password_label": "Confirmar contraseña",
+            "toggle_password_visibility": "Mostrar u ocultar contraseña",
+            "continue": "CONTINUAR",
             "finalizing": "Finalizando...",
             "create_account": "CREAR CUENTA",
-            "success_title": "\u00a1Registro completado con \u00e9xito!",
+            "success_title": "¡Registro completado con éxito!",
             "success_description": "Tu cuenta ciudadana ha sido creada.",
             "identity_exists": "Ya existe una cuenta asociada a los datos ingresados.",
-            "error": "Error al completar el registro. Int\u00e9ntalo de nuevo.",
+            "session_missing": "Tu sesión de registro expiró. Debes iniciar nuevamente desde la identificación.",
+            "verification_required": "Debes completar la verificación facial antes de crear la cuenta.",
+            "error": "Error al completar el registro. Inténtalo de nuevo.",
             "validation": {
-                "email_invalid": "Ingresa un correo electr\u00f3nico v\u00e1lido",
-                "password_min": "La contrase\u00f1a debe tener al menos 10 caracteres",
-                "password_cedula_similarity": "La contrase\u00f1a no puede contener la c\u00e9dula",
-                "password_email_similarity": "La contrase\u00f1a no puede contener el correo electr\u00f3nico",
-                "email_mismatch": "Los correos electr\u00f3nicos no coinciden",
-                "password_mismatch": "Las contrase\u00f1as no coinciden"
+                "email_invalid": "Ingresa un correo electrónico válido",
+                "password_min": "La contraseña debe tener al menos 10 caracteres",
+                "password_max": "La contraseña excede la longitud permitida",
+                "password_compromised": "La contraseña no es segura y debes elegir una diferente",
+                "password_policy": "La contraseña no cumple con la política de seguridad",
+                "password_cedula_similarity": "La contraseña no puede contener la cédula",
+                "password_email_similarity": "La contraseña no puede contener el correo electrónico",
+                "email_mismatch": "Los correos electrónicos no coinciden",
+                "password_mismatch": "Las contraseñas no coinciden"
             }
         }
     },

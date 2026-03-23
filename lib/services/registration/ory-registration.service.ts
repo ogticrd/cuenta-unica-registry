@@ -33,25 +33,23 @@ export interface RegisterOryAccountResult {
 }
 
 function findNodeValue(nodes: UiNode[] = [], fieldName: string) {
-  for (const node of nodes) {
-    if (!node.attributes || !("name" in node.attributes)) {
-      continue
-    }
+  const node = nodes.find((currentNode) => {
+    const attributes = currentNode.attributes as unknown as Record<string, unknown> | null
 
-    if (String(node.attributes.name) !== fieldName) {
-      continue
-    }
+    return (
+      typeof attributes === "object" &&
+      attributes !== null &&
+      attributes.name === fieldName &&
+      "value" in attributes
+    )
+  })
 
-    if (!("value" in node.attributes)) {
-      continue
-    }
-
-    return typeof node.attributes.value === "string"
-      ? node.attributes.value
-      : undefined
+  if (!node) {
+    return undefined
   }
 
-  return undefined
+  const attributes = node.attributes as unknown as Record<string, unknown>
+  return typeof attributes.value === "string" ? attributes.value : undefined
 }
 
 export async function registerOryAccount(
@@ -69,12 +67,11 @@ export async function registerOryAccount(
     },
   )
   const csrfToken = findNodeValue(createFlowResponse.data.ui?.nodes, "csrf_token")
-
-  const createFlowCookies = createFlowResponse.headers["set-cookie"]
-  const createFlowSetCookies = Array.isArray(createFlowCookies)
-    ? createFlowCookies
-    : createFlowCookies
-      ? [createFlowCookies]
+  const createFlowSetCookieHeader = createFlowResponse.headers["set-cookie"]
+  const createFlowSetCookies = Array.isArray(createFlowSetCookieHeader)
+    ? createFlowSetCookieHeader
+    : createFlowSetCookieHeader
+      ? [createFlowSetCookieHeader as string]
       : []
   const csrfCookieHeader = mergeCookieHeaders(input.cookie, createFlowSetCookies)
 
@@ -108,14 +105,15 @@ export async function registerOryAccount(
     .then((response) => response)
     .catch((error) => error.response)
 
-  const updateCookies = updateResponse?.headers?.["set-cookie"]
+  const updateSetCookieHeader = updateResponse?.headers?.["set-cookie"]
+  const updateSetCookies = Array.isArray(updateSetCookieHeader)
+    ? updateSetCookieHeader
+    : updateSetCookieHeader
+      ? [updateSetCookieHeader as string]
+      : []
   const setCookies = [
     ...createFlowSetCookies,
-    ...(Array.isArray(updateCookies)
-      ? updateCookies
-      : updateCookies
-        ? [updateCookies]
-        : []),
+    ...updateSetCookies,
   ]
 
   return {

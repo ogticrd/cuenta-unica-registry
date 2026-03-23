@@ -2,20 +2,38 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react"
+import { toast } from "sonner"
 import { useT } from "@/hooks/use-t"
+import { accountService } from "@/lib/services/registration/account.service"
+import { verificationService } from "@/lib/services/registration/verification.service"
+import type {
+    RegisterAccountDraft,
+    RegisterAccountErrorCode,
+    RegisterAccountStepErrors,
+} from "@/lib/types/registration/account"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
 
 interface StepVerificationProps {
-    onNext: () => void
     onBack: () => void
-    userData: { name: string; cedula: string }
+    onRequireAccount: (accountErrors?: RegisterAccountStepErrors) => void
+    onRequireIdentification: () => void
+    accountDraft: RegisterAccountDraft
+    userData: { name: string }
 }
 
-export function StepVerification({ onNext, onBack, userData }: StepVerificationProps) {
+export function StepVerification({
+    onBack,
+    onRequireAccount,
+    onRequireIdentification,
+    accountDraft,
+    userData,
+}: StepVerificationProps) {
     const t = useT("register")
+    const router = useRouter()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false)
     const [verificationSuccess, setVerificationSuccess] = useState(false)
@@ -24,6 +42,11 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
     const firstName = userData.name.split(" ")[0]?.toUpperCase() || userData.name.toUpperCase()
 
     const handleStartVerification = () => {
+        if (!accountDraft.email || !accountDraft.password) {
+            onRequireAccount()
+            return
+        }
+
         setIsModalOpen(true)
         setIsVerifying(false)
         setVerificationSuccess(false)
@@ -31,13 +54,67 @@ export function StepVerification({ onNext, onBack, userData }: StepVerificationP
 
     const simulateRekognitionProcess = () => {
         setIsVerifying(true)
-        setTimeout(() => {
+        setTimeout(async () => {
+            const result = await verificationService.completeRegistrationVerification()
+
+            if (!result.success) {
+                setIsVerifying(false)
+                setIsModalOpen(false)
+
+                if (result.code === "registration_session_missing") {
+                    onRequireIdentification()
+                }
+
+                toast.error(t("verification.session_error"))
+                return
+            }
+
             setVerificationSuccess(true)
+            const accountResult = await accountService.registerAccount({
+                email: accountDraft.email,
+                password: accountDraft.password,
+            })
+
+            if (!accountResult.success) {
+                const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
+                    invalid_payload: t("account.error"),
+                    registration_session_missing: t("account.session_missing"),
+                    password_cedula_similarity: t("account.validation.password_cedula_similarity"),
+                    invalid_cedula: t("identification.id_invalid"),
+                    citizen_not_found: t("identification.id_not_found"),
+                    identity_exists: t("account.identity_exists"),
+                    ory_validation_error: t("account.error"),
+                    unexpected_error: t("account.error"),
+                }
+
+                setIsVerifying(false)
+                setVerificationSuccess(false)
+                setIsModalOpen(false)
+
+                if (accountResult.code === "registration_session_missing") {
+                    onRequireIdentification()
+                    toast.error(messageByErrorCode[accountResult.code])
+                    return
+                }
+
+                onRequireAccount({
+                    code: accountResult.code,
+                    fieldErrors: accountResult.fieldErrors,
+                })
+                return
+            }
+
             setIsVerifying(false)
+
+            if (accountResult.destination === "login") {
+                toast.success(t("account.success_title"), {
+                    description: t("account.success_description"),
+                })
+            }
 
             setTimeout(() => {
                 setIsModalOpen(false)
-                onNext()
+                router.push(accountResult.redirectTo)
             }, 1500)
         }, 3000)
     }

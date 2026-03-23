@@ -22,11 +22,12 @@
         "recovery_title": "Reset password",
         "recovery_subtitle": "To reset your password, enter your registered email address",
         "recovery_remember": "Remember your credentials?",
-        "recovery_login_cta": "Log in"
+        "recovery_login_cta": "Log in",
+        "verify_account": "Verify account"
     },
     "register": {
-        "title": "Cuenta \u00danica Registration",
-        "logo_alt": "Cuenta \u00danica",
+        "title": "Cuenta Única Registration",
+        "logo_alt": "Cuenta Única",
         "step_label": "Step",
         "steps": {
             "identification": {
@@ -47,7 +48,7 @@
             "cancel": "Cancel"
         },
         "identification": {
-            "intro": "You can continue with registration by providing your \"C\u00e9dula\" identity number.",
+            "intro": "You can continue with registration by providing your \"Cédula\" identity number.",
             "id_label": "National ID number",
             "id_placeholder": "000-0000000-0",
             "id_required": "The national ID is required",
@@ -65,6 +66,7 @@
             "illustration_alt": "Verification",
             "greeting": "Hello, {firstName}!",
             "intro": "Next, we will validate your identity using facial verification and a liveness check. Make sure you meet the following conditions:",
+            "session_error": "We could not continue with verification. Restart the registration process.",
             "requirements": {
                 "device": "Use a device with a built-in <strong>front-facing camera</strong>.",
                 "face": "Allow us to capture images of <strong>your face</strong>.",
@@ -84,22 +86,28 @@
             }
         },
         "account": {
-            "intro": "To finish and complete your registration, fill in the following fields.",
+            "intro": "Set up your email and password to continue to biometric verification.",
             "email_label": "Email address",
             "email_placeholder": "your@email.com",
             "confirm_email_label": "Confirm email",
             "password_label": "Password",
             "confirm_password_label": "Confirm password",
             "toggle_password_visibility": "Show or hide password",
+            "continue": "CONTINUE",
             "finalizing": "Finalizing...",
             "create_account": "CREATE ACCOUNT",
             "success_title": "Registration completed successfully!",
             "success_description": "Your citizen account has been created.",
             "identity_exists": "An account already exists for the provided information.",
+            "session_missing": "Your registration session expired. You need to start again from identification.",
+            "verification_required": "You must complete facial verification before creating the account.",
             "error": "There was an error completing the registration. Please try again.",
             "validation": {
                 "email_invalid": "Enter a valid email address",
                 "password_min": "The password must be at least 10 characters long",
+                "password_max": "The password exceeds the allowed length",
+                "password_compromised": "The password is not secure and you must choose a different one",
+                "password_policy": "The password does not meet the security policy",
                 "password_cedula_similarity": "The password cannot contain the national ID",
                 "password_email_similarity": "The password cannot contain the email address",
                 "email_mismatch": "The email addresses do not match",

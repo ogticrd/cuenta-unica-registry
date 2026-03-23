@@ -8,4 +8,6 @@ export const API = {
     sessions: "/api/ory/sessions",
     registrationCitizen: "/api/registration/citizen",
     registrationAccount: "/api/registration/account",
+    registrationVerification: "/api/registration/verification",
+    registrationSessionReset: "/api/registration/session/reset",
 } as const

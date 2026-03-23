@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -24,12 +24,10 @@ interface StepIdentificationProps {
     updateData: (data: {
         cedula: string
         name: string
-        firstName: string
-        lastName: string
-        birthDate: string
-        gender: "M" | "F"
     }) => void
-    defaultValues: { cedula: string }
+    defaultValues: {
+        cedula: string
+    }
 }
 
 export function StepIdentification({ onNext, updateData, defaultValues }: StepIdentificationProps) {
@@ -44,6 +42,12 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
             cedula: formatCedula(defaultValues.cedula),
         },
     })
+
+    useEffect(() => {
+        form.reset({
+            cedula: formatCedula(defaultValues.cedula),
+        })
+    }, [defaultValues.cedula, form])
 
     const onSubmit = async (data: { cedula: string }) => {
         setIsLoading(true)
@@ -68,12 +72,8 @@ export function StepIdentification({ onNext, updateData, defaultValues }: StepId
             }
 
             updateData({
-                cedula: result.citizen.id,
-                name: `${result.citizen.firstName} ${result.citizen.lastName}`.trim(),
-                firstName: result.citizen.firstName,
-                lastName: result.citizen.lastName,
-                birthDate: result.citizen.birthDate,
-                gender: result.citizen.gender,
+                cedula,
+                name: result.citizen.firstName,
             })
             onNext()
         } catch (error) {

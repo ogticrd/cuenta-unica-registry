@@ -1,19 +1,53 @@
-import type { UiNode, UiText } from "@ory/client"
 import { NextResponse } from "next/server"
 import { accountRequestSchema } from "@/lib/schemas/registration"
 import { ROUTES } from "@/lib/constants/routes"
 import { getServerCookies } from "@/lib/ory/cookies"
+import {
+  clearRegistrationSessionCookie,
+  getRegistrationSession,
+} from "@/lib/services/registration/registration-session.service"
 import { registerOryAccount } from "@/lib/services/registration/ory-registration.service"
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service"
+import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper"
 import type {
   RegisterAccountErrorCode,
-  RegisterAccountFieldError,
+  RegisterAccountFieldErrors,
   RegisterAccountRequest,
   RegisterAccountResponse,
 } from "@/lib/types/registration/account"
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula"
 
-type OryMessage = Pick<UiText, "type" | "text">
+function setOryCookies(response: NextResponse, setCookies: string[]) {
+  for (const raw of setCookies) {
+    // Strip Domain so the browser stores the cookie on our app's domain
+    const [nameValue, ...attrParts] = raw.replace(/;?\s*Domain=[^;]*/gi, "").split(";")
+    const eqIdx = nameValue?.indexOf("=") ?? -1
+    if (!nameValue || eqIdx === -1) continue
+
+    // Collect attributes into a map for easy lookup
+    const attrs: Record<string, string> = {}
+    for (const part of attrParts) {
+      const t = part.trim()
+      if (!t) continue
+      const i = t.indexOf("=")
+      attrs[(i === -1 ? t : t.slice(0, i)).toLowerCase().trim()] = i === -1 ? "" : t.slice(i + 1).trim()
+    }
+
+    const maxAge = parseInt(attrs["max-age"], 10)
+
+    // Use response.cookies.set() to avoid Next.js comma-merging bug
+    // with multiple Set-Cookie headers
+    response.cookies.set({
+      name: nameValue.slice(0, eqIdx).trim(),
+      value: nameValue.slice(eqIdx + 1).trim(),
+      path: attrs.path || "/",
+      httpOnly: "httponly" in attrs,
+      secure: "secure" in attrs,
+      sameSite: (attrs.samesite as "lax" | "strict" | "none") || "lax",
+      ...(!isNaN(maxAge) ? { maxAge } : {}),
+    })
+  }
+}
 
 function createJsonResponse(
   payload: RegisterAccountResponse,
@@ -21,11 +55,7 @@ function createJsonResponse(
   setCookies: string[] = [],
 ) {
   const response = NextResponse.json(payload, { status })
-
-  for (const setCookie of setCookies) {
-    response.headers.append("Set-Cookie", setCookie)
-  }
-
+  setOryCookies(response, setCookies)
   return response
 }
 
@@ -33,8 +63,7 @@ function createErrorResponse(
   code: RegisterAccountErrorCode,
   status: number,
   options?: {
-    fieldErrors?: RegisterAccountFieldError
-    formError?: string
+    fieldErrors?: RegisterAccountFieldErrors
     setCookies?: string[]
   },
 ) {
@@ -42,79 +71,13 @@ function createErrorResponse(
     success: false,
     code,
     fieldErrors: options?.fieldErrors,
-    formError: options?.formError,
   }
 
   return createJsonResponse(payload, status, options?.setCookies)
 }
 
-function collectNodeMessages(nodes: UiNode[] = []) {
-  const fieldErrors: RegisterAccountFieldError = {}
-  const formMessages: string[] = []
-
-  for (const node of nodes) {
-    const attributeName =
-      node.attributes && "name" in node.attributes
-        ? String(node.attributes.name ?? "")
-        : ""
-
-    for (const message of node.messages ?? []) {
-      if (!message.text) {
-        continue
-      }
-
-      if (attributeName.includes("email")) {
-        fieldErrors.email = message.text
-        continue
-      }
-
-      if (attributeName.includes("password")) {
-        fieldErrors.password = message.text
-        continue
-      }
-
-      formMessages.push(message.text)
-    }
-  }
-
-  return { fieldErrors, formMessages }
-}
-
-function extractUiMessages(messages: OryMessage[] = []) {
-  return messages
-    .filter((message) => message.text)
-    .map((message) => String(message.text))
-}
-
-function resolveOryErrors(payload: {
-  ui?: {
-    nodes?: UiNode[]
-    messages?: OryMessage[]
-  }
-  error?: {
-    id?: string
-    message?: string
-    reason?: string
-  }
-}) {
-  const { fieldErrors, formMessages } = collectNodeMessages(payload.ui?.nodes)
-  const topLevelMessages = extractUiMessages(payload.ui?.messages)
-  const errorMessage = payload.error?.reason || payload.error?.message
-  const allMessages = [...formMessages, ...topLevelMessages]
-
-  if (errorMessage) {
-    allMessages.push(errorMessage)
-  }
-
-  const identityExists = allMessages.some((message) =>
-    /already exists|exists already|already been used|already in use/i.test(message),
-  )
-
-  return {
-    fieldErrors,
-    formError: allMessages[0],
-    code: identityExists ? "identity_exists" : "ory_validation_error",
-  } as const
+function hasPasswordCedulaSimilarity(password: string, cedula: string) {
+  return password.includes(cedula)
 }
 
 export async function POST(request: Request) {
@@ -133,10 +96,20 @@ export async function POST(request: Request) {
     return createErrorResponse("invalid_payload", 400)
   }
 
-  const cedula = normalizeCedula(parsedRequest.data.cedula)
+  const registrationSession = await getRegistrationSession()
+
+  if (!registrationSession) {
+    return createErrorResponse("registration_session_missing", 400)
+  }
+
+  const cedula = normalizeCedula(registrationSession.cedula)
 
   if (!(await isValidCedula(cedula))) {
     return createErrorResponse("invalid_cedula", 400)
+  }
+
+  if (hasPasswordCedulaSimilarity(parsedRequest.data.password, cedula)) {
+    return createErrorResponse("password_cedula_similarity", 400)
   }
 
   const citizen = await findCitizenByCedula(cedula)
@@ -152,24 +125,23 @@ export async function POST(request: Request) {
       email: parsedRequest.data.email,
       password: parsedRequest.data.password,
       cedula,
-      firstName: citizen.firstName,
+      firstName: citizen.names,
       lastName: citizen.lastName,
       birthDate: citizen.birthDate,
       gender: citizen.gender,
     })
 
     if (payload.ui) {
-      const errorDetails = resolveOryErrors(payload)
+      const errorDetails = mapOryAccountErrors(payload)
 
       return createErrorResponse(errorDetails.code, 400, {
         fieldErrors: errorDetails.fieldErrors,
-        formError: errorDetails.formError,
         setCookies,
       })
     }
 
     if (payload.error) {
-      const errorDetails = resolveOryErrors(payload)
+      const errorDetails = mapOryAccountErrors(payload)
       const status =
         payload.error.id === "security_csrf_violation" ? 400 : 502
 
@@ -177,20 +149,24 @@ export async function POST(request: Request) {
 
       return createErrorResponse(errorDetails.code, status, {
         fieldErrors: errorDetails.fieldErrors,
-        formError: errorDetails.formError,
         setCookies,
       })
     }
 
     for (const block of payload.continue_with ?? []) {
       if (block.action === "show_verification_ui" && block.flow?.id) {
+        // Ory already sent the verification email via its after-registration hook.
+        // Redirect to our custom OTP verification page with the flow ID.
         const responsePayload: RegisterAccountResponse = {
           success: true,
-          destination: "verification",
-          redirectTo: `${ROUTES.verification}?flow=${encodeURIComponent(block.flow.id)}`,
+          destination: "email-sent",
+          redirectTo: `${ROUTES.emailSent}?flow=${encodeURIComponent(block.flow.id)}`,
         }
 
-        return createJsonResponse(responsePayload, 200, setCookies)
+        const response = createJsonResponse(responsePayload, 200, setCookies)
+        response.cookies.set(clearRegistrationSessionCookie())
+
+        return response
       }
     }
 
@@ -201,7 +177,10 @@ export async function POST(request: Request) {
         redirectTo: `${ROUTES.login}?registered=true`,
       }
 
-      return createJsonResponse(responsePayload, 200, setCookies)
+      const response = createJsonResponse(responsePayload, 200, setCookies)
+      response.cookies.set(clearRegistrationSessionCookie())
+
+      return response
     }
 
     return createErrorResponse("unexpected_error", 500, { setCookies })

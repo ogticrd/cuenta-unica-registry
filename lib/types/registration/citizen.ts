@@ -5,6 +5,12 @@ export interface CitizenLookupRequest {
 export interface CitizenLookupResult {
   id: string
   firstName: string
+}
+
+export interface CitizenProfileResult {
+  id: string
+  names: string
+  firstName: string
   lastName: string
   birthDate: string
   gender: "M" | "F"

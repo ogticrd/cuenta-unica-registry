@@ -1,17 +1,30 @@
 export interface RegisterAccountRequest {
-  cedula: string
   email: string
   password: string
 }
 
-export type RegisterAccountDestination = "verification" | "login"
+export interface RegisterAccountDraft {
+  email: string
+  confirmEmail: string
+  password: string
+  confirmPassword: string
+}
 
-export type RegisterAccountFieldError = Partial<
+export type RegisterAccountDestination = "verification" | "login" | "email-sent"
+
+export type RegisterAccountFieldErrors = Partial<
   Record<"email" | "password", string>
 >
 
+export interface RegisterAccountStepErrors {
+  code?: RegisterAccountErrorCode
+  fieldErrors?: RegisterAccountFieldErrors
+}
+
 export type RegisterAccountErrorCode =
   | "invalid_payload"
+  | "registration_session_missing"
+  | "password_cedula_similarity"
   | "invalid_cedula"
   | "citizen_not_found"
   | "identity_exists"
@@ -27,6 +40,5 @@ export type RegisterAccountResponse =
   | {
       success: false
       code: RegisterAccountErrorCode
-      fieldErrors?: RegisterAccountFieldError
-      formError?: string
+      fieldErrors?: RegisterAccountFieldErrors
     }

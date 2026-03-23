@@ -11,6 +11,7 @@ export const ROUTES = {
   // verification: "/self-service/verification/browser",
   recovery: "/self-service/recovery/browser",
   error: "/error",
+  emailSent: "/register/email-sent",
 
   // Dashboard
   dashboard: "/",

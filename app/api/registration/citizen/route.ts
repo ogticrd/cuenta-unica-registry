@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
-import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service"
+import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service"
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service"
+import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service"
 import type {
   CitizenLookupRequest,
   CitizenLookupResponse,
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
       return createErrorResponse("identity_exists", 409)
     }
 
-    const citizen = await findCitizenByCedula(cedula)
+    const citizen = await findCitizenSummaryByCedula(cedula)
 
     if (!citizen) {
       return createErrorResponse("citizen_not_found", 404)
@@ -54,7 +55,12 @@ export async function POST(request: Request) {
       citizen,
     }
 
-    return NextResponse.json(payload, { status: 200 })
+    const response = NextResponse.json(payload, { status: 200 })
+    response.cookies.set(
+      createRegistrationSessionCookie(normalizeCedula(citizen.id), "identified"),
+    )
+
+    return response
   } catch (error) {
     console.error("[/api/registration/citizen] Citizen lookup failed:", error)
     return createErrorResponse("unexpected_error", 500)

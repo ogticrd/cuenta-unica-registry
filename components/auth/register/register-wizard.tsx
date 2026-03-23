@@ -2,52 +2,131 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { toast } from "sonner"
 import { useT } from "@/hooks/use-t"
+import type {
+    RegisterAccountDraft,
+    RegisterAccountStepErrors,
+} from "@/lib/types/registration/account"
+import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Stepper } from "@/components/ui/stepper"
 import { StepIdentification } from "./steps/step-identification"
 import { StepVerification } from "./steps/step-verification"
 import { StepAccount } from "./steps/step-account"
 
-export function RegisterWizard() {
+interface RegisterWizardProps {
+    initialStep: 0 | 1 | 2
+    initialName: string
+}
+
+export function RegisterWizard({ initialStep, initialName }: RegisterWizardProps) {
     const t = useT("register")
-    const [activeStep, setActiveStep] = useState(0)
+    const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep)
     const steps = [
         {
             title: t("steps.identification.title"),
             description: t("steps.identification.description"),
         },
         {
-            title: t("steps.verification.title"),
-            description: t("steps.verification.description"),
-        },
-        {
             title: t("steps.account.title"),
             description: t("steps.account.description"),
+        },
+        {
+            title: t("steps.verification.title"),
+            description: t("steps.verification.description"),
         },
     ]
 
     const [wizardData, setWizardData] = useState({
         cedula: "",
-        name: "",
-        firstName: "",
-        lastName: "",
-        birthDate: "",
-        gender: "" as "" | "M" | "F",
-        email: "",
-        password: "",
+        name: initialName,
+        accountDraft: {
+            email: "",
+            confirmEmail: "",
+            password: "",
+            confirmPassword: "",
+        } satisfies RegisterAccountDraft,
+        accountErrors: undefined as RegisterAccountStepErrors | undefined,
     })
 
     const handleNext = () => {
-        setActiveStep((prev) => Math.min(prev + 1, steps.length - 1))
+        setActiveStep((prev) => {
+            if (prev === 0) {
+                return 1
+            }
+
+            if (prev === 1) {
+                return 2
+            }
+
+            return 2
+        })
     }
 
-    const handleBack = () => {
-        setActiveStep((prev) => Math.max(prev - 1, 0))
+    const handleBack = async () => {
+        if (activeStep === 1 || activeStep === 2) {
+            const result = await registrationSessionApiService.reset()
+
+            if (!result.success) {
+                toast.error(t("identification.lookup_error"))
+                return
+            }
+
+            setWizardData((prev) => ({
+                cedula: prev.cedula,
+                name: "",
+                accountDraft: {
+                    email: "",
+                    confirmEmail: "",
+                    password: "",
+                    confirmPassword: "",
+                },
+                accountErrors: undefined,
+            }))
+            setActiveStep(0)
+            return
+        }
+
+        setActiveStep((prev) => {
+            return 0
+        })
+    }
+
+    const handleRequireIdentification = () => {
+        setWizardData({
+            cedula: "",
+            name: "",
+            accountDraft: {
+                email: "",
+                confirmEmail: "",
+                password: "",
+                confirmPassword: "",
+            },
+            accountErrors: undefined,
+        })
+        setActiveStep(0)
+    }
+
+    const handleRequireAccount = (accountErrors?: RegisterAccountStepErrors) => {
+        setWizardData((prev) => ({
+            ...prev,
+            accountErrors,
+        }))
+        setActiveStep(1)
     }
 
     const updateWizardData = (data: Partial<typeof wizardData>) => {
         setWizardData((prev) => ({ ...prev, ...data }))
+    }
+
+    const handleAccountNext = (accountDraft: RegisterAccountDraft) => {
+        setWizardData((prev) => ({
+            ...prev,
+            accountDraft,
+            accountErrors: undefined,
+        }))
+        setActiveStep(2)
     }
 
     return (
@@ -74,17 +153,21 @@ export function RegisterWizard() {
                 )}
 
                 {activeStep === 1 && (
-                    <StepVerification
-                        onNext={handleNext}
+                    <StepAccount
                         onBack={handleBack}
-                        userData={{ name: wizardData.name, cedula: wizardData.cedula }}
+                        onNext={handleAccountNext}
+                        defaultValues={wizardData.accountDraft}
+                        initialErrors={wizardData.accountErrors}
                     />
                 )}
 
                 {activeStep === 2 && (
-                    <StepAccount
+                    <StepVerification
                         onBack={handleBack}
-                        userData={wizardData}
+                        onRequireAccount={handleRequireAccount}
+                        onRequireIdentification={handleRequireIdentification}
+                        accountDraft={wizardData.accountDraft}
+                        userData={{ name: wizardData.name }}
                     />
                 )}
             </CardContent>

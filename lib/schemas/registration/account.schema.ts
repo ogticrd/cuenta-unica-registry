@@ -3,12 +3,11 @@ import { z } from "zod"
 type Translate = (key: string) => string
 
 export const accountRequestSchema = z.object({
-  cedula: z.string().min(1),
   email: z.string().email(),
   password: z.string().min(10),
 })
 
-export function createAccountSchema(t: Translate, cedula: string) {
+export function createAccountSchema(t: Translate) {
   return z
     .object({
       email: z.string().email({ message: t("account.validation.email_invalid") }),
@@ -20,19 +19,6 @@ export function createAccountSchema(t: Translate, cedula: string) {
         .min(10, { message: t("account.validation.password_min") }),
       confirmPassword: z.string(),
     })
-    .refine(
-      (data) => {
-        if (!cedula) {
-          return true
-        }
-
-        return !data.password.includes(cedula)
-      },
-      {
-        message: t("account.validation.password_cedula_similarity"),
-        path: ["password"],
-      },
-    )
     .refine(
       (data) => {
         const [emailLocalPart] = data.email.split("@")
