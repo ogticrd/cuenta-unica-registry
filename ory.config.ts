@@ -1,9 +1,11 @@
 import type { OryClientConfiguration } from "@ory/elements-react"
 import { DEFAULT_LOCALE } from "./lib/constants/locales"
+import { oryCustomTranslations } from "./lib/ory/custom-translations"
 
 export const getOryConfig = (locale: string = DEFAULT_LOCALE): OryClientConfiguration => ({
   intl: {
     locale,
+    customTranslations: oryCustomTranslations,
   },
   project: {
     name: "Cuenta Única Ciudadana",
