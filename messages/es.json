@@ -472,5 +472,26 @@
         "logging_out": "Cerrando sesión...",
         "logout_success": "Sesión cerrada correctamente",
         "logout_error": "Error al cerrar sesión"
+    },
+    "email_sent": {
+        "logo_alt": "Cuenta Única",
+        "title": "Verifica tu cuenta",
+        "subtitle": "Ingresa el código de 6 dígitos que enviamos a tu correo electrónico.",
+        "no_flow_error": "No se encontró un flujo de verificación válido.",
+        "back_to_login": "Volver al inicio de sesión",
+        "help_title": "¿No recibiste el código?",
+        "help_description": "Revisa tu carpeta de {spam} o {junk}. Podría tardar unos minutos en llegar.",
+        "help_spam": "Spam",
+        "help_junk": "Correo no deseado",
+        "verify_button": "Verificar código",
+        "verifying": "Verificando...",
+        "success_title": "¡Cuenta verificada!",
+        "success_description": "Tu cuenta ha sido verificada exitosamente. Ahora puedes iniciar sesión.",
+        "success_message": "¡Verificación exitosa!",
+        "success_redirecting": "Redirigiendo al inicio de sesión...",
+        "error_missing_data": "Faltan datos requeridos.",
+        "error_code_length": "El código debe tener 6 dígitos.",
+        "error_invalid_code": "El código ingresado no es válido. Intenta de nuevo.",
+        "error_expired_code": "El código ingresado no es válido o ha expirado."
     }
 }

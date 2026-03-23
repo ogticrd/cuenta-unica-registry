@@ -472,5 +472,26 @@
         "logging_out": "Logging out...",
         "logout_success": "Session closed successfully",
         "logout_error": "Error while logging out"
+    },
+    "email_sent": {
+        "logo_alt": "Cuenta Única",
+        "title": "Verify your account",
+        "subtitle": "Enter the 6-digit code we sent to your email address.",
+        "no_flow_error": "No valid verification flow was found.",
+        "back_to_login": "Back to login",
+        "help_title": "Didn't receive the code?",
+        "help_description": "Check your {spam} or {junk} folder. It may take a few minutes to arrive.",
+        "help_spam": "Spam",
+        "help_junk": "Junk",
+        "verify_button": "Verify code",
+        "verifying": "Verifying...",
+        "success_title": "Account verified!",
+        "success_description": "Your account has been verified successfully. You can now log in.",
+        "success_message": "Verification successful!",
+        "success_redirecting": "Redirecting to login...",
+        "error_missing_data": "Required data is missing.",
+        "error_code_length": "The code must be 6 digits.",
+        "error_invalid_code": "The code entered is not valid. Please try again.",
+        "error_expired_code": "The code entered is not valid or has expired."
     }
 }
