@@ -1,16 +1,17 @@
 "use client"
 
 import type { SyntheticEvent } from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { AlertCircle, ArrowLeft, Eye, EyeOff } from "lucide-react"
+import { AlertCircle, ArrowLeft, Eye, EyeOff, Check, X } from "lucide-react"
 import { useLocale } from "next-intl"
 import { toast } from "sonner"
 import { useT } from "@/hooks/use-t"
 import { translateOryMessageKey } from "@/lib/ory/custom-translations"
 import { createAccountSchema } from "@/lib/schemas/registration"
+import { getPasswordRequirementStatus } from "@/lib/utils/password"
 import type {
     RegisterAccountDraft,
     RegisterAccountStepErrors,
@@ -23,6 +24,7 @@ import { Input } from "@/components/ui/input"
 interface StepAccountProps {
     onBack: () => void
     onNext: (accountDraft: RegisterAccountDraft) => void
+    cedula: string
     defaultValues: RegisterAccountDraft
     initialErrors?: RegisterAccountStepErrors
 }
@@ -69,6 +71,7 @@ function translateGeneralError(
 export function StepAccount({
     onBack,
     onNext,
+    cedula,
     defaultValues,
     initialErrors,
 }: StepAccountProps) {
@@ -77,12 +80,12 @@ export function StepAccount({
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [oryAlertMessages, setOryAlertMessages] = useState<string[]>([])
-    const accountSchema = createAccountSchema(t)
+    const accountSchema = createAccountSchema(t, cedula)
     type AccountValues = z.infer<typeof accountSchema>
 
     const form = useForm<AccountValues>({
         resolver: zodResolver(accountSchema),
-        reValidateMode: "onChange",
+        reValidateMode: "onBlur",
         defaultValues,
     })
 
@@ -242,6 +245,28 @@ export function StepAccount({
                                     </div>
                                 </FormControl>
                                 <FormMessage />
+
+                                {form.watch("password") && (
+                                    <div className="mt-3 space-y-2 text-sm w-full">
+                                        <p className="font-medium text-slate-700 dark:text-slate-300">
+                                            {t("account.password_requirements.title")}
+                                        </p>
+                                        <ul className="space-y-1.5 pl-1">
+                                            {[
+                                                { met: getPasswordRequirementStatus(form.watch("password") || "").length, label: t("account.password_requirements.length") },
+                                                { met: getPasswordRequirementStatus(form.watch("password") || "").uppercase, label: t("account.password_requirements.uppercase") },
+                                                { met: getPasswordRequirementStatus(form.watch("password") || "").lowercase, label: t("account.password_requirements.lowercase") },
+                                                { met: getPasswordRequirementStatus(form.watch("password") || "").number, label: t("account.password_requirements.number") },
+                                                { met: getPasswordRequirementStatus(form.watch("password") || "").symbol, label: t("account.password_requirements.symbol") },
+                                            ].map((req, i) => (
+                                                <li key={i} className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}>
+                                                    {req.met ? <Check className="w-4 h-4 text-green-600 dark:text-green-500" /> : <X className="w-4 h-4 text-slate-400 dark:text-slate-500" />}
+                                                    <span>{req.label}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </FormItem>
                         )}
                     />
@@ -294,10 +319,19 @@ export function StepAccount({
                     />
 
                     <div className="flex flex-col items-center w-full gap-4">
-                        {oryAlertMessages.length > 0 && (
+                        {form.formState.errors.password?.message === t("account.validation.password_compromised") && (
+                            <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription>
+                                    {t("account.validation.password_compromised")}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
+                        {oryAlertMessages.length > 0 && form.formState.errors.password?.message !== t("account.validation.password_compromised") && (
                             <Alert
                                 variant="destructive"
-                                className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
+                                className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
                             >
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
@@ -312,7 +346,7 @@ export function StepAccount({
 
                         <Button
                             type="submit"
-                            className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold"
+                            className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {t("account.continue")}
                         </Button>

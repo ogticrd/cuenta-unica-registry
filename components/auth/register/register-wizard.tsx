@@ -65,7 +65,12 @@ export function RegisterWizard({ initialStep, initialName }: RegisterWizardProps
     }
 
     const handleBack = async () => {
-        if (activeStep === 1 || activeStep === 2) {
+        if (activeStep === 2) {
+            setActiveStep(1)
+            return
+        }
+
+        if (activeStep === 1) {
             const result = await registrationSessionApiService.reset()
 
             if (!result.success) {
@@ -88,9 +93,7 @@ export function RegisterWizard({ initialStep, initialName }: RegisterWizardProps
             return
         }
 
-        setActiveStep((prev) => {
-            return 0
-        })
+        setActiveStep(0)
     }
 
     const handleRequireIdentification = () => {
@@ -156,6 +159,7 @@ export function RegisterWizard({ initialStep, initialName }: RegisterWizardProps
                     <StepAccount
                         onBack={handleBack}
                         onNext={handleAccountNext}
+                        cedula={wizardData.cedula}
                         defaultValues={wizardData.accountDraft}
                         initialErrors={wizardData.accountErrors}
                     />

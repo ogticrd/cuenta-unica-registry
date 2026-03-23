@@ -185,8 +185,9 @@ export function StepVerification({
             </Button>
 
             <button
+                type="button"
                 onClick={onBack}
-                className="flex items-center gap-2 text-sm text-muted-foreground dark:text-slate-400 dark:hover:text-slate-100 hover:text-foreground transition-colors mt-6 font-medium"
+                className="flex items-center justify-center gap-2 text-sm text-muted-foreground dark:text-slate-400 dark:hover:text-slate-100 hover:text-foreground transition-colors font-medium mt-2"
             >
                 <ArrowLeft className="w-4 h-4" />
                 {t("common.back")}

@@ -105,13 +105,22 @@
             "validation": {
                 "email_invalid": "Ingresa un correo electrónico válido",
                 "password_min": "La contraseña debe tener al menos 10 caracteres",
+                "password_weak": "La contraseña es muy débil. Usa mayúsculas, minúsculas, números o caracteres especiales.",
                 "password_max": "La contraseña excede la longitud permitida",
-                "password_compromised": "La contraseña no es segura y debes elegir una diferente",
+                "password_compromised": "La contraseña no es segura, elige una diferente",
                 "password_policy": "La contraseña no cumple con la política de seguridad",
                 "password_cedula_similarity": "La contraseña no puede contener la cédula",
                 "password_email_similarity": "La contraseña no puede contener el correo electrónico",
                 "email_mismatch": "Los correos electrónicos no coinciden",
                 "password_mismatch": "Las contraseñas no coinciden"
+            },
+            "password_requirements": {
+                "title": "Tu contraseña debe contener:",
+                "length": "Al menos 10 caracteres",
+                "uppercase": "Una letra mayúscula",
+                "lowercase": "Una letra minúscula",
+                "number": "Un número",
+                "symbol": "Un carácter especial"
             }
         }
     },
