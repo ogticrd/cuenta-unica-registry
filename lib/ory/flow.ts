@@ -14,19 +14,18 @@ const initOverrides = { cache: "no-cache" as RequestCache };
 
 /**
  * Server-side Ory FrontendApi client.
- * Always uses ORY_SDK_URL (the real Ory Cloud URL) for API calls.
+ *
+ * Sends requests through the app's own proxy (not directly to Ory Cloud)
+ * so that CSRF cookies scoped to the app's domain are forwarded correctly.
+ * The proxy middleware then forwards the request to ORY_SDK_URL.
  */
-function createServerClient() {
-  const baseUrl = process.env.ORY_SDK_URL;
-
-  if (!baseUrl) {
-    throw new Error("Missing ORY_SDK_URL environment variable");
-  }
+async function createServerClient() {
+  const publicUrl = await getPublicUrl();
 
   return new FrontendApi(
     new Configuration({
       headers: { Accept: "application/json" },
-      basePath: baseUrl.replace(/\/$/, ""),
+      basePath: publicUrl,
     }),
   );
 }
@@ -73,7 +72,7 @@ export async function getLoginFlow(
   return getFlowFactory(
     await params,
     async () =>
-      createServerClient().getLoginFlowRaw(
+      (await createServerClient()).getLoginFlowRaw(
         await toFlowParams(params),
         initOverrides,
       ),
@@ -90,7 +89,7 @@ export async function getRegistrationFlow(
   return getFlowFactory(
     await params,
     async () =>
-      createServerClient().getRegistrationFlowRaw(
+      (await createServerClient()).getRegistrationFlowRaw(
         await toFlowParams(params),
         initOverrides,
       ),
@@ -107,7 +106,7 @@ export async function getRecoveryFlow(
   return getFlowFactory(
     await params,
     async () =>
-      createServerClient().getRecoveryFlowRaw(
+      (await createServerClient()).getRecoveryFlowRaw(
         await toFlowParams(params),
         initOverrides,
       ),
@@ -124,7 +123,7 @@ export async function getVerificationFlow(
   return getFlowFactory(
     await params,
     async () =>
-      createServerClient().getVerificationFlowRaw(
+      (await createServerClient()).getVerificationFlowRaw(
         await toFlowParams(params),
         initOverrides,
       ),
@@ -141,7 +140,7 @@ export async function getSettingsFlow(
   return getFlowFactory(
     await params,
     async () =>
-      createServerClient().getSettingsFlowRaw(
+      (await createServerClient()).getSettingsFlowRaw(
         await toFlowParams(params),
         initOverrides,
       ),
