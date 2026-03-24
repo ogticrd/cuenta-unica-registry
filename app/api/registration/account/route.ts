@@ -106,6 +106,10 @@ export async function POST(request: Request) {
     return createErrorResponse("registration_session_missing", 400);
   }
 
+  if (registrationSession.status !== "verified") {
+    return createErrorResponse("verification_required", 400);
+  }
+
   const cedula = normalizeCedula(registrationSession.cedula);
 
   if (!(await isValidCedula(cedula))) {

@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 
@@ -11,17 +11,29 @@ import type {
   RegisterAccountErrorCode,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
+import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  FaceLiveness,
+  FaceLivenessLoader,
+} from "@/components/auth/register/face-liveness-detector";
 import { useT } from "@/hooks/use-t";
 import { verificationService } from "@/lib/services/registration/verification.service";
 import { accountService } from "@/lib/services/registration/account.service";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+
+type VerificationPhase =
+  | "idle"
+  | "creating_session"
+  | "liveness_active"
+  | "verifying"
+  | "success";
 
 interface StepVerificationProps {
   onBack: () => void;
@@ -41,92 +53,158 @@ export function StepVerification({
   const t = useT("register");
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [phase, setPhase] = useState<VerificationPhase>("idle");
+  const [livenessSessionId, setLivenessSessionId] = useState<string | null>(
+    null,
+  );
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const isHandlingError = useRef(false);
 
   const firstName =
     userData.name.split(" ")[0]?.toUpperCase() || userData.name.toUpperCase();
 
-  const handleStartVerification = () => {
+  const verificationErrorMessages: Record<VerifyLivenessErrorCode, string> = {
+    registration_session_missing: t("verification.session_error"),
+    invalid_session_id: t("verification.verification_failed"),
+    liveness_check_failed: t("verification.liveness_failed"),
+    citizen_photo_unavailable: t("verification.citizen_photo_unavailable"),
+    face_mismatch: t("verification.face_mismatch"),
+    rekognition_error: t("verification.rekognition_error"),
+    unexpected_error: t("verification.verification_failed"),
+  };
+
+  const createSession = useCallback(async () => {
+    setPhase("creating_session");
+    setLivenessSessionId(null);
+
+    const result = await verificationService.createLivenessSession();
+
+    if (!result.success) {
+      setPhase("idle");
+      setIsModalOpen(false);
+
+      if (result.code === "registration_session_missing") {
+        onRequireIdentification();
+      }
+
+      toast.error(t("verification.session_creation_failed"));
+      return;
+    }
+
+    setLivenessSessionId(result.sessionId);
+    setPhase("liveness_active");
+  }, [onRequireIdentification, t]);
+
+  const handleStartVerification = async () => {
     if (!accountDraft.email || !accountDraft.password) {
       onRequireAccount();
       return;
     }
 
     setIsModalOpen(true);
-    setIsVerifying(false);
-    setVerificationSuccess(false);
+    await createSession();
   };
 
-  const simulateRekognitionProcess = () => {
-    setIsVerifying(true);
-    setTimeout(async () => {
-      const result =
-        await verificationService.completeRegistrationVerification();
+  const handleLivenessComplete = useCallback(async () => {
+    if (!livenessSessionId) return;
 
-      if (!result.success) {
-        setIsVerifying(false);
-        setIsModalOpen(false);
+    setPhase("verifying");
 
-        if (result.code === "registration_session_missing") {
-          onRequireIdentification();
-        }
+    const result =
+      await verificationService.verifyLiveness(livenessSessionId);
 
-        toast.error(t("verification.session_error"));
+    if (!result.success) {
+      setPhase("idle");
+      setIsModalOpen(false);
+
+      if (result.code === "registration_session_missing") {
+        onRequireIdentification();
+      }
+
+      toast.error(verificationErrorMessages[result.code]);
+      return;
+    }
+
+    // Verification passed — proceed to account creation
+    setPhase("success");
+
+    const accountResult = await accountService.registerAccount({
+      email: accountDraft.email,
+      password: accountDraft.password,
+    });
+
+    if (!accountResult.success) {
+      const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
+        invalid_payload: t("account.error"),
+        registration_session_missing: t("account.session_missing"),
+        verification_required: t("account.verification_required"),
+        password_cedula_similarity: t(
+          "account.validation.password_cedula_similarity",
+        ),
+        invalid_cedula: t("identification.id_invalid"),
+        citizen_not_found: t("identification.id_not_found"),
+        identity_exists: t("account.identity_exists"),
+        ory_validation_error: t("account.error"),
+        unexpected_error: t("account.error"),
+      };
+
+      setPhase("idle");
+      setIsModalOpen(false);
+
+      if (accountResult.code === "registration_session_missing") {
+        onRequireIdentification();
+        toast.error(messageByErrorCode[accountResult.code]);
         return;
       }
 
-      setVerificationSuccess(true);
-      const accountResult = await accountService.registerAccount({
-        email: accountDraft.email,
-        password: accountDraft.password,
+      onRequireAccount({
+        code: accountResult.code,
+        fieldErrors: accountResult.fieldErrors,
       });
+      return;
+    }
 
-      if (!accountResult.success) {
-        const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
-          invalid_payload: t("account.error"),
-          registration_session_missing: t("account.session_missing"),
-          password_cedula_similarity: t(
-            "account.validation.password_cedula_similarity",
-          ),
-          invalid_cedula: t("identification.id_invalid"),
-          citizen_not_found: t("identification.id_not_found"),
-          identity_exists: t("account.identity_exists"),
-          ory_validation_error: t("account.error"),
-          unexpected_error: t("account.error"),
-        };
+    if (accountResult.destination === "login") {
+      toast.success(t("account.success_title"), {
+        description: t("account.success_description"),
+      });
+    }
 
-        setIsVerifying(false);
-        setVerificationSuccess(false);
-        setIsModalOpen(false);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      router.push(accountResult.redirectTo);
+    }, 1500);
+  }, [
+    livenessSessionId,
+    accountDraft,
+    onRequireIdentification,
+    onRequireAccount,
+    verificationErrorMessages,
+    router,
+    t,
+  ]);
 
-        if (accountResult.code === "registration_session_missing") {
-          onRequireIdentification();
-          toast.error(messageByErrorCode[accountResult.code]);
-          return;
-        }
+  const handleLivenessError = useCallback(
+    async (error: unknown) => {
+      console.error("[StepVerification] Liveness error:", error);
 
-        onRequireAccount({
-          code: accountResult.code,
-          fieldErrors: accountResult.fieldErrors,
-        });
-        return;
-      }
+      if (isHandlingError.current) return;
+      isHandlingError.current = true;
 
-      setIsVerifying(false);
+      toast.error(t("verification.verification_failed"));
+      await createSession();
 
-      if (accountResult.destination === "login") {
-        toast.success(t("account.success_title"), {
-          description: t("account.success_description"),
-        });
-      }
+      isHandlingError.current = false;
+    },
+    [createSession, t],
+  );
 
-      setTimeout(() => {
-        setIsModalOpen(false);
-        router.push(accountResult.redirectTo);
-      }, 1500);
-    }, 3000);
+  const handleModalClose = (open: boolean) => {
+    if (!open && phase !== "verifying" && phase !== "success") {
+      setIsModalOpen(false);
+      setPhase("idle");
+      setLivenessSessionId(null);
+    }
   };
 
   return (
@@ -209,7 +287,7 @@ export function StepVerification({
         {t("common.back")}
       </button>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isModalOpen} onOpenChange={handleModalClose}>
         <DialogContent className="max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-black/95 flex flex-col items-center justify-center pt-8 pb-12">
           <DialogTitle className="sr-only">
             {t("verification.modal.screenreader_title")}
@@ -218,65 +296,40 @@ export function StepVerification({
             {t("verification.modal.screenreader_description")}
           </DialogDescription>
 
-          <div className="text-white text-center space-y-8 flex flex-col items-center max-w-md w-full px-6 h-full justify-center">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">
-                {t("verification.modal.title")}
-              </h2>
-              <p className="text-white/70">
-                {t("verification.modal.description")}
-              </p>
-            </div>
+          <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
+            {(phase === "creating_session") && (
+              <FaceLivenessLoader />
+            )}
 
-            <div className="relative w-64 h-80 rounded-[120px] border-4 border-dashed border-white/30 flex flex-col items-center justify-center overflow-hidden bg-white/5 my-8">
-              {isVerifying ? (
-                <>
-                  <div className="absolute inset-x-0 h-4 bg-blue-500/50 top-0 animate-[scan_2s_ease-in-out_infinite] blur-sm z-20" />
-                  <div className="absolute inset-0 bg-blue-500/10 animate-pulse" />
-                  <Camera className="h-16 w-16 text-white/50 animate-pulse" />
-                </>
-              ) : verificationSuccess ? (
-                <div className="absolute inset-0 bg-green-500 flex flex-col items-center justify-center text-white">
-                  <Check className="h-20 w-20 mb-4" />
-                  <span className="font-bold text-xl">
-                    {t("verification.modal.verified")}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center text-white/50 p-4 text-center">
-                  <Camera className="h-20 w-20 mb-4 opacity-50" />
-                  <span className="text-sm px-4">
-                    {t("verification.modal.face_position")}
-                  </span>
-                </div>
-              )}
-            </div>
+            {phase === "liveness_active" && livenessSessionId && (
+              <div className="w-full">
+                <FaceLiveness
+                  sessionId={livenessSessionId}
+                  onComplete={handleLivenessComplete}
+                  onError={handleLivenessError}
+                />
+              </div>
+            )}
 
-            <div className="w-full mt-auto">
-              {!isVerifying && !verificationSuccess && (
-                <div className="space-y-4">
-                  <Button
-                    onClick={simulateRekognitionProcess}
-                    className="w-full h-14 text-lg rounded-full bg-blue-600 hover:bg-blue-700"
-                  >
-                    {t("verification.modal.allow_camera")}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsModalOpen(false)}
-                    className="text-white/70 hover:text-white hover:bg-white/10"
-                  >
-                    {t("common.cancel")}
-                  </Button>
-                </div>
-              )}
-
-              {isVerifying && (
+            {phase === "verifying" && (
+              <div className="text-white text-center space-y-4">
+                <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto" />
                 <p className="text-lg font-medium animate-pulse text-blue-400">
-                  {t("verification.modal.analyzing")}
+                  {t("verification.verifying_identity")}
                 </p>
-              )}
-            </div>
+              </div>
+            )}
+
+            {phase === "success" && (
+              <div className="text-white text-center space-y-4">
+                <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mx-auto">
+                  <Check className="h-12 w-12 text-white" />
+                </div>
+                <span className="font-bold text-xl text-green-400">
+                  {t("verification.modal.verified")}
+                </span>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -11,7 +11,12 @@ const nextConfig = {
     unoptimized: true,
   },
   outputFileTracingRoot: __dirname,
-  transpilePackages: ["@ory/elements-react", "@ory/nextjs"],
+  transpilePackages: [
+    "@ory/elements-react",
+    "@ory/nextjs",
+    "@aws-amplify/ui-react-liveness",
+    "@aws-amplify/ui-react",
+  ],
 }
 
 export default withNextIntl(nextConfig)

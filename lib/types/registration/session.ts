@@ -1,4 +1,4 @@
-export type RegistrationSessionStatus = "identified";
+export type RegistrationSessionStatus = "identified" | "verified";
 
 export interface RegistrationSession {
   cedula: string;

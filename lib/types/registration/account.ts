@@ -27,6 +27,7 @@ export interface RegisterAccountStepErrors {
 export type RegisterAccountErrorCode =
   | "invalid_payload"
   | "registration_session_missing"
+  | "verification_required"
   | "password_cedula_similarity"
   | "invalid_cedula"
   | "citizen_not_found"

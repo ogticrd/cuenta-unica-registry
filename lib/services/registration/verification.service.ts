@@ -1,33 +1,74 @@
-import type { RegistrationVerificationResponse } from "@/lib/types/registration/session";
+import type { CreateLivenessSessionResponse } from "@/lib/types/registration/verification";
+import type { VerifyLivenessResponse } from "@/lib/types/registration/verification";
 import { API } from "@/lib/constants/api";
 
-async function parseVerificationResponse(response: Response) {
+async function parseLivenessSessionResponse(response: Response) {
   const payload = (await response
     .json()
-    .catch(() => null)) as RegistrationVerificationResponse | null;
+    .catch(() => null)) as CreateLivenessSessionResponse | null;
 
   if (!payload) {
     return {
       success: false,
       code: "unexpected_error",
-    } satisfies RegistrationVerificationResponse;
+    } satisfies CreateLivenessSessionResponse;
+  }
+
+  return payload;
+}
+
+async function parseVerifyLivenessResponse(response: Response) {
+  const payload = (await response
+    .json()
+    .catch(() => null)) as VerifyLivenessResponse | null;
+
+  if (!payload) {
+    return {
+      success: false,
+      code: "unexpected_error",
+    } satisfies VerifyLivenessResponse;
   }
 
   return payload;
 }
 
 export const verificationService = {
-  async completeRegistrationVerification(): Promise<RegistrationVerificationResponse> {
+  async createLivenessSession(): Promise<CreateLivenessSessionResponse> {
     try {
-      const response = await fetch(API.registrationVerification, {
+      const response = await fetch(API.registrationLivenessSession, {
         method: "POST",
         credentials: "include",
       });
 
-      return parseVerificationResponse(response);
+      return parseLivenessSessionResponse(response);
     } catch (error) {
       console.error(
-        "[verificationService.completeRegistrationVerification] Request failed:",
+        "[verificationService.createLivenessSession] Request failed:",
+        error,
+      );
+
+      return {
+        success: false,
+        code: "unexpected_error",
+      };
+    }
+  },
+
+  async verifyLiveness(
+    sessionId: string,
+  ): Promise<VerifyLivenessResponse> {
+    try {
+      const response = await fetch(API.registrationLivenessResult, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ sessionId }),
+      });
+
+      return parseVerifyLivenessResponse(response);
+    } catch (error) {
+      console.error(
+        "[verificationService.verifyLiveness] Request failed:",
         error,
       );
 

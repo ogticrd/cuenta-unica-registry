@@ -3,10 +3,12 @@
 import { ThemeProvider } from "next-themes";
 
 import { AuthProvider } from "@/lib/auth-context";
+import { AmplifyProvider } from "@/lib/providers/amplify-provider";
 
 /**
  * Client Component — runs on the client.
- * Wraps children in ThemeProvider (dark/light mode) and AuthProvider (session).
+ * Wraps children in ThemeProvider (dark/light mode), AmplifyProvider (AWS),
+ * and AuthProvider (session).
  */
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -15,9 +17,9 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
       defaultTheme="light"
       disableTransitionOnChange
     >
-      {/* <SessionProvider> */}
-      <AuthProvider>{children}</AuthProvider>
-      {/* </SessionProvider> */}
+      <AmplifyProvider>
+        <AuthProvider>{children}</AuthProvider>
+      </AmplifyProvider>
     </ThemeProvider>
   );
 }
