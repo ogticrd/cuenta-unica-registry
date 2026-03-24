@@ -22,9 +22,3 @@ export interface CitizensBirthInformationResponse {
   valid: boolean;
   payload: CitizenBirthInformation;
 }
-
-export interface CitizensTokenResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-}

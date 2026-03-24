@@ -4,7 +4,6 @@ import type {
   CitizenBasicInformation,
   CitizensBasicInformationResponse,
   CitizensBirthInformationResponse,
-  CitizensTokenResponse,
 } from "@/lib/types/registration/citizen-api";
 import type {
   CitizenLookupResult,
@@ -33,29 +32,12 @@ async function parseJsonResponse<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-async function fetchCitizenAuthHeaders() {
-  const tokenEndpoint = getRequiredEnv("CEDULA_TOKEN_API");
-  const authKey = getRequiredEnv("CITIZENS_API_AUTH_KEY");
-
-  const tokenResponse = await fetch(tokenEndpoint, {
-    method: "POST",
-    body: "grant_type=client_credentials",
-    headers: {
-      Authorization: `Basic ${authKey}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    cache: "no-store",
-  }).then<CitizensTokenResponse>(parseJsonResponse);
-
-  return {
-    Authorization: `Bearer ${tokenResponse.access_token}`,
-  };
-}
-
-function buildCitizenUrl(cedula: string, resource: "basic" | "birth") {
-  const baseUrl = getRequiredEnv("CEDULA_API").replace(/\/$/, "");
-  const apiKey = getRequiredEnv("CEDULA_API_KEY");
-  const url = new URL(`${baseUrl}/${normalizeCedula(cedula)}/info/${resource}`);
+function buildCitizenInfoUrl(cedula: string, resource: "basic" | "birth") {
+  const baseUrl = getRequiredEnv("CITIZENS_API_BASE_URL").replace(/\/$/, "");
+  const apiKey = getRequiredEnv("CITIZENS_INFO_API_KEY");
+  const url = new URL(
+    `${baseUrl}/v2/citizens/${normalizeCedula(cedula)}/info/${resource}`,
+  );
 
   url.searchParams.append("api-key", apiKey);
 
@@ -63,9 +45,7 @@ function buildCitizenUrl(cedula: string, resource: "basic" | "birth") {
 }
 
 async function fetchCitizenBasicInformation(cedula: string) {
-  const headers = await fetchCitizenAuthHeaders();
-  const response = await fetch(buildCitizenUrl(cedula, "basic"), {
-    headers,
+  const response = await fetch(buildCitizenInfoUrl(cedula, "basic"), {
     cache: "no-store",
   }).then<CitizensBasicInformationResponse>(parseJsonResponse);
 
@@ -77,9 +57,7 @@ async function fetchCitizenBasicInformation(cedula: string) {
 }
 
 async function fetchCitizenBirthInformation(cedula: string) {
-  const headers = await fetchCitizenAuthHeaders();
-  const response = await fetch(buildCitizenUrl(cedula, "birth"), {
-    headers,
+  const response = await fetch(buildCitizenInfoUrl(cedula, "birth"), {
     cache: "no-store",
   }).then<CitizensBirthInformationResponse>(parseJsonResponse);
 
