@@ -1,48 +1,56 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
-import { ROUTES } from "@/lib/constants/routes"
-import { verifyCodeAction, type VerifyCodeState } from "@/app/(auth)/register/email-sent/actions"
-import { Loader2, CheckCircle2 } from "lucide-react"
-import { useT } from "@/hooks/use-t"
+import { useActionState, useEffect, useRef, useState } from "react";
+import { Loader2, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+import {
+  verifyCodeAction,
+  type VerifyCodeState,
+} from "@/app/(auth)/register/email-sent/actions";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { ROUTES } from "@/lib/constants/routes";
+import { useT } from "@/hooks/use-t";
 
 interface VerificationOTPFormProps {
-  flowId: string
+  flowId: string;
 }
 
 export function VerificationOTPForm({ flowId }: VerificationOTPFormProps) {
-  const router = useRouter()
-  const t = useT("email_sent")
-  const [otpValue, setOtpValue] = useState("")
-  const formRef = useRef<HTMLFormElement>(null)
+  const router = useRouter();
+  const t = useT("email_sent");
+  const [otpValue, setOtpValue] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const [state, formAction, isPending] = useActionState<VerifyCodeState, FormData>(
-    verifyCodeAction,
-    {},
-  )
+  const [state, formAction, isPending] = useActionState<
+    VerifyCodeState,
+    FormData
+  >(verifyCodeAction, {});
 
   // Handle success: toast + redirect to login
   useEffect(() => {
     if (state.success) {
       toast.success(t("success_title"), {
         description: t("success_description"),
-      })
+      });
       const timeout = setTimeout(() => {
-        router.push(ROUTES.login)
-      }, 2000)
-      return () => clearTimeout(timeout)
+        router.push(ROUTES.login);
+      }, 2000);
+      return () => clearTimeout(timeout);
     }
-  }, [state.success, router, t])
+  }, [state.success, router, t]);
 
   // Auto-submit when all 6 digits are entered
   useEffect(() => {
     if (otpValue.length === 6 && formRef.current) {
-      formRef.current.requestSubmit()
+      formRef.current.requestSubmit();
     }
-  }, [otpValue])
+  }, [otpValue]);
 
   if (state.success) {
     return (
@@ -59,11 +67,15 @@ export function VerificationOTPForm({ flowId }: VerificationOTPFormProps) {
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <form ref={formRef} action={formAction} className="flex flex-col items-center gap-5">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="flex flex-col items-center gap-5"
+    >
       <input type="hidden" name="flow" value={flowId} />
       <input type="hidden" name="code" value={otpValue} />
 
@@ -106,5 +118,5 @@ export function VerificationOTPForm({ flowId }: VerificationOTPFormProps) {
         )}
       </button>
     </form>
-  )
+  );
 }

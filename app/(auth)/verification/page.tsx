@@ -1,23 +1,24 @@
-import { Suspense } from "react"
-import { Verification } from "@ory/elements-react/theme"
-import { LoadingFallback } from "@/components/ui/loading-fallback"
-import { getVerificationFlow, OryPageParams } from "@ory/nextjs/app"
-import { getServerOryConfig } from "@/lib/ory/server-config"
-import { getT } from "@/lib/i18n/server"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+import { getVerificationFlow, OryPageParams } from "@ory/nextjs/app";
+import { Verification } from "@ory/elements-react/theme";
+import { Suspense } from "react";
+
 import {
   CucVerificationFooter,
   CucVerificationHeader,
-} from "@/components/auth/ory-components"
+} from "@/components/auth/ory-components";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { getServerOryConfig } from "@/lib/ory/server-config";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { getT } from "@/lib/i18n/server";
 
 async function VerificationFlow({ searchParams }: OryPageParams) {
-  const dynamicConfig = await getServerOryConfig()
-  const flow = await getVerificationFlow(dynamicConfig, searchParams)
-  const t = await getT("login")
+  const dynamicConfig = await getServerOryConfig();
+  const flow = await getVerificationFlow(dynamicConfig, searchParams);
+  const t = await getT("login");
 
   if (!flow) {
-    return <LoadingFallback message={t("loading_verification")} />
+    return <LoadingFallback message={t("loading_verification")} />;
   }
 
   return (
@@ -31,7 +32,7 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
         },
       }}
     />
-  )
+  );
 }
 
 export default async function VerificationPage(props: OryPageParams) {
@@ -51,5 +52,5 @@ export default async function VerificationPage(props: OryPageParams) {
 
       <Footer />
     </div>
-  )
+  );
 }

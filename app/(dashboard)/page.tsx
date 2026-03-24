@@ -1,55 +1,76 @@
-"use client"
+"use client";
 
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { DashboardCard } from "@/components/dashboard/dashboard-card"
-import { QuickActionCard } from "@/components/dashboard/quick-action-card"
-import { StatsCard } from "@/components/dashboard/stats-card"
-import { RecentActivityItem } from "@/components/dashboard/recent-activity-item"
-import { ActionButton } from "@/components/dashboard/action-button"
-import { useAuth } from "@/lib/auth-context"
-import { useRouter } from "next/navigation"
-import { ROUTES } from "@/lib/constants/routes"
-import type { ReactNode } from "react"
-import { User, Shield, Clock, Bell, Smartphone, Globe, CheckCircle, AlertTriangle, Info, Calendar, Activity, Lock } from 'lucide-react'
-import { useT } from "@/hooks/use-t"
+import {
+  User,
+  Shield,
+  Clock,
+  Bell,
+  Smartphone,
+  Globe,
+  CheckCircle,
+  AlertTriangle,
+  Info,
+  Calendar,
+  Activity,
+  Lock,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
+
+import { RecentActivityItem } from "@/components/dashboard/recent-activity-item";
+import { QuickActionCard } from "@/components/dashboard/quick-action-card";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { DashboardCard } from "@/components/dashboard/dashboard-card";
+import { ActionButton } from "@/components/dashboard/action-button";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { ROUTES } from "@/lib/constants/routes";
+import { useAuth } from "@/lib/auth-context";
+import { useT } from "@/hooks/use-t";
 
 export default function DashboardPage() {
-  const { user, session } = useAuth()
-  const router = useRouter()
-  const t = useT("dashboard")
+  const { user, session } = useAuth();
+  const router = useRouter();
+  const t = useT("dashboard");
   // -- Dynamic Session Data --
-  let lastAccessStr = t("loading")
+  let lastAccessStr = t("loading");
   if (session?.authenticated_at) {
-    const authDate = new Date(session.authenticated_at)
+    const authDate = new Date(session.authenticated_at);
     lastAccessStr = authDate.toLocaleString("es-DO", {
       dateStyle: "medium",
       timeStyle: "short",
-    })
+    });
   }
 
-  const isVerified = session?.identity?.verifiable_addresses?.some((addr) => addr.verified === true) || false
-  const devicesCount = session ? 1 + (session.other_sessions?.length || 0) : 1
-  const isAal2 = session?.authenticator_assurance_level === "aal2"
-  const securityLevel = isAal2 ? t("stats_cards.security.level_high") : t("stats_cards.security.level_standard")
-  const securityDesc = isAal2 ? t("stats_cards.security.desc_2fa") : t("stats_cards.security.desc_password")
+  const isVerified =
+    session?.identity?.verifiable_addresses?.some(
+      (addr) => addr.verified === true,
+    ) || false;
+  const devicesCount = session ? 1 + (session.other_sessions?.length || 0) : 1;
+  const isAal2 = session?.authenticator_assurance_level === "aal2";
+  const securityLevel = isAal2
+    ? t("stats_cards.security.level_high")
+    : t("stats_cards.security.level_standard");
+  const securityDesc = isAal2
+    ? t("stats_cards.security.desc_2fa")
+    : t("stats_cards.security.desc_password");
 
   type QuickAction = {
-    title: string
-    description: string
-    icon: ReactNode
-    href: string
+    title: string;
+    description: string;
+    icon: ReactNode;
+    href: string;
     badge?: {
-      text: string
-      variant: "info" | "warning" | "success"
-    }
-  }
+      text: string;
+      variant: "info" | "warning" | "success";
+    };
+  };
 
   const quickActions: QuickAction[] = [
     {
       title: t("quick_actions_list.personal_data.title"),
       description: t("quick_actions_list.personal_data.desc"),
       icon: <User size={24} />,
-      href: ROUTES.settings
+      href: ROUTES.settings,
     },
     {
       title: t("quick_actions_list.privacy.title"),
@@ -61,15 +82,15 @@ export default function DashboardPage() {
       title: t("quick_actions_list.history.title"),
       description: t("quick_actions_list.history.desc"),
       icon: <Clock size={24} />,
-      href: ROUTES.history
+      href: ROUTES.history,
     },
     {
       title: t("quick_actions_list.support.title"),
       description: t("quick_actions_list.support.desc"),
       icon: <Bell size={24} />,
-      href: ROUTES.support
-    }
-  ]
+      href: ROUTES.support,
+    },
+  ];
 
   const recentActivities = [
     {
@@ -77,57 +98,57 @@ export default function DashboardPage() {
       title: t("recent_activities_list.login_success.title"),
       description: t("recent_activities_list.login_success.desc"),
       time: t("recent_activities_list.login_success.time"),
-      type: "success" as const
+      type: "success" as const,
     },
     {
       icon: <Shield size={16} />,
       title: t("recent_activities_list.security_updated.title"),
       description: t("recent_activities_list.security_updated.desc"),
       time: t("recent_activities_list.security_updated.time"),
-      type: "info" as const
+      type: "info" as const,
     },
     {
       icon: <AlertTriangle size={16} />,
       title: t("recent_activities_list.new_device.title"),
       description: t("recent_activities_list.new_device.desc"),
       time: t("recent_activities_list.new_device.time"),
-      type: "warning" as const
+      type: "warning" as const,
     },
     {
       icon: <Info size={16} />,
       title: t("recent_activities_list.password_updated.title"),
       description: t("recent_activities_list.password_updated.desc"),
       time: t("recent_activities_list.password_updated.time"),
-      type: "info" as const
-    }
-  ]
+      type: "info" as const,
+    },
+  ];
 
   const governmentServices = [
     {
       title: t("gov_services_list.insurance.title"),
       description: t("gov_services_list.insurance.desc"),
       icon: <Shield size={20} />,
-      href: "#"
+      href: "#",
     },
     {
       title: t("gov_services_list.portal.title"),
       description: t("gov_services_list.portal.desc"),
       icon: <Globe size={20} />,
-      href: "#"
+      href: "#",
     },
     {
       title: t("gov_services_list.history.title"),
       description: t("gov_services_list.history.desc"),
       icon: <Activity size={20} />,
-      href: ROUTES.history
+      href: ROUTES.history,
     },
     {
       title: t("gov_services_list.settings.title"),
       description: t("gov_services_list.settings.desc"),
       icon: <Lock size={20} />,
-      href: ROUTES.settings
-    }
-  ]
+      href: ROUTES.settings,
+    },
+  ];
 
   return (
     <DashboardLayout>
@@ -138,7 +159,11 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">
               {t.rich("welcome", {
                 name: user?.name || "",
-                highlight: (chunks) => <span className="text-secondary dark:text-blue-400">{chunks}</span>
+                highlight: (chunks) => (
+                  <span className="text-secondary dark:text-blue-400">
+                    {chunks}
+                  </span>
+                ),
               })}
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-6">
@@ -147,18 +172,30 @@ export default function DashboardPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2 bg-secondary/10 px-3 py-1.5 rounded-full dark:bg-secondary/20">
                 <Calendar size={16} className="text-secondary" />
-                <span className="font-medium text-secondary">{t("last_access", { date: lastAccessStr })}</span>
+                <span className="font-medium text-secondary">
+                  {t("last_access", { date: lastAccessStr })}
+                </span>
               </div>
               <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
                 {isVerified ? (
                   <>
-                    <CheckCircle size={16} className="text-green-600 dark:text-green-400" />
-                    <span className="font-medium text-green-600 dark:text-green-400">{t("account_verified")}</span>
+                    <CheckCircle
+                      size={16}
+                      className="text-green-600 dark:text-green-400"
+                    />
+                    <span className="font-medium text-green-600 dark:text-green-400">
+                      {t("account_verified")}
+                    </span>
                   </>
                 ) : (
                   <>
-                    <Lock size={16} className="text-orange-600 dark:text-orange-400" />
-                    <span className="font-medium text-orange-700 dark:text-orange-400">{t("account_unverified")}</span>
+                    <Lock
+                      size={16}
+                      className="text-orange-600 dark:text-orange-400"
+                    />
+                    <span className="font-medium text-orange-700 dark:text-orange-400">
+                      {t("account_unverified")}
+                    </span>
                   </>
                 )}
               </div>
@@ -172,7 +209,11 @@ export default function DashboardPage() {
             title={t("stats_cards.devices.title")}
             value={devicesCount.toString()}
             icon={<Smartphone size={24} />}
-            description={devicesCount === 1 ? t("stats_cards.devices.desc_singular") : t("stats_cards.devices.desc_plural")}
+            description={
+              devicesCount === 1
+                ? t("stats_cards.devices.desc_singular")
+                : t("stats_cards.devices.desc_plural")
+            }
           />
           <StatsCard
             title={t("stats_cards.services.title")}
@@ -215,7 +256,10 @@ export default function DashboardPage() {
           <DashboardCard
             title={t("recent_activity")}
             action={
-              <ActionButton variant="secondary" onClick={() => router.push(ROUTES.history)}>
+              <ActionButton
+                variant="secondary"
+                onClick={() => router.push(ROUTES.history)}
+              >
                 {t("view_all")}
               </ActionButton>
             }
@@ -238,7 +282,10 @@ export default function DashboardPage() {
           <DashboardCard
             title={t("security_status")}
             action={
-              <ActionButton variant="secondary" onClick={() => router.push(ROUTES.settings)}>
+              <ActionButton
+                variant="secondary"
+                onClick={() => router.push(ROUTES.settings)}
+              >
                 {t("configure")}
               </ActionButton>
             }
@@ -250,8 +297,12 @@ export default function DashboardPage() {
                     <CheckCircle size={18} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-foreground">{t("security_status_items.2fa.title")}</p>
-                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">{t("security_status_items.2fa.desc")}</p>
+                    <p className="text-sm font-bold text-foreground">
+                      {t("security_status_items.2fa.title")}
+                    </p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">
+                      {t("security_status_items.2fa.desc")}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -262,8 +313,12 @@ export default function DashboardPage() {
                     <Info size={18} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-foreground">{t("security_status_items.password.title")}</p>
-                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">{t("security_status_items.password.desc")}</p>
+                    <p className="text-sm font-bold text-foreground">
+                      {t("security_status_items.password.title")}
+                    </p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">
+                      {t("security_status_items.password.desc")}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -274,8 +329,12 @@ export default function DashboardPage() {
                     <AlertTriangle size={18} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-foreground">{t("security_status_items.passkeys.title")}</p>
-                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">{t("security_status_items.passkeys.desc")}</p>
+                    <p className="text-sm font-bold text-foreground">
+                      {t("security_status_items.passkeys.title")}
+                    </p>
+                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">
+                      {t("security_status_items.passkeys.desc")}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -312,7 +371,10 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   {t("notifications_list.security.desc")}
                 </p>
-                <ActionButton variant="primary" onClick={() => router.push(ROUTES.settings)}>
+                <ActionButton
+                  variant="primary"
+                  onClick={() => router.push(ROUTES.settings)}
+                >
                   {t("notifications_list.security.action")}
                 </ActionButton>
               </div>
@@ -342,9 +404,5 @@ export default function DashboardPage() {
         </DashboardCard>
       </div>
     </DashboardLayout>
-  )
+  );
 }
-
-
-
-

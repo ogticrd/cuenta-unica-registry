@@ -1,43 +1,51 @@
-import { z } from "zod"
-import { normalizeCedula } from "@/lib/utils/cedula"
+import { z } from "zod";
+
 import {
   isBreachedPassword,
   isPasswordStrongEnough,
   PASSWORD_MIN_LENGTH,
-} from "@/lib/utils/password"
+} from "@/lib/utils/password";
+import { normalizeCedula } from "@/lib/utils/cedula";
 
-type Translate = (key: string) => string
+type Translate = (key: string) => string;
 
 export const accountRequestSchema = z.object({
   email: z.string().email(),
   password: z.string().min(PASSWORD_MIN_LENGTH),
-})
+});
 
 function validatePasswordExcludesCedula(cedula: string) {
   return (data: { password: string }) => {
-    if (!cedula) return true
-    return !data.password.includes(cedula)
-  }
+    if (!cedula) return true;
+    return !data.password.includes(cedula);
+  };
 }
 
-function validatePasswordExcludesEmailPrefix(data: { email: string; password: string }) {
-  const [emailLocalPart] = data.email.split("@")
-  if (!emailLocalPart) return true
-  return !data.password.toLowerCase().includes(emailLocalPart.toLowerCase())
+function validatePasswordExcludesEmailPrefix(data: {
+  email: string;
+  password: string;
+}) {
+  const [emailLocalPart] = data.email.split("@");
+  if (!emailLocalPart) return true;
+  return !data.password.toLowerCase().includes(emailLocalPart.toLowerCase());
 }
 
 export function createAccountSchema(t: Translate, cedula = "") {
-  const normalizedCedula = normalizeCedula(cedula)
+  const normalizedCedula = normalizeCedula(cedula);
 
   return z
     .object({
-      email: z.string().email({ message: t("account.validation.email_invalid") }),
+      email: z
+        .string()
+        .email({ message: t("account.validation.email_invalid") }),
       confirmEmail: z
         .string()
         .email({ message: t("account.validation.email_invalid") }),
       password: z
         .string()
-        .min(PASSWORD_MIN_LENGTH, { message: t("account.validation.password_min") }),
+        .min(PASSWORD_MIN_LENGTH, {
+          message: t("account.validation.password_min"),
+        }),
       confirmPassword: z.string(),
     })
     .refine(validatePasswordExcludesCedula(normalizedCedula), {
@@ -63,5 +71,5 @@ export function createAccountSchema(t: Translate, cedula = "") {
     .refine(async ({ password }) => !(await isBreachedPassword(password)), {
       message: t("account.validation.password_compromised"),
       path: ["password"],
-    })
+    });
 }

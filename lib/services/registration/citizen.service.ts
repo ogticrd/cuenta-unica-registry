@@ -1,28 +1,28 @@
-import { API } from "@/lib/constants/api"
 import type {
   CitizenLookupRequest,
   CitizenLookupResponse,
-} from "@/lib/types/registration/citizen"
+} from "@/lib/types/registration/citizen";
+import { API } from "@/lib/constants/api";
 
 async function parseCitizenLookupResponse(response: Response) {
-  const payload = (await response.json().catch(() => null)) as
-    | CitizenLookupResponse
-    | null
+  const payload = (await response
+    .json()
+    .catch(() => null)) as CitizenLookupResponse | null;
 
   if (!payload) {
     return {
       success: false,
       code: "unexpected_error",
-    } satisfies CitizenLookupResponse
+    } satisfies CitizenLookupResponse;
   }
 
-  return payload
+  return payload;
 }
 
 export const citizenService = {
   async identifyCitizen(cedula: string): Promise<CitizenLookupResponse> {
     try {
-      const requestBody: CitizenLookupRequest = { cedula }
+      const requestBody: CitizenLookupRequest = { cedula };
 
       const response = await fetch(API.registrationCitizen, {
         method: "POST",
@@ -31,16 +31,16 @@ export const citizenService = {
         },
         credentials: "include",
         body: JSON.stringify(requestBody),
-      })
+      });
 
-      return parseCitizenLookupResponse(response)
+      return parseCitizenLookupResponse(response);
     } catch (error) {
-      console.error("[citizenService.identifyCitizen] Request failed:", error)
+      console.error("[citizenService.identifyCitizen] Request failed:", error);
 
       return {
         success: false,
         code: "unexpected_error",
-      }
+      };
     }
   },
-}
+};

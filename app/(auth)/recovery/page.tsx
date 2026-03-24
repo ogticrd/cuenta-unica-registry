@@ -1,23 +1,24 @@
-import { Suspense } from "react"
-import { Recovery } from "@ory/elements-react/theme"
-import { LoadingFallback } from "@/components/ui/loading-fallback"
-import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app"
-import { getServerOryConfig } from "@/lib/ory/server-config"
-import { getT } from "@/lib/i18n/server"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app";
+import { Recovery } from "@ory/elements-react/theme";
+import { Suspense } from "react";
+
 import {
   CucRecoveryHeader,
   CucRecoveryFooter,
-} from "@/components/auth/ory-components"
+} from "@/components/auth/ory-components";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { getServerOryConfig } from "@/lib/ory/server-config";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { getT } from "@/lib/i18n/server";
 
 async function RecoveryFlow({ searchParams }: OryPageParams) {
-  const dynamicConfig = await getServerOryConfig()
-  const flow = await getRecoveryFlow(dynamicConfig, searchParams)
-  const t = await getT("login")
+  const dynamicConfig = await getServerOryConfig();
+  const flow = await getRecoveryFlow(dynamicConfig, searchParams);
+  const t = await getT("login");
 
   if (!flow) {
-    return <LoadingFallback message={t("loading_recovery")} />
+    return <LoadingFallback message={t("loading_recovery")} />;
   }
 
   return (
@@ -31,7 +32,7 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
         },
       }}
     />
-  )
+  );
 }
 
 export default async function ForgotPasswordPage(props: OryPageParams) {
@@ -43,9 +44,7 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
         <div className="container mx-auto px-4">
           <div className="ory-auth-scope w-full max-w-md mx-auto">
             <Suspense fallback={<LoadingFallback />}>
-              <RecoveryFlow
-                searchParams={props.searchParams}
-              />
+              <RecoveryFlow searchParams={props.searchParams} />
             </Suspense>
           </div>
         </div>
@@ -53,5 +52,5 @@ export default async function ForgotPasswordPage(props: OryPageParams) {
 
       <Footer />
     </div>
-  )
+  );
 }

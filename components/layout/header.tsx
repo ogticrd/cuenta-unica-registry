@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
-import { LanguageToggle } from "@/components/ui/language-toggle"
-import Link from "next/link"
-import { ROUTES } from "@/lib/constants/routes"
+import Image from "next/image";
+import Link from "next/link";
+
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ROUTES } from "@/lib/constants/routes";
 
 export function Header() {
   return (
@@ -17,8 +18,8 @@ export function Header() {
               <Image
                 src="/images/cuenta-unica-logo.png"
                 alt="Cuenta Única"
-                width={160}
-                height={40}
+                width={210}
+                height={104}
                 className="h-10 w-auto"
               />
             </Link>
@@ -30,5 +31,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

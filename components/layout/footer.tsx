@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { Facebook, Youtube, Twitter, Instagram } from "lucide-react"
-import { useT } from "@/hooks/use-t"
+import Image from "next/image";
+import Link from "next/link";
+
+import { Facebook, Youtube, Twitter, Instagram } from "lucide-react";
+import { useT } from "@/hooks/use-t";
 
 export function Footer() {
-  const t = useT("footer")
-  const currentYear = new Date().getFullYear()
+  const t = useT("footer");
+  const currentYear = new Date().getFullYear();
 
   return (
     <>
@@ -19,9 +20,9 @@ export function Footer() {
               <Image
                 src="/images/government-seal.png"
                 alt="Escudo República Dominicana"
-                width={180}
-                height={180}
-                className="filter brightness-0 invert"
+                width={481}
+                height={196}
+                className="w-[180px] h-auto filter brightness-0 invert"
               />
             </div>
 
@@ -77,22 +78,42 @@ export function Footer() {
               <p className="text-xs text-primary dark:text-muted-foreground font-semibold">
                 {t("copyright", { year: currentYear })}
               </p>
-              <Image src="/images/ogtic-logo.png" alt="OGTIC" width={60} height={20} />
+              <Image
+                src="/images/ogtic-logo.png"
+                alt="OGTIC"
+                width={151}
+                height={82}
+                className="w-[60px] h-auto"
+              />
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-xs text-primary dark:text-gray-300 font-semibold">{t("follow_us")}</span>
+              <span className="text-xs text-primary dark:text-gray-300 font-semibold">
+                {t("follow_us")}
+              </span>
               <div className="flex space-x-2">
-                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
+                <Link
+                  href="#"
+                  className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
+                >
                   <Facebook size={16} />
                 </Link>
-                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
+                <Link
+                  href="#"
+                  className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
+                >
                   <Youtube size={16} />
                 </Link>
-                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
+                <Link
+                  href="#"
+                  className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
+                >
                   <Twitter size={16} />
                 </Link>
-                <Link href="#" className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
+                <Link
+                  href="#"
+                  className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
+                >
                   <Instagram size={16} />
                 </Link>
               </div>
@@ -101,6 +122,5 @@ export function Footer() {
         </div>
       </div>
     </>
-  )
+  );
 }
-

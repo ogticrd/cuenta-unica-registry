@@ -1,27 +1,28 @@
-﻿"use client"
+﻿"use client";
 
-import Link from "next/link"
-import { useEffect } from "react"
-import { AlertTriangle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { ROUTES } from "@/lib/constants/routes"
-import { useT } from "@/hooks/use-t"
+import { useEffect } from "react";
+import Link from "next/link";
+
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants/routes";
+import { AlertTriangle } from "lucide-react";
+import { useT } from "@/hooks/use-t";
 
 interface ErrorProps {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }
 
 export default function Error({ error, reset }: ErrorProps) {
-  const t = useT("error")
+  const t = useT("error");
 
   useEffect(() => {
-    console.error(error)
-  }, [error])
+    console.error(error);
+  }, [error]);
 
-  const details = error?.message?.trim() || t("default_details")
+  const details = error?.message?.trim() || t("default_details");
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -36,10 +37,14 @@ export default function Error({ error, reset }: ErrorProps) {
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">Error</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">
+              Error
+            </p>
             <h1 className="text-2xl font-bold">{t("title")}</h1>
             <p className="text-muted-foreground">{t("default_reason")}</p>
-            <p className="text-sm text-accent p-3 rounded-md bg-accent/10 mt-2">{details}</p>
+            <p className="text-sm text-accent p-3 rounded-md bg-accent/10 mt-2">
+              {details}
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -55,5 +60,5 @@ export default function Error({ error, reset }: ErrorProps) {
 
       <Footer />
     </div>
-  )
+  );
 }

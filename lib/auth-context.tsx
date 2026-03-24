@@ -1,61 +1,72 @@
-﻿"use client"
+﻿"use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { ROUTES } from "@/lib/constants/routes"
-import { authService } from "@/lib/services/ory/auth.service"
-import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
-import { useT } from "@/hooks/use-t"
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+import {
+  sessionService,
+  type OrySession,
+} from "@/lib/services/ory/session.service";
+import { authService } from "@/lib/services/ory/auth.service";
+import { ROUTES } from "@/lib/constants/routes";
+import { useT } from "@/hooks/use-t";
 
 interface User {
-  id: string
-  email?: string
-  name?: string
-  lastName?: string
-  fullName?: string
-  cedula?: string
-  passport?: string
-  nationality?: string
-  birthDate?: string
-  gender?: string
-  phone?: string
-  avatar?: string
-  traits?: Record<string, unknown>
+  id: string;
+  email?: string;
+  name?: string;
+  lastName?: string;
+  fullName?: string;
+  cedula?: string;
+  passport?: string;
+  nationality?: string;
+  birthDate?: string;
+  gender?: string;
+  phone?: string;
+  avatar?: string;
+  traits?: Record<string, unknown>;
 }
 
 interface AuthContextType {
-  user: User | null
-  session: OrySession | null
-  logout: () => void
-  refreshSession: () => void
-  isLoading: boolean
-  isLoggingOut: boolean
-  isAuthenticated: boolean
+  user: User | null;
+  session: OrySession | null;
+  logout: () => void;
+  refreshSession: () => void;
+  isLoading: boolean;
+  isLoggingOut: boolean;
+  isAuthenticated: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /**
  * Map Ory identity traits to our User interface.
  * Adjust this mapping based on your Ory identity schema.
  */
 function mapIdentityToUser(identity: {
-  id: string
-  traits?: Record<string, unknown>
+  id: string;
+  traits?: Record<string, unknown>;
 }): User {
-  const traits = (identity.traits || {}) as Record<string, unknown>
+  const traits = (identity.traits || {}) as Record<string, unknown>;
 
   // Handle name as either a string or an object { first, last }
-  let firstName = ""
-  let lastName = ""
-  const nameVal = traits.name
+  let firstName = "";
+  let lastName = "";
+  const nameVal = traits.name;
   if (typeof nameVal === "object" && nameVal !== null) {
-    const nameObj = nameVal as Record<string, string>
-    firstName = nameObj.first || ""
-    lastName = nameObj.last || ""
+    const nameObj = nameVal as Record<string, string>;
+    firstName = nameObj.first || "";
+    lastName = nameObj.last || "";
   } else if (typeof nameVal === "string") {
-    firstName = nameVal
+    firstName = nameVal;
   }
 
   return {
@@ -70,59 +81,63 @@ function mapIdentityToUser(identity: {
     birthDate: (traits.birthdate as string) || "",
     gender: (traits.gender as string) || "",
     phone: (traits.phone as string) || "",
-  }
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const t = useT("auth")
-  const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<OrySession | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const router = useRouter()
+  const t = useT("auth");
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<OrySession | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter();
 
   const refreshSession = useCallback(() => {
     sessionService
       .getSession()
       .then((data) => {
         if (data.isAuthenticated && data.identity) {
-          setUser(mapIdentityToUser(data.identity))
-          setSession(data.session ? { ...data.session, other_sessions: data.otherSessions ?? [] } : null)
+          setUser(mapIdentityToUser(data.identity));
+          setSession(
+            data.session
+              ? { ...data.session, other_sessions: data.otherSessions ?? [] }
+              : null,
+          );
         } else {
-          setUser(null)
-          setSession(null)
+          setUser(null);
+          setSession(null);
         }
       })
       .catch(() => {
-        setUser(null)
-        setSession(null)
+        setUser(null);
+        setSession(null);
       })
-      .finally(() => setIsLoading(false))
-  }, [])
+      .finally(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
-    refreshSession()
-  }, [refreshSession])
+    refreshSession();
+  }, [refreshSession]);
 
   const logout = () => {
-    if (isLoggingOut) return
-    setIsLoggingOut(true)
-    const toastId = toast.loading(t("logging_out"))
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    const toastId = toast.loading(t("logging_out"));
 
     authService
       .logout()
       .then((data) => {
-        setUser(null)
-        toast.success(t("logout_success"), { id: toastId })
-        router.push(data.redirect_to ?? ROUTES.login)
+        setUser(null);
+        toast.success(t("logout_success"), { id: toastId });
+        router.push(data.redirect_to ?? ROUTES.login);
       })
       .catch(() => {
-        setUser(null)
-        toast.error(t("logout_error"), { id: toastId })
-        router.push(ROUTES.login)
+        setUser(null);
+        toast.error(t("logout_error"), { id: toastId });
+        router.push(ROUTES.login);
       })
-      .finally(() => setIsLoggingOut(false))
-  }
+      .finally(() => setIsLoggingOut(false));
+  };
 
   return (
     <AuthContext.Provider
@@ -138,13 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context
+  return context;
 }

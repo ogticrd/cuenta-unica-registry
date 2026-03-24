@@ -1,22 +1,22 @@
-import { API } from "@/lib/constants/api"
 import type {
   RegisterAccountRequest,
   RegisterAccountResponse,
-} from "@/lib/types/registration/account"
+} from "@/lib/types/registration/account";
+import { API } from "@/lib/constants/api";
 
 async function parseRegisterAccountResponse(response: Response) {
-  const payload = (await response.json().catch(() => null)) as
-    | RegisterAccountResponse
-    | null
+  const payload = (await response
+    .json()
+    .catch(() => null)) as RegisterAccountResponse | null;
 
   if (!payload) {
     return {
       success: false,
       code: "unexpected_error",
-    } satisfies RegisterAccountResponse
+    } satisfies RegisterAccountResponse;
   }
 
-  return payload
+  return payload;
 }
 
 export const accountService = {
@@ -31,16 +31,16 @@ export const accountService = {
         },
         credentials: "include",
         body: JSON.stringify(input),
-      })
+      });
 
-      return parseRegisterAccountResponse(response)
+      return parseRegisterAccountResponse(response);
     } catch (error) {
-      console.error("[accountService.registerAccount] Request failed:", error)
+      console.error("[accountService.registerAccount] Request failed:", error);
 
       return {
         success: false,
         code: "unexpected_error",
-      }
+      };
     }
   },
-}
+};

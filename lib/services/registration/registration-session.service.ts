@@ -1,63 +1,64 @@
-import "server-only"
+import "server-only";
 
-import { cookies } from "next/headers"
-import { createHmac, timingSafeEqual } from "node:crypto"
-import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies"
+import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies } from "next/headers";
+
 import type {
   RegistrationSession,
   RegistrationSessionStatus,
-} from "@/lib/types/registration/session"
+} from "@/lib/types/registration/session";
 
-const REGISTRATION_SESSION_COOKIE = "registration_session"
-const REGISTRATION_SESSION_DURATION_MS = 30 * 60 * 1000
+const REGISTRATION_SESSION_COOKIE = "registration_session";
+const REGISTRATION_SESSION_DURATION_MS = 30 * 60 * 1000;
 
 function getRegistrationSessionSecret() {
-  const secret = process.env.REGISTRATION_SESSION_SECRET
+  const secret = process.env.REGISTRATION_SESSION_SECRET;
 
   if (!secret) {
-    throw new Error("Missing REGISTRATION_SESSION_SECRET environment variable")
+    throw new Error("Missing REGISTRATION_SESSION_SECRET environment variable");
   }
 
-  return secret
+  return secret;
 }
 
 function signPayload(payload: string) {
   return createHmac("sha256", getRegistrationSessionSecret())
     .update(payload)
-    .digest("base64url")
+    .digest("base64url");
 }
 
 function serializeSession(session: RegistrationSession) {
-  const payload = Buffer.from(JSON.stringify(session)).toString("base64url")
-  const signature = signPayload(payload)
+  const payload = Buffer.from(JSON.stringify(session)).toString("base64url");
+  const signature = signPayload(payload);
 
-  return `${payload}.${signature}`
+  return `${payload}.${signature}`;
 }
 
 function parseSessionCookie(value: string): RegistrationSession | null {
-  const [payload, signature] = value.split(".")
+  const [payload, signature] = value.split(".");
 
   if (!payload || !signature) {
-    return null
+    return null;
   }
 
-  const expectedSignature = signPayload(payload)
-  const providedSignatureBuffer = Buffer.from(signature)
-  const expectedSignatureBuffer = Buffer.from(expectedSignature)
+  const expectedSignature = signPayload(payload);
+  const providedSignatureBuffer = Buffer.from(signature);
+  const expectedSignatureBuffer = Buffer.from(expectedSignature);
 
   if (
     providedSignatureBuffer.length !== expectedSignatureBuffer.length ||
     !timingSafeEqual(providedSignatureBuffer, expectedSignatureBuffer)
   ) {
-    return null
+    return null;
   }
 
   try {
     return JSON.parse(
       Buffer.from(payload, "base64url").toString("utf-8"),
-    ) as RegistrationSession
+    ) as RegistrationSession;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -71,26 +72,26 @@ function getCookieBaseOptions(): Pick<
     maxAge: REGISTRATION_SESSION_DURATION_MS / 1000,
     sameSite: "strict",
     path: "/",
-  }
+  };
 }
 
 export function createRegistrationSessionCookie(
   cedula: string,
   status: RegistrationSessionStatus = "identified",
 ): ResponseCookie {
-  const issuedAt = Date.now()
+  const issuedAt = Date.now();
   const session: RegistrationSession = {
     cedula,
     status,
     issuedAt,
     expiresAt: issuedAt + REGISTRATION_SESSION_DURATION_MS,
-  }
+  };
 
   return {
     name: REGISTRATION_SESSION_COOKIE,
     value: serializeSession(session),
     ...getCookieBaseOptions(),
-  }
+  };
 }
 
 export function clearRegistrationSessionCookie(): ResponseCookie {
@@ -99,22 +100,22 @@ export function clearRegistrationSessionCookie(): ResponseCookie {
     value: "",
     ...getCookieBaseOptions(),
     maxAge: 0,
-  }
+  };
 }
 
 export async function getRegistrationSession(): Promise<RegistrationSession | null> {
-  const cookieStore = await cookies()
-  const cookieValue = cookieStore.get(REGISTRATION_SESSION_COOKIE)?.value
+  const cookieStore = await cookies();
+  const cookieValue = cookieStore.get(REGISTRATION_SESSION_COOKIE)?.value;
 
   if (!cookieValue) {
-    return null
+    return null;
   }
 
-  const session = parseSessionCookie(cookieValue)
+  const session = parseSessionCookie(cookieValue);
 
   if (!session || session.expiresAt < Date.now()) {
-    return null
+    return null;
   }
 
-  return session
+  return session;
 }

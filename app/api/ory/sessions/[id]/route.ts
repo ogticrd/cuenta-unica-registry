@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server"
-import { oryClient } from "@/lib/ory/client"
-import { getServerCookies } from "@/lib/ory/cookies"
+import { NextResponse } from "next/server";
+
+import { getServerCookies } from "@/lib/ory/cookies";
+import { oryClient } from "@/lib/ory/client";
 
 /**
  * DELETE /api/ory/sessions/[id]
@@ -12,21 +13,27 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const cookie = await getServerCookies()
-    const { id: sessionId } = await params
+    const cookie = await getServerCookies();
+    const { id: sessionId } = await params;
 
     if (!sessionId) {
-      return NextResponse.json({ error: "Session ID is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Session ID is required" },
+        { status: 400 },
+      );
     }
 
     await oryClient.disableMySession({
       id: sessionId,
       cookie,
-    })
+    });
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    console.error("[/api/ory/sessions] Error disabling session:", error)
-    return NextResponse.json({ error: "Failed to disable session" }, { status: 500 })
+    console.error("[/api/ory/sessions] Error disabling session:", error);
+    return NextResponse.json(
+      { error: "Failed to disable session" },
+      { status: 500 },
+    );
   }
 }

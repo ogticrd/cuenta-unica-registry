@@ -1,19 +1,22 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import Image from "next/image"
-import Link from "next/link"
-import { ROUTES } from "@/lib/constants/routes"
-import { VerificationOTPForm } from "@/components/auth/verification/verification-otp-form"
-import { getT } from "@/lib/i18n/server"
+import Image from "next/image";
+import Link from "next/link";
+
+import { VerificationOTPForm } from "@/components/auth/verification/verification-otp-form";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { ROUTES } from "@/lib/constants/routes";
+import { getT } from "@/lib/i18n/server";
 
 interface EmailSentPageProps {
-  searchParams: Promise<{ flow?: string }>
+  searchParams: Promise<{ flow?: string }>;
 }
 
-export default async function EmailSentPage({ searchParams }: EmailSentPageProps) {
-  const params = await searchParams
-  const flowId = params.flow
-  const t = await getT("email_sent")
+export default async function EmailSentPage({
+  searchParams,
+}: EmailSentPageProps) {
+  const params = await searchParams;
+  const flowId = params.flow;
+  const t = await getT("email_sent");
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
@@ -23,16 +26,15 @@ export default async function EmailSentPage({ searchParams }: EmailSentPageProps
         <div className="container mx-auto px-4">
           <div className="w-full max-w-sm mx-auto ory-auth-scope">
             <div className="bg-white dark:bg-card rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100 dark:border-gray-800 p-8 sm:p-10 flex flex-col text-center space-y-6 relative overflow-hidden">
-
               {/* Header — CUC logo + title */}
               <div>
                 <div className="flex justify-center mb-5">
                   <Image
                     src="/images/cuenta-unica-icon.png"
                     alt={t("logo_alt")}
-                    width={64}
-                    height={64}
-                    className="rounded-lg shadow-sm"
+                    width={98}
+                    height={96}
+                    className="h-16 w-auto rounded-lg shadow-sm"
                   />
                 </div>
                 <h1 className="text-xl font-bold tracking-tight text-primary dark:text-blue-400">
@@ -72,7 +74,6 @@ export default async function EmailSentPage({ searchParams }: EmailSentPageProps
                   })}
                 </p>
               </div>
-
             </div>
           </div>
         </div>
@@ -80,5 +81,5 @@ export default async function EmailSentPage({ searchParams }: EmailSentPageProps
 
       <Footer />
     </div>
-  )
+  );
 }

@@ -1,8 +1,9 @@
-import Link from "next/link"
-import { Home, SearchX } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+import { Home, SearchX } from "lucide-react";
+import Link from "next/link";
+
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -11,11 +12,13 @@ export default function NotFound() {
 
       <main className="flex-1 flex items-center justify-center px-4 py-16 relative overflow-hidden">
         <div className="relative z-10 max-w-xl w-full mx-auto text-center space-y-8">
-
           {/* Icon */}
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-2xl bg-primary/10 dark:bg-secondary/20 flex items-center justify-center shadow-inner">
-              <SearchX className="w-10 h-10 text-primary dark:text-secondary" strokeWidth={1.5} />
+              <SearchX
+                className="w-10 h-10 text-primary dark:text-secondary"
+                strokeWidth={1.5}
+              />
             </div>
           </div>
 
@@ -63,5 +66,5 @@ export default function NotFound() {
 
       <Footer />
     </div>
-  )
+  );
 }

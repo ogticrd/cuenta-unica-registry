@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { Settings } from "@ory/elements-react/theme"
+import { Settings } from "@ory/elements-react/theme";
 
-type OrySettingsFlow = Parameters<typeof Settings>[0]["flow"]
+type OrySettingsFlow = Parameters<typeof Settings>[0]["flow"];
 
 interface OrySettingsWrapperProps {
   flow: unknown;
@@ -20,7 +20,7 @@ function OrySettings({ flow, dynamicConfig }: OrySettingsWrapperProps) {
         },
       }}
     />
-  )
+  );
 }
 
-export default OrySettings
+export default OrySettings;

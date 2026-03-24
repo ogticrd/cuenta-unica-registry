@@ -38,8 +38,8 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
               <Image
                 src="/images/cuenta-unica-logo.png"
                 alt="Cuenta Única"
-                width={160}
-                height={40}
+                width={210}
+                height={104}
                 className="h-10 w-auto"
               />
             </Link>

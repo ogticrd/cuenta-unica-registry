@@ -1,24 +1,27 @@
-﻿"use client"
+﻿"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { useEffect } from "react"
-import { AlertTriangle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ROUTES } from "@/lib/constants/routes"
-import "./globals.css"
+import { AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants/routes";
+
+import "./globals.css";
 
 interface GlobalErrorProps {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }
 
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    console.error(error)
-  }, [error])
+    console.error(error);
+  }, [error]);
 
-  const details = error?.message?.trim() || "Intenta nuevamente en unos minutos."
+  const details =
+    error?.message?.trim() || "Intenta nuevamente en unos minutos.";
 
   return (
     <html lang="es">
@@ -29,8 +32,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               <Image
                 src="/images/cuenta-unica-logo.png"
                 alt="Cuenta Unica"
-                width={160}
-                height={40}
+                width={210}
+                height={104}
                 className="h-10 w-auto"
               />
             </div>
@@ -46,10 +49,18 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">Error</p>
-              <h1 className="text-2xl font-bold">Ocurrió un problema inesperado</h1>
-              <p className="text-muted-foreground">No pudimos cargar la aplicación correctamente.</p>
-              <p className="text-sm text-accent p-3 rounded-md bg-accent/10 mt-2">{details}</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">
+                Error
+              </p>
+              <h1 className="text-2xl font-bold">
+                Ocurrió un problema inesperado
+              </h1>
+              <p className="text-muted-foreground">
+                No pudimos cargar la aplicación correctamente.
+              </p>
+              <p className="text-sm text-accent p-3 rounded-md bg-accent/10 mt-2">
+                {details}
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -64,5 +75,5 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
         </main>
       </body>
     </html>
-  )
+  );
 }

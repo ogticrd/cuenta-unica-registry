@@ -1,8 +1,8 @@
-import "server-only"
+import "server-only";
 
-import { getOryConfig } from "@/ory.config"
-import { getServerLocale } from "@/lib/ory/server-locale"
+import { getServerLocale } from "@/lib/ory/server-locale";
+import { getOryConfig } from "@/ory.config";
 
 export async function getServerOryConfig() {
-  return getOryConfig(await getServerLocale())
+  return getOryConfig(await getServerLocale());
 }

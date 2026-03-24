@@ -1,19 +1,19 @@
-import { API } from "@/lib/constants/api"
-import type { RegistrationVerificationResponse } from "@/lib/types/registration/session"
+import type { RegistrationVerificationResponse } from "@/lib/types/registration/session";
+import { API } from "@/lib/constants/api";
 
 async function parseVerificationResponse(response: Response) {
-  const payload = (await response.json().catch(() => null)) as
-    | RegistrationVerificationResponse
-    | null
+  const payload = (await response
+    .json()
+    .catch(() => null)) as RegistrationVerificationResponse | null;
 
   if (!payload) {
     return {
       success: false,
       code: "unexpected_error",
-    } satisfies RegistrationVerificationResponse
+    } satisfies RegistrationVerificationResponse;
   }
 
-  return payload
+  return payload;
 }
 
 export const verificationService = {
@@ -22,16 +22,19 @@ export const verificationService = {
       const response = await fetch(API.registrationVerification, {
         method: "POST",
         credentials: "include",
-      })
+      });
 
-      return parseVerificationResponse(response)
+      return parseVerificationResponse(response);
     } catch (error) {
-      console.error("[verificationService.completeRegistrationVerification] Request failed:", error)
+      console.error(
+        "[verificationService.completeRegistrationVerification] Request failed:",
+        error,
+      );
 
       return {
         success: false,
         code: "unexpected_error",
-      }
+      };
     }
   },
-}
+};

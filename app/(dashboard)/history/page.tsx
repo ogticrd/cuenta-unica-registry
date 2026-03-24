@@ -1,101 +1,118 @@
-﻿"use client"
+﻿"use client";
 
-import { useState } from "react"
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { SecuritySection } from "@/components/dashboard/security-section"
-import { DeviceItem } from "@/components/dashboard/device-item"
-import { PortalItem } from "@/components/dashboard/portal-item"
-import { ConfirmationModal } from "@/components/ui/confirmation-modal"
-import { useAuth } from "@/lib/auth-context"
-import { sessionService, type OrySession } from "@/lib/services/ory/session.service"
-import { toast } from "sonner"
-import { History } from "lucide-react"
-import { useLocale, useT } from "@/hooks/use-t"
+import { useState } from "react";
+import { toast } from "sonner";
+
+import {
+  sessionService,
+  type OrySession,
+} from "@/lib/services/ory/session.service";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { SecuritySection } from "@/components/dashboard/security-section";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { DeviceItem } from "@/components/dashboard/device-item";
+import { PortalItem } from "@/components/dashboard/portal-item";
+import { useLocale, useT } from "@/hooks/use-t";
+import { useAuth } from "@/lib/auth-context";
 
 type DeviceStatus = {
-  text: string
-  variant: "current" | "active"
-}
+  text: string;
+  variant: "current" | "active";
+};
 
 type DeviceRow = {
-  id: string
-  device: string
-  ipAddress: string
-  location: string
-  lastAccess: string
-  expirationDate: string
-  isCurrentSession: boolean
-  status: DeviceStatus
-}
+  id: string;
+  device: string;
+  ipAddress: string;
+  location: string;
+  lastAccess: string;
+  expirationDate: string;
+  isCurrentSession: boolean;
+  status: DeviceStatus;
+};
 
 export default function HistoryPage() {
-  const { session, refreshSession } = useAuth()
-  const t = useT("history")
-  const locale = useLocale()
-  const dateLocale = locale === "es" ? "es-DO" : "en-US"
+  const { session, refreshSession } = useAuth();
+  const t = useT("history");
+  const locale = useLocale();
+  const dateLocale = locale === "es" ? "es-DO" : "en-US";
 
   const [unlinkDeviceModal, setUnlinkDeviceModal] = useState<{
-    isOpen: boolean
-    deviceName: string
-    deviceId: string | null
-    isLoading: boolean
+    isOpen: boolean;
+    deviceName: string;
+    deviceId: string | null;
+    isLoading: boolean;
   }>({
     isOpen: false,
     deviceName: "",
     deviceId: null,
     isLoading: false,
-  })
+  });
 
   const [unlinkPortalModal, setUnlinkPortalModal] = useState<{
-    isOpen: boolean
-    portalName: string
-    portalId: number | null
-    isLoading: boolean
+    isOpen: boolean;
+    portalName: string;
+    portalId: number | null;
+    isLoading: boolean;
   }>({
     isOpen: false,
     portalName: "",
     portalId: null,
     isLoading: false,
-  })
+  });
 
   const allSessions: OrySession[] = session
-    ? [session, ...(Array.isArray(session.other_sessions) ? session.other_sessions : [])]
-    : []
+    ? [
+        session,
+        ...(Array.isArray(session.other_sessions)
+          ? session.other_sessions
+          : []),
+      ]
+    : [];
 
   const formatSessionDate = (value: string | undefined, fallback: string) => {
-    if (!value) return fallback
+    if (!value) return fallback;
 
-    const parsedDate = new Date(value)
-    if (Number.isNaN(parsedDate.getTime())) return fallback
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) return fallback;
 
-    return parsedDate.toLocaleString(dateLocale)
-  }
+    return parsedDate.toLocaleString(dateLocale);
+  };
 
   const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
-    const device = currentSession.devices?.[0]
-    const isCurrentSession = index === 0
+    const device = currentSession.devices?.[0];
+    const isCurrentSession = index === 0;
 
     return {
       id: currentSession.id || `fallback-${index}`,
       device: device?.user_agent || t("device_unknown"),
       ipAddress: device?.ip_address || t("ip_unknown"),
       location: device?.location || t("location_unknown"),
-      lastAccess: formatSessionDate(currentSession.authenticated_at, t("recent")),
-      expirationDate: formatSessionDate(currentSession.expires_at, t("indefinite")),
+      lastAccess: formatSessionDate(
+        currentSession.authenticated_at,
+        t("recent"),
+      ),
+      expirationDate: formatSessionDate(
+        currentSession.expires_at,
+        t("indefinite"),
+      ),
       isCurrentSession,
       status: isCurrentSession
         ? { text: t("session_active"), variant: "current" }
         : { text: t("active"), variant: "active" },
-    }
-  })
+    };
+  });
 
-  const portalLastAccess = new Date("2023-01-04T13:30:00").toLocaleString(dateLocale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  })
+  const portalLastAccess = new Date("2023-01-04T13:30:00").toLocaleString(
+    dateLocale,
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    },
+  );
 
   const portals = [
     {
@@ -123,16 +140,19 @@ export default function HistoryPage() {
       name: t("portals.state_reform_council"),
       lastAccess: portalLastAccess,
     },
-  ]
+  ];
 
-  const handleOpenUnlinkDeviceModal = (deviceId: string, deviceName: string) => {
+  const handleOpenUnlinkDeviceModal = (
+    deviceId: string,
+    deviceName: string,
+  ) => {
     setUnlinkDeviceModal({
       isOpen: true,
       deviceName,
       deviceId,
       isLoading: false,
-    })
-  }
+    });
+  };
 
   const handleCloseUnlinkDeviceModal = () => {
     setUnlinkDeviceModal({
@@ -140,38 +160,41 @@ export default function HistoryPage() {
       deviceName: "",
       deviceId: null,
       isLoading: false,
-    })
-  }
+    });
+  };
 
   const handleConfirmUnlinkDevice = () => {
-    if (!unlinkDeviceModal.deviceId) return
+    if (!unlinkDeviceModal.deviceId) return;
 
-    setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: true }))
-    const toastId = toast.loading(t("unlinking_device"))
+    setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: true }));
+    const toastId = toast.loading(t("unlinking_device"));
 
     sessionService
       .revokeSession(unlinkDeviceModal.deviceId)
       .then(() => {
-        toast.success(t("device_unlinked_success"), { id: toastId })
-        refreshSession()
-        handleCloseUnlinkDeviceModal()
+        toast.success(t("device_unlinked_success"), { id: toastId });
+        refreshSession();
+        handleCloseUnlinkDeviceModal();
       })
       .catch(() => {
-        toast.error(t("device_unlink_error"), { id: toastId })
+        toast.error(t("device_unlink_error"), { id: toastId });
       })
       .finally(() => {
-        setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }))
-      })
-  }
+        setUnlinkDeviceModal((prev) => ({ ...prev, isLoading: false }));
+      });
+  };
 
-  const handleOpenUnlinkPortalModal = (portalId: number, portalName: string) => {
+  const handleOpenUnlinkPortalModal = (
+    portalId: number,
+    portalName: string,
+  ) => {
     setUnlinkPortalModal({
       isOpen: true,
       portalName,
       portalId,
       isLoading: false,
-    })
-  }
+    });
+  };
 
   const handleCloseUnlinkPortalModal = () => {
     setUnlinkPortalModal({
@@ -179,23 +202,27 @@ export default function HistoryPage() {
       portalName: "",
       portalId: null,
       isLoading: false,
-    })
-  }
+    });
+  };
 
   const handleConfirmUnlinkPortal = () => {
-    setUnlinkPortalModal((prev) => ({ ...prev, isLoading: true }))
+    setUnlinkPortalModal((prev) => ({ ...prev, isLoading: true }));
 
     // TODO: replace with portalService.revokePortal() once the endpoint exists
     new Promise((resolve) => setTimeout(resolve, 2000))
       .then(() => handleCloseUnlinkPortalModal())
-      .finally(() => setUnlinkPortalModal((prev) => ({ ...prev, isLoading: false })))
-  }
+      .finally(() =>
+        setUnlinkPortalModal((prev) => ({ ...prev, isLoading: false })),
+      );
+  };
 
   return (
     <DashboardLayout>
       <div className="space-y-12 pb-12">
         <div className="space-y-4 pb-8 border-b dark:border-border">
-          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">{t("title")}</h1>
+          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
+            {t("title")}
+          </h1>
           <p className="text-muted-foreground text-lg leading-relaxed">
             {t("subtitle")}
           </p>
@@ -217,7 +244,11 @@ export default function HistoryPage() {
                     onUnlink={
                       device.isCurrentSession
                         ? undefined
-                        : () => handleOpenUnlinkDeviceModal(device.id, device.device)
+                        : () =>
+                            handleOpenUnlinkDeviceModal(
+                              device.id,
+                              device.device,
+                            )
                     }
                   />
                 ))
@@ -236,7 +267,9 @@ export default function HistoryPage() {
                   key={portal.id}
                   name={portal.name}
                   lastAccess={portal.lastAccess}
-                  onUnlink={() => handleOpenUnlinkPortalModal(portal.id, portal.name)}
+                  onUnlink={() =>
+                    handleOpenUnlinkPortalModal(portal.id, portal.name)
+                  }
                 />
               ))}
             </div>
@@ -247,7 +280,9 @@ export default function HistoryPage() {
           isOpen={unlinkDeviceModal.isOpen}
           onClose={handleCloseUnlinkDeviceModal}
           onConfirm={handleConfirmUnlinkDevice}
-          title={t("unlink_device_title", { deviceName: unlinkDeviceModal.deviceName })}
+          title={t("unlink_device_title", {
+            deviceName: unlinkDeviceModal.deviceName,
+          })}
           description={t("unlink_device_description")}
           confirmText={t("unlink")}
           cancelText={t("cancel")}
@@ -259,7 +294,9 @@ export default function HistoryPage() {
           isOpen={unlinkPortalModal.isOpen}
           onClose={handleCloseUnlinkPortalModal}
           onConfirm={handleConfirmUnlinkPortal}
-          title={t("unlink_portal_title", { portalName: unlinkPortalModal.portalName })}
+          title={t("unlink_portal_title", {
+            portalName: unlinkPortalModal.portalName,
+          })}
           description={t("unlink_portal_description")}
           confirmText={t("unlink")}
           cancelText={t("cancel")}
@@ -274,5 +311,5 @@ export default function HistoryPage() {
         </ConfirmationModal>
       </div>
     </DashboardLayout>
-  )
+  );
 }

@@ -1,37 +1,38 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useAuth } from "@/lib/auth-context"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { ROUTES } from "@/lib/constants/routes"
-import { LoadingFallback } from "@/components/ui/loading-fallback"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import type React from "react";
+
+import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { ROUTES } from "@/lib/constants/routes";
+import { useAuth } from "@/lib/auth-context";
 
 interface ProtectedRouteProps {
-    children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const { user, isLoading } = useAuth()
-    const router = useRouter()
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!isLoading && !user) {
-            router.push(ROUTES.login)
-        }
-    }, [user, isLoading, router])
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <LoadingFallback />
-            </div>
-        )
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push(ROUTES.login);
     }
+  }, [user, isLoading, router]);
 
-    if (!user) {
-        return null
-    }
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <LoadingFallback />
+      </div>
+    );
+  }
 
-    return <>{children}</>
+  if (!user) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

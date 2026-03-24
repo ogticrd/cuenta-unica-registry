@@ -1,9 +1,6 @@
-"use client"
+"use client";
 
-import {
-    useTranslations,
-    useLocale as useNextIntlLocale,
-} from "next-intl"
+import { useTranslations, useLocale as useNextIntlLocale } from "next-intl";
 
 /**
  * Abstraction hook for translations.
@@ -15,7 +12,7 @@ import {
  * If the i18n library changes in the future, only this file needs updating.
  */
 export function useT(namespace: string) {
-    return useTranslations(namespace)
+  return useTranslations(namespace);
 }
 
 /**
@@ -25,5 +22,5 @@ export function useT(namespace: string) {
  *   const locale = useLocale() // "es" | "en"
  */
 export function useLocale() {
-    return useNextIntlLocale()
+  return useNextIntlLocale();
 }

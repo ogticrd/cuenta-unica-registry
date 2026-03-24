@@ -1,24 +1,22 @@
-import { Suspense } from "react"
-import { Login } from "@ory/elements-react/theme"
-import { LoadingFallback } from "@/components/ui/loading-fallback"
-import { getLoginFlow, OryPageParams } from "@ory/nextjs/app"
-import { getServerOryConfig } from "@/lib/ory/server-config"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { WelcomeSection } from "@/components/auth/welcome-section"
-import {
-  CucCardHeader,
-  CucCardFooter,
-} from "@/components/auth/ory-components"
-import { getT } from "@/lib/i18n/server"
+import { getLoginFlow, OryPageParams } from "@ory/nextjs/app";
+import { Login } from "@ory/elements-react/theme";
+import { Suspense } from "react";
+
+import { CucCardHeader, CucCardFooter } from "@/components/auth/ory-components";
+import { WelcomeSection } from "@/components/auth/welcome-section";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { getServerOryConfig } from "@/lib/ory/server-config";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { getT } from "@/lib/i18n/server";
 
 async function LoginFlow({ searchParams }: OryPageParams) {
-  const dynamicConfig = await getServerOryConfig()
-  const flow = await getLoginFlow(dynamicConfig, searchParams)
-  const t = await getT("login")
+  const dynamicConfig = await getServerOryConfig();
+  const flow = await getLoginFlow(dynamicConfig, searchParams);
+  const t = await getT("login");
 
   if (!flow) {
-    return <LoadingFallback message={t("loading")} />
+    return <LoadingFallback message={t("loading")} />;
   }
 
   return (
@@ -32,7 +30,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
         },
       }}
     />
-  )
+  );
 }
 
 export default async function LoginPage(props: OryPageParams) {
@@ -52,9 +50,7 @@ export default async function LoginPage(props: OryPageParams) {
             <div className="flex justify-center lg:justify-end">
               <div className="ory-auth-scope w-full max-w-md">
                 <Suspense fallback={<LoadingFallback />}>
-                  <LoginFlow
-                    searchParams={props.searchParams}
-                  />
+                  <LoginFlow searchParams={props.searchParams} />
                 </Suspense>
               </div>
             </div>
@@ -69,5 +65,5 @@ export default async function LoginPage(props: OryPageParams) {
 
       <Footer />
     </div>
-  )
+  );
 }

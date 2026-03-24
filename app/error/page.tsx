@@ -1,43 +1,44 @@
-import Link from "next/link"
-import { AlertTriangle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { oryClient } from "@/lib/ory/client"
-import { ROUTES } from "@/lib/constants/routes"
-import { getT } from "@/lib/i18n/server"
+import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
+
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { ROUTES } from "@/lib/constants/routes";
+import { Button } from "@/components/ui/button";
+import { oryClient } from "@/lib/ory/client";
+import { getT } from "@/lib/i18n/server";
 
 interface ErrorPageProps {
-  searchParams: Promise<Record<string, string | string[] | undefined>>
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 interface OryFlowErrorDetails {
-  reason?: string
-  message?: string
+  reason?: string;
+  message?: string;
 }
 
 function firstParam(value: string | string[] | undefined): string | undefined {
-  if (typeof value === "string") return value
-  if (Array.isArray(value)) return value[0]
-  return undefined
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value[0];
+  return undefined;
 }
 
 export default async function ErrorPage({ searchParams }: ErrorPageProps) {
-  const params = await searchParams
-  const flowId = firstParam(params.id)
-  const t = await getT("error")
+  const params = await searchParams;
+  const flowId = firstParam(params.id);
+  const t = await getT("error");
 
-  let reason = t("default_reason")
-  let details = t("default_details")
+  let reason = t("default_reason");
+  let details = t("default_details");
 
   if (flowId) {
     try {
-      const { data } = await oryClient.getFlowError({ id: flowId })
-      const flowError = data.error as OryFlowErrorDetails | undefined
+      const { data } = await oryClient.getFlowError({ id: flowId });
+      const flowError = data.error as OryFlowErrorDetails | undefined;
 
       if (flowError) {
-        reason = flowError.reason || flowError.message || reason
-        details = flowError.message || details
+        reason = flowError.reason || flowError.message || reason;
+        details = flowError.message || details;
       }
     } catch {
       // Keep generic copy if Ory error details are unavailable.
@@ -57,7 +58,9 @@ export default async function ErrorPage({ searchParams }: ErrorPageProps) {
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">Error</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-destructive/70 dark:text-destructive">
+              Error
+            </p>
             <h1 className="text-2xl font-bold">{t("title")}</h1>
             <p className="text-muted-foreground">{reason}</p>
             <p className="text-sm text-muted-foreground">{details}</p>
@@ -71,5 +74,5 @@ export default async function ErrorPage({ searchParams }: ErrorPageProps) {
 
       <Footer />
     </div>
-  )
+  );
 }

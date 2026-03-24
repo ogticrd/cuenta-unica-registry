@@ -21,6 +21,6 @@ export const ROUTES = {
   history: "/history",
   support: "/support",
   about: "/about",
-} as const
+} as const;
 
-export type Route = (typeof ROUTES)[keyof typeof ROUTES]
+export type Route = (typeof ROUTES)[keyof typeof ROUTES];

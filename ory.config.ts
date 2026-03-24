@@ -1,8 +1,11 @@
-import type { OryClientConfiguration } from "@ory/elements-react"
-import { DEFAULT_LOCALE } from "./lib/constants/locales"
-import { oryCustomTranslations } from "./lib/ory/custom-translations"
+import type { OryClientConfiguration } from "@ory/elements-react";
 
-export const getOryConfig = (locale: string = DEFAULT_LOCALE): OryClientConfiguration => ({
+import { oryCustomTranslations } from "./lib/ory/custom-translations";
+import { DEFAULT_LOCALE } from "./lib/constants/locales";
+
+export const getOryConfig = (
+  locale: string = DEFAULT_LOCALE,
+): OryClientConfiguration => ({
   intl: {
     locale,
     customTranslations: oryCustomTranslations,
@@ -22,8 +25,8 @@ export const getOryConfig = (locale: string = DEFAULT_LOCALE): OryClientConfigur
     verification_enabled: true,
     locale_behavior: "respect_accept_language",
   },
-})
+});
 
-const config = getOryConfig(DEFAULT_LOCALE)
+const config = getOryConfig(DEFAULT_LOCALE);
 
-export default config
+export default config;

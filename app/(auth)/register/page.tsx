@@ -1,10 +1,10 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { RegisterWizard } from "@/components/auth/register/register-wizard"
-import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service"
+import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
+import { RegisterWizard } from "@/components/auth/register/register-wizard";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 export default async function RegistrationPage() {
-  const registrationWizardState = await getRegistrationWizardState()
+  const registrationWizardState = await getRegistrationWizardState();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
@@ -21,5 +21,5 @@ export default async function RegistrationPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
