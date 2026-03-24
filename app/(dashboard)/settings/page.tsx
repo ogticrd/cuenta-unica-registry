@@ -1,4 +1,5 @@
-import { getSettingsFlow, OryPageParams } from "@ory/nextjs/app";
+import { OryPageParams } from "@ory/nextjs/app";
+import { getSettingsFlow } from "@/lib/ory/flow";
 import { Suspense } from "react";
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";

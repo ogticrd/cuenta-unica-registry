@@ -1,4 +1,5 @@
-import { getLoginFlow, OryPageParams } from "@ory/nextjs/app";
+import { OryPageParams } from "@ory/nextjs/app";
+import { getLoginFlow } from "@/lib/ory/flow";
 import { Login } from "@ory/elements-react/theme";
 import { Suspense } from "react";
 

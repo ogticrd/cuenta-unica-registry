@@ -1,4 +1,5 @@
-import { getVerificationFlow, OryPageParams } from "@ory/nextjs/app";
+import { OryPageParams } from "@ory/nextjs/app";
+import { getVerificationFlow } from "@/lib/ory/flow";
 import { Verification } from "@ory/elements-react/theme";
 import { Suspense } from "react";
 
