@@ -1,0 +1,18 @@
+# Exclude everything, then allowlist what the build needs.
+# https://docs.docker.com/engine/reference/builder/#dockerignore-file
+*
+
+# Source code
+!app
+!components
+!hooks
+!i18n
+!lib
+!public
+
+# Config files
+!*.mjs
+!*.ts
+!*.json
+!*.toml
+!bun.lock

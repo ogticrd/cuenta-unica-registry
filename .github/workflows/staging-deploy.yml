@@ -1,0 +1,88 @@
+name: Staging Deploy
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    outputs:
+      image: ${{ steps.build.outputs.primary-image }}
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & push image
+        id: build
+        uses: ogticrd/actions/actions/docker/build@main
+        with:
+          image-name: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ vars.APP_NAME }}
+          registry-username: _json_key
+          registry-password: ${{ secrets.GAR_JSON_KEY }}
+          target: runner
+          environment: staging
+          build-args: |
+            NEXT_PUBLIC_AWS_REGION=${{ vars.NEXT_PUBLIC_AWS_REGION }}
+            NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID }}
+            NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_ID }}
+            NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID }}
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Authenticate to GCP
+        uses: ogticrd/actions/actions/gcp/auth@main
+        with:
+          project-id: ${{ vars.GOOGLE_PROJECT_ID }}
+          credentials-json: ${{ secrets.GAR_JSON_KEY }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: ogticrd/actions/actions/gcp/cloudrun/deploy@main
+        with:
+          image: ${{ needs.build.outputs.image }}
+          service: ${{ vars.APP_NAME }}
+          region: ${{ vars.GOOGLE_CLOUD_REGION }}
+          project-id: ${{ vars.GOOGLE_PROJECT_ID }}
+          env-vars: |
+            NODE_ENV=production
+            ORY_SDK_URL=${{ secrets.ORY_SDK_URL }}
+            ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN }}
+            REGISTRATION_SESSION_SECRET=${{ secrets.REGISTRATION_SESSION_SECRET }}
+            CITIZENS_API_BASE_URL=${{ vars.CITIZENS_API_BASE_URL }}
+            CITIZENS_INFO_API_KEY=${{ secrets.CITIZENS_INFO_API_KEY }}
+            CITIZENS_PHOTO_API_KEY=${{ secrets.CITIZENS_PHOTO_API_KEY }}
+            AWS_REGION=${{ vars.AWS_REGION }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD }}
+            FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD }}
+          min-instances: "0"
+          max-instances: "10"
+          cpu: "1"
+          memory: 512Mi
+
+      - name: Allow public access
+        uses: ogticrd/actions/actions/gcp/cloudrun/iam@main
+        with:
+          service: ${{ vars.APP_NAME }}
+          region: ${{ vars.GOOGLE_CLOUD_REGION }}
+
+      - name: Health check
+        run: curl -sf "${{ steps.deploy.outputs.url }}" > /dev/null
