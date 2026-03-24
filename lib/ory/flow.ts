@@ -57,20 +57,35 @@ async function toFlowParams(
 }
 
 /**
+ * Ensures params include return_to pointing to the app's public URL.
+ * This is critical: after login/registration, Ory redirects to return_to.
+ * Without it, Ory falls back to its own domain (cuenta.digital.gob.do).
+ */
+async function withReturnTo(
+  params: Record<string, string | string[] | undefined>,
+) {
+  if (!params["return_to"]) {
+    return { ...params, return_to: (await getPublicUrl()) + "/" };
+  }
+  return params;
+}
+
+/**
  * Replacement for @ory/nextjs getLoginFlow that works in production.
  *
  * The stock SDK function uses guessPotentiallyProxiedOrySdkUrl() which
  * in production returns ORY_SDK_URL (Ory Cloud) for browser redirects,
  * causing cookie/CSRF mismatches. This version separates concerns:
- * - Server-side API calls → ORY_SDK_URL (Ory Cloud)
+ * - Server-side API calls → through the app's own proxy
  * - Browser redirect URLs → getPublicUrl() (the app's own domain)
+ * - return_to → always set to the app's URL for post-auth redirects
  */
 export async function getLoginFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
 ) {
   return getFlowFactory(
-    await params,
+    await withReturnTo(await params),
     async () =>
       (await createServerClient()).getLoginFlowRaw(
         await toFlowParams(params),
@@ -87,7 +102,7 @@ export async function getRegistrationFlow(
   params: Promise<Record<string, string | string[] | undefined>>,
 ) {
   return getFlowFactory(
-    await params,
+    await withReturnTo(await params),
     async () =>
       (await createServerClient()).getRegistrationFlowRaw(
         await toFlowParams(params),
@@ -104,7 +119,7 @@ export async function getRecoveryFlow(
   params: Promise<Record<string, string | string[] | undefined>>,
 ) {
   return getFlowFactory(
-    await params,
+    await withReturnTo(await params),
     async () =>
       (await createServerClient()).getRecoveryFlowRaw(
         await toFlowParams(params),
@@ -121,7 +136,7 @@ export async function getVerificationFlow(
   params: Promise<Record<string, string | string[] | undefined>>,
 ) {
   return getFlowFactory(
-    await params,
+    await withReturnTo(await params),
     async () =>
       (await createServerClient()).getVerificationFlowRaw(
         await toFlowParams(params),
@@ -138,7 +153,7 @@ export async function getSettingsFlow(
   params: Promise<Record<string, string | string[] | undefined>>,
 ) {
   return getFlowFactory(
-    await params,
+    await withReturnTo(await params),
     async () =>
       (await createServerClient()).getSettingsFlowRaw(
         await toFlowParams(params),
