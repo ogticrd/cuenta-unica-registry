@@ -5,7 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { ROUTES } from "@/lib/constants/routes";
 import { Button } from "@/components/ui/button";
-import { oryClient } from "@/lib/ory/client";
+import { getOryClient } from "@/lib/ory/client";
 import { getT } from "@/lib/i18n/server";
 
 interface ErrorPageProps {
@@ -33,7 +33,7 @@ export default async function ErrorPage({ searchParams }: ErrorPageProps) {
 
   if (flowId) {
     try {
-      const { data } = await oryClient.getFlowError({ id: flowId });
+      const { data } = await getOryClient().getFlowError({ id: flowId });
       const flowError = data.error as OryFlowErrorDetails | undefined;
 
       if (flowError) {

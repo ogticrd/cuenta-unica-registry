@@ -38,8 +38,8 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
 # ===================== Runner =====================
 FROM base AS runner
 
-RUN addgroup --gid 1001 --system nodejs \
-    && adduser --system --no-create-home --uid 1001 nextjs
+RUN groupadd --gid 1001 --system nodejs \
+    && useradd --system --no-create-home --uid 1001 --gid nodejs nextjs
 
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./

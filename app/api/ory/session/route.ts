@@ -2,7 +2,7 @@ import type { Session } from "@ory/client";
 import { NextResponse } from "next/server";
 
 import { getServerCookies } from "@/lib/ory/cookies";
-import { oryClient } from "@/lib/ory/client";
+import { getOryClient } from "@/lib/ory/client";
 
 /**
  * GET /api/ory/session
@@ -19,6 +19,7 @@ export async function GET() {
   try {
     const cookie = await getServerCookies();
 
+    const oryClient = getOryClient();
     const { data: session } = await oryClient.toSession({
       cookie,
     });

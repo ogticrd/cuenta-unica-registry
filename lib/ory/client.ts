@@ -22,5 +22,12 @@ export function createOryClient() {
   );
 }
 
-/** Singleton instance for server-side use */
-export const oryClient = createOryClient();
+/** Lazy singleton — avoids crashing at build time when env vars are absent. */
+let _oryClient: FrontendApi | null = null;
+
+export function getOryClient() {
+  if (!_oryClient) {
+    _oryClient = createOryClient();
+  }
+  return _oryClient;
+}

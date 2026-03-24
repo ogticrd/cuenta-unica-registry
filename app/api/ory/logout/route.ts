@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getServerCookies, extractSetCookieHeaders } from "@/lib/ory/cookies";
 import { ROUTES } from "@/lib/constants/routes";
-import { oryClient } from "@/lib/ory/client";
+import { getOryClient } from "@/lib/ory/client";
 
 /**
  * POST /api/ory/logout
@@ -20,6 +20,7 @@ export async function POST() {
     const cookie = await getServerCookies();
 
     // Step 1: Create a self-service logout flow for browser
+    const oryClient = getOryClient();
     const { data: logoutFlow } = await oryClient.createBrowserLogoutFlow({
       cookie,
     });

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getServerCookies } from "@/lib/ory/cookies";
-import { oryClient } from "@/lib/ory/client";
+import { getOryClient } from "@/lib/ory/client";
 
 /**
  * DELETE /api/ory/sessions/[id]
@@ -23,7 +23,7 @@ export async function DELETE(
       );
     }
 
-    await oryClient.disableMySession({
+    await getOryClient().disableMySession({
       id: sessionId,
       cookie,
     });
