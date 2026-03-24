@@ -33,12 +33,14 @@ interface StepIdentificationProps {
   defaultValues: {
     cedula: string;
   };
+  returnUrl?: string;
 }
 
 export function StepIdentification({
   onNext,
   updateData,
   defaultValues,
+  returnUrl,
 }: StepIdentificationProps) {
   const t = useT("register");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +65,7 @@ export function StepIdentification({
 
     try {
       const cedula = normalizeCedula(data.cedula);
-      const result = await citizenService.identifyCitizen(cedula);
+      const result = await citizenService.identifyCitizen(cedula, returnUrl);
 
       if (!result.success) {
         const messageByErrorCode: Record<CitizenLookupErrorCode, string> = {

@@ -163,14 +163,21 @@ export async function POST(request: Request) {
       });
     }
 
+    const { returnUrl } = registrationSession;
+
     for (const block of payload.continue_with ?? []) {
       if (block.action === "show_verification_ui" && block.flow?.id) {
         // Ory already sent the verification email via its after-registration hook.
         // Redirect to our custom OTP verification page with the flow ID.
+        const emailSentParams = new URLSearchParams({
+          flow: block.flow.id,
+          ...(returnUrl ? { return_url: returnUrl } : {}),
+        });
+
         const responsePayload: RegisterAccountResponse = {
           success: true,
           destination: "email-sent",
-          redirectTo: `${ROUTES.emailSent}?flow=${encodeURIComponent(block.flow.id)}`,
+          redirectTo: `${ROUTES.emailSent}?${emailSentParams.toString()}`,
         };
 
         const response = createJsonResponse(responsePayload, 200, setCookies);
@@ -184,7 +191,7 @@ export async function POST(request: Request) {
       const responsePayload: RegisterAccountResponse = {
         success: true,
         destination: "login",
-        redirectTo: `${ROUTES.login}?registered=true`,
+        redirectTo: returnUrl ?? `${ROUTES.login}?registered=true`,
       };
 
       const response = createJsonResponse(responsePayload, 200, setCookies);

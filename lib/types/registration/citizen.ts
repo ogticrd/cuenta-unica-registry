@@ -1,5 +1,6 @@
 export interface CitizenLookupRequest {
   cedula: string;
+  returnUrl?: string;
 }
 
 export interface CitizenLookupResult {

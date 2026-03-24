@@ -20,9 +20,12 @@ async function parseCitizenLookupResponse(response: Response) {
 }
 
 export const citizenService = {
-  async identifyCitizen(cedula: string): Promise<CitizenLookupResponse> {
+  async identifyCitizen(
+    cedula: string,
+    returnUrl?: string,
+  ): Promise<CitizenLookupResponse> {
     try {
-      const requestBody: CitizenLookupRequest = { cedula };
+      const requestBody: CitizenLookupRequest = { cedula, returnUrl };
 
       const response = await fetch(API.registrationCitizen, {
         method: "POST",

@@ -9,6 +9,7 @@ import { createRegistrationSessionCookie } from "@/lib/services/registration/reg
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
+import { isValidReturnUrl } from "@/lib/utils/return-url";
 
 function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
   const payload: CitizenLookupResponse = {
@@ -30,6 +31,10 @@ export async function POST(request: Request) {
   }
 
   const cedula = normalizeCedula(body?.cedula ?? "");
+  const returnUrl =
+    body?.returnUrl && isValidReturnUrl(body.returnUrl)
+      ? body.returnUrl
+      : undefined;
 
   if (!(await isValidCedula(cedula))) {
     return createErrorResponse("invalid_cedula", 400);
@@ -58,6 +63,7 @@ export async function POST(request: Request) {
       createRegistrationSessionCookie(
         normalizeCedula(citizen.id),
         "identified",
+        returnUrl,
       ),
     );
 

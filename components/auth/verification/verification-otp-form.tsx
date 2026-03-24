@@ -19,9 +19,13 @@ import { useT } from "@/hooks/use-t";
 
 interface VerificationOTPFormProps {
   flowId: string;
+  returnUrl?: string;
 }
 
-export function VerificationOTPForm({ flowId }: VerificationOTPFormProps) {
+export function VerificationOTPForm({
+  flowId,
+  returnUrl,
+}: VerificationOTPFormProps) {
   const router = useRouter();
   const t = useT("email_sent");
   const [otpValue, setOtpValue] = useState("");
@@ -39,7 +43,11 @@ export function VerificationOTPForm({ flowId }: VerificationOTPFormProps) {
         description: t("success_description"),
       });
       const timeout = setTimeout(() => {
-        router.push(ROUTES.login);
+        if (returnUrl) {
+          window.location.assign(returnUrl);
+        } else {
+          router.push(ROUTES.login);
+        }
       }, 2000);
       return () => clearTimeout(timeout);
     }

@@ -172,7 +172,13 @@ export function StepVerification({
 
     setTimeout(() => {
       setIsModalOpen(false);
-      router.push(accountResult.redirectTo);
+
+      const isExternal = /^https?:\/\//i.test(accountResult.redirectTo);
+      if (isExternal) {
+        window.location.assign(accountResult.redirectTo);
+      } else {
+        router.push(accountResult.redirectTo);
+      }
     }, 1500);
   }, [
     livenessSessionId,

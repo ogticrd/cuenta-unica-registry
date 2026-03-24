@@ -8,7 +8,7 @@ import { ROUTES } from "@/lib/constants/routes";
 import { getT } from "@/lib/i18n/server";
 
 interface EmailSentPageProps {
-  searchParams: Promise<{ flow?: string }>;
+  searchParams: Promise<{ flow?: string; return_url?: string }>;
 }
 
 export default async function EmailSentPage({
@@ -16,6 +16,7 @@ export default async function EmailSentPage({
 }: EmailSentPageProps) {
   const params = await searchParams;
   const flowId = params.flow;
+  const returnUrl = params.return_url;
   const t = await getT("email_sent");
 
   return (
@@ -47,7 +48,7 @@ export default async function EmailSentPage({
 
               {/* OTP Form or error */}
               {flowId ? (
-                <VerificationOTPForm flowId={flowId} />
+                <VerificationOTPForm flowId={flowId} returnUrl={returnUrl} />
               ) : (
                 <div className="space-y-4">
                   <p className="text-sm text-red-500 dark:text-red-400">

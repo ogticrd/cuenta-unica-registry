@@ -3,6 +3,7 @@ export type RegistrationSessionStatus = "identified" | "verified";
 export interface RegistrationSession {
   cedula: string;
   status: RegistrationSessionStatus;
+  returnUrl?: string;
   issuedAt: number;
   expiresAt: number;
 }

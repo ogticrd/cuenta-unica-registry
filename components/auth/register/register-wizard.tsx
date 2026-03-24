@@ -19,11 +19,13 @@ import { Stepper } from "@/components/ui/stepper";
 interface RegisterWizardProps {
   initialStep: 0 | 1 | 2;
   initialName: string;
+  returnUrl?: string;
 }
 
 export function RegisterWizard({
   initialStep,
   initialName,
+  returnUrl,
 }: RegisterWizardProps) {
   const t = useT("register");
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
@@ -166,6 +168,7 @@ export function RegisterWizard({
             onNext={handleNext}
             updateData={updateWizardData}
             defaultValues={{ cedula: wizardData.cedula }}
+            returnUrl={returnUrl}
           />
         )}
 

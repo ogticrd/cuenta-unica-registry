@@ -78,11 +78,13 @@ function getCookieBaseOptions(): Pick<
 export function createRegistrationSessionCookie(
   cedula: string,
   status: RegistrationSessionStatus = "identified",
+  returnUrl?: string,
 ): ResponseCookie {
   const issuedAt = Date.now();
   const session: RegistrationSession = {
     cedula,
     status,
+    ...(returnUrl ? { returnUrl } : {}),
     issuedAt,
     expiresAt: issuedAt + REGISTRATION_SESSION_DURATION_MS,
   };

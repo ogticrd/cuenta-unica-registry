@@ -3,8 +3,17 @@ import { RegisterWizard } from "@/components/auth/register/register-wizard";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
-export default async function RegistrationPage() {
-  const registrationWizardState = await getRegistrationWizardState();
+interface RegistrationPageProps {
+  searchParams: Promise<{ return_url?: string }>;
+}
+
+export default async function RegistrationPage({
+  searchParams,
+}: RegistrationPageProps) {
+  const [registrationWizardState, params] = await Promise.all([
+    getRegistrationWizardState(),
+    searchParams,
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
@@ -15,6 +24,7 @@ export default async function RegistrationPage() {
           <RegisterWizard
             initialStep={registrationWizardState.initialStep}
             initialName={registrationWizardState.initialName}
+            returnUrl={params.return_url}
           />
         </div>
       </main>

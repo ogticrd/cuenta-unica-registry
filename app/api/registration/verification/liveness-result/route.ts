@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json(payload, { status: 200 });
     response.cookies.set(
-      createRegistrationSessionCookie(session.cedula, "verified"),
+      createRegistrationSessionCookie(session.cedula, "verified", session.returnUrl),
     );
 
     return response;
