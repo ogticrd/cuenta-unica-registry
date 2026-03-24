@@ -1,4 +1,5 @@
-import { getRecoveryFlow, OryPageParams } from "@ory/nextjs/app";
+import { OryPageParams } from "@ory/nextjs/app";
+import { getRecoveryFlow } from "@/lib/ory/flow";
 import { Recovery } from "@ory/elements-react/theme";
 import { Suspense } from "react";
 
