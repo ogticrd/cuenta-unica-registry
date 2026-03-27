@@ -14,7 +14,9 @@
     "dev": "next dev",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "start": "next start"
+    "start": "next start",
+    "check": "biome ci .",
+    "format": "biome check --write ."
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.1",

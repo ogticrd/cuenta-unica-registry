@@ -1,0 +1,21 @@
+﻿name: Code Quality (Biome)
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Run Biome CI
+        run: biome ci .
