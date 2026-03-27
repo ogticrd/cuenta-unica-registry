@@ -1,23 +1,23 @@
 ﻿"use client";
 
 import {
-  Shield,
-  CheckCircle,
-  User,
-  Mail,
-  Calendar,
-  MapPin,
-  Hash,
-  Users,
   Book,
+  Calendar,
+  CheckCircle,
+  Hash,
+  Mail,
+  MapPin,
   Phone,
+  Shield,
+  User,
+  Users,
 } from "lucide-react";
 
 import { PersonalInfoField } from "@/components/dashboard/personal-info-field";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DEFAULT_LOCALE } from "@/lib/constants/locales";
 import { useLocale, useT } from "@/hooks/use-t";
 import { useAuth } from "@/lib/auth-context";
+import { DEFAULT_LOCALE } from "@/lib/constants/locales";
 
 export function ProfileInfo() {
   const { user } = useAuth();

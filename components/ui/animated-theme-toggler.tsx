@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Moon, Sun } from "lucide-react"
-import { flushSync } from "react-dom"
-import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
+import { Button } from "@/components/ui/button";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-interface AnimatedThemeTogglerProps extends React.ComponentPropsWithoutRef<"button"> {
-  duration?: number
+interface AnimatedThemeTogglerProps
+  extends React.ComponentPropsWithoutRef<"button"> {
+  duration?: number;
 }
 
 export const AnimatedThemeToggler = ({
@@ -16,56 +17,56 @@ export const AnimatedThemeToggler = ({
   duration = 400,
   ...props
 }: AnimatedThemeTogglerProps) => {
-  const [isDark, setIsDark] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [isDark, setIsDark] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const updateTheme = () => {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    }
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
 
-    updateTheme()
+    updateTheme();
 
-    const observer = new MutationObserver(updateTheme)
+    const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
-    })
+    });
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   const toggleTheme = useCallback(() => {
-    const button = buttonRef.current
-    if (!button) return
+    const button = buttonRef.current;
+    if (!button) return;
 
-    const { top, left, width, height } = button.getBoundingClientRect()
-    const x = left + width / 2
-    const y = top + height / 2
-    const viewportWidth = window.visualViewport?.width ?? window.innerWidth
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+    const { top, left, width, height } = button.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     const maxRadius = Math.hypot(
       Math.max(x, viewportWidth - x),
-      Math.max(y, viewportHeight - y)
-    )
+      Math.max(y, viewportHeight - y),
+    );
 
     const applyTheme = () => {
-      const newTheme = !isDark
-      setIsDark(newTheme)
-      document.documentElement.classList.toggle("dark")
-      localStorage.setItem("theme", newTheme ? "dark" : "light")
-    }
+      const newTheme = !isDark;
+      setIsDark(newTheme);
+      document.documentElement.classList.toggle("dark");
+      localStorage.setItem("theme", newTheme ? "dark" : "light");
+    };
 
     if (typeof document.startViewTransition !== "function") {
-      applyTheme()
-      return
+      applyTheme();
+      return;
     }
 
     const transition = document.startViewTransition(() => {
-      flushSync(applyTheme)
-    })
+      flushSync(applyTheme);
+    });
 
-    const ready = transition?.ready
+    const ready = transition?.ready;
     if (ready && typeof ready.then === "function") {
       ready.then(() => {
         document.documentElement.animate(
@@ -79,11 +80,11 @@ export const AnimatedThemeToggler = ({
             duration,
             easing: "ease-in-out",
             pseudoElement: "::view-transition-new(root)",
-          }
-        )
-      })
+          },
+        );
+      });
     }
-  }, [isDark, duration])
+  }, [isDark, duration]);
 
   return (
     <Button
@@ -94,12 +95,16 @@ export const AnimatedThemeToggler = ({
       onClick={toggleTheme}
       className={cn(
         "p-2 relative hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 active:scale-95 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-blue-400",
-        className
+        className,
       )}
       {...props}
     >
-      {isDark ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+      {isDark ? (
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+      ) : (
+        <Moon className="h-[1.2rem] w-[1.2rem]" />
+      )}
       <span className="sr-only">Toggle theme</span>
     </Button>
-  )
-}
+  );
+};

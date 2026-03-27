@@ -1,10 +1,10 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 interface StatsCardProps {
-  title: string
-  value: string | number
-  icon: ReactNode
-  description?: string
+  title: string;
+  value: string | number;
+  icon: ReactNode;
+  description?: string;
 }
 
 export function StatsCard({ title, value, icon, description }: StatsCardProps) {
@@ -13,10 +13,16 @@ export function StatsCard({ title, value, icon, description }: StatsCardProps) {
       <div className="text-secondary mb-3 bg-secondary/5 dark:bg-secondary/20 p-2.5 rounded-full">
         {icon}
       </div>
-      <p className="text-3xl font-bold text-primary mb-1 tracking-tight dark:text-white">{value}</p>
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">{title}</p>
+      <p className="text-3xl font-bold text-primary mb-1 tracking-tight dark:text-white">
+        {value}
+      </p>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+        {title}
+      </p>
 
-      {description && <p className="text-xs text-muted-foreground/80">{description}</p>}
+      {description && (
+        <p className="text-xs text-muted-foreground/80">{description}</p>
+      )}
     </div>
-  )
+  );
 }

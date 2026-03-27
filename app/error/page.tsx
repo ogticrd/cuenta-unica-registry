@@ -3,10 +3,10 @@ import Link from "next/link";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import { ROUTES } from "@/lib/constants/routes";
 import { Button } from "@/components/ui/button";
-import { getOryClient } from "@/lib/ory/client";
+import { ROUTES } from "@/lib/constants/routes";
 import { getT } from "@/lib/i18n/server";
+import { getOryClient } from "@/lib/ory/client";
 
 interface ErrorPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

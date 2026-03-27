@@ -1,5 +1,5 @@
-import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 import { API } from "@/lib/constants/api";
+import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 
 async function parseResetResponse(response: Response) {
   const payload = (await response

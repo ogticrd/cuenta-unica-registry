@@ -1,12 +1,11 @@
 "use client";
 
 import type { OryCardFooterProps } from "@ory/elements-react";
-import type { PropsWithChildren } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-import { ROUTES } from "@/lib/constants/routes";
+import type { PropsWithChildren } from "react";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
 
 /**
  * Custom CUC Card Header — includes CUC logo + "Acceso Cuenta Única" title + subtitle

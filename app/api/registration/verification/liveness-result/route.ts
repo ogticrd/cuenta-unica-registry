@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
-
+import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
 import {
-  getRegistrationSession,
   createRegistrationSessionCookie,
+  getRegistrationSession,
 } from "@/lib/services/registration/registration-session.service";
 import {
-  getLivenessResults,
   compareFaces,
+  type FaceComparisonResult,
+  getLivenessResults,
+  type LivenessResult,
 } from "@/lib/services/registration/rekognition.service";
-import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
 import type {
-  VerifyLivenessResponse,
   VerifyLivenessErrorCode,
+  VerifyLivenessResponse,
 } from "@/lib/types/registration/verification";
 
 const LIVENESS_THRESHOLD =
@@ -19,10 +20,7 @@ const LIVENESS_THRESHOLD =
 const SIMILARITY_THRESHOLD =
   Number(process.env.FACE_SIMILARITY_THRESHOLD) || 80;
 
-function createErrorResponse(
-  code: VerifyLivenessErrorCode,
-  status: number,
-) {
+function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
   const payload: VerifyLivenessResponse = { success: false, code };
   return NextResponse.json(payload, { status });
 }
@@ -44,14 +42,11 @@ export async function POST(request: Request) {
     }
 
     // Step 1: Retrieve liveness session results from AWS Rekognition
-    let liveness;
+    let liveness: LivenessResult;
     try {
       liveness = await getLivenessResults(body.sessionId);
     } catch (error) {
-      console.error(
-        "[liveness-result] Failed to get liveness results:",
-        error,
-      );
+      console.error("[liveness-result] Failed to get liveness results:", error);
       return createErrorResponse("rekognition_error", 502);
     }
 
@@ -68,15 +63,12 @@ export async function POST(request: Request) {
     try {
       citizenPhoto = await fetchCitizenPhoto(session.cedula);
     } catch (error) {
-      console.error(
-        "[liveness-result] Failed to fetch citizen photo:",
-        error,
-      );
+      console.error("[liveness-result] Failed to fetch citizen photo:", error);
       return createErrorResponse("citizen_photo_unavailable", 502);
     }
 
     // Step 3: Compare liveness reference image against the citizen photo
-    let comparison;
+    let comparison: FaceComparisonResult;
     try {
       comparison = await compareFaces(
         liveness.referenceImageBytes,
@@ -101,7 +93,11 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json(payload, { status: 200 });
     response.cookies.set(
-      createRegistrationSessionCookie(session.cedula, "verified", session.returnUrl),
+      createRegistrationSessionCookie(
+        session.cedula,
+        "verified",
+        session.returnUrl,
+      ),
     );
 
     return response;

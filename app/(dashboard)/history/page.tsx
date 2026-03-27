@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-
-import {
-  sessionService,
-  type OrySession,
-} from "@/lib/services/ory/session.service";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
-import { SecuritySection } from "@/components/dashboard/security-section";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { DeviceItem } from "@/components/dashboard/device-item";
 import { PortalItem } from "@/components/dashboard/portal-item";
+import { SecuritySection } from "@/components/dashboard/security-section";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useLocale, useT } from "@/hooks/use-t";
 import { useAuth } from "@/lib/auth-context";
+import {
+  type OrySession,
+  sessionService,
+} from "@/lib/services/ory/session.service";
 
 type DeviceStatus = {
   text: string;

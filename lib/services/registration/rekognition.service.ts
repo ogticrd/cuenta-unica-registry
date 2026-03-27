@@ -1,9 +1,9 @@
 import "server-only";
 
 import {
+  CompareFacesCommand,
   CreateFaceLivenessSessionCommand,
   GetFaceLivenessSessionResultsCommand,
-  CompareFacesCommand,
 } from "@aws-sdk/client-rekognition";
 import { getRekognitionClient } from "@/lib/aws/rekognition-client";
 

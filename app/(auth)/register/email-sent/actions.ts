@@ -1,7 +1,7 @@
 "use server";
 
-import { createOryClient } from "@/lib/ory/client";
 import { getT } from "@/lib/i18n/server";
+import { createOryClient } from "@/lib/ory/client";
 
 export interface VerifyCodeState {
   success?: boolean;

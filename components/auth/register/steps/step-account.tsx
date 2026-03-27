@@ -1,16 +1,14 @@
 "use client";
 
-import { AlertCircle, ArrowLeft, Eye, EyeOff, Check, X } from "lucide-react";
-import { useEffect, useState, type SyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, X } from "lucide-react";
 import { useLocale } from "next-intl";
+import { type SyntheticEvent, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-
-import type {
-  RegisterAccountDraft,
-  RegisterAccountStepErrors,
-} from "@/lib/types/registration/account";
+import type { z } from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,14 +17,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { translateOryMessageKey } from "@/lib/ory/custom-translations";
-import { getPasswordRequirementStatus } from "@/lib/utils/password";
-import { createAccountSchema } from "@/lib/schemas/registration";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useT } from "@/hooks/use-t";
+import { translateOryMessageKey } from "@/lib/ory/custom-translations";
+import { createAccountSchema } from "@/lib/schemas/registration";
+import type {
+  RegisterAccountDraft,
+  RegisterAccountStepErrors,
+} from "@/lib/types/registration/account";
+import { getPasswordRequirementStatus } from "@/lib/utils/password";
 
 interface StepAccountProps {
   onBack: () => void;
@@ -306,9 +305,9 @@ export function StepAccount({
                           ).symbol,
                           label: t("account.password_requirements.symbol"),
                         },
-                      ].map((req, i) => (
+                      ].map((req) => (
                         <li
-                          key={i}
+                          key={req.label}
                           className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}
                         >
                           {req.met ? (

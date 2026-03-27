@@ -1,21 +1,21 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import {
-  verifyCodeAction,
   type VerifyCodeState,
+  verifyCodeAction,
 } from "@/app/(auth)/register/email-sent/actions";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { ROUTES } from "@/lib/constants/routes";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
 
 interface VerificationOTPFormProps {
   flowId: string;
@@ -51,7 +51,7 @@ export function VerificationOTPForm({
       }, 2000);
       return () => clearTimeout(timeout);
     }
-  }, [state.success, router, t]);
+  }, [state.success, router, t, returnUrl]);
 
   // Auto-submit when all 6 digits are entered
   useEffect(() => {

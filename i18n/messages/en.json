@@ -1,544 +1,544 @@
 {
-    "login": {
-        "loading": "Loading access form...",
-        "spinner": "Loading...",
-        "welcome_title": "Welcome to the Unified <highlight>{citizen}</highlight> Authentication Platform",
-        "citizen": "Citizen",
-        "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
-        "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
-        "card_title": "Cuenta Única Access",
-        "card_subtitle": "You can log in with your national ID \"Cédula\" or registered email address",
-        "no_account": "Don't have an account?",
-        "forgot_password": "Forgot your password?",
-        "register_cta": "Register and access Dominican State services with a single username and password, securely and reliably",
-        "create_account": "CREATE ACCOUNT",
-        "loading_register": "Loading registration form...",
-        "loading_recovery": "Loading recovery form...",
-        "loading_verification": "Loading verification...",
-        "verification_title": "Verify account",
-        "verification_subtitle": "Confirm your email address to complete your account activation",
-        "verification_footer_text": "Already verified your account?",
-        "verification_login_cta": "Log in",
-        "recovery_title": "Reset password",
-        "recovery_subtitle": "To reset your password, enter your registered email address",
-        "recovery_remember": "Remember your credentials?",
-        "recovery_login_cta": "Log in",
-        "verify_account": "Verify account"
-    },
-    "register": {
-        "title": "Cuenta Única Registration",
-        "logo_alt": "Cuenta Única",
-        "step_label": "Step",
-        "steps": {
-            "identification": {
-                "title": "Identification",
-                "description": "User ID"
-            },
-            "verification": {
-                "title": "Verification",
-                "description": "Liveness check"
-            },
-            "account": {
-                "title": "Registration",
-                "description": "User account"
-            }
-        },
-        "common": {
-            "back": "Back to the previous step",
-            "cancel": "Cancel"
-        },
-        "identification": {
-            "intro": "You can continue with registration by providing your \"Cédula\" identity number.",
-            "id_label": "National ID number",
-            "id_placeholder": "000-0000000-0",
-            "id_required": "The national ID is required",
-            "id_invalid_length": "The national ID must contain 11 digits",
-            "id_invalid": "The national ID entered is not valid",
-            "account_exists": "This ID already has an account created.",
-            "id_not_found": "We could not find information for this national ID",
-            "lookup_error": "We could not validate the national ID. Please try again.",
-            "loading": "Loading...",
-            "continue": "CONTINUE",
-            "existing_account": "Already have an account?",
-            "login_cta": "Log in"
-        },
-        "verification": {
-            "illustration_alt": "Verification",
-            "greeting": "Hello, {firstName}!",
-            "intro": "Next, we will validate your identity using facial verification and a liveness check. Make sure you meet the following conditions:",
-            "session_error": "We could not continue with verification. Restart the registration process.",
-            "creating_session": "Preparing facial verification...",
-            "session_creation_failed": "Could not start facial verification. Please try again.",
-            "verifying_identity": "Verifying your identity...",
-            "verification_failed": "Facial verification was not successful. Please try again.",
-            "liveness_failed": "We could not confirm you are a real person. Make sure you are facing the camera with good lighting.",
-            "face_mismatch": "Your face does not match your ID photo. Please try again.",
-            "citizen_photo_unavailable": "We could not retrieve your reference photo. Contact support if the problem persists.",
-            "rekognition_error": "The facial verification service is currently unavailable. Please try again later.",
-            "retry": "Retry verification",
-            "requirements": {
-                "device": "Use a device with a built-in <strong>front-facing camera</strong>.",
-                "face": "Allow us to capture images of <strong>your face</strong>.",
-                "photosensitive": "This verification displays <strong>colored lights</strong>. Be careful if you are photosensitive."
-            },
-            "terms_label": "Accept terms and privacy policies",
-            "start_process": "START PROCESS",
-            "modal": {
-                "screenreader_title": "Full-screen biometric verification",
-                "screenreader_description": "Facial validation process",
-                "title": "Biometric verification",
-                "description": "Please look directly at the camera and keep your face inside the oval.",
-                "verified": "Verified!",
-                "face_position": "Position your face here",
-                "allow_camera": "Allow camera and scan",
-                "analyzing": "Analyzing facial features..."
-            },
-            "liveness": {
-                "instructions_header": "Instructions",
-                "play_button": "Begin check",
-                "hint_move_face": "Move your face in front of the camera",
-                "hint_too_many_faces": "Only one face allowed",
-                "hint_face_detected": "Face detected",
-                "hint_cannot_identify": "Move your face in front of the camera",
-                "hint_too_far": "Move closer",
-                "hint_too_close": "Move farther away",
-                "hint_connecting": "Connecting...",
-                "hint_verifying": "Verifying...",
-                "hint_too_bright": "Too bright",
-                "hint_too_dark": "Too dark",
-                "hint_normal_light": "Normal lighting",
-                "hint_hold_face": "Hold your face still",
-                "hint_center_face": "Center your face",
-                "hint_face_off_center": "Face off center",
-                "camera_min_resolution": "Camera resolution is too low",
-                "camera_not_found": "Camera not found",
-                "camera_not_allowed": "Camera access denied. Please allow access in your browser settings.",
-                "retry_button": "Retry",
-                "waiting_camera": "Waiting for camera...",
-                "cancel_button": "Cancel",
-                "close_button": "Close",
-                "good_illumination": "Good lighting",
-                "low_illumination": "Low lighting",
-                "high_illumination": "Too much lighting",
-                "center_face_instruction": "Follow the instructions to center your face"
-            }
-        },
-        "account": {
-            "intro": "Set up your email and password to continue to biometric verification.",
-            "email_label": "Email address",
-            "email_placeholder": "your@email.com",
-            "confirm_email_label": "Confirm email",
-            "password_label": "Password",
-            "confirm_password_label": "Confirm password",
-            "toggle_password_visibility": "Show or hide password",
-            "continue": "CONTINUE",
-            "finalizing": "Finalizing...",
-            "create_account": "CREATE ACCOUNT",
-            "success_title": "Registration completed successfully!",
-            "success_description": "Your citizen account has been created.",
-            "identity_exists": "An account already exists for the provided information.",
-            "session_missing": "Your registration session expired. You need to start again from identification.",
-            "verification_required": "You must complete facial verification before creating the account.",
-            "error": "There was an error completing the registration. Please try again.",
-            "validation": {
-                "email_invalid": "Enter a valid email address",
-                "password_min": "The password must be at least 10 characters long",
-                "password_weak": "The password is too weak. Use uppercase, lowercase, numbers, or special characters.",
-                "password_max": "The password exceeds the allowed length",
-                "password_compromised": "The password is not secure, choose a different one",
-                "password_policy": "The password does not meet the security policy",
-                "password_cedula_similarity": "The password cannot contain the national ID",
-                "password_email_similarity": "The password cannot contain the email address",
-                "email_mismatch": "The email addresses do not match",
-                "password_mismatch": "The passwords do not match"
-            },
-            "password_requirements": {
-                "title": "Your password must contain:",
-                "length": "At least 10 characters",
-                "uppercase": "One uppercase letter",
-                "lowercase": "One lowercase letter",
-                "number": "One number",
-                "symbol": "One special character"
-            }
-        }
-    },
-    "footer": {
-        "know_us": "ABOUT US",
-        "know_us_body": "Government Office of Information and Communication Technologies (OGTIC)",
-        "contact": "CONTACT US",
-        "find_us": "FIND US",
-        "find_us_address": "Av. Rómulo Betancourt #311, Vista 311 Corporate Building, Santo Domingo, Dominican Republic.",
-        "info": "INFORMATION",
-        "terms": "Terms of Use",
-        "privacy": "Privacy Policy",
-        "faq": "Frequently Asked Questions",
-        "copyright": "© {year} All Rights Reserved. Developed by",
-        "follow_us": "FOLLOW US"
-    },
-    "settings": {
-        "title": "Privacy and Security",
-        "subtitle": "Manage your password, two-factor authentication, and other security factors.",
-        "loading": "Loading security configuration..."
-    },
-    "error": {
-        "title": "A problem has occurred",
-        "default_reason": "The flow could not be completed.",
-        "default_details": "Please try again from the login screen.",
-        "back_to_login": "Back to login",
-        "try_again": "Try again"
-    },
-    "dashboard": {
-        "welcome": "Welcome, <highlight>{name}</highlight>!",
-        "subtitle": "Manage your digital identity, review your security, and access State services from one place.",
-        "loading": "Loading...",
-        "last_access": "Last access: {date}",
-        "account_verified": "Verified account",
-        "account_unverified": "Unverified account",
-        "quick_actions": "Quick Actions",
-        "recent_activity": "Recent Activity",
-        "view_all": "View all",
-        "security_status": "Security Status",
-        "configure": "Configure",
-        "gov_services": "Popular Government Services",
-        "notifications": "Important Notifications",
-        "quick_actions_list": {
-            "personal_data": {
-                "title": "Personal Data",
-                "desc": "Check and update your registered personal information"
-            },
-            "privacy": {
-                "title": "Privacy and Security",
-                "desc": "Configure your account security and review access"
-            },
-            "history": {
-                "title": "Activity History",
-                "desc": "Review connected devices and recent activity"
-            },
-            "support": {
-                "title": "Support and Help",
-                "desc": "Find help and contact our support team"
-            }
-        },
-        "recent_activities_list": {
-            "login_success": {
-                "title": "Successful login",
-                "desc": "You accessed from Chrome on Windows",
-                "time": "2 hours ago"
-            },
-            "security_updated": {
-                "title": "Security configuration updated",
-                "desc": "Two-factor authentication was activated",
-                "time": "1 day ago"
-            },
-            "new_device": {
-                "title": "New device detected",
-                "desc": "A new login was registered from iPhone 15",
-                "time": "2 days ago"
-            },
-            "password_updated": {
-                "title": "Password updated",
-                "desc": "Your password was successfully changed",
-                "time": "5 days ago"
-            }
-        },
-        "gov_services_list": {
-            "insurance": {
-                "title": "Insurance Consultation",
-                "desc": "Check your status in the social security system"
-            },
-            "portal": {
-                "title": "Services Portal",
-                "desc": "Access government service portals"
-            },
-            "history": {
-                "title": "My History",
-                "desc": "Review your activity history and recent accesses"
-            },
-            "settings": {
-                "title": "Account Configuration",
-                "desc": "Manage the security and privacy of your account"
-            }
-        },
-        "stats_cards": {
-            "devices": {
-                "title": "Connected Devices",
-                "desc_singular": "Active device",
-                "desc_plural": "Active devices"
-            },
-            "services": {
-                "title": "Services Used",
-                "desc": "This month"
-            },
-            "actions": {
-                "title": "Actions Performed",
-                "desc": "Last 30 days"
-            },
-            "security": {
-                "title": "Security Level",
-                "level_high": "High",
-                "level_standard": "Standard",
-                "desc_2fa": "2FA activated",
-                "desc_password": "Password"
-            }
-        },
-        "security_status_items": {
-            "2fa": {
-                "title": "Two-factor authentication",
-                "desc": "Activated - Email"
-            },
-            "password": {
-                "title": "Password",
-                "desc": "Last update: 2 months ago"
-            },
-            "passkeys": {
-                "title": "Passkeys",
-                "desc": "Recommended to configure"
-            }
-        },
-        "notifications_list": {
-            "security": {
-                "title": "Review your security",
-                "desc": "We recommend activating two-factor authentication and configuring a Passkey for better protection of your account.",
-                "action": "Go to Security"
-            },
-            "new_feature": {
-                "title": "New Feature Available",
-                "desc": "You can now use Passkeys to log in without a password. Configure it for better security.",
-                "action": "Configure Now"
-            }
-        }
-    },
-    "history": {
-        "title": "Activity History",
-        "subtitle": "View and manage the devices and institutional portals linked to your account.",
-        "linked_devices": "Linked devices",
-        "no_devices": "No active devices detected.",
-        "institutional_portals": "Institutional portals",
-        "unlink": "Unlink",
-        "session_active": "ACTIVE SESSION",
-        "active": "ACTIVE",
-        "session_current_badge": "Current session",
-        "device_unknown": "Unknown device",
-        "ip_unknown": "Unknown IP",
-        "location_unknown": "Unknown location",
-        "recent": "Recent",
-        "indefinite": "Indefinite",
-        "ip_address": "IP Address",
-        "location": "Location",
-        "last_access": "Last access",
-        "expires_on": "Expires on",
-        "last_access_prefix": "Last access",
-        "cancel": "Cancel",
-        "unlinking_device": "Unlinking device...",
-        "device_unlinked_success": "Device unlinked successfully",
-        "device_unlink_error": "An error occurred while unlinking the device",
-        "unlink_device_title": "Do you want to unlink \"{deviceName}\"?",
-        "unlink_device_description": "The active session on this device will be closed.",
-        "unlink_portal_title": "Do you want to unlink the \"{portalName}\" portal?",
-        "unlink_portal_description": "If you unlink this portal:",
-        "unlink_portal_consequence_1": "You will lose direct access to this portal from your account.",
-        "unlink_portal_consequence_2": "You will need to authenticate again to access the portal.",
-        "unlink_portal_consequence_3": "You will be able to link the portal again whenever you need.",
-        "portals": {
-            "single_investment_window": "Single Investment Window",
-            "scholarship_portal": "Scholarship Portal",
-            "public_health_ministry": "Ministry of Public Health and Social Assistance",
-            "state_reform_council": "National Council for State Reform"
-        }
-    },
-    "about": {
-        "title": "About your Cuenta Única Ciudadana",
-        "subtitle": "The official government platform designed for you to interact with the State centrally, securely, and efficiently from anywhere.",
-        "video_title": "Get to know the platform",
-        "video_desc": "Discover in this video how to use all the tools at your disposal once you log in.",
-        "features_title": "What can you do?",
-        "features_list": {
-            "personal_data": {
-                "title": "Personal Data",
-                "desc": "Access the personal data associated with your account securely and up to date."
-            },
-            "history": {
-                "title": "Complete History",
-                "desc": "Check and review all movements and actions performed on the platform."
-            },
-            "security": {
-                "title": "Advanced Security",
-                "desc": "Keep your account protected with two-factor authentication and access review."
-            },
-            "notifications": {
-                "title": "Notifications",
-                "desc": "Receive important alerts and updates about the services you use."
-            },
-            "ai_assistant": {
-                "title": "Virtual Assistant (AI)",
-                "desc": "Get instant help to solve doubts about the platform quickly."
-            },
-            "support": {
-                "title": "Technical Support",
-                "desc": "Find specialized help and multiple contact channels for any problem."
-            }
-        },
-        "stats_list": {
-            "citizens": "Registered citizens",
-            "queries": "Queries made",
-            "uptime": "Uptime",
-            "availability": "Availability"
-        }
-    },
-    "support": {
-        "title": "Support and Contact",
-        "subtitle": "Do you have any doubts or need help with your Cuenta Única Ciudadana? We are here to help you and ensure your experience is fast and secure.",
-        "channels_title": "Service Channels",
-        "faqs_title": "Frequently Asked Questions",
-        "video_tutorials": "Watch video tutorials",
-        "faqs_list": {
-            "q1": {
-                "q": "How do I log into my Cuenta Única Ciudadana?",
-                "a": "To log into your Cuenta Única Ciudadana, go to the login page and enter your national ID or registered email address along with your password. If it is your first time, you must create an account first."
-            },
-            "q2": {
-                "q": "I forgot my password, how do I recover it?",
-                "a": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            },
-            "q3": {
-                "q": "What services can I access with my Cuenta Única?",
-                "a": "With your Cuenta Unica Ciudadana you can access all the digital services of the Dominican government, including status inquiries, identity verification, and access to the portals of government institutions."
-            },
-            "q4": {
-                "q": "How do I update my personal data?",
-                "a": "You can update your personal data by accessing the 'Personal Data' section in your user panel. There you can modify your contact information, address and other relevant data."
-            },
-            "q5": {
-                "q": "Is my information safe on the platform?",
-                "a": "Yes, your information is protected with the highest security standards. We use data encryption and advanced protection measures to guarantee the privacy and security of your personal information."
-            }
-        },
-        "contact": {
-            "phone_label": "Main telephone",
-            "email_label": "Email",
-            "hours_label": "Business hours",
-            "hours_value": "Monday to Friday, 8:00 a.m. - 5:00 p.m.",
-            "office_label": "Head Office",
-            "office_value": "Av. Rómulo Betancourt #311, corporate building vista 311, Santo Domingo, D.N."
-        }
-    },
-    "notification_drawer": {
-        "title": "Notifications",
-        "unread": "{count} new unread",
-        "up_to_date": "Up to date",
-        "mark_all_read": "Mark all as read",
-        "all_caught_up": "All caught up",
-        "no_pending": "You have no pending notifications",
-        "view_all": "View all",
-        "items": {
-            "n1": {
-                "title": "Security update",
-                "message": "Your account security policy has been updated. Review the changes in the privacy section.",
-                "time": "2 hours ago"
-            },
-            "n2": {
-                "title": "Verification completed",
-                "message": "Your two-factor authentication has been successfully configured.",
-                "time": "1 day ago"
-            },
-            "n3": {
-                "title": "Security review",
-                "message": "We recommend reviewing the devices connected to your account periodically.",
-                "time": "2 days ago"
-            },
-            "n4": {
-                "title": "Suspicious login attempt",
-                "message": "A login attempt was detected from an unrecognized location. If it wasn't you, change your password.",
-                "time": "3 days ago"
-            },
-            "n5": {
-                "title": "New feature available",
-                "message": "You can now use passkeys to access your account without a password. Set it up in security settings.",
-                "time": "1 week ago"
-            }
-        }
-    },
-    "sidebar": {
-        "home": "Home",
-        "personal_data": "Personal Data",
-        "support": "Support & Help",
-        "about": "About",
-        "security": "Security",
-        "history": "History",
-        "logout": "Log out",
-        "logging_out": "Logging out..."
+  "login": {
+    "loading": "Loading access form...",
+    "spinner": "Loading...",
+    "welcome_title": "Welcome to the Unified <highlight>{citizen}</highlight> Authentication Platform",
+    "citizen": "Citizen",
+    "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
+    "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
+    "card_title": "Cuenta Única Access",
+    "card_subtitle": "You can log in with your national ID \"Cédula\" or registered email address",
+    "no_account": "Don't have an account?",
+    "forgot_password": "Forgot your password?",
+    "register_cta": "Register and access Dominican State services with a single username and password, securely and reliably",
+    "create_account": "CREATE ACCOUNT",
+    "loading_register": "Loading registration form...",
+    "loading_recovery": "Loading recovery form...",
+    "loading_verification": "Loading verification...",
+    "verification_title": "Verify account",
+    "verification_subtitle": "Confirm your email address to complete your account activation",
+    "verification_footer_text": "Already verified your account?",
+    "verification_login_cta": "Log in",
+    "recovery_title": "Reset password",
+    "recovery_subtitle": "To reset your password, enter your registered email address",
+    "recovery_remember": "Remember your credentials?",
+    "recovery_login_cta": "Log in",
+    "verify_account": "Verify account"
+  },
+  "register": {
+    "title": "Cuenta Única Registration",
+    "logo_alt": "Cuenta Única",
+    "step_label": "Step",
+    "steps": {
+      "identification": {
+        "title": "Identification",
+        "description": "User ID"
+      },
+      "verification": {
+        "title": "Verification",
+        "description": "Liveness check"
+      },
+      "account": {
+        "title": "Registration",
+        "description": "User account"
+      }
     },
     "common": {
-        "cancel": "Cancel",
-        "processing": "Processing...",
-        "loading": "Loading...",
-        "unlink": "Unlink"
+      "back": "Back to the previous step",
+      "cancel": "Cancel"
     },
-    "profile": {
-        "id_number": "ID Number",
-        "identity_verified": "Verified identity",
-        "personal_information": "Personal Information",
-        "first_name": "First Name",
-        "last_name": "Last Name",
-        "identity_card": "Identity Card",
-        "passport": "Passport",
-        "sex": "Sex",
-        "birth_date": "Birth Date",
-        "nationality": "Nationality",
-        "contact_information": "Contact Information",
-        "email": "Email",
-        "phone": "Phone",
-        "official_records_note": "The information shown comes from official records (JCE, TSS, DGII) and is synchronized with the system. To modify your data, you must go to the corresponding offices of the Central Electoral Board.",
-        "not_registered": "Not registered",
-        "verified": "Verified",
-        "gender_male": "Male",
-        "gender_female": "Female",
-        "gender_other": "Other"
+    "identification": {
+      "intro": "You can continue with registration by providing your \"Cédula\" identity number.",
+      "id_label": "National ID number",
+      "id_placeholder": "000-0000000-0",
+      "id_required": "The national ID is required",
+      "id_invalid_length": "The national ID must contain 11 digits",
+      "id_invalid": "The national ID entered is not valid",
+      "account_exists": "This ID already has an account created.",
+      "id_not_found": "We could not find information for this national ID",
+      "lookup_error": "We could not validate the national ID. Please try again.",
+      "loading": "Loading...",
+      "continue": "CONTINUE",
+      "existing_account": "Already have an account?",
+      "login_cta": "Log in"
     },
-    "assistant": {
-        "title": "Virtual assistant",
-        "status_active": "Always active",
-        "welcome_message": "Hi! I'm your Cuenta Unica Ciudadana virtual assistant. I'm here to help with any questions about the platform, your account security, or how to use our services. How can I help you today?",
-        "response_password": "To change your password, go to 'Privacy and security' in the side menu and select 'Change password'. We recommend using a secure password with at least 8 characters, including uppercase, lowercase, and numbers.",
-        "response_2fa": "Two-factor authentication adds an extra layer of security to your account. You can configure it in 'Privacy and security' > 'Multifactor authentication'. You can choose email, SMS, or an authentication app.",
-        "response_passkey": "Passkeys let you sign in without a password using your fingerprint, Face ID, or your device PIN. To configure them, go to 'Privacy and security' > 'Passkey creation and management'. It's more secure and convenient than traditional passwords.",
-        "response_services": "With your Cuenta Unica you can access all digital government services. Each institution has its own services available through portals linked to your account.",
-        "response_identity": "You can use your ID number to sign in to the platform. Your ID is your main identifier to access State services.",
-        "response_profile": "Your personal data is available in the 'Personal data' section of the menu. There you can view your registered information. To update official data like name or birth date, you must visit the corresponding offices.",
-        "response_security": "Your security is our priority. We use data encryption, multifactor authentication, and access monitoring. In 'Privacy and security' you can review connected devices, change passwords, and configure additional protection measures.",
-        "response_devices": "In 'Activity history' you can see all devices from which your account has been accessed. If you detect suspicious access, you can unlink devices and change your password immediately.",
-        "response_support": "For additional support you can: 1) Call (809)-123-4567, 2) Email soporte@cuentaciudadana.gob.do, 3) Visit the 'Support and help' section in the menu, or 4) check the FAQs.",
-        "response_greeting": "Hello! It's great to greet you. I'm here to help with any question about your Cuenta Unica Ciudadana. Is there anything specific I can help you with?",
-        "response_thanks": "You're welcome! It's a pleasure to help. If you have more questions about your Cuenta Unica Ciudadana, feel free to ask. I'm here to make your experience easier and safer.",
-        "response_default": "I understand your request. I recommend checking the side menu sections to find the information you need, or you can contact our technical support at (809)-123-4567 or soporte@cuentaciudadana.gob.do for personalized assistance. Is there anything more specific I can help you with?",
-        "response_error": "Sorry, there was an error processing your message. Please try again or contact technical support.",
-        "input_placeholder": "Type your message...",
-        "generative_ai": "Generative AI"
+    "verification": {
+      "illustration_alt": "Verification",
+      "greeting": "Hello, {firstName}!",
+      "intro": "Next, we will validate your identity using facial verification and a liveness check. Make sure you meet the following conditions:",
+      "session_error": "We could not continue with verification. Restart the registration process.",
+      "creating_session": "Preparing facial verification...",
+      "session_creation_failed": "Could not start facial verification. Please try again.",
+      "verifying_identity": "Verifying your identity...",
+      "verification_failed": "Facial verification was not successful. Please try again.",
+      "liveness_failed": "We could not confirm you are a real person. Make sure you are facing the camera with good lighting.",
+      "face_mismatch": "Your face does not match your ID photo. Please try again.",
+      "citizen_photo_unavailable": "We could not retrieve your reference photo. Contact support if the problem persists.",
+      "rekognition_error": "The facial verification service is currently unavailable. Please try again later.",
+      "retry": "Retry verification",
+      "requirements": {
+        "device": "Use a device with a built-in <strong>front-facing camera</strong>.",
+        "face": "Allow us to capture images of <strong>your face</strong>.",
+        "photosensitive": "This verification displays <strong>colored lights</strong>. Be careful if you are photosensitive."
+      },
+      "terms_label": "Accept terms and privacy policies",
+      "start_process": "START PROCESS",
+      "modal": {
+        "screenreader_title": "Full-screen biometric verification",
+        "screenreader_description": "Facial validation process",
+        "title": "Biometric verification",
+        "description": "Please look directly at the camera and keep your face inside the oval.",
+        "verified": "Verified!",
+        "face_position": "Position your face here",
+        "allow_camera": "Allow camera and scan",
+        "analyzing": "Analyzing facial features..."
+      },
+      "liveness": {
+        "instructions_header": "Instructions",
+        "play_button": "Begin check",
+        "hint_move_face": "Move your face in front of the camera",
+        "hint_too_many_faces": "Only one face allowed",
+        "hint_face_detected": "Face detected",
+        "hint_cannot_identify": "Move your face in front of the camera",
+        "hint_too_far": "Move closer",
+        "hint_too_close": "Move farther away",
+        "hint_connecting": "Connecting...",
+        "hint_verifying": "Verifying...",
+        "hint_too_bright": "Too bright",
+        "hint_too_dark": "Too dark",
+        "hint_normal_light": "Normal lighting",
+        "hint_hold_face": "Hold your face still",
+        "hint_center_face": "Center your face",
+        "hint_face_off_center": "Face off center",
+        "camera_min_resolution": "Camera resolution is too low",
+        "camera_not_found": "Camera not found",
+        "camera_not_allowed": "Camera access denied. Please allow access in your browser settings.",
+        "retry_button": "Retry",
+        "waiting_camera": "Waiting for camera...",
+        "cancel_button": "Cancel",
+        "close_button": "Close",
+        "good_illumination": "Good lighting",
+        "low_illumination": "Low lighting",
+        "high_illumination": "Too much lighting",
+        "center_face_instruction": "Follow the instructions to center your face"
+      }
     },
-    "auth": {
-        "logging_out": "Logging out...",
-        "logout_success": "Session closed successfully",
-        "logout_error": "Error while logging out"
-    },
-    "email_sent": {
-        "logo_alt": "Cuenta Única",
-        "title": "Verify your account",
-        "subtitle": "Enter the 6-digit code we sent to your email address.",
-        "no_flow_error": "No valid verification flow was found.",
-        "back_to_login": "Back to login",
-        "help_title": "Didn't receive the code?",
-        "help_description": "Check your {spam} or {junk} folder. It may take a few minutes to arrive.",
-        "help_spam": "Spam",
-        "help_junk": "Junk",
-        "verify_button": "Verify code",
-        "verifying": "Verifying...",
-        "success_title": "Account verified!",
-        "success_description": "Your account has been verified successfully. You can now log in.",
-        "success_message": "Verification successful!",
-        "success_redirecting": "Redirecting to login...",
-        "error_missing_data": "Required data is missing.",
-        "error_code_length": "The code must be 6 digits.",
-        "error_invalid_code": "The code entered is not valid. Please try again.",
-        "error_expired_code": "The code entered is not valid or has expired."
+    "account": {
+      "intro": "Set up your email and password to continue to biometric verification.",
+      "email_label": "Email address",
+      "email_placeholder": "your@email.com",
+      "confirm_email_label": "Confirm email",
+      "password_label": "Password",
+      "confirm_password_label": "Confirm password",
+      "toggle_password_visibility": "Show or hide password",
+      "continue": "CONTINUE",
+      "finalizing": "Finalizing...",
+      "create_account": "CREATE ACCOUNT",
+      "success_title": "Registration completed successfully!",
+      "success_description": "Your citizen account has been created.",
+      "identity_exists": "An account already exists for the provided information.",
+      "session_missing": "Your registration session expired. You need to start again from identification.",
+      "verification_required": "You must complete facial verification before creating the account.",
+      "error": "There was an error completing the registration. Please try again.",
+      "validation": {
+        "email_invalid": "Enter a valid email address",
+        "password_min": "The password must be at least 10 characters long",
+        "password_weak": "The password is too weak. Use uppercase, lowercase, numbers, or special characters.",
+        "password_max": "The password exceeds the allowed length",
+        "password_compromised": "The password is not secure, choose a different one",
+        "password_policy": "The password does not meet the security policy",
+        "password_cedula_similarity": "The password cannot contain the national ID",
+        "password_email_similarity": "The password cannot contain the email address",
+        "email_mismatch": "The email addresses do not match",
+        "password_mismatch": "The passwords do not match"
+      },
+      "password_requirements": {
+        "title": "Your password must contain:",
+        "length": "At least 10 characters",
+        "uppercase": "One uppercase letter",
+        "lowercase": "One lowercase letter",
+        "number": "One number",
+        "symbol": "One special character"
+      }
     }
+  },
+  "footer": {
+    "know_us": "ABOUT US",
+    "know_us_body": "Government Office of Information and Communication Technologies (OGTIC)",
+    "contact": "CONTACT US",
+    "find_us": "FIND US",
+    "find_us_address": "Av. Rómulo Betancourt #311, Vista 311 Corporate Building, Santo Domingo, Dominican Republic.",
+    "info": "INFORMATION",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "faq": "Frequently Asked Questions",
+    "copyright": "© {year} All Rights Reserved. Developed by",
+    "follow_us": "FOLLOW US"
+  },
+  "settings": {
+    "title": "Privacy and Security",
+    "subtitle": "Manage your password, two-factor authentication, and other security factors.",
+    "loading": "Loading security configuration..."
+  },
+  "error": {
+    "title": "A problem has occurred",
+    "default_reason": "The flow could not be completed.",
+    "default_details": "Please try again from the login screen.",
+    "back_to_login": "Back to login",
+    "try_again": "Try again"
+  },
+  "dashboard": {
+    "welcome": "Welcome, <highlight>{name}</highlight>!",
+    "subtitle": "Manage your digital identity, review your security, and access State services from one place.",
+    "loading": "Loading...",
+    "last_access": "Last access: {date}",
+    "account_verified": "Verified account",
+    "account_unverified": "Unverified account",
+    "quick_actions": "Quick Actions",
+    "recent_activity": "Recent Activity",
+    "view_all": "View all",
+    "security_status": "Security Status",
+    "configure": "Configure",
+    "gov_services": "Popular Government Services",
+    "notifications": "Important Notifications",
+    "quick_actions_list": {
+      "personal_data": {
+        "title": "Personal Data",
+        "desc": "Check and update your registered personal information"
+      },
+      "privacy": {
+        "title": "Privacy and Security",
+        "desc": "Configure your account security and review access"
+      },
+      "history": {
+        "title": "Activity History",
+        "desc": "Review connected devices and recent activity"
+      },
+      "support": {
+        "title": "Support and Help",
+        "desc": "Find help and contact our support team"
+      }
+    },
+    "recent_activities_list": {
+      "login_success": {
+        "title": "Successful login",
+        "desc": "You accessed from Chrome on Windows",
+        "time": "2 hours ago"
+      },
+      "security_updated": {
+        "title": "Security configuration updated",
+        "desc": "Two-factor authentication was activated",
+        "time": "1 day ago"
+      },
+      "new_device": {
+        "title": "New device detected",
+        "desc": "A new login was registered from iPhone 15",
+        "time": "2 days ago"
+      },
+      "password_updated": {
+        "title": "Password updated",
+        "desc": "Your password was successfully changed",
+        "time": "5 days ago"
+      }
+    },
+    "gov_services_list": {
+      "insurance": {
+        "title": "Insurance Consultation",
+        "desc": "Check your status in the social security system"
+      },
+      "portal": {
+        "title": "Services Portal",
+        "desc": "Access government service portals"
+      },
+      "history": {
+        "title": "My History",
+        "desc": "Review your activity history and recent accesses"
+      },
+      "settings": {
+        "title": "Account Configuration",
+        "desc": "Manage the security and privacy of your account"
+      }
+    },
+    "stats_cards": {
+      "devices": {
+        "title": "Connected Devices",
+        "desc_singular": "Active device",
+        "desc_plural": "Active devices"
+      },
+      "services": {
+        "title": "Services Used",
+        "desc": "This month"
+      },
+      "actions": {
+        "title": "Actions Performed",
+        "desc": "Last 30 days"
+      },
+      "security": {
+        "title": "Security Level",
+        "level_high": "High",
+        "level_standard": "Standard",
+        "desc_2fa": "2FA activated",
+        "desc_password": "Password"
+      }
+    },
+    "security_status_items": {
+      "2fa": {
+        "title": "Two-factor authentication",
+        "desc": "Activated - Email"
+      },
+      "password": {
+        "title": "Password",
+        "desc": "Last update: 2 months ago"
+      },
+      "passkeys": {
+        "title": "Passkeys",
+        "desc": "Recommended to configure"
+      }
+    },
+    "notifications_list": {
+      "security": {
+        "title": "Review your security",
+        "desc": "We recommend activating two-factor authentication and configuring a Passkey for better protection of your account.",
+        "action": "Go to Security"
+      },
+      "new_feature": {
+        "title": "New Feature Available",
+        "desc": "You can now use Passkeys to log in without a password. Configure it for better security.",
+        "action": "Configure Now"
+      }
+    }
+  },
+  "history": {
+    "title": "Activity History",
+    "subtitle": "View and manage the devices and institutional portals linked to your account.",
+    "linked_devices": "Linked devices",
+    "no_devices": "No active devices detected.",
+    "institutional_portals": "Institutional portals",
+    "unlink": "Unlink",
+    "session_active": "ACTIVE SESSION",
+    "active": "ACTIVE",
+    "session_current_badge": "Current session",
+    "device_unknown": "Unknown device",
+    "ip_unknown": "Unknown IP",
+    "location_unknown": "Unknown location",
+    "recent": "Recent",
+    "indefinite": "Indefinite",
+    "ip_address": "IP Address",
+    "location": "Location",
+    "last_access": "Last access",
+    "expires_on": "Expires on",
+    "last_access_prefix": "Last access",
+    "cancel": "Cancel",
+    "unlinking_device": "Unlinking device...",
+    "device_unlinked_success": "Device unlinked successfully",
+    "device_unlink_error": "An error occurred while unlinking the device",
+    "unlink_device_title": "Do you want to unlink \"{deviceName}\"?",
+    "unlink_device_description": "The active session on this device will be closed.",
+    "unlink_portal_title": "Do you want to unlink the \"{portalName}\" portal?",
+    "unlink_portal_description": "If you unlink this portal:",
+    "unlink_portal_consequence_1": "You will lose direct access to this portal from your account.",
+    "unlink_portal_consequence_2": "You will need to authenticate again to access the portal.",
+    "unlink_portal_consequence_3": "You will be able to link the portal again whenever you need.",
+    "portals": {
+      "single_investment_window": "Single Investment Window",
+      "scholarship_portal": "Scholarship Portal",
+      "public_health_ministry": "Ministry of Public Health and Social Assistance",
+      "state_reform_council": "National Council for State Reform"
+    }
+  },
+  "about": {
+    "title": "About your Cuenta Única Ciudadana",
+    "subtitle": "The official government platform designed for you to interact with the State centrally, securely, and efficiently from anywhere.",
+    "video_title": "Get to know the platform",
+    "video_desc": "Discover in this video how to use all the tools at your disposal once you log in.",
+    "features_title": "What can you do?",
+    "features_list": {
+      "personal_data": {
+        "title": "Personal Data",
+        "desc": "Access the personal data associated with your account securely and up to date."
+      },
+      "history": {
+        "title": "Complete History",
+        "desc": "Check and review all movements and actions performed on the platform."
+      },
+      "security": {
+        "title": "Advanced Security",
+        "desc": "Keep your account protected with two-factor authentication and access review."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "desc": "Receive important alerts and updates about the services you use."
+      },
+      "ai_assistant": {
+        "title": "Virtual Assistant (AI)",
+        "desc": "Get instant help to solve doubts about the platform quickly."
+      },
+      "support": {
+        "title": "Technical Support",
+        "desc": "Find specialized help and multiple contact channels for any problem."
+      }
+    },
+    "stats_list": {
+      "citizens": "Registered citizens",
+      "queries": "Queries made",
+      "uptime": "Uptime",
+      "availability": "Availability"
+    }
+  },
+  "support": {
+    "title": "Support and Contact",
+    "subtitle": "Do you have any doubts or need help with your Cuenta Única Ciudadana? We are here to help you and ensure your experience is fast and secure.",
+    "channels_title": "Service Channels",
+    "faqs_title": "Frequently Asked Questions",
+    "video_tutorials": "Watch video tutorials",
+    "faqs_list": {
+      "q1": {
+        "q": "How do I log into my Cuenta Única Ciudadana?",
+        "a": "To log into your Cuenta Única Ciudadana, go to the login page and enter your national ID or registered email address along with your password. If it is your first time, you must create an account first."
+      },
+      "q2": {
+        "q": "I forgot my password, how do I recover it?",
+        "a": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      },
+      "q3": {
+        "q": "What services can I access with my Cuenta Única?",
+        "a": "With your Cuenta Unica Ciudadana you can access all the digital services of the Dominican government, including status inquiries, identity verification, and access to the portals of government institutions."
+      },
+      "q4": {
+        "q": "How do I update my personal data?",
+        "a": "You can update your personal data by accessing the 'Personal Data' section in your user panel. There you can modify your contact information, address and other relevant data."
+      },
+      "q5": {
+        "q": "Is my information safe on the platform?",
+        "a": "Yes, your information is protected with the highest security standards. We use data encryption and advanced protection measures to guarantee the privacy and security of your personal information."
+      }
+    },
+    "contact": {
+      "phone_label": "Main telephone",
+      "email_label": "Email",
+      "hours_label": "Business hours",
+      "hours_value": "Monday to Friday, 8:00 a.m. - 5:00 p.m.",
+      "office_label": "Head Office",
+      "office_value": "Av. Rómulo Betancourt #311, corporate building vista 311, Santo Domingo, D.N."
+    }
+  },
+  "notification_drawer": {
+    "title": "Notifications",
+    "unread": "{count} new unread",
+    "up_to_date": "Up to date",
+    "mark_all_read": "Mark all as read",
+    "all_caught_up": "All caught up",
+    "no_pending": "You have no pending notifications",
+    "view_all": "View all",
+    "items": {
+      "n1": {
+        "title": "Security update",
+        "message": "Your account security policy has been updated. Review the changes in the privacy section.",
+        "time": "2 hours ago"
+      },
+      "n2": {
+        "title": "Verification completed",
+        "message": "Your two-factor authentication has been successfully configured.",
+        "time": "1 day ago"
+      },
+      "n3": {
+        "title": "Security review",
+        "message": "We recommend reviewing the devices connected to your account periodically.",
+        "time": "2 days ago"
+      },
+      "n4": {
+        "title": "Suspicious login attempt",
+        "message": "A login attempt was detected from an unrecognized location. If it wasn't you, change your password.",
+        "time": "3 days ago"
+      },
+      "n5": {
+        "title": "New feature available",
+        "message": "You can now use passkeys to access your account without a password. Set it up in security settings.",
+        "time": "1 week ago"
+      }
+    }
+  },
+  "sidebar": {
+    "home": "Home",
+    "personal_data": "Personal Data",
+    "support": "Support & Help",
+    "about": "About",
+    "security": "Security",
+    "history": "History",
+    "logout": "Log out",
+    "logging_out": "Logging out..."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "processing": "Processing...",
+    "loading": "Loading...",
+    "unlink": "Unlink"
+  },
+  "profile": {
+    "id_number": "ID Number",
+    "identity_verified": "Verified identity",
+    "personal_information": "Personal Information",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "identity_card": "Identity Card",
+    "passport": "Passport",
+    "sex": "Sex",
+    "birth_date": "Birth Date",
+    "nationality": "Nationality",
+    "contact_information": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "official_records_note": "The information shown comes from official records (JCE, TSS, DGII) and is synchronized with the system. To modify your data, you must go to the corresponding offices of the Central Electoral Board.",
+    "not_registered": "Not registered",
+    "verified": "Verified",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "gender_other": "Other"
+  },
+  "assistant": {
+    "title": "Virtual assistant",
+    "status_active": "Always active",
+    "welcome_message": "Hi! I'm your Cuenta Unica Ciudadana virtual assistant. I'm here to help with any questions about the platform, your account security, or how to use our services. How can I help you today?",
+    "response_password": "To change your password, go to 'Privacy and security' in the side menu and select 'Change password'. We recommend using a secure password with at least 8 characters, including uppercase, lowercase, and numbers.",
+    "response_2fa": "Two-factor authentication adds an extra layer of security to your account. You can configure it in 'Privacy and security' > 'Multifactor authentication'. You can choose email, SMS, or an authentication app.",
+    "response_passkey": "Passkeys let you sign in without a password using your fingerprint, Face ID, or your device PIN. To configure them, go to 'Privacy and security' > 'Passkey creation and management'. It's more secure and convenient than traditional passwords.",
+    "response_services": "With your Cuenta Unica you can access all digital government services. Each institution has its own services available through portals linked to your account.",
+    "response_identity": "You can use your ID number to sign in to the platform. Your ID is your main identifier to access State services.",
+    "response_profile": "Your personal data is available in the 'Personal data' section of the menu. There you can view your registered information. To update official data like name or birth date, you must visit the corresponding offices.",
+    "response_security": "Your security is our priority. We use data encryption, multifactor authentication, and access monitoring. In 'Privacy and security' you can review connected devices, change passwords, and configure additional protection measures.",
+    "response_devices": "In 'Activity history' you can see all devices from which your account has been accessed. If you detect suspicious access, you can unlink devices and change your password immediately.",
+    "response_support": "For additional support you can: 1) Call (809)-123-4567, 2) Email soporte@cuentaciudadana.gob.do, 3) Visit the 'Support and help' section in the menu, or 4) check the FAQs.",
+    "response_greeting": "Hello! It's great to greet you. I'm here to help with any question about your Cuenta Unica Ciudadana. Is there anything specific I can help you with?",
+    "response_thanks": "You're welcome! It's a pleasure to help. If you have more questions about your Cuenta Unica Ciudadana, feel free to ask. I'm here to make your experience easier and safer.",
+    "response_default": "I understand your request. I recommend checking the side menu sections to find the information you need, or you can contact our technical support at (809)-123-4567 or soporte@cuentaciudadana.gob.do for personalized assistance. Is there anything more specific I can help you with?",
+    "response_error": "Sorry, there was an error processing your message. Please try again or contact technical support.",
+    "input_placeholder": "Type your message...",
+    "generative_ai": "Generative AI"
+  },
+  "auth": {
+    "logging_out": "Logging out...",
+    "logout_success": "Session closed successfully",
+    "logout_error": "Error while logging out"
+  },
+  "email_sent": {
+    "logo_alt": "Cuenta Única",
+    "title": "Verify your account",
+    "subtitle": "Enter the 6-digit code we sent to your email address.",
+    "no_flow_error": "No valid verification flow was found.",
+    "back_to_login": "Back to login",
+    "help_title": "Didn't receive the code?",
+    "help_description": "Check your {spam} or {junk} folder. It may take a few minutes to arrive.",
+    "help_spam": "Spam",
+    "help_junk": "Junk",
+    "verify_button": "Verify code",
+    "verifying": "Verifying...",
+    "success_title": "Account verified!",
+    "success_description": "Your account has been verified successfully. You can now log in.",
+    "success_message": "Verification successful!",
+    "success_redirecting": "Redirecting to login...",
+    "error_missing_data": "Required data is missing.",
+    "error_code_length": "The code must be 6 digits.",
+    "error_invalid_code": "The code entered is not valid. Please try again.",
+    "error_expired_code": "The code entered is not valid or has expired."
+  }
 }

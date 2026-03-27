@@ -1,6 +1,8 @@
-import type { CreateLivenessSessionResponse } from "@/lib/types/registration/verification";
-import type { VerifyLivenessResponse } from "@/lib/types/registration/verification";
 import { API } from "@/lib/constants/api";
+import type {
+  CreateLivenessSessionResponse,
+  VerifyLivenessResponse,
+} from "@/lib/types/registration/verification";
 
 async function parseLivenessSessionResponse(response: Response) {
   const payload = (await response
@@ -54,9 +56,7 @@ export const verificationService = {
     }
   },
 
-  async verifyLiveness(
-    sessionId: string,
-  ): Promise<VerifyLivenessResponse> {
+  async verifyLiveness(sessionId: string): Promise<VerifyLivenessResponse> {
     try {
       const response = await fetch(API.registrationLivenessResult, {
         method: "POST",

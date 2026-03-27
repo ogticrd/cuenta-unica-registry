@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 
 import {
   DEFAULT_LOCALE,
-  LOCALES,
   LOCALE_COOKIE,
+  LOCALES,
   type Locale,
 } from "@/lib/constants/locales";
 

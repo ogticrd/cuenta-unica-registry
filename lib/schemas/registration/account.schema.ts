@@ -1,11 +1,10 @@
 import { z } from "zod";
-
+import { normalizeCedula } from "@/lib/utils/cedula";
 import {
   isBreachedPassword,
   isPasswordStrongEnough,
   PASSWORD_MIN_LENGTH,
 } from "@/lib/utils/password";
-import { normalizeCedula } from "@/lib/utils/cedula";
 
 type Translate = (key: string) => string;
 
@@ -41,11 +40,9 @@ export function createAccountSchema(t: Translate, cedula = "") {
       confirmEmail: z
         .string()
         .email({ message: t("account.validation.email_invalid") }),
-      password: z
-        .string()
-        .min(PASSWORD_MIN_LENGTH, {
-          message: t("account.validation.password_min"),
-        }),
+      password: z.string().min(PASSWORD_MIN_LENGTH, {
+        message: t("account.validation.password_min"),
+      }),
       confirmPassword: z.string(),
     })
     .refine(validatePasswordExcludesCedula(normalizedCedula), {

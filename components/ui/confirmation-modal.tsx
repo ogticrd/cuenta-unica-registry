@@ -1,28 +1,28 @@
-﻿"use client"
+﻿"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useT } from "@/hooks/use-t"
+} from "@/components/ui/dialog";
+import { useT } from "@/hooks/use-t";
 
 interface ConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => void
-  title: string
-  description?: string
-  confirmText: string
-  cancelText?: string
-  confirmVariant?: "default" | "destructive"
-  children?: React.ReactNode
-  isLoading?: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  description?: string;
+  confirmText: string;
+  cancelText?: string;
+  confirmVariant?: "default" | "destructive";
+  children?: React.ReactNode;
+  isLoading?: boolean;
 }
 
 export function ConfirmationModal({
@@ -37,13 +37,15 @@ export function ConfirmationModal({
   children,
   isLoading = false,
 }: ConfirmationModalProps) {
-  const t = useT("common")
+  const t = useT("common");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="relative">
-          <DialogTitle className="text-lg font-semibold text-primary dark:text-blue-400 pr-8">{title}</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-primary dark:text-blue-400 pr-8">
+            {title}
+          </DialogTitle>
           {description && (
             <DialogDescription className="text-sm text-gray-900 dark:text-gray-300 mt-2">
               {description}
@@ -77,5 +79,5 @@ export function ConfirmationModal({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

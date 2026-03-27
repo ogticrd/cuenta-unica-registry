@@ -25,7 +25,9 @@ export async function POST() {
 
     return NextResponse.json(
       { success: true } satisfies RegistrationVerificationResponse,
-      { status: 200 },
+      {
+        status: 200,
+      },
     );
   } catch (error) {
     console.error(

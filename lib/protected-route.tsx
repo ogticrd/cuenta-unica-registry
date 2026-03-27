@@ -1,12 +1,12 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import type React from "react";
+import { useEffect } from "react";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
-import { ROUTES } from "@/lib/constants/routes";
 import { useAuth } from "@/lib/auth-context";
+import { ROUTES } from "@/lib/constants/routes";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     if (!isLoading && !user && pathname !== ROUTES.login) {
       router.push(ROUTES.login);
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, pathname]);
 
   if (isLoading) {
     return (

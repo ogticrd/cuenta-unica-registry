@@ -1,22 +1,21 @@
 import { NextResponse } from "next/server";
-
+import { ROUTES } from "@/lib/constants/routes";
+import { getServerCookies } from "@/lib/ory/cookies";
+import { accountRequestSchema } from "@/lib/schemas/registration";
+import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
+import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
+import { registerOryAccount } from "@/lib/services/registration/ory-registration.service";
+import {
+  clearRegistrationSessionCookie,
+  getRegistrationSession,
+} from "@/lib/services/registration/registration-session.service";
 import type {
   RegisterAccountErrorCode,
   RegisterAccountFieldErrors,
   RegisterAccountRequest,
   RegisterAccountResponse,
 } from "@/lib/types/registration/account";
-import {
-  clearRegistrationSessionCookie,
-  getRegistrationSession,
-} from "@/lib/services/registration/registration-session.service";
-import { registerOryAccount } from "@/lib/services/registration/ory-registration.service";
-import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
-import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
-import { accountRequestSchema } from "@/lib/schemas/registration";
-import { getServerCookies } from "@/lib/ory/cookies";
-import { ROUTES } from "@/lib/constants/routes";
 
 function setOryCookies(response: NextResponse, setCookies: string[]) {
   for (const raw of setCookies) {
@@ -48,7 +47,7 @@ function setOryCookies(response: NextResponse, setCookies: string[]) {
       httpOnly: "httponly" in attrs,
       secure: "secure" in attrs,
       sameSite: (attrs.samesite as "lax" | "strict" | "none") || "lax",
-      ...(!isNaN(maxAge) ? { maxAge } : {}),
+      ...(!Number.isNaN(maxAge) ? { maxAge } : {}),
     });
   }
 }

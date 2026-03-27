@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-
-import { getServerCookies, extractSetCookieHeaders } from "@/lib/ory/cookies";
 import { ROUTES } from "@/lib/constants/routes";
 import { getOryClient } from "@/lib/ory/client";
+import { extractSetCookieHeaders, getServerCookies } from "@/lib/ory/cookies";
 
 /**
  * POST /api/ory/logout

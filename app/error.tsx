@@ -1,21 +1,20 @@
-﻿"use client";
+"use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
-
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/lib/constants/routes";
 import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
+import { useEffect } from "react";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
 
 interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function AppError({ error, reset }: ErrorProps) {
   const t = useT("error");
 
   useEffect(() => {

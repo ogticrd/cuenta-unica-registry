@@ -1,19 +1,25 @@
-﻿"use client"
+"use client";
 
-import { CheckCircle } from "lucide-react"
-import type { ReactNode } from "react"
-import { useT } from "@/hooks/use-t"
+import { CheckCircle } from "lucide-react";
+import type { ReactNode } from "react";
+import { useT } from "@/hooks/use-t";
 
 interface PersonalInfoFieldProps {
-  label: string
-  value: string
-  className?: string
-  icon?: ReactNode
-  verified?: boolean
+  label: string;
+  value: string;
+  className?: string;
+  icon?: ReactNode;
+  verified?: boolean;
 }
 
-export function PersonalInfoField({ label, value, className = "", icon, verified = false }: PersonalInfoFieldProps) {
-  const t = useT("profile")
+export function PersonalInfoField({
+  label,
+  value,
+  className = "",
+  icon,
+  verified = false,
+}: PersonalInfoFieldProps) {
+  const t = useT("profile");
 
   return (
     <div
@@ -21,15 +27,21 @@ export function PersonalInfoField({ label, value, className = "", icon, verified
     >
       <div className="flex items-center gap-2">
         {icon}
-        <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</label>
+        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          {label}
+        </span>
         {verified && (
           <div className="flex items-center gap-1">
             <CheckCircle className="w-4 h-4 text-green-500" />
-            <span className="text-xs text-green-600 font-medium">{t("verified")}</span>
+            <span className="text-xs text-green-600 font-medium">
+              {t("verified")}
+            </span>
           </div>
         )}
       </div>
-      <p className="text-lg font-semibold text-gray-900 dark:text-white pl-6">{value}</p>
+      <p className="text-lg font-semibold text-gray-900 dark:text-white pl-6">
+        {value}
+      </p>
     </div>
-  )
+  );
 }

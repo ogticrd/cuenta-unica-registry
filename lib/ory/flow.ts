@@ -1,14 +1,9 @@
 import "server-only";
 
-import {
-  FrontendApi,
-  Configuration,
-  FlowType,
-} from "@ory/client-fetch";
+import { Configuration, FlowType, FrontendApi } from "@ory/client-fetch";
+import type { OryClientConfiguration } from "@ory/elements-react";
 import { getFlowFactory } from "@ory/nextjs/app";
 import { headers } from "next/headers";
-
-import type { OryClientConfiguration } from "@ory/elements-react";
 
 const initOverrides = { cache: "no-cache" as RequestCache };
 
@@ -51,7 +46,7 @@ async function toFlowParams(
 ) {
   const p = await params;
   return {
-    id: p["flow"]?.toString() ?? "",
+    id: p.flow?.toString() ?? "",
     cookie: await getCookieHeader(),
   };
 }
@@ -64,8 +59,8 @@ async function toFlowParams(
 async function withReturnTo(
   params: Record<string, string | string[] | undefined>,
 ) {
-  if (!params["return_to"]) {
-    return { ...params, return_to: (await getPublicUrl()) + "/" };
+  if (!params.return_to) {
+    return { ...params, return_to: `${await getPublicUrl()}/` };
   }
   return params;
 }

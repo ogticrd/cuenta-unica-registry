@@ -1,7 +1,6 @@
-import { Phone, Mail, Clock, MapPin, ExternalLink } from "lucide-react";
-
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { Clock, ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { ContactItem } from "@/components/dashboard/contact-item";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { FAQItem } from "@/components/dashboard/faq-item";
 import { getT } from "@/lib/i18n/server";
 
@@ -140,9 +139,9 @@ export default async function SupportPage() {
               </span>
             </div>
             <div className="space-y-1">
-              {faqs.map((faq, index) => (
+              {faqs.map((faq) => (
                 <FAQItem
-                  key={index}
+                  key={faq.question}
                   question={faq.question}
                   answer={faq.answer}
                   defaultOpen={faq.defaultOpen}
@@ -152,7 +151,10 @@ export default async function SupportPage() {
 
             {/* Quick Link Optional */}
             <div className="mt-8 text-center pt-4">
-              <button className="inline-flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              >
                 {t("video_tutorials")}
                 <ExternalLink size={14} className="ml-1.5" />
               </button>

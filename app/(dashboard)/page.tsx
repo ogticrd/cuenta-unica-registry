@@ -1,31 +1,30 @@
 "use client";
 
 import {
-  User,
-  Shield,
-  Clock,
-  Bell,
-  Smartphone,
-  Globe,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Calendar,
   Activity,
+  AlertTriangle,
+  Bell,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Globe,
+  Info,
   Lock,
+  Shield,
+  Smartphone,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-
-import { RecentActivityItem } from "@/components/dashboard/recent-activity-item";
-import { QuickActionCard } from "@/components/dashboard/quick-action-card";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
-import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { ActionButton } from "@/components/dashboard/action-button";
+import { DashboardCard } from "@/components/dashboard/dashboard-card";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { QuickActionCard } from "@/components/dashboard/quick-action-card";
+import { RecentActivityItem } from "@/components/dashboard/recent-activity-item";
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { ROUTES } from "@/lib/constants/routes";
-import { useAuth } from "@/lib/auth-context";
 import { useT } from "@/hooks/use-t";
+import { useAuth } from "@/lib/auth-context";
+import { ROUTES } from "@/lib/constants/routes";
 
 export default function DashboardPage() {
   const { user, session } = useAuth();
@@ -238,9 +237,9 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <DashboardCard title={t("quick_actions")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickActions.map((action, index) => (
+            {quickActions.map((action) => (
               <QuickActionCard
-                key={index}
+                key={action.title}
                 title={action.title}
                 description={action.description}
                 icon={action.icon}
@@ -265,9 +264,9 @@ export default function DashboardPage() {
             }
           >
             <div className="space-y-1">
-              {recentActivities.map((activity, index) => (
+              {recentActivities.map((activity) => (
                 <RecentActivityItem
-                  key={index}
+                  key={activity.title}
                   icon={activity.icon}
                   title={activity.title}
                   description={activity.description}
@@ -345,9 +344,9 @@ export default function DashboardPage() {
         {/* Government Services */}
         <DashboardCard title={t("gov_services")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {governmentServices.map((service, index) => (
+            {governmentServices.map((service) => (
               <QuickActionCard
-                key={index}
+                key={service.title}
                 title={service.title}
                 description={service.description}
                 icon={service.icon}

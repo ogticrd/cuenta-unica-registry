@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations, useLocale as useNextIntlLocale } from "next-intl";
+import { useLocale as useNextIntlLocale, useTranslations } from "next-intl";
 
 /**
  * Abstraction hook for translations.

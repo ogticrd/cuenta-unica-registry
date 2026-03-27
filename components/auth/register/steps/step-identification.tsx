@@ -1,15 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-
-import {
-  CEDULA_MASK_LENGTH,
-  formatCedula,
-  normalizeCedula,
-} from "@/lib/utils/cedula";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,14 +14,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import type { CitizenLookupErrorCode } from "@/lib/types/registration/citizen";
-import { citizenService } from "@/lib/services/registration/citizen.service";
-import { createCedulaSchema } from "@/lib/schemas/registration";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/lib/constants/routes";
 import { Input } from "@/components/ui/input";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
+import { createCedulaSchema } from "@/lib/schemas/registration";
+import { citizenService } from "@/lib/services/registration/citizen.service";
+import type { CitizenLookupErrorCode } from "@/lib/types/registration/citizen";
+import {
+  CEDULA_MASK_LENGTH,
+  formatCedula,
+  normalizeCedula,
+} from "@/lib/utils/cedula";
 
 interface StepIdentificationProps {
   onNext: () => void;

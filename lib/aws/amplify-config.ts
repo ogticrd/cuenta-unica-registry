@@ -12,8 +12,7 @@ export function getAmplifyConfig() {
       aws_region: process.env.NEXT_PUBLIC_AWS_REGION ?? "us-east-1",
       user_pool_client_id:
         process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID ?? "",
-      identity_pool_id:
-        process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID ?? "",
+      identity_pool_id: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID ?? "",
       mfa_methods: [] as string[],
       standard_required_attributes: ["email"],
       username_attributes: ["email"] as const,

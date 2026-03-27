@@ -10,6 +10,7 @@ export const API = {
   registrationAccount: "/api/registration/account",
   registrationVerification: "/api/registration/verification",
   registrationSessionReset: "/api/registration/session/reset",
-  registrationLivenessSession: "/api/registration/verification/liveness-session",
+  registrationLivenessSession:
+    "/api/registration/verification/liveness-session",
   registrationLivenessResult: "/api/registration/verification/liveness-result",
 } as const;

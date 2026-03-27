@@ -1,23 +1,22 @@
 ﻿"use client";
 
+import { useRouter } from "next/navigation";
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
   type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-import {
-  sessionService,
-  type OrySession,
-} from "@/lib/services/ory/session.service";
-import { authService } from "@/lib/services/ory/auth.service";
-import { ROUTES } from "@/lib/constants/routes";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
+import { authService } from "@/lib/services/ory/auth.service";
+import {
+  type OrySession,
+  sessionService,
+} from "@/lib/services/ory/session.service";
 
 interface User {
   id: string;

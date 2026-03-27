@@ -1,12 +1,11 @@
-import { OryPageParams } from "@ory/nextjs/app";
-import { getSettingsFlow } from "@/lib/ory/flow";
+import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { getT } from "@/lib/i18n/server";
+import { getSettingsFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
 import OrySettings from "./ory-settings";
-import { getT } from "@/lib/i18n/server";
 
 async function SettingsFlowComponent({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig();

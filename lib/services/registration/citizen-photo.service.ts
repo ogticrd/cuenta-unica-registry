@@ -12,9 +12,7 @@ function getRequiredEnv(name: string) {
   return value;
 }
 
-export async function fetchCitizenPhoto(
-  cedula: string,
-): Promise<Uint8Array> {
+export async function fetchCitizenPhoto(cedula: string): Promise<Uint8Array> {
   const baseUrl = getRequiredEnv("CITIZENS_API_BASE_URL").replace(/\/$/, "");
   const apiKey = getRequiredEnv("CITIZENS_PHOTO_API_KEY");
   const normalizedCedula = normalizeCedula(cedula);

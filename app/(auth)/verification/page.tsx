@@ -1,17 +1,16 @@
-import { OryPageParams } from "@ory/nextjs/app";
-import { getVerificationFlow } from "@/lib/ory/flow";
 import { Verification } from "@ory/elements-react/theme";
+import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-
 import {
   CucVerificationFooter,
   CucVerificationHeader,
 } from "@/components/auth/ory-components";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
-import { getServerOryConfig } from "@/lib/ory/server-config";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
+import { getVerificationFlow } from "@/lib/ory/flow";
+import { getServerOryConfig } from "@/lib/ory/server-config";
 
 async function VerificationFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig();

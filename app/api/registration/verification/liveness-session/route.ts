@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import { createLivenessSession } from "@/lib/services/registration/rekognition.service";
 import type {
-  CreateLivenessSessionResponse,
   CreateLivenessSessionErrorCode,
+  CreateLivenessSessionResponse,
 } from "@/lib/types/registration/verification";
 
 function createErrorResponse(

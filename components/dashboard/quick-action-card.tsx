@@ -1,23 +1,31 @@
-import Link from "next/link"
-import type { ReactNode } from "react"
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 interface QuickActionCardProps {
-  title: string
-  description: string
-  icon: ReactNode
-  href: string
+  title: string;
+  description: string;
+  icon: ReactNode;
+  href: string;
   badge?: {
-    text: string
-    variant: "info" | "warning" | "success"
-  }
+    text: string;
+    variant: "info" | "warning" | "success";
+  };
 }
 
-export function QuickActionCard({ title, description, icon, href, badge }: QuickActionCardProps) {
+export function QuickActionCard({
+  title,
+  description,
+  icon,
+  href,
+  badge,
+}: QuickActionCardProps) {
   const badgeClasses = {
     info: "bg-blue-100 text-blue-800 border border-transparent dark:bg-blue-900/30 dark:text-blue-300",
-    warning: "bg-orange-100 text-orange-800 border border-transparent dark:bg-orange-900/30 dark:text-orange-300",
-    success: "bg-green-100 text-green-800 border border-transparent dark:bg-green-900/30 dark:text-green-300",
-  }
+    warning:
+      "bg-orange-100 text-orange-800 border border-transparent dark:bg-orange-900/30 dark:text-orange-300",
+    success:
+      "bg-green-100 text-green-800 border border-transparent dark:bg-green-900/30 dark:text-green-300",
+  };
 
   return (
     <Link href={href} className="block group h-full">
@@ -27,7 +35,9 @@ export function QuickActionCard({ title, description, icon, href, badge }: Quick
             {icon}
           </div>
           {badge && (
-            <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-full ${badgeClasses[badge.variant]}`}>
+            <span
+              className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-full ${badgeClasses[badge.variant]}`}
+            >
               {badge.text}
             </span>
           )}
@@ -36,9 +46,11 @@ export function QuickActionCard({ title, description, icon, href, badge }: Quick
           <h3 className="font-bold text-foreground mb-1.5 group-hover:text-secondary transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {description}
+          </p>
         </div>
       </div>
     </Link>
-  )
+  );
 }

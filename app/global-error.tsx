@@ -1,9 +1,9 @@
 ﻿"use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/constants/routes";

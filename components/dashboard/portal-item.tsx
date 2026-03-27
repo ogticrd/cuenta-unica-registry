@@ -1,17 +1,17 @@
-﻿"use client"
+﻿"use client";
 
-import { Building2 } from "lucide-react"
-import { ActionButton } from "./action-button"
-import { useT } from "@/hooks/use-t"
+import { Building2 } from "lucide-react";
+import { useT } from "@/hooks/use-t";
+import { ActionButton } from "./action-button";
 
 interface PortalItemProps {
-  name: string
-  lastAccess: string
-  onUnlink?: () => void
+  name: string;
+  lastAccess: string;
+  onUnlink?: () => void;
 }
 
 export function PortalItem({ name, lastAccess, onUnlink }: PortalItemProps) {
-  const t = useT("history")
+  const t = useT("history");
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-border last:border-b-0 gap-4">
@@ -20,7 +20,9 @@ export function PortalItem({ name, lastAccess, onUnlink }: PortalItemProps) {
           <Building2 size={18} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-foreground mb-0.5 truncate">{name}</h3>
+          <h3 className="font-semibold text-foreground mb-0.5 truncate">
+            {name}
+          </h3>
           <div className="text-sm text-muted-foreground truncate">
             {t("last_access_prefix")}: {lastAccess}
           </div>
@@ -28,11 +30,15 @@ export function PortalItem({ name, lastAccess, onUnlink }: PortalItemProps) {
       </div>
       {onUnlink && (
         <div className="flex-shrink-0">
-          <ActionButton variant="danger" onClick={onUnlink} className="w-full sm:w-auto dark:hover:bg-red-600/10">
+          <ActionButton
+            variant="danger"
+            onClick={onUnlink}
+            className="w-full sm:w-auto dark:hover:bg-red-600/10"
+          >
             {t("unlink")}
           </ActionButton>
         </div>
       )}
     </div>
-  )
+  );
 }

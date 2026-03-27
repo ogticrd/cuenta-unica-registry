@@ -1,20 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
 import { toast } from "sonner";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Stepper } from "@/components/ui/stepper";
+import { useT } from "@/hooks/use-t";
+import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
 import type {
   RegisterAccountDraft,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
-import { useT } from "@/hooks/use-t";
-import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StepAccount } from "./steps/step-account";
 import { StepIdentification } from "./steps/step-identification";
 import { StepVerification } from "./steps/step-verification";
-import { StepAccount } from "./steps/step-account";
-import { Stepper } from "@/components/ui/stepper";
 
 interface RegisterWizardProps {
   initialStep: 0 | 1 | 2;

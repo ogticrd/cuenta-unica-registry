@@ -1,8 +1,8 @@
+import { API } from "@/lib/constants/api";
 import type {
   RegisterAccountRequest,
   RegisterAccountResponse,
 } from "@/lib/types/registration/account";
-import { API } from "@/lib/constants/api";
 
 async function parseRegisterAccountResponse(response: Response) {
   const payload = (await response

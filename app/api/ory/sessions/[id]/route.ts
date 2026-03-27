@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-
-import { getServerCookies } from "@/lib/ory/cookies";
 import { getOryClient } from "@/lib/ory/client";
+import { getServerCookies } from "@/lib/ory/cookies";
 
 /**
  * DELETE /api/ory/sessions/[id]

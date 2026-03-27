@@ -1,21 +1,24 @@
-import { Check } from 'lucide-react'
+import { Check } from "lucide-react";
 
 interface SetupStep {
-  number: number
-  title: string
-  subtitle: string
-  status: "completed" | "active" | "pending"
+  number: number;
+  title: string;
+  subtitle: string;
+  status: "completed" | "active" | "pending";
 }
 
 interface SetupStepsProps {
-  steps: SetupStep[]
+  steps: SetupStep[];
 }
 
 export function SetupSteps({ steps }: SetupStepsProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8 mb-8 relative">
       {steps.map((step, index) => (
-        <div key={step.number} className="flex items-center space-x-4 w-full md:w-auto">
+        <div
+          key={step.number}
+          className="flex items-center space-x-4 w-full md:w-auto"
+        >
           <div className="flex items-center space-x-3 flex-1 md:flex-initial">
             {/* Step Circle */}
             <div
@@ -32,7 +35,9 @@ export function SetupSteps({ steps }: SetupStepsProps) {
 
             {/* Step Info */}
             <div className="flex-1 md:flex-initial">
-              <h3 className={`font-semibold text-sm ${step.status === "active" ? "text-primary" : "text-gray-600"}`}>
+              <h3
+                className={`font-semibold text-sm ${step.status === "active" ? "text-primary" : "text-gray-600"}`}
+              >
                 {step.title}
               </h3>
               <p className="text-xs text-gray-500">{step.subtitle}</p>
@@ -51,5 +56,5 @@ export function SetupSteps({ steps }: SetupStepsProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

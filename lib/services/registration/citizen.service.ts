@@ -1,8 +1,8 @@
+import { API } from "@/lib/constants/api";
 import type {
   CitizenLookupRequest,
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
-import { API } from "@/lib/constants/api";
 
 async function parseCitizenLookupResponse(response: Response) {
   const payload = (await response

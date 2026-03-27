@@ -1,5 +1,5 @@
-import { getMessages, getLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 /**
  * Async Server Component — runs on the server.

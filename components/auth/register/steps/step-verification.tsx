@@ -1,32 +1,31 @@
 "use client";
 
 import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
-import { toast } from "sonner";
 import Image from "next/image";
-
-import type {
-  RegisterAccountDraft,
-  RegisterAccountErrorCode,
-  RegisterAccountStepErrors,
-} from "@/lib/types/registration/account";
-import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
+import {
+  FaceLiveness,
+  FaceLivenessLoader,
+} from "@/components/auth/register/face-liveness-detector";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  FaceLiveness,
-  FaceLivenessLoader,
-} from "@/components/auth/register/face-liveness-detector";
 import { useT } from "@/hooks/use-t";
-import { verificationService } from "@/lib/services/registration/verification.service";
 import { accountService } from "@/lib/services/registration/account.service";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
+import { verificationService } from "@/lib/services/registration/verification.service";
+import type {
+  RegisterAccountDraft,
+  RegisterAccountErrorCode,
+  RegisterAccountStepErrors,
+} from "@/lib/types/registration/account";
+import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
 
 type VerificationPhase =
   | "idle"
@@ -63,15 +62,19 @@ export function StepVerification({
   const firstName =
     userData.name.split(" ")[0]?.toUpperCase() || userData.name.toUpperCase();
 
-  const verificationErrorMessages: Record<VerifyLivenessErrorCode, string> = {
-    registration_session_missing: t("verification.session_error"),
-    invalid_session_id: t("verification.verification_failed"),
-    liveness_check_failed: t("verification.liveness_failed"),
-    citizen_photo_unavailable: t("verification.citizen_photo_unavailable"),
-    face_mismatch: t("verification.face_mismatch"),
-    rekognition_error: t("verification.rekognition_error"),
-    unexpected_error: t("verification.verification_failed"),
-  };
+  const verificationErrorMessages: Record<VerifyLivenessErrorCode, string> =
+    useMemo(
+      () => ({
+        registration_session_missing: t("verification.session_error"),
+        invalid_session_id: t("verification.verification_failed"),
+        liveness_check_failed: t("verification.liveness_failed"),
+        citizen_photo_unavailable: t("verification.citizen_photo_unavailable"),
+        face_mismatch: t("verification.face_mismatch"),
+        rekognition_error: t("verification.rekognition_error"),
+        unexpected_error: t("verification.verification_failed"),
+      }),
+      [t],
+    );
 
   const createSession = useCallback(async () => {
     setPhase("creating_session");
@@ -110,8 +113,7 @@ export function StepVerification({
 
     setPhase("verifying");
 
-    const result =
-      await verificationService.verifyLiveness(livenessSessionId);
+    const result = await verificationService.verifyLiveness(livenessSessionId);
 
     if (!result.success) {
       setPhase("idle");
@@ -303,9 +305,7 @@ export function StepVerification({
           </DialogDescription>
 
           <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
-            {(phase === "creating_session") && (
-              <FaceLivenessLoader />
-            )}
+            {phase === "creating_session" && <FaceLivenessLoader />}
 
             {phase === "liveness_active" && livenessSessionId && (
               <div className="w-full">

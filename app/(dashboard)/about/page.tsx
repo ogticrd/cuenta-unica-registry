@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  User,
-  Headphones,
-  Shield,
-  FileText,
   Bell,
   Bot,
-  Users,
   Clock,
+  FileText,
   Globe,
+  Headphones,
+  Shield,
+  User,
+  Users,
 } from "lucide-react";
 
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
@@ -21,11 +21,13 @@ export default function AboutPage() {
   const t = useT("about");
   const features = [
     {
+      id: 1,
       icon: <User size={24} className="text-blue-600 dark:text-blue-400" />,
       title: t("features_list.personal_data.title"),
       description: t("features_list.personal_data.desc"),
     },
     {
+      id: 2,
       icon: (
         <FileText size={24} className="text-purple-600 dark:text-purple-400" />
       ),
@@ -33,21 +35,25 @@ export default function AboutPage() {
       description: t("features_list.history.desc"),
     },
     {
+      id: 3,
       icon: <Shield size={24} className="text-red-600 dark:text-red-400" />,
       title: t("features_list.security.title"),
       description: t("features_list.security.desc"),
     },
     {
+      id: 4,
       icon: <Bell size={24} className="text-orange-600 dark:text-orange-400" />,
       title: t("features_list.notifications.title"),
       description: t("features_list.notifications.desc"),
     },
     {
+      id: 5,
       icon: <Bot size={24} className="text-indigo-600 dark:text-indigo-400" />,
       title: t("features_list.ai_assistant.title"),
       description: t("features_list.ai_assistant.desc"),
     },
     {
+      id: 6,
       icon: (
         <Headphones size={24} className="text-green-600 dark:text-green-400" />
       ),
@@ -58,21 +64,25 @@ export default function AboutPage() {
 
   const stats = [
     {
+      id: 1,
       number: "2.5M+",
       label: t("stats_list.citizens"),
       icon: <Users size={20} />,
     },
     {
+      id: 2,
       number: "15M+",
       label: t("stats_list.queries"),
       icon: <FileText size={20} />,
     },
     {
+      id: 3,
       number: "99.9%",
       label: t("stats_list.uptime"),
       icon: <Clock size={20} />,
     },
     {
+      id: 4,
       number: "24/7",
       label: t("stats_list.availability"),
       icon: <Globe size={20} />,
@@ -94,9 +104,9 @@ export default function AboutPage() {
 
         {/* Minimalist Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <div
-              key={index}
+              key={stat.id}
               className="flex flex-col items-center justify-center py-4"
             >
               <div className="text-muted-foreground mb-3">{stat.icon}</div>
@@ -131,9 +141,9 @@ export default function AboutPage() {
             {t("features_title")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <PlatformFeature
-                key={index}
+                key={feature.id}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}

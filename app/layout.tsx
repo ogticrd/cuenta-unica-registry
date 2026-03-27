@@ -1,11 +1,10 @@
-import { getLocale } from "next-intl/server";
-import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import { getLocale } from "next-intl/server";
 import type React from "react";
-
+import { Toaster } from "@/components/ui/sonner";
 import { ClientProviders } from "@/lib/providers/client-providers";
 import { ServerProviders } from "@/lib/providers/server-providers";
-import { Toaster } from "@/components/ui/sonner";
 import "@ory/elements-react/theme/styles.css";
 
 import "./globals.css";

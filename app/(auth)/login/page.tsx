@@ -1,15 +1,14 @@
-import { OryPageParams } from "@ory/nextjs/app";
-import { getLoginFlow } from "@/lib/ory/flow";
 import { Login } from "@ory/elements-react/theme";
+import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-
-import { CucCardHeader, CucCardFooter } from "@/components/auth/ory-components";
+import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
 import { WelcomeSection } from "@/components/auth/welcome-section";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
-import { getServerOryConfig } from "@/lib/ory/server-config";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
+import { getLoginFlow } from "@/lib/ory/flow";
+import { getServerOryConfig } from "@/lib/ory/server-config";
 
 async function LoginFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig();

@@ -1,7 +1,7 @@
 "use client";
 
+import { Loader, ThemeProvider } from "@aws-amplify/ui-react";
 import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
-import { ThemeProvider, Loader } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 
 import { useT } from "@/hooks/use-t";

@@ -1,8 +1,7 @@
 import type { Session } from "@ory/client";
 import { NextResponse } from "next/server";
-
-import { getServerCookies } from "@/lib/ory/cookies";
 import { getOryClient } from "@/lib/ory/client";
+import { getServerCookies } from "@/lib/ory/cookies";
 
 /**
  * GET /api/ory/session

@@ -1,12 +1,13 @@
 "use client";
 
+import type { OryClientConfiguration } from "@ory/elements-react";
 import { Settings } from "@ory/elements-react/theme";
 
 type OrySettingsFlow = Parameters<typeof Settings>[0]["flow"];
 
 interface OrySettingsWrapperProps {
   flow: unknown;
-  dynamicConfig: any;
+  dynamicConfig: OryClientConfiguration;
 }
 
 function OrySettings({ flow, dynamicConfig }: OrySettingsWrapperProps) {

@@ -1,7 +1,7 @@
-import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
 
 interface RegistrationPageProps {
   searchParams: Promise<{ return_url?: string }>;

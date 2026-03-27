@@ -1,17 +1,16 @@
-import { OryPageParams } from "@ory/nextjs/app";
-import { getRecoveryFlow } from "@/lib/ory/flow";
 import { Recovery } from "@ory/elements-react/theme";
+import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-
 import {
-  CucRecoveryHeader,
   CucRecoveryFooter,
+  CucRecoveryHeader,
 } from "@/components/auth/ory-components";
-import { LoadingFallback } from "@/components/ui/loading-fallback";
-import { getServerOryConfig } from "@/lib/ory/server-config";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
+import { getRecoveryFlow } from "@/lib/ory/flow";
+import { getServerOryConfig } from "@/lib/ory/server-config";
 
 async function RecoveryFlow({ searchParams }: OryPageParams) {
   const dynamicConfig = await getServerOryConfig();

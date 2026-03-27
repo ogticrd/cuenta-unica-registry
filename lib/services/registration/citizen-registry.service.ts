@@ -1,14 +1,14 @@
 import "server-only";
 
 import type {
+  CitizenLookupResult,
+  CitizenProfileResult,
+} from "@/lib/types/registration/citizen";
+import type {
   CitizenBasicInformation,
   CitizensBasicInformationResponse,
   CitizensBirthInformationResponse,
 } from "@/lib/types/registration/citizen-api";
-import type {
-  CitizenLookupResult,
-  CitizenProfileResult,
-} from "@/lib/types/registration/citizen";
 import { normalizeCedula } from "@/lib/utils/cedula";
 
 function getRequiredEnv(name: string) {

@@ -1,9 +1,9 @@
-import path from "node:path"
-import { fileURLToPath } from "node:url"
-import createNextIntlPlugin from "next-intl/plugin"
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin("./i18n/request.ts")
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,6 +18,6 @@ const nextConfig = {
     "@aws-amplify/ui-react-liveness",
     "@aws-amplify/ui-react",
   ],
-}
+};
 
-export default withNextIntl(nextConfig)
+export default withNextIntl(nextConfig);

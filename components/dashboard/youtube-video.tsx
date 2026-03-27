@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Play } from "lucide-react"
+import { Play } from "lucide-react";
+import { useState } from "react";
 
 interface YouTubeVideoProps {
-  videoId?: string
-  title?: string
-  className?: string
+  videoId?: string;
+  title?: string;
+  className?: string;
 }
 
 export function YouTubeVideo({
@@ -14,17 +14,19 @@ export function YouTubeVideo({
   title = "Cuenta Única Ciudadana - Tutorial",
   className = "",
 }: YouTubeVideoProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handlePlay = () => {
-    setIsPlaying(true)
+    setIsPlaying(true);
     // In a real implementation, this would load the actual YouTube video
-    console.log("Playing video:", videoId)
-  }
+    console.log("Playing video:", videoId);
+  };
 
   if (isPlaying) {
     return (
-      <div className={`relative w-full aspect-video bg-black rounded-lg ${className}`}>
+      <div
+        className={`relative w-full aspect-video bg-black rounded-lg ${className}`}
+      >
         <iframe
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
           title={title}
@@ -33,11 +35,12 @@ export function YouTubeVideo({
           allowFullScreen
         />
       </div>
-    )
+    );
   }
 
   return (
-    <div
+    <button
+      type="button"
       className={`relative w-full aspect-video bg-black rounded-lg cursor-pointer group ${className}`}
       onClick={handlePlay}
     >
@@ -58,8 +61,10 @@ export function YouTubeVideo({
 
       {/* Video title overlay */}
       <div className="absolute bottom-4 left-4 right-4">
-        <div className="bg-black bg-opacity-75 text-white px-3 py-2 rounded text-sm">{title}</div>
+        <div className="bg-black bg-opacity-75 text-white px-3 py-2 rounded text-sm text-left">
+          {title}
+        </div>
       </div>
-    </div>
-  )
+    </button>
+  );
 }

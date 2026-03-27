@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-
-import type {
-  CitizenLookupRequest,
-  CitizenLookupResponse,
-  CitizenLookupErrorCode,
-} from "@/lib/types/registration/citizen";
-import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
+import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
+import type {
+  CitizenLookupErrorCode,
+  CitizenLookupRequest,
+  CitizenLookupResponse,
+} from "@/lib/types/registration/citizen";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
 import { isValidReturnUrl } from "@/lib/utils/return-url";
 

@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Bell, Menu } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { NotificationDrawer } from "./notification-drawer"
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
-import { LanguageToggle } from "@/components/ui/language-toggle"
-import Link from "next/link"
-import { ROUTES } from "@/lib/constants/routes"
-
+import { Bell, Menu } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ROUTES } from "@/lib/constants/routes";
+import { NotificationDrawer } from "./notification-drawer";
 
 interface DashboardHeaderProps {
-  onMobileMenuToggle?: () => void
+  onMobileMenuToggle?: () => void;
 }
 
 export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
-  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState(false)
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
+    useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-background border-b border-gray-200 dark:border-border">
@@ -57,10 +57,11 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
             >
               <Bell
                 size={20}
-                className={`transition-all duration-300 ${isNotificationDrawerOpen
-                  ? 'animate-pulse scale-110'
-                  : 'hover:rotate-12 hover:scale-110'
-                  }`}
+                className={`transition-all duration-300 ${
+                  isNotificationDrawerOpen
+                    ? "animate-pulse scale-110"
+                    : "hover:rotate-12 hover:scale-110"
+                }`}
               />
               {/* Notification badge */}
               <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
@@ -72,7 +73,10 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
       </div>
 
       {/* Notification Drawer */}
-      <NotificationDrawer isOpen={isNotificationDrawerOpen} onClose={() => setIsNotificationDrawerOpen(false)} />
+      <NotificationDrawer
+        isOpen={isNotificationDrawerOpen}
+        onClose={() => setIsNotificationDrawerOpen(false)}
+      />
     </header>
-  )
+  );
 }
