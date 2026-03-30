@@ -24,6 +24,14 @@
     "test:components": "vitest run --dir __tests__/components",
     "test:integration": "vitest run --dir __tests__/integration",
     "test:e2e": "vitest run --dir __tests__/e2e",
+    "test:validation": "vitest run --dir __tests__/validation",
+    "test:hooks": "vitest run --dir __tests__/hooks",
+    "test:actions": "vitest run --dir __tests__/actions",
+    "test:middleware": "vitest run --dir __tests__/middleware",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:debug": "playwright test --debug",
+    "test:all": "vitest run && playwright test",
     "test:ui": "vitest --ui"
   },
   "dependencies": {
@@ -85,10 +93,11 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
-    "zod": "3.25.76"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.9",
+    "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
