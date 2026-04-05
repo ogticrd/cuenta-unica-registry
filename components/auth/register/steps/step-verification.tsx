@@ -1,7 +1,15 @@
 "use client";
 
-import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Camera,
+  Check,
+  ShieldAlert,
+  Smile,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -9,6 +17,7 @@ import {
   FaceLiveness,
   FaceLivenessLoader,
 } from "@/components/auth/register/face-liveness-detector";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -57,6 +66,7 @@ export function StepVerification({
     null,
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showTermsError, setShowTermsError] = useState(false);
   const isHandlingError = useRef(false);
 
   const firstName =
@@ -99,6 +109,13 @@ export function StepVerification({
   }, [onRequireIdentification, t]);
 
   const handleStartVerification = async () => {
+    if (!termsAccepted) {
+      setShowTermsError(true);
+      return;
+    }
+
+    setShowTermsError(false);
+
     if (!accountDraft.email || !accountDraft.password) {
       onRequireAccount();
       return;
@@ -262,26 +279,47 @@ export function StepVerification({
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 mt-6">
+      <div className="flex items-start gap-3 mt-6">
         <Checkbox
           id="terms"
-          className="rounded-sm border-gray-300 data-[state=checked]:bg-red-600 data-[state=checked]:text-white"
+          className="h-5 w-5 rounded border-gray-300 data-[state=checked]:bg-secondary data-[state=checked]:text-white mt-0.5 shrink-0"
           checked={termsAccepted}
-          onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+          onCheckedChange={(checked) => {
+            setTermsAccepted(checked as boolean);
+            if (checked) setShowTermsError(false);
+          }}
         />
         <label
           htmlFor="terms"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-primary dark:text-blue-100 underline decoration-blue-200 dark:decoration-blue-500/40 underline-offset-4 cursor-pointer"
+          className="text-sm font-medium leading-relaxed text-primary dark:text-blue-100 cursor-pointer"
         >
-          {t("verification.terms_label")}{" "}
+          <Link
+            href="/terms"
+            target="_blank"
+            className="underline decoration-blue-400 dark:decoration-blue-500 underline-offset-4 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {t("verification.terms_label_link")}
+          </Link>{" "}
           <span className="text-destructive">*</span>
         </label>
       </div>
 
+      {showTermsError && (
+        <Alert
+          variant="destructive"
+          className="mt-4 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 animate-in fade-in slide-in-from-top-2 duration-300"
+        >
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="text-red-700 dark:text-red-300">
+            {t("verification.terms_required")}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Button
         onClick={handleStartVerification}
         className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4"
-        disabled={!termsAccepted}
       >
         {t("verification.start_process")}
       </Button>
@@ -296,7 +334,7 @@ export function StepVerification({
       </button>
 
       <Dialog open={isModalOpen} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-black/95 flex flex-col items-center justify-center pt-8 pb-12">
+        <DialogContent className="biometric-modal max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-gradient-to-b from-[#0a0e1a] via-[#0f1629] to-[#0a0e1a] flex flex-col items-center justify-center overflow-hidden">
           <DialogTitle className="sr-only">
             {t("verification.modal.screenreader_title")}
           </DialogTitle>
@@ -304,11 +342,17 @@ export function StepVerification({
             {t("verification.modal.screenreader_description")}
           </DialogDescription>
 
-          <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
+          {/* Subtle ambient glow */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/[0.07] blur-3xl" />
+            <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-indigo-500/[0.05] blur-3xl" />
+          </div>
+
+          <div className="relative w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
             {phase === "creating_session" && <FaceLivenessLoader />}
 
             {phase === "liveness_active" && livenessSessionId && (
-              <div className="w-full">
+              <div className="w-full liveness-detector-wrapper animate-in fade-in zoom-in-95 duration-500">
                 <FaceLiveness
                   sessionId={livenessSessionId}
                   onComplete={handleLivenessComplete}
@@ -318,22 +362,39 @@ export function StepVerification({
             )}
 
             {phase === "verifying" && (
-              <div className="text-white text-center space-y-4">
-                <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-lg font-medium animate-pulse text-blue-400">
-                  {t("verification.verifying_identity")}
-                </p>
+              <div className="text-center space-y-6 animate-in fade-in duration-500">
+                <div className="relative mx-auto w-24 h-24">
+                  <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse" />
+                  <div className="relative w-24 h-24 rounded-full border-[3px] border-blue-500/30 border-t-blue-400 animate-spin" />
+                  <div className="absolute inset-3 rounded-full border-[2px] border-indigo-400/20 border-b-indigo-300 animate-spin [animation-direction:reverse] [animation-duration:1.5s]" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-lg font-semibold text-white">
+                    {t("verification.verifying_identity")}
+                  </p>
+                  <p className="text-sm text-white/40">
+                    {t("verification.modal.description")}
+                  </p>
+                </div>
               </div>
             )}
 
             {phase === "success" && (
-              <div className="text-white text-center space-y-4">
-                <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mx-auto">
-                  <Check className="h-12 w-12 text-white" />
+              <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
+                <div className="relative mx-auto">
+                  <div className="absolute inset-0 w-28 h-28 rounded-full bg-green-500/25 blur-2xl mx-auto animate-pulse" />
+                  <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                    <Check className="h-14 w-14 text-white drop-shadow-md" />
+                  </div>
                 </div>
-                <span className="font-bold text-xl text-green-400">
-                  {t("verification.modal.verified")}
-                </span>
+                <div className="space-y-1">
+                  <p className="font-bold text-2xl text-green-400">
+                    {t("verification.modal.verified")}
+                  </p>
+                  <p className="text-sm text-white/40">
+                    {t("account.success_description")}
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -342,3 +403,4 @@ export function StepVerification({
     </div>
   );
 }
+

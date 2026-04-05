@@ -34,7 +34,7 @@ export function WelcomeSection() {
       <div className="flex justify-center lg:justify-start">
         <div className="relative w-full max-w-lg">
           <Image
-            src="/images/digital-authentication-illustration.png"
+            src="/images/digital-authentication-illustration.svg"
             alt="Ilustración de acceso digital seguro a servicios gubernamentales"
             width={500}
             height={400}

@@ -3,8 +3,7 @@ import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
 import { WelcomeSection } from "@/components/auth/welcome-section";
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
+
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getLoginFlow } from "@/lib/ory/flow";
@@ -35,9 +34,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
-      <Header />
-
+    <>
       <main className="flex-1">
         <div className="container mx-auto py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full mx-auto">
@@ -62,8 +59,6 @@ export default async function LoginPage(props: OryPageParams) {
           </div>
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 }

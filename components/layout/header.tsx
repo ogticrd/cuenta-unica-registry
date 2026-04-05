@@ -16,7 +16,7 @@ export function Header() {
           <div className="flex items-center">
             <Link href={ROUTES.login}>
               <Image
-                src="/images/cuenta-unica-logo.png"
+                src="/images/cuenta-unica-logo.svg"
                 alt="Cuenta Única"
                 width={210}
                 height={104}

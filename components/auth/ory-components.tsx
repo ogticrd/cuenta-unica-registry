@@ -19,7 +19,7 @@ export function CucCardHeader(_props: PropsWithChildren) {
     <div className="text-center">
       <div className="flex justify-center">
         <Image
-          src="/images/cuenta-unica-icon.png"
+          src="/images/cuenta-unica-icon.svg"
           alt="Cuenta Única"
           width={98}
           height={96}
@@ -52,15 +52,9 @@ export function CucCardFooter(_props: OryCardFooterProps) {
     <div className="text-center">
       <p
         className="text-sm font-semibold text-secondary dark:text-blue-400"
-        style={{ marginBottom: "10px" }}
-      >
-        <Link href={ROUTES.recovery}>{t("forgot_password")}</Link>
-      </p>
-      <p
-        className="text-sm font-semibold text-secondary dark:text-blue-400"
         style={{ marginBottom: "20px" }}
       >
-        <Link href={ROUTES.verification}>{t("verify_account")}</Link>
+        <Link href={ROUTES.recovery}>{t("forgot_password")}</Link>
       </p>
       <p
         className="text-sm font-medium text-gray-500 dark:text-gray-400"
@@ -74,6 +68,17 @@ export function CucCardFooter(_props: OryCardFooterProps) {
       <Link href={ROUTES.register} className="cuc-register-button">
         {t("create_account")}
       </Link>
+      <div className="mt-6 rounded-md bg-gray-50/80 p-2 text-sm ring-1 ring-inset ring-gray-900/5 dark:bg-gray-800/50 dark:ring-white/10">
+        <p className="font-medium text-gray-600 dark:text-gray-400">
+          {t("need_verification_prompt")}{" "}
+          <Link
+            href={ROUTES.verification}
+            className="font-semibold !text-secondary transition-colors dark:text-blue-400"
+          >
+            {t("verify_account")}
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
@@ -87,7 +92,7 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
     <div className="text-center">
       <div className="flex justify-center">
         <Image
-          src="/images/cuenta-unica-icon.png"
+          src="/images/cuenta-unica-icon.svg"
           alt="Cuenta Única"
           width={98}
           height={96}
@@ -139,8 +144,8 @@ export function CucVerificationHeader(_props: PropsWithChildren) {
     <div className="text-center">
       <div className="flex justify-center">
         <Image
-          src="/images/cuenta-unica-icon.png"
-          alt="Cuenta Ãšnica"
+          src="/images/cuenta-unica-icon.svg"
+          alt="Cuenta Única"
           width={98}
           height={96}
           className="h-16 w-auto rounded-lg"

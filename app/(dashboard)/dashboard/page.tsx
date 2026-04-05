@@ -84,10 +84,10 @@ export default function DashboardPage() {
       href: ROUTES.history,
     },
     {
-      title: t("quick_actions_list.support.title"),
-      description: t("quick_actions_list.support.desc"),
+      title: t("quick_actions_list.history.title"),
+      description: t("quick_actions_list.history.desc"),
       icon: <Bell size={24} />,
-      href: ROUTES.support,
+      href: ROUTES.history,
     },
   ];
 
@@ -237,9 +237,9 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <DashboardCard title={t("quick_actions")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickActions.map((action) => (
+            {quickActions.map((action, index) => (
               <QuickActionCard
-                key={action.title}
+                key={index}
                 title={action.title}
                 description={action.description}
                 icon={action.icon}

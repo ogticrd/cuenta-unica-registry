@@ -141,7 +141,7 @@ export function RegisterWizard({
     <Card className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card">
       <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-border dark:border-slate-800 mx-6">
         <Image
-          src="/images/cuenta-unica-icon.png"
+          src="/images/cuenta-unica-icon.svg"
           alt={t("logo_alt")}
           width={98}
           height={96}

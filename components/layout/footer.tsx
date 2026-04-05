@@ -17,7 +17,7 @@ export function Footer() {
             {/* Government Logo Section */}
             <div className="flex flex-col space-y-3">
               <Image
-                src="/images/government-seal.png"
+                src="/images/gobierno-rd.svg"
                 alt="Escudo República Dominicana"
                 width={481}
                 height={196}
@@ -73,16 +73,23 @@ export function Footer() {
         <div className="container mx-auto p-4 bg-white dark:bg-background">
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <p className="text-xs text-primary dark:text-muted-foreground font-semibold">
                 {t("copyright", { year: currentYear })}
               </p>
               <Image
-                src="/images/ogtic-logo.png"
+                src="/images/ogtic-logo.svg"
                 alt="OGTIC"
                 width={151}
                 height={82}
-                className="w-[60px] h-auto"
+                className="w-[60px] h-auto dark:hidden"
+              />
+              <Image
+                src="/images/ogtic-logo-dark-v.svg"
+                alt="OGTIC"
+                width={151}
+                height={82}
+                className="w-[60px] h-auto hidden dark:block"
               />
             </div>
 

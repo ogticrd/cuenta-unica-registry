@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
 
@@ -48,7 +50,7 @@ export function VerificationOTPForm({
         } else {
           router.push(ROUTES.login);
         }
-      }, 2000);
+      }, 6000);
       return () => clearTimeout(timeout);
     }
   }, [state.success, router, t, returnUrl]);
@@ -87,34 +89,39 @@ export function VerificationOTPForm({
       <input type="hidden" name="flow" value={flowId} />
       <input type="hidden" name="code" value={otpValue} />
 
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col items-center gap-3 w-full">
         <InputOTP
           maxLength={6}
           value={otpValue}
           onChange={setOtpValue}
           disabled={isPending}
+          containerClassName="w-full"
         >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
+          <InputOTPGroup className="w-full flex">
+            <InputOTPSlot index={0} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={1} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={2} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={3} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={4} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={5} className="h-12 sm:h-14 flex-1 text-lg" />
           </InputOTPGroup>
         </InputOTP>
 
         {state.error && (
-          <p className="text-xs text-red-500 dark:text-red-400 text-center animate-in fade-in duration-200">
-            {state.error}
-          </p>
+          <Alert
+            variant="destructive"
+            className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left animate-in fade-in duration-200"
+          >
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{state.error}</AlertDescription>
+          </Alert>
         )}
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={isPending || otpValue.length !== 6}
-        className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+        className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
       >
         {isPending ? (
           <>
@@ -124,7 +131,7 @@ export function VerificationOTPForm({
         ) : (
           t("verify_button")
         )}
-      </button>
+      </Button>
     </form>
   );
 }
