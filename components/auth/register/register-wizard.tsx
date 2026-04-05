@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
@@ -28,6 +28,11 @@ export function RegisterWizard({
 }: RegisterWizardProps) {
   const t = useT("register");
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeStep]);
+
   const steps = [
     {
       title: t("steps.identification.title"),

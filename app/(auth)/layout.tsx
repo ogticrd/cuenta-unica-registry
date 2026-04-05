@@ -2,6 +2,7 @@ import Image from "next/image";
 import type React from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PointsDecoration } from "@/components/auth/points-decoration";
 
 export default function AuthLayout({
   children,
@@ -10,7 +11,9 @@ export default function AuthLayout({
 }) {
   return (
     <div className="relative min-h-screen bg-[#eff7ff] dark:bg-background overflow-x-hidden">
-      <div className="pointer-events-none fixed bottom-0 right-0 opacity-70 dark:opacity-20 z-0">
+      <PointsDecoration />
+
+      <div className="pointer-events-none fixed bottom-0 right-0 opacity-70 dark:opacity-20 z-0 translate-x-1/4 translate-y-1/4 md:translate-x-1/3 md:translate-y-1/3">
         <Image
           src="/images/forms.svg"
           alt=""
