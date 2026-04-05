@@ -56,22 +56,18 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(
-      ellipse at bottom right,
-      hsl(var(--secondary) / 0.85) 0%,
-      hsl(var(--secondary) / 0.4) 20%,
-      transparent 25%
-    );
+    background-image: radial-gradient(ellipse at bottom right,
+        hsl(var(--secondary) / 0.85) 0%,
+        hsl(var(--secondary) / 0.4) 20%,
+        transparent 25%);
     background-attachment: fixed;
   }
 
   .dark body {
-    background-image: radial-gradient(
-      ellipse at bottom right,
-      hsl(221 70% 20% / 0.6) 0%,
-      hsl(224 60% 14% / 0.35) 25%,
-      transparent 50%
-    );
+    background-image: radial-gradient(ellipse at bottom right,
+        hsl(221 70% 20% / 0.6) 0%,
+        hsl(224 60% 14% / 0.35) 25%,
+        transparent 50%);
     background-attachment: fixed;
   }
 
@@ -87,4 +83,328 @@
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+/* ===================================================================
+   AWS Amplify FaceLiveness — CUC Dark Modal Theme Overrides
+   =================================================================== */
+
+/* --- Camera Module Container --- */
+.liveness-detector-wrapper .amplify-liveness-camera-module {
+  background-color: #0a0e1a !important;
+  border: none !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 60px rgba(0, 56, 118, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-camera-module--mobile {
+  border-radius: 0 !important;
+}
+
+/* --- Video Feed --- */
+.liveness-detector-wrapper .amplify-liveness-video {
+  border-radius: 16px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-video-anchor {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+/* --- Cancel / Close Button (hidden for now) --- */
+.liveness-detector-wrapper .amplify-liveness-cancel-container {
+  display: none !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-cancel-button {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  font-size: 0 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-cancel-button:hover {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-cancel-button::before {
+  content: "✕" !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+}
+
+/* --- Recording Indicator --- */
+.liveness-detector-wrapper .amplify-liveness-recording-icon-container {
+  top: 16px !important;
+  left: 16px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-recording-icon {
+  background-color: transparent !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-radius: 20px !important;
+  padding: 4px 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-recording-icon .amplify-text {
+  color: #ffffff !important;
+  font-size: 11px !important;
+}
+
+/* --- Connecting / Loading Screen --- */
+.liveness-detector-wrapper .amplify-liveness-connecting-loader {
+  background-color: #0a0e1a !important;
+  border-radius: 16px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-connecting-loader .amplify-text {
+  color: #e2e8f0 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-connecting-loader .amplify-loader {
+  border-color: rgba(59, 130, 246, 0.2) !important;
+  border-top-color: #3b82f6 !important;
+}
+
+/* --- Toast / Hint Messages --- */
+.liveness-detector-wrapper .amplify-liveness-toast {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--medium {
+  border-radius: 12px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--large {
+  border-radius: 16px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast__message {
+  color: #f1f5f9 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--primary {
+  background-color: rgba(0, 56, 118, 0.85) !important;
+  border: 1px solid rgba(0, 135, 255, 0.25) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--primary .amplify-liveness-toast__message {
+  color: #ffffff !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--error {
+  background-color: rgba(127, 29, 29, 0.85) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-toast--error .amplify-liveness-toast__message {
+  color: #fecaca !important;
+}
+
+/* --- Match / Progress Indicator Bar --- */
+.liveness-detector-wrapper .amplify-liveness-match-indicator__bar {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.8) !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  height: 10px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-match-indicator__bar::after {
+  background: linear-gradient(90deg, #003876, #0087FF) !important;
+  border-radius: 999px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-match-indicator__pin::after {
+  background: #0087FF !important;
+  border-radius: 999px !important;
+  box-shadow: 0 0 8px rgba(0, 135, 255, 0.5) !important;
+}
+
+/* --- Instruction Overlay --- */
+.liveness-detector-wrapper .amplify-liveness-instruction-overlay {
+  color: #f1f5f9 !important;
+}
+
+/* --- Countdown Container --- */
+.liveness-detector-wrapper .amplify-liveness-countdown-container {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  border: 2px solid rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* --- Error Modal --- */
+.liveness-detector-wrapper .amplify-liveness-error-modal {
+  color: #fca5a5 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-error-modal__heading {
+  color: #fecaca !important;
+}
+
+/* --- Landscape Error Modal --- */
+.liveness-detector-wrapper .amplify-liveness-landscape-error-modal {
+  background-color: #0a0e1a !important;
+  color: #f1f5f9 !important;
+}
+
+/* --- Figures (good/bad examples) --- */
+.liveness-detector-wrapper .amplify-liveness-figure__image {
+  background-color: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-figure__caption {
+  font-size: 12px !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-figure__caption--success {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-figure__caption--error {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+}
+
+/* --- Hint Text --- */
+.liveness-detector-wrapper .amplify-liveness-hint__text {
+  color: #e2e8f0 !important;
+}
+
+/* --- Start Screen (if ever shown) --- */
+.liveness-detector-wrapper .amplify-liveness-start-screen-header__heading {
+  color: #f1f5f9 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-start-screen-header__body {
+  color: #94a3b8 !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-start-screen-warning {
+  background-color: rgba(0, 56, 118, 0.15) !important;
+  color: #93c5fd !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(59, 130, 246, 0.15) !important;
+}
+
+/* --- Camera waiting --- */
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-waiting {
+  background-color: #0a0e1a !important;
+  color: #e2e8f0 !important;
+}
+
+/* --- Amplify buttons inside liveness --- */
+.liveness-detector-wrapper .amplify-button--primary {
+  background-color: #003876 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 67px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  transition: all 0.2s ease !important;
+}
+
+.liveness-detector-wrapper .amplify-button--primary:hover {
+  background-color: #002f5c !important;
+}
+
+.liveness-detector-wrapper .amplify-button--primary:focus {
+  box-shadow: 0 0 0 3px rgba(0, 135, 255, 0.3) !important;
+  outline: none !important;
+}
+
+/* --- Amplify Camera Select --- */
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select {
+  background-color: rgba(10, 14, 26, 0.9) !important;
+}
+
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select__label,
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select,
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select__wrapper,
+.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select__icon-wrapper {
+  background-color: #111827 !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+/* --- Popover --- */
+.liveness-detector-wrapper .amplify-liveness-popover__container {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* --- General Amplify overrides inside liveness modal --- */
+.liveness-detector-wrapper [data-amplify-theme] {
+  --amplify-colors-background-primary: #0a0e1a;
+  --amplify-colors-background-secondary: #111827;
+  --amplify-colors-font-primary: #f1f5f9;
+  --amplify-colors-font-secondary: #94a3b8;
+  --amplify-colors-font-inverse: #ffffff;
+  --amplify-colors-border-primary: #1e293b;
+  --amplify-colors-border-secondary: #334155;
+  --amplify-colors-overlay-40: rgba(10, 14, 26, 0.7);
+}
+
+/* --- Biometric Modal — Radix Dialog Close Button --- */
+.biometric-modal>button[class*="absolute"] {
+  right: 20px !important;
+  top: 20px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  opacity: 1 !important;
+  color: #ffffff !important;
+  transition: all 0.2s ease !important;
+  z-index: 50 !important;
+}
+
+.biometric-modal>button[class*="absolute"]:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: scale(1.08) !important;
+}
+
+.biometric-modal>button[class*="absolute"] svg {
+  width: 22px !important;
+  height: 22px !important;
+  color: #ffffff !important;
+  stroke-width: 2.5 !important;
 }

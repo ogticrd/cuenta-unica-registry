@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader, ThemeProvider } from "@aws-amplify/ui-react";
+import { Loader, ThemeProvider, createTheme } from "@aws-amplify/ui-react";
 import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
 import "@aws-amplify/ui-react/styles.css";
 
@@ -74,13 +74,20 @@ export function FaceLivenessLoader() {
   const t = useT("register");
 
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-12">
-      <ThemeProvider>
-        <Loader size="large" />
-      </ThemeProvider>
-      <p className="text-white/70 text-sm animate-pulse">
-        {t("verification.creating_session")}
-      </p>
+    <div className="flex flex-col items-center justify-center gap-5 py-16">
+      <div className="relative">
+        <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse" />
+        <div className="relative w-20 h-20 rounded-full border-[3px] border-blue-500/30 border-t-blue-400 animate-spin" />
+      </div>
+      <div className="text-center space-y-2">
+        <p className="text-white/90 text-base font-medium">
+          {t("verification.creating_session")}
+        </p>
+        <p className="text-white/40 text-xs">
+          {t("verification.modal.description")}
+        </p>
+      </div>
     </div>
   );
 }
+

@@ -35,13 +35,15 @@ import type {
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
 import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
+import { ROUTES } from "@/lib/constants/routes";
 
 type VerificationPhase =
   | "idle"
   | "creating_session"
   | "liveness_active"
   | "verifying"
-  | "success";
+  | "success"
+  | "error";
 
 interface StepVerificationProps {
   onBack: () => void;
@@ -59,9 +61,11 @@ export function StepVerification({
   userData,
 }: StepVerificationProps) {
   const t = useT("register");
+  const tError = useT("error");
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phase, setPhase] = useState<VerificationPhase>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [livenessSessionId, setLivenessSessionId] = useState<string | null>(
     null,
   );
@@ -89,18 +93,21 @@ export function StepVerification({
   const createSession = useCallback(async () => {
     setPhase("creating_session");
     setLivenessSessionId(null);
+    setErrorMessage(null);
 
     const result = await verificationService.createLivenessSession();
 
     if (!result.success) {
-      setPhase("idle");
-      setIsModalOpen(false);
-
       if (result.code === "registration_session_missing") {
+        setPhase("idle");
+        setIsModalOpen(false);
         onRequireIdentification();
+        toast.error(t("verification.session_creation_failed"));
+        return;
       }
 
-      toast.error(t("verification.session_creation_failed"));
+      setPhase("error");
+      setErrorMessage(t("verification.session_creation_failed"));
       return;
     }
 
@@ -133,14 +140,16 @@ export function StepVerification({
     const result = await verificationService.verifyLiveness(livenessSessionId);
 
     if (!result.success) {
-      setPhase("idle");
-      setIsModalOpen(false);
-
       if (result.code === "registration_session_missing") {
+        setPhase("idle");
+        setIsModalOpen(false);
         onRequireIdentification();
+        toast.error(verificationErrorMessages[result.code]);
+        return;
       }
 
-      toast.error(verificationErrorMessages[result.code]);
+      setPhase("error");
+      setErrorMessage(verificationErrorMessages[result.code]);
       return;
     }
 
@@ -216,12 +225,12 @@ export function StepVerification({
       if (isHandlingError.current) return;
       isHandlingError.current = true;
 
-      toast.error(t("verification.verification_failed"));
-      await createSession();
+      setPhase("error");
+      setErrorMessage(t("verification.verification_failed"));
 
       isHandlingError.current = false;
     },
-    [createSession, t],
+    [t],
   );
 
   const handleModalClose = (open: boolean) => {
@@ -229,6 +238,7 @@ export function StepVerification({
       setIsModalOpen(false);
       setPhase("idle");
       setLivenessSessionId(null);
+      setErrorMessage(null);
     }
   };
 
@@ -291,10 +301,10 @@ export function StepVerification({
         />
         <label
           htmlFor="terms"
-          className="text-sm font-medium leading-relaxed text-primary dark:text-blue-100 cursor-pointer"
+          className="text-sm font-medium leading-relaxed text-secondary dark:text-blue-100 cursor-pointer"
         >
           <Link
-            href="/terms"
+            href={ROUTES.terms}
             target="_blank"
             className="underline decoration-blue-400 dark:decoration-blue-500 underline-offset-4 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
             onClick={(e) => e.stopPropagation()}
@@ -394,6 +404,40 @@ export function StepVerification({
                   <p className="text-sm text-white/40">
                     {t("account.success_description")}
                   </p>
+                </div>
+              </div>
+            )}
+
+            {phase === "error" && (
+              <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500 w-full max-w-md mx-auto p-8">
+                <div className="relative mx-auto w-24 h-24 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-red-500/20 blur-xl animate-pulse" />
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                    <ShieldAlert className="w-10 h-10 drop-shadow-md" />
+                  </div>
+                </div>
+                <div className="space-y-3 px-2">
+                  <p className="text-2xl font-bold text-red-400">
+                    {tError("title")}
+                  </p>
+                  <p className="text-base text-slate-200 leading-relaxed font-medium">
+                    {errorMessage}
+                  </p>
+                </div>
+                <div className="pt-6 flex flex-col gap-3">
+                  <Button
+                    onClick={createSession}
+                    className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-900/20"
+                  >
+                    {t("verification.retry")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleModalClose(false)}
+                    className="w-full h-12 text-base font-medium text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl"
+                  >
+                    {t("common.cancel")}
+                  </Button>
                 </div>
               </div>
             )}
