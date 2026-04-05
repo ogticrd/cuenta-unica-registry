@@ -14,13 +14,11 @@ export const ROUTES = {
   emailSent: "/register/email-sent",
 
   // Dashboard
-  dashboard: "/",
+  dashboard: "/dashboard",
   profile: "/profile",
   // settings: "/self-service/settings/browser",
   settings: "/settings",
   history: "/history",
-  support: "/support",
-  about: "/about",
 } as const;
 
 export type Route = (typeof ROUTES)[keyof typeof ROUTES];
