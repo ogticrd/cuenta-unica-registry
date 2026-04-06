@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import type { UiNode } from "@ory/client";
+import { describe, expect, it } from "vitest";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 
 /**
@@ -114,9 +114,7 @@ describe("mapOryAccountErrors", () => {
     const result = mapOryAccountErrors({
       ui: {
         nodes: [
-          createNode("traits.email", [
-            { id: 4000007, text: "Already exists" },
-          ]),
+          createNode("traits.email", [{ id: 4000007, text: "Already exists" }]),
         ],
       },
     });
@@ -157,8 +155,7 @@ describe("mapOryAccountErrors", () => {
   it("collects error from payload.error.reason", () => {
     const result = mapOryAccountErrors({
       error: {
-        reason:
-          "An account with this email already exists in the system.",
+        reason: "An account with this email already exists in the system.",
       },
     });
 

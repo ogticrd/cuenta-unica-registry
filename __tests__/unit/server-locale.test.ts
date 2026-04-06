@@ -1,8 +1,7 @@
-import { describe, expect, it } from "vitest";
+// Mock "server-only" since this module imports it
+import { describe, expect, it, vi } from "vitest";
 import { normalizeServerLocale } from "@/lib/ory/server-locale";
 
-// Mock "server-only" since this module imports it
-import { vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 describe("normalizeServerLocale", () => {

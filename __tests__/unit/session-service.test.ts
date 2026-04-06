@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { API } from "@/lib/constants/api";
-import { sessionService } from "@/lib/services/ory/session.service";
 import { authService } from "@/lib/services/ory/auth.service";
+import { sessionService } from "@/lib/services/ory/session.service";
 import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
 
 describe("sessionService", () => {

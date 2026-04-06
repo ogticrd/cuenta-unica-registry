@@ -16,7 +16,8 @@ describe("getAmplifyConfig", () => {
     process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID = "us-east-1_TestPool";
     process.env.NEXT_PUBLIC_AWS_REGION = "us-west-2";
     process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID = "client-id-123";
-    process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID = "us-east-1:identity-pool";
+    process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID =
+      "us-east-1:identity-pool";
 
     const config = getAmplifyConfig();
 

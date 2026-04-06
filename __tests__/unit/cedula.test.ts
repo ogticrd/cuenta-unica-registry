@@ -47,8 +47,9 @@ describe("cedula utils", () => {
   });
 
   it("honors configured Luhn exceptions through the production hash path", async () => {
-    process.env.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES =
-      await sha256Hex(INVALID_CHECKSUM_CEDULA);
+    process.env.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES = await sha256Hex(
+      INVALID_CHECKSUM_CEDULA,
+    );
 
     await expect(isValidCedula(INVALID_CHECKSUM_CEDULA)).resolves.toBe(true);
   });

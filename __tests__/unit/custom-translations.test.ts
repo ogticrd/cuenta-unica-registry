@@ -6,29 +6,19 @@ import {
 
 describe("translateOryMessageKey", () => {
   it("returns the Spanish translation for a known key", () => {
-    const result = translateOryMessageKey(
-      "identities.messages.4000007",
-      "es",
-    );
+    const result = translateOryMessageKey("identities.messages.4000007", "es");
 
     expect(result).toBe("Ya existe una cuenta con este correo electrónico.");
   });
 
   it("returns the English translation for a known key", () => {
-    const result = translateOryMessageKey(
-      "identities.messages.4000007",
-      "en",
-    );
+    const result = translateOryMessageKey("identities.messages.4000007", "en");
 
     expect(result).toBe("An account with this email already exists.");
   });
 
   it("returns the fallback when the key is unknown", () => {
-    const result = translateOryMessageKey(
-      "unknown.key",
-      "es",
-      "Fallback text",
-    );
+    const result = translateOryMessageKey("unknown.key", "es", "Fallback text");
 
     expect(result).toBe("Fallback text");
   });

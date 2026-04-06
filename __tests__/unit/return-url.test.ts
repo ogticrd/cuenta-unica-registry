@@ -11,7 +11,9 @@ describe("isValidReturnUrl", () => {
   });
 
   it("accepts HTTPS URLs with paths and query parameters", () => {
-    expect(isValidReturnUrl("https://example.com/dashboard?foo=bar")).toBe(true);
+    expect(isValidReturnUrl("https://example.com/dashboard?foo=bar")).toBe(
+      true,
+    );
   });
 
   it("rejects javascript: protocol", () => {

@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  extractSetCookieHeaders,
-  mergeCookieHeaders,
-} from "@/lib/ory/cookies";
+import { extractSetCookieHeaders, mergeCookieHeaders } from "@/lib/ory/cookies";
 
 describe("extractSetCookieHeaders", () => {
   it("returns an array when set-cookie is already an array", () => {
@@ -73,10 +70,7 @@ describe("mergeCookieHeaders", () => {
   });
 
   it("merges multiple set-cookie headers", () => {
-    const result = mergeCookieHeaders("a=1", [
-      "b=2; Path=/",
-      "c=3; Path=/",
-    ]);
+    const result = mergeCookieHeaders("a=1", ["b=2; Path=/", "c=3; Path=/"]);
 
     expect(result).toContain("a=1");
     expect(result).toContain("b=2");
