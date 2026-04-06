@@ -19,6 +19,8 @@ export const ROUTES = {
   // settings: "/self-service/settings/browser",
   settings: "/settings",
   history: "/history",
+
+  terms: "/terms",
 } as const;
 
 export type Route = (typeof ROUTES)[keyof typeof ROUTES];
