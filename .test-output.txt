@@ -1,0 +1,56 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90mC:/Users/tomas/Desktop/Proyectos/cuenta-unica-registry[39m
+
+ [31mΓ¥»[39m __tests__/unit/cedula.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 57[2mms[22m[39m
+     [32mΓ£ô[39m normalizes cedulas by stripping non-digits and truncating to 11 digits[32m 6[2mms[22m[39m
+     [32mΓ£ô[39m formats full and partial cedulas using the production formatter[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m accepts a valid cedula with or without punctuation[32m 5[2mms[22m[39m
+     [32mΓ£ô[39m rejects invalid-length and invalid-checksum cedulas[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m honors configured Luhn exceptions through the production hash path[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m rejects cedulas when configured exception hashes do not match[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m accepts matching exception hashes from a comma-separated env var with whitespace[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m exports the production cedula constants[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m rejects an all-zeros cedula as invalid checksum[39m[32m 26[2mms[22m[39m
+     [32mΓ£ô[39m formats a 4-digit cedula with the first dash[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m normalizes a string with only special characters to empty[32m 1[2mms[22m[39m
+bunx : 
+At line:1 char:1
++ bunx vitest run __tests__/unit/cedula.test.ts 2>&1 | Out-File -FilePa ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m[1m[41m Failed Tests 1 
+[49m[22m[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+
+[41m[1m FAIL [22m[49m __tests__/unit/cedula.test.ts[2m > [22mcedula 
+utils[2m > [22mrejects an all-zeros cedula as invalid checksum
+[31m[1mAssertionError[22m: expected true to be false // Object.is 
+equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2mΓ¥»[22m __tests__/unit/cedula.test.ts:[2m75:47[22m[39m
+    [90m 73|[39m
+    [90m 74|[39m   [34mit[39m([32m"rejects an all-zeros cedula as invalid 
+checksum"[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m 75|[39m     [35mawait[39m [34mexpect[39m([34misValidCedula[39m
+([32m"00000000000"[39m))[33m.[39mresolves[33m.[39m[34mtoBe[39m([35mfal
+se[39m)[33m;[39m
+    [90m   |[39m                                               [31m^[39m
+    [90m 76|[39m   })[33m;[39m
+    [90m 77|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»Γ
+Ä»[1/1]ΓÄ»[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m10 passed[39m[22m[90m (11)[39m
+[2m   Start at [22m 11:49:02
+[2m   Duration [22m 5.60s[2m (transform 185ms, setup 1.18s, import 76ms, tests 57ms, environment 3.55s)[22m
+

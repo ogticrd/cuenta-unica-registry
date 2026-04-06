@@ -70,4 +70,16 @@ describe("cedula utils", () => {
     expect(CEDULA_DIGITS_LENGTH).toBe(11);
     expect(CEDULA_MASK_LENGTH).toBe(13);
   });
+
+  it("rejects an all-zeros cedula as invalid checksum", async () => {
+    await expect(isValidCedula("00000000000")).resolves.toBe(false);
+  });
+
+  it("formats a 4-digit cedula with the first dash", () => {
+    expect(formatCedula("1234")).toBe("123-4");
+  });
+
+  it("normalizes a string with only special characters to empty", () => {
+    expect(normalizeCedula("---...///")).toBe("");
+  });
 });

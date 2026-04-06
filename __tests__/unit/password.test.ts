@@ -137,4 +137,40 @@ describe("password utils", () => {
     await expect(isBreachedPassword("StrongPass123!")).resolves.toBe(false);
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
+
+  it("short-circuits breach checks for empty string", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch");
+
+    await expect(isBreachedPassword("")).resolves.toBe(false);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("reports individual password requirements correctly", () => {
+    const lowercaseOnly = getPasswordRequirementStatus("abcdefghijkl");
+    expect(lowercaseOnly.lowercase).toBe(true);
+    expect(lowercaseOnly.uppercase).toBe(false);
+    expect(lowercaseOnly.number).toBe(false);
+    expect(lowercaseOnly.symbol).toBe(false);
+    expect(lowercaseOnly.length).toBe(true);
+
+    const uppercaseOnly = getPasswordRequirementStatus("ABCDEFGHIJKL");
+    expect(uppercaseOnly.lowercase).toBe(false);
+    expect(uppercaseOnly.uppercase).toBe(true);
+
+    const numberOnly = getPasswordRequirementStatus("1234567890");
+    expect(numberOnly.number).toBe(true);
+    expect(numberOnly.lowercase).toBe(false);
+
+    const symbolOnly = getPasswordRequirementStatus("!@#$%^&*()");
+    expect(symbolOnly.symbol).toBe(true);
+    expect(symbolOnly.lowercase).toBe(false);
+  });
+
+  it("rejects password missing only one requirement (no symbol)", () => {
+    expect(isPasswordStrongEnough("Abcdefghij1")).toBe(false);
+  });
+
+  it("rejects password missing only one requirement (no number)", () => {
+    expect(isPasswordStrongEnough("Abcdefghij!")).toBe(false);
+  });
 });
