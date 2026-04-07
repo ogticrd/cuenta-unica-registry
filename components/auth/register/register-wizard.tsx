@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
@@ -30,7 +30,9 @@ export function RegisterWizard({
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (activeStep !== undefined) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }, [activeStep]);
 
   const steps = [

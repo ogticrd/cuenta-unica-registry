@@ -54,6 +54,7 @@ export default function DashboardPage() {
     : t("stats_cards.security.desc_password");
 
   type QuickAction = {
+    id: string;
     title: string;
     description: string;
     icon: ReactNode;
@@ -66,24 +67,28 @@ export default function DashboardPage() {
 
   const quickActions: QuickAction[] = [
     {
+      id: "personal_data",
       title: t("quick_actions_list.personal_data.title"),
       description: t("quick_actions_list.personal_data.desc"),
       icon: <User size={24} />,
       href: ROUTES.settings,
     },
     {
+      id: "privacy",
       title: t("quick_actions_list.privacy.title"),
       description: t("quick_actions_list.privacy.desc"),
       icon: <Shield size={24} />,
       href: ROUTES.settings,
     },
     {
+      id: "history_clock",
       title: t("quick_actions_list.history.title"),
       description: t("quick_actions_list.history.desc"),
       icon: <Clock size={24} />,
       href: ROUTES.history,
     },
     {
+      id: "history_bell",
       title: t("quick_actions_list.history.title"),
       description: t("quick_actions_list.history.desc"),
       icon: <Bell size={24} />,
@@ -237,9 +242,9 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <DashboardCard title={t("quick_actions")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickActions.map((action, index) => (
+            {quickActions.map((action) => (
               <QuickActionCard
-                key={index}
+                key={action.id}
                 title={action.title}
                 description={action.description}
                 icon={action.icon}

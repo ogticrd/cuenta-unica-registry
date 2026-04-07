@@ -1,22 +1,22 @@
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentLocale } from "@/lib/i18n/server";
-import { TermsContent, type TermsData } from "./terms-content";
 import termsEn from "./data/terms-en.json";
 import termsEs from "./data/terms-es.json";
+import { TermsContent, type TermsData } from "./terms-content";
 
 export default async function TermsPage() {
   const locale = await getCurrentLocale();
-  
-  const title = locale === "es" 
-    ? "Términos de Uso y Política de Privacidad" 
-    : "Terms of Use and Privacy Policy";
-    
-  const backText = locale === "es" 
-    ? "Volver al registro" 
-    : "Back to registration";
+
+  const title =
+    locale === "es"
+      ? "Términos de Uso y Política de Privacidad"
+      : "Terms of Use and Privacy Policy";
+
+  const backText =
+    locale === "es" ? "Volver al registro" : "Back to registration";
 
   const termsData = locale === "es" ? termsEs : termsEn;
 

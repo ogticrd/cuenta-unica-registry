@@ -27,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
 import type {
@@ -35,7 +36,6 @@ import type {
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
 import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
-import { ROUTES } from "@/lib/constants/routes";
 
 type VerificationPhase =
   | "idle"
@@ -447,4 +447,3 @@ export function StepVerification({
     </div>
   );
 }
-

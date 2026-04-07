@@ -57,10 +57,11 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
             >
               <Bell
                 size={20}
-                className={`transition-all duration-300 ${isNotificationDrawerOpen
+                className={`transition-all duration-300 ${
+                  isNotificationDrawerOpen
                     ? "animate-pulse scale-110"
                     : "hover:rotate-12 hover:scale-110"
-                  }`}
+                }`}
               />
               {/* Notification badge */}
               <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-bounce">

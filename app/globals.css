@@ -56,18 +56,22 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(ellipse at bottom right,
-        hsl(var(--secondary) / 0.85) 0%,
-        hsl(var(--secondary) / 0.4) 20%,
-        transparent 25%);
+    background-image: radial-gradient(
+      ellipse at bottom right,
+      hsl(var(--secondary) / 0.85) 0%,
+      hsl(var(--secondary) / 0.4) 20%,
+      transparent 25%
+    );
     background-attachment: fixed;
   }
 
   .dark body {
-    background-image: radial-gradient(ellipse at bottom right,
-        hsl(221 70% 20% / 0.6) 0%,
-        hsl(224 60% 14% / 0.35) 25%,
-        transparent 50%);
+    background-image: radial-gradient(
+      ellipse at bottom right,
+      hsl(221 70% 20% / 0.6) 0%,
+      hsl(224 60% 14% / 0.35) 25%,
+      transparent 50%
+    );
     background-attachment: fixed;
   }
 
@@ -95,7 +99,8 @@
   border: none !important;
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 0 60px rgba(0, 56, 118, 0.15),
+  box-shadow:
+    0 0 60px rgba(0, 56, 118, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.04) !important;
 }
 
@@ -212,7 +217,9 @@
   border: 1px solid rgba(0, 135, 255, 0.25) !important;
 }
 
-.liveness-detector-wrapper .amplify-liveness-toast--primary .amplify-liveness-toast__message {
+.liveness-detector-wrapper
+  .amplify-liveness-toast--primary
+  .amplify-liveness-toast__message {
   color: #ffffff !important;
 }
 
@@ -221,7 +228,9 @@
   border: 1px solid rgba(239, 68, 68, 0.3) !important;
 }
 
-.liveness-detector-wrapper .amplify-liveness-toast--error .amplify-liveness-toast__message {
+.liveness-detector-wrapper
+  .amplify-liveness-toast--error
+  .amplify-liveness-toast__message {
   color: #fecaca !important;
 }
 
@@ -235,12 +244,12 @@
 }
 
 .liveness-detector-wrapper .amplify-liveness-match-indicator__bar::after {
-  background: linear-gradient(90deg, #003876, #0087FF) !important;
+  background: linear-gradient(90deg, #003876, #0087ff) !important;
   border-radius: 999px !important;
 }
 
 .liveness-detector-wrapper .amplify-liveness-match-indicator__pin::after {
-  background: #0087FF !important;
+  background: #0087ff !important;
   border-radius: 999px !important;
   box-shadow: 0 0 8px rgba(0, 135, 255, 0.5) !important;
 }
@@ -347,9 +356,15 @@
 }
 
 .liveness-detector-wrapper .amplify-liveness-start-screen-camera-select__label,
-.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select,
-.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select__wrapper,
-.liveness-detector-wrapper .amplify-liveness-start-screen-camera-select .amplify-select__icon-wrapper {
+.liveness-detector-wrapper
+  .amplify-liveness-start-screen-camera-select
+  .amplify-select,
+.liveness-detector-wrapper
+  .amplify-liveness-start-screen-camera-select
+  .amplify-select__wrapper,
+.liveness-detector-wrapper
+  .amplify-liveness-start-screen-camera-select
+  .amplify-select__icon-wrapper {
   background-color: #111827 !important;
   color: #f1f5f9 !important;
   border-color: #334155 !important;
@@ -377,7 +392,7 @@
 }
 
 /* --- Biometric Modal — Radix Dialog Close Button --- */
-.biometric-modal>button[class*="absolute"] {
+.biometric-modal > button[class*="absolute"] {
   right: 20px !important;
   top: 20px !important;
   width: 44px !important;
@@ -396,13 +411,13 @@
   z-index: 50 !important;
 }
 
-.biometric-modal>button[class*="absolute"]:hover {
+.biometric-modal > button[class*="absolute"]:hover {
   background-color: rgba(255, 255, 255, 0.25) !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
   transform: scale(1.08) !important;
 }
 
-.biometric-modal>button[class*="absolute"] svg {
+.biometric-modal > button[class*="absolute"] svg {
   width: 22px !important;
   height: 22px !important;
   color: #ffffff !important;

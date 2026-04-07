@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Clock,
-  Home,
-  Loader2,
-  LogOut,
-  Shield,
-  User,
-  X,
-} from "lucide-react";
+import { Clock, Home, Loader2, LogOut, Shield, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";

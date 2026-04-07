@@ -1,5 +1,5 @@
 import { createOryMiddleware } from "@ory/nextjs/middleware";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
@@ -42,7 +42,9 @@ export async function proxy(request: NextRequest) {
     return oryMiddleware(request);
   }
 
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) => path.startsWith(route));
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
+    path.startsWith(route),
+  );
   const isAuthRoute = AUTH_ROUTES.some((route) => path.startsWith(route));
 
   if (isProtectedRoute || isAuthRoute) {

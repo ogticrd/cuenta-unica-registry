@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -9,13 +9,13 @@ import {
   type VerifyCodeState,
   verifyCodeAction,
 } from "@/app/(auth)/register/email-sent/actions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
 

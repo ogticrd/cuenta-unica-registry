@@ -36,16 +36,14 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
 
 export default async function ForgotPasswordPage(props: OryPageParams) {
   return (
-    <>
-      <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container mx-auto px-4">
-          <div className="ory-auth-scope w-full max-w-md mx-auto">
-            <Suspense fallback={<LoadingFallback />}>
-              <RecoveryFlow searchParams={props.searchParams} />
-            </Suspense>
-          </div>
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4">
+        <div className="ory-auth-scope w-full max-w-md mx-auto">
+          <Suspense fallback={<LoadingFallback />}>
+            <RecoveryFlow searchParams={props.searchParams} />
+          </Suspense>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
