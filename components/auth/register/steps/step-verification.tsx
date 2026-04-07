@@ -344,19 +344,13 @@ export function StepVerification({
       </button>
 
       <Dialog open={isModalOpen} onOpenChange={handleModalClose}>
-        <DialogContent className="biometric-modal max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-gradient-to-b from-[#0a0e1a] via-[#0f1629] to-[#0a0e1a] flex flex-col items-center justify-center overflow-hidden">
+        <DialogContent className="biometric-modal max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-[#0f1629] flex flex-col items-center justify-center overflow-hidden">
           <DialogTitle className="sr-only">
             {t("verification.modal.screenreader_title")}
           </DialogTitle>
           <DialogDescription className="sr-only">
             {t("verification.modal.screenreader_description")}
           </DialogDescription>
-
-          {/* Subtle ambient glow */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/[0.07] blur-3xl" />
-            <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-indigo-500/[0.05] blur-3xl" />
-          </div>
 
           <div className="relative w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
             {phase === "creating_session" && <FaceLivenessLoader />}
@@ -373,11 +367,6 @@ export function StepVerification({
 
             {phase === "verifying" && (
               <div className="text-center space-y-6 animate-in fade-in duration-500">
-                <div className="relative mx-auto w-24 h-24">
-                  <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse" />
-                  <div className="relative w-24 h-24 rounded-full border-[3px] border-blue-500/30 border-t-blue-400 animate-spin" />
-                  <div className="absolute inset-3 rounded-full border-[2px] border-indigo-400/20 border-b-indigo-300 animate-spin [animation-direction:reverse] [animation-duration:1.5s]" />
-                </div>
                 <div className="space-y-2">
                   <p className="text-lg font-semibold text-white">
                     {t("verification.verifying_identity")}
@@ -392,7 +381,6 @@ export function StepVerification({
             {phase === "success" && (
               <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
                 <div className="relative mx-auto">
-                  <div className="absolute inset-0 w-28 h-28 rounded-full bg-green-500/25 blur-2xl mx-auto animate-pulse" />
                   <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(34,197,94,0.3)]">
                     <Check className="h-14 w-14 text-white drop-shadow-md" />
                   </div>
@@ -411,7 +399,6 @@ export function StepVerification({
             {phase === "error" && (
               <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500 w-full max-w-md mx-auto p-8">
                 <div className="relative mx-auto w-24 h-24 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-red-500/20 blur-xl animate-pulse" />
                   <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
                     <ShieldAlert className="w-10 h-10 drop-shadow-md" />
                   </div>

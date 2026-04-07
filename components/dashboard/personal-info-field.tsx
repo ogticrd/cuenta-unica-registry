@@ -27,7 +27,7 @@ export function PersonalInfoField({
     >
       <div className="flex items-center gap-2">
         {icon}
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
           {label}
         </span>
         {verified && (

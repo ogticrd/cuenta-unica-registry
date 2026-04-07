@@ -409,7 +409,7 @@
     "contact_information": "Información de contacto",
     "email": "Correo electrónico",
     "phone": "Teléfono",
-    "official_records_note": "La información mostrada proviene de registros oficiales (JCE, TSS, DGII) y está sincronizada con el sistema. Para modificar tus datos, debes dirigirte a las oficinas correspondientes de la Junta Central Electoral.",
+    "official_records_note": "La información mostrada proviene de registros oficiales (JCE) y está sincronizada con el sistema. Para modificar tus datos, debes dirigirte a las oficinas correspondientes de la Junta Central Electoral.",
     "not_registered": "No registrado",
     "verified": "Verificado",
     "gender_male": "Masculino",

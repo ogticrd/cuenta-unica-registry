@@ -1,8 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { DeviceItem } from "@/components/dashboard/device-item";
 import { PortalItem } from "@/components/dashboard/portal-item";
 import { SecuritySection } from "@/components/dashboard/security-section";
@@ -216,99 +215,94 @@ export default function HistoryPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-12 pb-12">
-        <div className="space-y-4 pb-8 border-b dark:border-border">
-          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            {t("subtitle")}
-          </p>
-        </div>
+    <div className="space-y-12 pb-12">
+      <div className="space-y-4 pb-8 border-b dark:border-border">
+        <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground text-lg leading-relaxed">
+          {t("subtitle")}
+        </p>
+      </div>
 
-        <div className="space-y-12">
-          <SecuritySection title={t("linked_devices")}>
-            <div className="space-y-0">
-              {devices.length > 0 ? (
-                devices.map((device) => (
-                  <DeviceItem
-                    key={device.id}
-                    device={device.device}
-                    ipAddress={device.ipAddress}
-                    location={device.location}
-                    lastAccess={device.lastAccess}
-                    expirationDate={device.expirationDate}
-                    status={device.status}
-                    onUnlink={
-                      device.isCurrentSession
-                        ? undefined
-                        : () =>
-                            handleOpenUnlinkDeviceModal(
-                              device.id,
-                              device.device,
-                            )
-                    }
-                  />
-                ))
-              ) : (
-                <div className="py-8 text-muted-foreground text-center border dark:border-border rounded-lg bg-card">
-                  {t("no_devices")}
-                </div>
-              )}
-            </div>
-          </SecuritySection>
-
-          <SecuritySection title={t("institutional_portals")}>
-            <div className="space-y-0">
-              {portals.map((portal) => (
-                <PortalItem
-                  key={portal.id}
-                  name={portal.name}
-                  lastAccess={portal.lastAccess}
-                  onUnlink={() =>
-                    handleOpenUnlinkPortalModal(portal.id, portal.name)
+      <div className="space-y-12">
+        <SecuritySection title={t("linked_devices")}>
+          <div className="space-y-0">
+            {devices.length > 0 ? (
+              devices.map((device) => (
+                <DeviceItem
+                  key={device.id}
+                  device={device.device}
+                  ipAddress={device.ipAddress}
+                  location={device.location}
+                  lastAccess={device.lastAccess}
+                  expirationDate={device.expirationDate}
+                  status={device.status}
+                  onUnlink={
+                    device.isCurrentSession
+                      ? undefined
+                      : () =>
+                          handleOpenUnlinkDeviceModal(device.id, device.device)
                   }
                 />
-              ))}
-            </div>
-          </SecuritySection>
-        </div>
+              ))
+            ) : (
+              <div className="py-8 text-muted-foreground text-center border dark:border-border rounded-lg bg-card">
+                {t("no_devices")}
+              </div>
+            )}
+          </div>
+        </SecuritySection>
 
-        <ConfirmationModal
-          isOpen={unlinkDeviceModal.isOpen}
-          onClose={handleCloseUnlinkDeviceModal}
-          onConfirm={handleConfirmUnlinkDevice}
-          title={t("unlink_device_title", {
-            deviceName: unlinkDeviceModal.deviceName,
-          })}
-          description={t("unlink_device_description")}
-          confirmText={t("unlink")}
-          cancelText={t("cancel")}
-          confirmVariant="destructive"
-          isLoading={unlinkDeviceModal.isLoading}
-        />
-
-        <ConfirmationModal
-          isOpen={unlinkPortalModal.isOpen}
-          onClose={handleCloseUnlinkPortalModal}
-          onConfirm={handleConfirmUnlinkPortal}
-          title={t("unlink_portal_title", {
-            portalName: unlinkPortalModal.portalName,
-          })}
-          description={t("unlink_portal_description")}
-          confirmText={t("unlink")}
-          cancelText={t("cancel")}
-          confirmVariant="destructive"
-          isLoading={unlinkPortalModal.isLoading}
-        >
-          <ul className="space-y-2 text-sm text-muted-foreground mt-4 mb-2 pl-4 border-l-2 border-primary/20 dark:border-primary/25 dark:text-white">
-            <li>{t("unlink_portal_consequence_1")}</li>
-            <li>{t("unlink_portal_consequence_2")}</li>
-            <li>{t("unlink_portal_consequence_3")}</li>
-          </ul>
-        </ConfirmationModal>
+        <SecuritySection title={t("institutional_portals")}>
+          <div className="space-y-0">
+            {portals.map((portal) => (
+              <PortalItem
+                key={portal.id}
+                name={portal.name}
+                lastAccess={portal.lastAccess}
+                onUnlink={() =>
+                  handleOpenUnlinkPortalModal(portal.id, portal.name)
+                }
+              />
+            ))}
+          </div>
+        </SecuritySection>
       </div>
-    </DashboardLayout>
+
+      <ConfirmationModal
+        isOpen={unlinkDeviceModal.isOpen}
+        onClose={handleCloseUnlinkDeviceModal}
+        onConfirm={handleConfirmUnlinkDevice}
+        title={t("unlink_device_title", {
+          deviceName: unlinkDeviceModal.deviceName,
+        })}
+        description={t("unlink_device_description")}
+        confirmText={t("unlink")}
+        cancelText={t("cancel")}
+        confirmVariant="destructive"
+        isLoading={unlinkDeviceModal.isLoading}
+      />
+
+      <ConfirmationModal
+        isOpen={unlinkPortalModal.isOpen}
+        onClose={handleCloseUnlinkPortalModal}
+        onConfirm={handleConfirmUnlinkPortal}
+        title={t("unlink_portal_title", {
+          portalName: unlinkPortalModal.portalName,
+        })}
+        description={t("unlink_portal_description")}
+        confirmText={t("unlink")}
+        cancelText={t("cancel")}
+        confirmVariant="destructive"
+        isLoading={unlinkPortalModal.isLoading}
+      >
+        <ul className="space-y-2 text-sm text-muted-foreground mt-4 mb-2 pl-4 border-l-2 border-primary/20 dark:border-primary/25 dark:text-white">
+          <li>{t("unlink_portal_consequence_1")}</li>
+          <li>{t("unlink_portal_consequence_2")}</li>
+          <li>{t("unlink_portal_consequence_3")}</li>
+        </ul>
+      </ConfirmationModal>
+    </div>
   );
 }

@@ -400,10 +400,15 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.4
+  ) !important; /* Darkened to ensure contrast against white camera feeds */
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 50% !important;
   opacity: 1 !important;
   color: #ffffff !important;
@@ -412,8 +417,8 @@
 }
 
 .biometric-modal > button[class*="absolute"]:hover {
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
+  background-color: rgba(0, 0, 0, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
   transform: scale(1.08) !important;
 }
 

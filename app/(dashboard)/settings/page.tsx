@@ -1,6 +1,5 @@
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getSettingsFlow } from "@/lib/ory/flow";
@@ -22,20 +21,18 @@ async function SettingsFlowComponent({ searchParams }: OryPageParams) {
 export default async function SettingsPage(props: OryPageParams) {
   const t = await getT("settings");
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        <div className="space-y-4 pb-8 border-b dark:border-border">
-          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            {t("subtitle")}
-          </p>
-        </div>
-        <Suspense fallback={<LoadingFallback />}>
-          <SettingsFlowComponent searchParams={props.searchParams} />
-        </Suspense>
+    <div className="space-y-8">
+      <div className="space-y-4 pb-8 border-b dark:border-border">
+        <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground text-lg leading-relaxed">
+          {t("subtitle")}
+        </p>
       </div>
-    </DashboardLayout>
+      <Suspense fallback={<LoadingFallback />}>
+        <SettingsFlowComponent searchParams={props.searchParams} />
+      </Suspense>
+    </div>
   );
 }
