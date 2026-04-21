@@ -1,3 +1,4 @@
+// gitguardian:ignore
 import { createHash } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -80,9 +81,9 @@ describe("password utils", () => {
     await expect(isBreachedPassword(password)).resolves.toBe(false);
 
     expect(digestSpy.mock.calls[0]?.[0]).toBe("SHA-1");
-    expect(ArrayBuffer.isView(digestSpy.mock.calls[0]?.[1] as ArrayBufferView)).toBe(
-      true,
-    );
+    expect(
+      ArrayBuffer.isView(digestSpy.mock.calls[0]?.[1] as ArrayBufferView),
+    ).toBe(true);
     expect(fetchSpy).toHaveBeenCalledWith(
       `https://api.pwnedpasswords.com/range/${expectedPrefix}`,
       {

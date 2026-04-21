@@ -47,8 +47,9 @@ describe("cedula utils", () => {
   });
 
   it("honors configured Luhn exceptions through the production hash path", async () => {
-    process.env.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES =
-      await sha256Hex(INVALID_CHECKSUM_CEDULA);
+    process.env.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES = await sha256Hex(
+      INVALID_CHECKSUM_CEDULA,
+    );
 
     await expect(isValidCedula(INVALID_CHECKSUM_CEDULA)).resolves.toBe(true);
   });
@@ -69,5 +70,17 @@ describe("cedula utils", () => {
   it("exports the production cedula constants", () => {
     expect(CEDULA_DIGITS_LENGTH).toBe(11);
     expect(CEDULA_MASK_LENGTH).toBe(13);
+  });
+
+  it("rejects an all-zeros cedula as invalid checksum", async () => {
+    await expect(isValidCedula("00000000000")).resolves.toBe(false);
+  });
+
+  it("formats a 4-digit cedula with the first dash", () => {
+    expect(formatCedula("1234")).toBe("123-4");
+  });
+
+  it("normalizes a string with only special characters to empty", () => {
+    expect(normalizeCedula("---...///")).toBe("");
   });
 });
