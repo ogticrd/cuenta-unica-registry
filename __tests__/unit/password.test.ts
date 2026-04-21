@@ -1,6 +1,6 @@
 // gitguardian:ignore
 import { createHash } from "node:crypto";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getPasswordRequirementStatus,
   isBreachedPassword,
@@ -18,10 +18,6 @@ function sha1ArrayBuffer(value: string) {
 
 describe("password utils", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  afterEach(() => {
     vi.restoreAllMocks();
   });
 

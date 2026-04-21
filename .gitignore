@@ -32,3 +32,10 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Vitest coverage
+/coverage/
+
+# Test output
+*.test-output.txt
+*.lcov

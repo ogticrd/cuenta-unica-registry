@@ -1,13 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { API } from "@/lib/constants/api";
 import { accountService } from "@/lib/services/registration/account.service";
 
 describe("accountService.registerAccount", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  afterEach(() => {
     vi.restoreAllMocks();
   });
 

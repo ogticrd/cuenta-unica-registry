@@ -88,7 +88,7 @@ import { POST as postSessionReset } from "@/app/api/registration/session/reset/r
 import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 
-describe("registration account route", () => {
+describe("registration route orchestration - account", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockNormalizeCedula.mockImplementation((value: string) => value);
@@ -318,7 +318,7 @@ describe("registration account route", () => {
   });
 });
 
-describe("registration citizen route", () => {
+describe("registration route orchestration - citizen", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockNormalizeCedula.mockImplementation((value: string) => value.replace(/\D/g, ""));
@@ -426,7 +426,7 @@ describe("registration citizen route", () => {
   });
 });
 
-describe("registration liveness-session route", () => {
+describe("registration route orchestration - liveness-session", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -481,7 +481,7 @@ describe("registration liveness-session route", () => {
   });
 });
 
-describe("registration session reset route", () => {
+describe("registration route orchestration - session reset", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockClearRegistrationSessionCookie.mockReturnValue({
@@ -501,7 +501,7 @@ describe("registration session reset route", () => {
   });
 });
 
-describe("registration liveness-result route", () => {
+describe("registration route orchestration - liveness-result", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockCreateRegistrationSessionCookie.mockReturnValue({

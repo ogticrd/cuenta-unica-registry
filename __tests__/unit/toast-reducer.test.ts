@@ -22,24 +22,12 @@ describe("toast reducer", () => {
       expect(result.toasts[0]?.id).toBe("1");
     });
 
-    it("prepends new toasts (most recent first) while respecting the toast limit", () => {
+    it("prepends new toasts and enforces the toast limit of 1", () => {
       const state = { toasts: [createToast("1")] };
       const toast = createToast("2");
 
       const result = reducer(state, { type: "ADD_TOAST", toast });
 
-      expect(result.toasts[0]?.id).toBe("2");
-
-      expect(result.toasts).toHaveLength(1);
-    });
-
-    it("enforces the toast limit of 1", () => {
-      const state = { toasts: [createToast("1")] };
-      const toast = createToast("2");
-
-      const result = reducer(state, { type: "ADD_TOAST", toast });
-
-      // TOAST_LIMIT is 1, so only the newest should remain
       expect(result.toasts).toHaveLength(1);
       expect(result.toasts[0]?.id).toBe("2");
     });

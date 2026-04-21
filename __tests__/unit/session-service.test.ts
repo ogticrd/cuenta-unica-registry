@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { API } from "@/lib/constants/api";
 import { authService } from "@/lib/services/ory/auth.service";
 import { sessionService } from "@/lib/services/ory/session.service";
@@ -9,9 +9,6 @@ describe("sessionService", () => {
     vi.restoreAllMocks();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   describe("getSession", () => {
     it("returns session data on success", async () => {
@@ -103,9 +100,6 @@ describe("authService", () => {
     vi.restoreAllMocks();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   describe("logout", () => {
     it("returns redirect_to on success", async () => {
@@ -154,9 +148,6 @@ describe("registrationSessionApiService", () => {
     vi.restoreAllMocks();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   describe("reset", () => {
     it("returns success on successful reset", async () => {

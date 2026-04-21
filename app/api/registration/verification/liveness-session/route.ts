@@ -16,12 +16,14 @@ function createErrorResponse(
 }
 
 export async function POST() {
-  try {
-    const session = await getRegistrationSession();
 
-    if (!session) {
-      return createErrorResponse("registration_session_missing", 400);
-    }
+  const session = await getRegistrationSession();
+
+  if (!session) {
+    return createErrorResponse("registration_session_missing", 400);
+  }
+
+  try {
 
     const sessionId = await createLivenessSession();
 
