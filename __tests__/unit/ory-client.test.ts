@@ -2,9 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@ory/client", () => ({
     Configuration: vi.fn(),
-    FrontendApi: vi.fn(function () {
-        return { mocked: true };
-    }),
+    FrontendApi: vi.fn(() => ({ mocked: true })),
 }));
 
 describe("createOryClient", () => {

@@ -50,6 +50,7 @@ function setRequestCookies(cookies: Record<string, string>) {
 
 beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
     setRequestCookies({});
     setRequestCookieHeader("");
 
@@ -155,6 +156,53 @@ describe("liveness threshold configuration", () => {
             if (command.input?.SessionId) {
                 return {
                     Confidence: 89, // below default 90 threshold
+                    ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+                    Status: "SUCCEEDED",
+                };
+            }
+            return {
+                FaceMatches: [{ Similarity: 96 }],
+            };
+        });
+
+        const response = await postLivenessResult(
+            new Request("http://localhost/api/registration/verification/liveness-result", {
+                method: "POST",
+                body: JSON.stringify({ sessionId: "session-123" }),
+                headers: { "Content-Type": "application/json" },
+            }),
+        );
+
+        expect(response.status).toBe(400);
+        await expect(response.json()).resolves.toEqual({
+            success: false,
+            code: "liveness_check_failed",
+        });
+    });
+
+    it("falls back to default thresholds when env vars are invalid", async () => {
+        process.env.LIVENESS_CONFIDENCE_THRESHOLD = "not-a-number";
+        process.env.FACE_SIMILARITY_THRESHOLD = "-1";
+
+        const { POST: postLivenessResult } = await import(
+            "@/app/api/registration/verification/liveness-result/route"
+        );
+
+        setRequestCookies({
+            registration_session: createRegistrationSessionCookie(
+                "40200612345",
+                "identified",
+            ).value,
+        });
+
+        vi.spyOn(global, "fetch").mockResolvedValueOnce(
+            new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),
+        );
+
+        mockRekognitionSend.mockImplementation(async (command: { input?: Record<string, unknown> }) => {
+            if (command.input?.SessionId) {
+                return {
+                    Confidence: 89,
                     ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
                     Status: "SUCCEEDED",
                 };

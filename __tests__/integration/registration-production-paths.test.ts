@@ -153,6 +153,34 @@ describe("registration production paths", () => {
     });
   });
 
+  it("returns unexpected_error when registration session validation throws", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "identified",
+      ).value,
+    });
+    delete process.env.REGISTRATION_SESSION_SECRET;
+
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    const response = await postVerification();
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "unexpected_error",
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "[/api/registration/verification] Failed to validate registration session:",
+      ),
+      expect.any(Error),
+    );
+  });
+
   it("redirects to the return url when Ory completes registration immediately", async () => {
     setRequestCookies({
       registration_session: createRegistrationSessionCookie(
