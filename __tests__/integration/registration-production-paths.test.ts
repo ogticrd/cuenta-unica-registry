@@ -64,9 +64,9 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
 
 import { POST as postAccount } from "@/app/api/registration/account/route";
 import { POST as postCitizen } from "@/app/api/registration/citizen/route";
+import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 import { POST as postVerification } from "@/app/api/registration/verification/route";
-import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import {
   createRegistrationSessionCookie,
   getRegistrationSession,
@@ -110,7 +110,9 @@ beforeEach(() => {
 
   mockHeaders.mockResolvedValue(
     new Headers(
-      getRequestCookieHeader() ? { cookie: getRequestCookieHeader() } : undefined,
+      getRequestCookieHeader()
+        ? { cookie: getRequestCookieHeader() }
+        : undefined,
     ),
   );
 
@@ -137,7 +139,10 @@ describe("registration production paths", () => {
 
   it("rejects an expired signed registration session in the verification route", async () => {
     const nowSpy = vi.spyOn(Date, "now").mockReturnValue(1_000);
-    const cookie = createRegistrationSessionCookie("40200612345", "identified").value;
+    const cookie = createRegistrationSessionCookie(
+      "40200612345",
+      "identified",
+    ).value;
     nowSpy.mockReturnValue(31 * 60 * 1_000);
 
     setRequestCookies({
@@ -234,7 +239,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -244,7 +251,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
 
@@ -321,7 +330,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -332,7 +343,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
 
@@ -407,7 +420,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -418,7 +433,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
 
@@ -462,11 +479,14 @@ describe("registration production paths", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(502);
@@ -496,11 +516,14 @@ describe("registration production paths", () => {
       .mockRejectedValueOnce(new Error("compare failed"));
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(502);
@@ -524,11 +547,14 @@ describe("registration production paths", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(400);
@@ -575,7 +601,9 @@ describe("registration production paths", () => {
           },
         }),
       )
-      .mockResolvedValueOnce(new Response(Uint8Array.from([4, 5, 6]), { status: 200 }))
+      .mockResolvedValueOnce(
+        new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),
+      )
       .mockResolvedValueOnce(
         buildJsonResponse({
           valid: true,
@@ -615,7 +643,9 @@ describe("registration production paths", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -628,28 +658,32 @@ describe("registration production paths", () => {
         ],
       },
       headers: {
-        "set-cookie": ["ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
-    mockRekognitionSend.mockImplementation(async (command: { input?: Record<string, unknown> }) => {
-      if (command.input?.SessionId) {
-        return {
-          Confidence: 99,
-          ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
-          Status: "SUCCEEDED",
-        };
-      }
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) => {
+        if (command.input?.SessionId) {
+          return {
+            Confidence: 99,
+            ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+            Status: "SUCCEEDED",
+          };
+        }
 
-      if (command.input?.SimilarityThreshold) {
-        return {
-          FaceMatches: [{ Similarity: 96 }],
-        };
-      }
+        if (command.input?.SimilarityThreshold) {
+          return {
+            FaceMatches: [{ Similarity: 96 }],
+          };
+        }
 
-      return {
-        SessionId: "session-123",
-      };
-    });
+        return {
+          SessionId: "session-123",
+        };
+      },
+    );
 
     const citizenResponse = await postCitizen(
       new Request("http://localhost/api/registration/citizen", {
@@ -663,7 +697,9 @@ describe("registration production paths", () => {
     );
 
     expect(citizenResponse.status).toBe(200);
-    const identifiedCookie = citizenResponse.cookies.get("registration_session");
+    const identifiedCookie = citizenResponse.cookies.get(
+      "registration_session",
+    );
     expect(identifiedCookie?.value).toBeTruthy();
 
     setRequestCookies({
@@ -681,15 +717,20 @@ describe("registration production paths", () => {
     });
 
     const livenessResultResponse = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
     expect(livenessResultResponse.status).toBe(200);
 
-    const verifiedCookie = livenessResultResponse.cookies.get("registration_session");
+    const verifiedCookie = livenessResultResponse.cookies.get(
+      "registration_session",
+    );
     expect(verifiedCookie?.value).toBeTruthy();
 
     setRequestCookies({
@@ -719,7 +760,9 @@ describe("registration production paths", () => {
         "/register/email-sent?flow=verification-flow-123&return_url=https%3A%2F%2Fexample.com%2Fdashboard",
     });
     expect(accountResponse.cookies.get("registration_session")?.value).toBe("");
-    expect(accountResponse.cookies.get("ory_session")?.value).toBe("ory-session");
+    expect(accountResponse.cookies.get("ory_session")?.value).toBe(
+      "ory-session",
+    );
 
     setRequestCookies({});
     await expect(getRegistrationSession()).resolves.toBeNull();

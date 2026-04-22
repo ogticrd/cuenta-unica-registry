@@ -79,9 +79,7 @@ export async function goToRegistrationStep3(page: Page) {
   await page.locator('input[name="email"]').fill("juan@example.com");
   await page.locator('input[name="confirmEmail"]').fill("juan@example.com");
   await page.locator('input[name="password"]').fill("Segura!Clave123");
-  await page
-    .locator('input[name="confirmPassword"]')
-    .fill("Segura!Clave123");
+  await page.locator('input[name="confirmPassword"]').fill("Segura!Clave123");
   await page.getByRole("button", { name: "CONTINUAR" }).click();
   await expect(
     page.getByRole("button", { name: "INICIAR PROCESO" }),

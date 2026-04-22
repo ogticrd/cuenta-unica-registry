@@ -40,7 +40,9 @@ describe("proxy", () => {
     const request = { nextUrl: { pathname: "/self-service/login/browser" } };
     mockOryMiddleware.mockResolvedValueOnce("async-middleware-result");
 
-    await expect(proxy(request as never)).resolves.toBe("async-middleware-result");
+    await expect(proxy(request as never)).resolves.toBe(
+      "async-middleware-result",
+    );
     expect(mockOryMiddleware).toHaveBeenCalledWith(request);
   });
 

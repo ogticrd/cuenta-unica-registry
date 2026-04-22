@@ -187,7 +187,10 @@ describe("RegisterWizard", () => {
   });
 
   it("stays on step 1 and shows a toast when reset fails", async () => {
-    mockReset.mockResolvedValueOnce({ success: false, code: "unexpected_error" });
+    mockReset.mockResolvedValueOnce({
+      success: false,
+      code: "unexpected_error",
+    });
 
     render(<RegisterWizard initialStep={1} initialName="Juan" />);
 
@@ -215,6 +218,8 @@ describe("RegisterWizard", () => {
 
     fireEvent.click(screen.getByText("verification-require-identification"));
 
-    expect(await screen.findByTestId("step-identification")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("step-identification"),
+    ).toBeInTheDocument();
   });
 });

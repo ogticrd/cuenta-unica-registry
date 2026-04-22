@@ -1,6 +1,9 @@
 // Mock "server-only" since this module imports it
 import { describe, expect, it, vi } from "vitest";
-import { getServerLocale, normalizeServerLocale } from "@/lib/ory/server-locale";
+import {
+  getServerLocale,
+  normalizeServerLocale,
+} from "@/lib/ory/server-locale";
 
 const mockCookieGet = vi.fn();
 

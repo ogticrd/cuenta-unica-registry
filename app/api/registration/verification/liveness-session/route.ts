@@ -16,7 +16,6 @@ function createErrorResponse(
 }
 
 export async function POST() {
-
   const session = await getRegistrationSession();
 
   if (!session) {
@@ -24,7 +23,6 @@ export async function POST() {
   }
 
   try {
-
     const sessionId = await createLivenessSession();
 
     const payload: CreateLivenessSessionResponse = {

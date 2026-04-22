@@ -64,8 +64,8 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
 
 import { POST as postAccount } from "@/app/api/registration/account/route";
 import { POST as postCitizen } from "@/app/api/registration/citizen/route";
-import { POST as postVerification } from "@/app/api/registration/verification/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
+import { POST as postVerification } from "@/app/api/registration/verification/route";
 import {
   createRegistrationSessionCookie,
   getRegistrationSession,
@@ -113,7 +113,9 @@ beforeEach(() => {
 
   mockHeaders.mockResolvedValue(
     new Headers(
-      getRequestCookieHeader() ? { cookie: getRequestCookieHeader() } : undefined,
+      getRequestCookieHeader()
+        ? { cookie: getRequestCookieHeader() }
+        : undefined,
     ),
   );
 
@@ -234,7 +236,9 @@ describe("registration production routes", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -247,7 +251,9 @@ describe("registration production routes", () => {
         ],
       },
       headers: {
-        "set-cookie": ["ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
 
@@ -359,7 +365,9 @@ describe("registration production routes", () => {
         },
       },
       headers: {
-        "set-cookie": ["csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
     mockUpdateRegistrationFlow.mockResolvedValueOnce({
@@ -381,7 +389,9 @@ describe("registration production routes", () => {
         },
       },
       headers: {
-        "set-cookie": ["ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test"],
+        "set-cookie": [
+          "ory_session=partial-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
       },
     });
 
@@ -416,27 +426,34 @@ describe("registration production routes", () => {
       ).value,
     });
 
-    vi.spyOn(global, "fetch").mockResolvedValueOnce(buildBinaryResponse([4, 5, 6]));
-    mockRekognitionSend.mockImplementation(async (command: { input?: Record<string, unknown> }) => {
-      if (command.input?.SessionId) {
-        return {
-          Confidence: 99,
-          ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
-          Status: "SUCCEEDED",
-        };
-      }
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      buildBinaryResponse([4, 5, 6]),
+    );
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) => {
+        if (command.input?.SessionId) {
+          return {
+            Confidence: 99,
+            ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+            Status: "SUCCEEDED",
+          };
+        }
 
-      return {
-        FaceMatches: [{ Similarity: 96 }],
-      };
-    });
+        return {
+          FaceMatches: [{ Similarity: 96 }],
+        };
+      },
+    );
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(global.fetch).toHaveBeenCalledWith(

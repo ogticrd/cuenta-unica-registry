@@ -63,9 +63,7 @@ test.describe("Registration journeys", () => {
     await goToRegistrationStep2(page);
 
     await page.locator('input[name="email"]').fill("juan@example.com");
-    await page
-      .locator('input[name="confirmEmail"]')
-      .fill("otro@example.com");
+    await page.locator('input[name="confirmEmail"]').fill("otro@example.com");
     await page.locator('input[name="password"]').fill("weak");
     await page.locator('input[name="confirmPassword"]').fill("weak");
     await page.getByRole("button", { name: "CONTINUAR" }).click();

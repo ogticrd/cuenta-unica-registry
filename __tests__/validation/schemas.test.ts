@@ -11,9 +11,10 @@ const {
 }));
 
 vi.mock("@/lib/utils/cedula", async () => {
-  const actual = await vi.importActual<typeof import("@/lib/utils/cedula")>(
-    "@/lib/utils/cedula",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/lib/utils/cedula")>(
+      "@/lib/utils/cedula",
+    );
 
   return {
     ...actual,
@@ -94,9 +95,7 @@ describe("createCedulaSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toBe(
-        "identification.id_invalid",
-      );
+      expect(result.error.issues[0]?.message).toBe("identification.id_invalid");
     }
   });
 });

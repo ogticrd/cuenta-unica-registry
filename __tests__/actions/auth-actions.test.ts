@@ -1,20 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const {
-  mockGetT,
-  mockUpdateVerificationFlow,
-  mockCreateOryClient,
-} = vi.hoisted(() => {
-  const updateVerificationFlow = vi.fn();
+const { mockGetT, mockUpdateVerificationFlow, mockCreateOryClient } =
+  vi.hoisted(() => {
+    const updateVerificationFlow = vi.fn();
 
-  return {
-    mockGetT: vi.fn(),
-    mockUpdateVerificationFlow: updateVerificationFlow,
-    mockCreateOryClient: vi.fn(() => ({
-      updateVerificationFlow,
-    })),
-  };
-});
+    return {
+      mockGetT: vi.fn(),
+      mockUpdateVerificationFlow: updateVerificationFlow,
+      mockCreateOryClient: vi.fn(() => ({
+        updateVerificationFlow,
+      })),
+    };
+  });
 
 vi.mock("@/lib/i18n/server", () => ({
   getT: mockGetT,
@@ -25,8 +22,8 @@ vi.mock("@/lib/ory/client", () => ({
 }));
 
 import {
-  verifyCodeAction,
   type VerifyCodeState,
+  verifyCodeAction,
 } from "@/app/(auth)/register/email-sent/actions";
 
 function createTranslator() {
@@ -138,10 +135,7 @@ describe("verifyCodeAction", () => {
       response: {
         data: {
           ui: {
-            messages: [
-              { text: "First error" },
-              { text: "Second error" },
-            ],
+            messages: [{ text: "First error" }, { text: "Second error" }],
           },
         },
       },

@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockIdentifyCitizen } = vi.hoisted(() => ({
@@ -69,7 +69,9 @@ describe("StepIdentification", () => {
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "40200612345" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "identification.continue" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "identification.continue" }),
+    );
 
     await waitFor(() => {
       expect(mockIdentifyCitizen).toHaveBeenCalledWith(
@@ -101,7 +103,9 @@ describe("StepIdentification", () => {
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "40200612345" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "identification.continue" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "identification.continue" }),
+    );
 
     expect(
       await screen.findByText("identification.account_exists"),

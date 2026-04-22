@@ -85,8 +85,8 @@ vi.mock("@/lib/services/registration/citizen-photo.service", () => ({
 import { POST as postAccount } from "@/app/api/registration/account/route";
 import { POST as postCitizen } from "@/app/api/registration/citizen/route";
 import { POST as postSessionReset } from "@/app/api/registration/session/reset/route";
-import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
+import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 
 describe("registration route orchestration - account", () => {
   beforeEach(() => {
@@ -321,7 +321,9 @@ describe("registration route orchestration - account", () => {
 describe("registration route orchestration - citizen", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockNormalizeCedula.mockImplementation((value: string) => value.replace(/\D/g, ""));
+    mockNormalizeCedula.mockImplementation((value: string) =>
+      value.replace(/\D/g, ""),
+    );
     mockIsValidReturnUrl.mockReturnValue(true);
     mockCreateRegistrationSessionCookie.mockReturnValue({
       name: "registration_session",
@@ -517,11 +519,14 @@ describe("registration route orchestration - liveness-result", () => {
     mockGetRegistrationSession.mockResolvedValueOnce(null);
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(400);
@@ -538,11 +543,14 @@ describe("registration route orchestration - liveness-result", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({}),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({}),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(400);
@@ -563,11 +571,14 @@ describe("registration route orchestration - liveness-result", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(400);
@@ -594,11 +605,14 @@ describe("registration route orchestration - liveness-result", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(response.status).toBe(400);
@@ -625,11 +639,14 @@ describe("registration route orchestration - liveness-result", () => {
     });
 
     const response = await postLivenessResult(
-      new Request("http://localhost/api/registration/verification/liveness-result", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: "session-123" }),
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
     );
 
     expect(mockCreateRegistrationSessionCookie).toHaveBeenCalledWith(

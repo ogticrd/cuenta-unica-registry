@@ -9,7 +9,6 @@ describe("sessionService", () => {
     vi.restoreAllMocks();
   });
 
-
   describe("getSession", () => {
     it("returns session data on success", async () => {
       const sessionData = {
@@ -100,7 +99,6 @@ describe("authService", () => {
     vi.restoreAllMocks();
   });
 
-
   describe("logout", () => {
     it("returns redirect_to on success", async () => {
       vi.spyOn(global, "fetch").mockResolvedValueOnce({
@@ -147,7 +145,6 @@ describe("registrationSessionApiService", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
-
 
   describe("reset", () => {
     it("returns success on successful reset", async () => {
