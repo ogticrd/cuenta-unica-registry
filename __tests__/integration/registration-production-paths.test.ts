@@ -37,9 +37,7 @@ vi.mock("next/headers", () => ({
 vi.mock("server-only", () => ({}));
 
 vi.mock("@ory/client", () => ({
-  Configuration: class Configuration {
-    constructor(_options?: unknown) {}
-  },
+  Configuration: class Configuration {},
   IdentityApi: class IdentityApi {
     listIdentities(...args: unknown[]) {
       return mockListIdentities(...args);

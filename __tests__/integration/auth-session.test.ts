@@ -14,9 +14,7 @@ vi.mock("next/headers", () => ({
 vi.mock("server-only", () => ({}));
 
 vi.mock("@ory/client", () => ({
-  Configuration: class Configuration {
-    constructor(_options?: unknown) {}
-  },
+  Configuration: class Configuration {},
   FrontendApi: class FrontendApi {
     toSession(...args: unknown[]) {
       return mockToSession(...args);

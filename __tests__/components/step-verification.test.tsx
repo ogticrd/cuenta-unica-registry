@@ -17,12 +17,6 @@ const {
   mockRouterPush: vi.fn(),
 }));
 
-vi.mock("next/image", () => ({
-  default: (props: Record<string, unknown>) => (
-    <img {...props} alt={String(props.alt ?? "")} />
-  ),
-}));
-
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockRouterPush,

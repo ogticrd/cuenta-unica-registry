@@ -8,6 +8,7 @@ const { mockReset, mockToastError } = vi.hoisted(() => ({
 
 vi.mock("next/image", () => ({
   default: (props: Record<string, unknown>) => (
+    // biome-ignore lint/performance/noImgElement: intentional mock of next/image for jsdom
     <img {...props} alt={String(props.alt ?? "")} />
   ),
 }));

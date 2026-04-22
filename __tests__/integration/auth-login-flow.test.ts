@@ -16,9 +16,7 @@ vi.mock("next/headers", () => ({
 vi.mock("server-only", () => ({}));
 
 vi.mock("@ory/client-fetch", () => ({
-  Configuration: class Configuration {
-    constructor(_options?: unknown) {}
-  },
+  Configuration: class Configuration {},
   FlowType: {
     Login: "login",
     Registration: "registration",
