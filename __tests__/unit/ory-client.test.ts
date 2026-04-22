@@ -1,10 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@ory/client", () => ({
-  Configuration: vi.fn(),
-  FrontendApi: vi.fn(() => ({ mocked: true })),
-}));
-
 describe("createOryClient", () => {
   it("throws when ORY_SDK_URL is missing", async () => {
     delete process.env.ORY_SDK_URL;
@@ -17,6 +12,10 @@ describe("createOryClient", () => {
 
   it("creates a client when ORY_SDK_URL is present", async () => {
     process.env.ORY_SDK_URL = "https://ory.example.com";
+    vi.doMock("@ory/client", () => ({
+      Configuration: vi.fn(),
+      FrontendApi: vi.fn(() => ({ mocked: true })),
+    }));
     vi.resetModules();
     const { createOryClient } = await import("@/lib/ory/client");
     const client = createOryClient();
@@ -27,6 +26,10 @@ describe("createOryClient", () => {
 describe("getOryClient", () => {
   it("returns the same instance on subsequent calls (lazy singleton)", async () => {
     process.env.ORY_SDK_URL = "https://ory.example.com";
+    vi.doMock("@ory/client", () => ({
+      Configuration: vi.fn(),
+      FrontendApi: vi.fn(() => ({ mocked: true })),
+    }));
     vi.resetModules();
     const { getOryClient } = await import("@/lib/ory/client");
     const client1 = getOryClient();
