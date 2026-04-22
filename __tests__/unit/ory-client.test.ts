@@ -14,7 +14,10 @@ describe("createOryClient", () => {
     process.env.ORY_SDK_URL = "https://ory.example.com";
     vi.doMock("@ory/client", () => ({
       Configuration: vi.fn(),
-      FrontendApi: vi.fn(() => ({ mocked: true })),
+      // biome-ignore lint/complexity/useArrowFunction: regular function required for `new FrontendApi()` constructor call
+      FrontendApi: vi.fn(function () {
+        return { mocked: true };
+      }),
     }));
     vi.resetModules();
     const { createOryClient } = await import("@/lib/ory/client");
@@ -28,7 +31,10 @@ describe("getOryClient", () => {
     process.env.ORY_SDK_URL = "https://ory.example.com";
     vi.doMock("@ory/client", () => ({
       Configuration: vi.fn(),
-      FrontendApi: vi.fn(() => ({ mocked: true })),
+      // biome-ignore lint/complexity/useArrowFunction: regular function required for `new FrontendApi()` constructor call
+      FrontendApi: vi.fn(function () {
+        return { mocked: true };
+      }),
     }));
     vi.resetModules();
     const { getOryClient } = await import("@/lib/ory/client");
