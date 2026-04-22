@@ -29,24 +29,12 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-// Mock crypto.subtle for password hashing tests
-const mockSubtleDigest = vi.fn().mockImplementation(async () => {
-  // Return a mock ArrayBuffer for SHA-256
-  return new ArrayBuffer(32);
-});
+import { webcrypto } from "node:crypto";
 
+// Provide an accurate implementation of Web Crypto for hashing and randomness
 Object.defineProperty(global, "crypto", {
-  value: {
-    subtle: {
-      digest: mockSubtleDigest,
-    },
-    getRandomValues: vi.fn((arr: Uint8Array) => {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = Math.floor(Math.random() * 256);
-      }
-      return arr;
-    }),
-  },
+  value: webcrypto,
+  configurable: true,
 });
 
 // Mock ResizeObserver

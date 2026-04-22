@@ -1,5 +1,19 @@
-import { describe, expect, it } from "vitest";
-import { extractSetCookieHeaders, mergeCookieHeaders } from "@/lib/ory/cookies";
+import { describe, expect, it, vi } from "vitest";
+import {
+  extractSetCookieHeaders,
+  getServerCookies,
+  mergeCookieHeaders,
+} from "@/lib/ory/cookies";
+
+const mockHeadersGet = vi.fn();
+
+vi.mock("next/headers", () => ({
+  headers: vi.fn(() =>
+    Promise.resolve({
+      get: (...args: unknown[]) => mockHeadersGet(...args),
+    }),
+  ),
+}));
 
 describe("extractSetCookieHeaders", () => {
   it("returns an array when set-cookie is already an array", () => {
@@ -100,5 +114,39 @@ describe("mergeCookieHeaders", () => {
     const result = mergeCookieHeaders("a=1", ["", "   "]);
 
     expect(result).toBe("a=1");
+  });
+
+  it("skips empty segments in base cookie header", () => {
+    const result = mergeCookieHeaders("a=1;;b=2", []);
+    expect(result).toBe("a=1; b=2");
+  });
+
+  it("skips base segments without = separator", () => {
+    const result = mergeCookieHeaders("a=1;no_equals;b=2", []);
+    expect(result).toBe("a=1; b=2");
+  });
+
+  it("skips set-cookie entries without = separator", () => {
+    const result = mergeCookieHeaders("a=1", ["no_equals; Path=/"]);
+    expect(result).toBe("a=1");
+  });
+
+  it("skips set-cookie entries with empty name", () => {
+    const result = mergeCookieHeaders("a=1", ["=value; Path=/"]);
+    expect(result).toBe("a=1");
+  });
+});
+
+describe("getServerCookies", () => {
+  it("returns the cookie header when present", async () => {
+    mockHeadersGet.mockReturnValue("session=abc123; user=john");
+    const result = await getServerCookies();
+    expect(result).toBe("session=abc123; user=john");
+  });
+
+  it("returns empty string when cookie header is missing", async () => {
+    mockHeadersGet.mockReturnValue(null);
+    const result = await getServerCookies();
+    expect(result).toBe("");
   });
 });
