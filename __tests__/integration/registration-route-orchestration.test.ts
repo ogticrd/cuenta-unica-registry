@@ -501,6 +501,24 @@ describe("registration route orchestration - session reset", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ success: true });
   });
+
+  it("returns unexpected_error when clearing the registration session throws", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    mockClearRegistrationSessionCookie.mockImplementationOnce(() => {
+      throw new Error("cookie store unavailable");
+    });
+
+    const response = await postSessionReset();
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "unexpected_error",
+    });
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
 });
 
 describe("registration route orchestration - liveness-result", () => {
