@@ -39,3 +39,11 @@ next-env.d.ts
 # Test output
 *.test-output.txt
 *.lcov
+
+# type of test that are still not implemented
+/__tests__/actions/
+/__tests__/components/
+/__tests__/e2e/
+/__tests__/hooks/
+/__tests__/middleware/
+/__tests__/validation/
