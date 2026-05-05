@@ -25,11 +25,15 @@ import { StatsCard } from "@/components/dashboard/stats-card";
 import { useT } from "@/hooks/use-t";
 import { useAuth } from "@/lib/auth-context";
 import { ROUTES } from "@/lib/constants/routes";
+import { useNotifications } from "@/lib/notifications/notification-context";
+import { getImportantNotifications } from "@/lib/notifications/selectors";
 
 export default function DashboardPage() {
   const { user, session } = useAuth();
+  const { notifications, archive, markRead } = useNotifications();
   const router = useRouter();
   const t = useT("dashboard");
+  const importantNotifications = getImportantNotifications(notifications, 3);
   // -- Dynamic Session Data --
   let lastAccessStr = t("loading");
   if (session?.authenticated_at) {
@@ -358,47 +362,73 @@ export default function DashboardPage() {
 
         {/* Important Notifications */}
         <DashboardCard title={t("notifications")}>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-5 bg-secondary/5 rounded-2xl border border-transparent dark:border-border/50 transition-colors hover:bg-secondary/10">
-              <div className="bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 p-2.5 rounded-full flex-shrink-0">
-                <AlertTriangle size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-base font-bold text-foreground mb-1">
-                  {t("notifications_list.security.title")}
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  {t("notifications_list.security.desc")}
+          <div className="flex flex-col gap-4">
+            {importantNotifications.length === 0 ? (
+              <div className="rounded-lg border border-dashed p-6 text-center">
+                <p className="text-sm font-medium text-foreground">
+                  {t("notifications_list.empty.title")}
                 </p>
-                <ActionButton
-                  variant="primary"
-                  onClick={() => router.push(ROUTES.settings)}
-                >
-                  {t("notifications_list.security.action")}
-                </ActionButton>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 bg-secondary/5 rounded-2xl border border-transparent dark:border-border/50 transition-colors hover:bg-secondary/10">
-              <div className="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 p-2.5 rounded-full flex-shrink-0">
-                <Info size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-base font-bold text-foreground mb-1">
-                  {t("notifications_list.new_feature.title")}
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  {t("notifications_list.new_feature.desc")}
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t("notifications_list.empty.desc")}
                 </p>
-                <ActionButton
-                  variant="secondary"
-                  onClick={() => router.push(ROUTES.settings)}
-                  className="hover:bg-secondary/10"
-                >
-                  {t("notifications_list.new_feature.action")}
-                </ActionButton>
               </div>
-            </div>
+            ) : (
+              importantNotifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className="flex items-start gap-4 rounded-lg border bg-secondary/5 p-5 transition-colors hover:bg-secondary/10"
+                >
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background">
+                    {notification.priority === "critical" ||
+                    notification.priority === "high" ? (
+                      <AlertTriangle size={20} className="text-destructive" />
+                    ) : (
+                      <Info size={20} className="text-secondary" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="mb-1 text-base font-bold text-foreground">
+                      {notification.title}
+                    </h4>
+                    <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                      {notification.message}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {notification.actionUrl ? (
+                        <ActionButton
+                          variant="primary"
+                          onClick={() =>
+                            router.push(notification.actionUrl ?? "#")
+                          }
+                        >
+                          {notification.actionLabel ?? t("view_all")}
+                        </ActionButton>
+                      ) : null}
+                      {notification.status === "unread" ? (
+                        <ActionButton
+                          variant="secondary"
+                          onClick={() => markRead(notification.id)}
+                        >
+                          {t("notifications_list.mark_read")}
+                        </ActionButton>
+                      ) : null}
+                      <ActionButton
+                        variant="secondary"
+                        onClick={() => archive(notification.id)}
+                      >
+                        {t("notifications_list.archive")}
+                      </ActionButton>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+            <ActionButton
+              variant="secondary"
+              onClick={() => router.push(ROUTES.notifications)}
+            >
+              {t("view_all")}
+            </ActionButton>
           </div>
         </DashboardCard>
       </div>

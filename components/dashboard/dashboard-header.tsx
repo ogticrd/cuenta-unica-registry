@@ -8,6 +8,7 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ROUTES } from "@/lib/constants/routes";
+import { useNotifications } from "@/lib/notifications/notification-context";
 import { NotificationDrawer } from "./notification-drawer";
 
 interface DashboardHeaderProps {
@@ -17,6 +18,7 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
   const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
     useState(false);
+  const { unreadCount } = useNotifications();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-background border-b border-gray-200 dark:border-border">
@@ -63,10 +65,11 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
                     : "hover:rotate-12 hover:scale-110"
                 }`}
               />
-              {/* Notification badge */}
-              <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
-                2
-              </span>
+              {unreadCount > 0 ? (
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full size-5 flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              ) : null}
             </Button>
           </div>
         </div>

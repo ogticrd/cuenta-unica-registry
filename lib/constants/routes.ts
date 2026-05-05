@@ -19,6 +19,7 @@ export const ROUTES = {
   // settings: "/self-service/settings/browser",
   settings: "/settings",
   history: "/history",
+  notifications: "/notifications",
   support: "/support",
   about: "/about",
 } as const;

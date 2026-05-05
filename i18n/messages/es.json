@@ -177,8 +177,10 @@
   },
   "settings": {
     "title": "Privacidad y seguridad",
-    "subtitle": "Administra tu contraseña, autenticación de dos factores y otros factores de seguridad.",
-    "loading": "Cargando configuración de seguridad..."
+    "subtitle": "Administra tu contraseña, autenticación de dos factores, preferencias de notificación y otros factores de seguridad.",
+    "loading": "Cargando configuración de seguridad...",
+    "flow_unavailable_title": "Configuración de seguridad no disponible en local",
+    "flow_unavailable_desc": "El flujo de Ory Settings depende de una URL de retorno permitida por el ambiente de identidad. Las preferencias de notificación siguen disponibles en esta página."
   },
   "error": {
     "title": "Ha ocurrido un problema",
@@ -296,15 +298,11 @@
       }
     },
     "notifications_list": {
-      "security": {
-        "title": "Revisa tu seguridad",
-        "desc": "Te recomendamos activar la autenticación de dos factores y configurar un Passkey para mayor protección de tu cuenta.",
-        "action": "Ir a Seguridad"
-      },
-      "new_feature": {
-        "title": "Nueva Funcionalidad Disponible",
-        "desc": "Ahora puedes usar Passkeys para acceder sin contraseña. Configúralo para mayor seguridad.",
-        "action": "Configurar Ahora"
+      "mark_read": "Marcar como leída",
+      "archive": "Archivar",
+      "empty": {
+        "title": "No hay notificaciones importantes",
+        "desc": "Cuando el Buzón Ciudadano tenga alertas relevantes, aparecerán aquí."
       }
     }
   },
@@ -427,40 +425,71 @@
     "unread": "{count} nuevas sin leer",
     "up_to_date": "Al día",
     "mark_all_read": "Marcar todas como leídas",
+    "loading": "Consultando Buzón Ciudadano",
+    "canonical": "Sincronizado con Buzón Ciudadano",
+    "unavailable": "El Buzón Ciudadano no está disponible",
+    "new_badge": "Nuevo",
+    "mark_read": "Marcar como leída",
+    "mark_unread": "Marcar como no leída",
+    "archive": "Archivar",
+    "open": "Abrir",
     "all_caught_up": "Todo al día",
     "no_pending": "No tienes notificaciones pendientes",
-    "view_all": "Ver todas",
-    "items": {
-      "n1": {
-        "title": "Actualización de seguridad",
-        "message": "Se ha actualizado la política de seguridad de tu cuenta. Revisa los cambios en la sección de privacidad.",
-        "time": "Hace 2 horas"
+    "view_all": "Ver todas"
+  },
+  "notifications_page": {
+    "title": "Notificaciones",
+    "subtitle": "Consulta las notificaciones entregadas por el Buzón Ciudadano al canal de Cuenta Única Ciudadana.",
+    "mark_all_read": "Marcar todas como leídas",
+    "mark_read": "Marcar como leída",
+    "mark_unread": "Marcar como no leída",
+    "archive": "Archivar",
+    "open": "Abrir",
+    "read": "Leída",
+    "unread": "No leída",
+    "archived": "Archivada",
+    "unavailable": "El Buzón Ciudadano no está disponible. Se muestra un estado vacío temporal.",
+    "filters": {
+      "all": "Todas",
+      "unread": "No leídas",
+      "read": "Leídas",
+      "archived": "Archivadas"
+    },
+    "empty": {
+      "title": "No hay notificaciones",
+      "desc": "Las notificaciones aparecerán aquí cuando el Buzón Ciudadano las entregue al portal."
+    }
+  },
+  "notification_preferences": {
+    "title": "Preferencias de notificación",
+    "description": "Elige cómo quieres recibir avisos sobre tu cuenta y la seguridad de la misma. Las notificaciones obligatorias de seguridad siempre se entregan en el portal.",
+    "save": "Guardar preferencias",
+    "saving": "Guardando",
+    "required": "Obligatorio",
+    "load_error": "No se pudieron cargar las preferencias de notificación.",
+    "save_error": "No se pudieron guardar las preferencias de notificación.",
+    "save_success": "Preferencias de notificación actualizadas.",
+    "channels": {
+      "portal": "Portal",
+      "email": "Correo",
+      "sms": "SMS",
+      "whatsapp": "WhatsApp"
+    },
+    "topics": {
+      "security": {
+        "title": "Seguridad",
+        "desc": "Accesos, dispositivos, autenticación y protección de la cuenta."
       },
-      "n2": {
-        "title": "Verificación completada",
-        "message": "Tu autenticación de dos factores ha sido configurada exitosamente.",
-        "time": "Hace 1 día"
-      },
-      "n3": {
-        "title": "Revisión de seguridad",
-        "message": "Te recomendamos revisar los dispositivos conectados a tu cuenta periódicamente.",
-        "time": "Hace 2 días"
-      },
-      "n4": {
-        "title": "Intento de acceso sospechoso",
-        "message": "Se detectó un intento de acceso desde una ubicación no reconocida. Si no fuiste tú, cambia tu contraseña.",
-        "time": "Hace 3 días"
-      },
-      "n5": {
-        "title": "Nueva funcionalidad disponible",
-        "message": "Ya puedes usar passkeys para acceder a tu cuenta sin contraseña. Configúralo en ajustes de seguridad.",
-        "time": "Hace 1 semana"
+      "account": {
+        "title": "Cuenta",
+        "desc": "Cambios de perfil, datos personales y preferencias."
       }
     }
   },
   "sidebar": {
     "home": "Inicio",
     "personal_data": "Datos Personales",
+    "notifications": "Notificaciones",
     "support": "Soporte y Ayuda",
     "about": "Acerca de",
     "security": "Seguridad",

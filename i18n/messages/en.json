@@ -177,8 +177,10 @@
   },
   "settings": {
     "title": "Privacy and Security",
-    "subtitle": "Manage your password, two-factor authentication, and other security factors.",
-    "loading": "Loading security configuration..."
+    "subtitle": "Manage your password, two-factor authentication, notification preferences, and other security factors.",
+    "loading": "Loading security configuration...",
+    "flow_unavailable_title": "Security settings are unavailable locally",
+    "flow_unavailable_desc": "The Ory Settings flow requires a return URL allowed by the identity environment. Notification preferences remain available on this page."
   },
   "error": {
     "title": "A problem has occurred",
@@ -296,15 +298,11 @@
       }
     },
     "notifications_list": {
-      "security": {
-        "title": "Review your security",
-        "desc": "We recommend activating two-factor authentication and configuring a Passkey for better protection of your account.",
-        "action": "Go to Security"
-      },
-      "new_feature": {
-        "title": "New Feature Available",
-        "desc": "You can now use Passkeys to log in without a password. Configure it for better security.",
-        "action": "Configure Now"
+      "mark_read": "Mark as read",
+      "archive": "Archive",
+      "empty": {
+        "title": "No important notifications",
+        "desc": "When Buzon Ciudadano has relevant alerts, they will appear here."
       }
     }
   },
@@ -427,40 +425,71 @@
     "unread": "{count} new unread",
     "up_to_date": "Up to date",
     "mark_all_read": "Mark all as read",
+    "loading": "Checking Buzon Ciudadano",
+    "canonical": "Synced with Buzon Ciudadano",
+    "unavailable": "Buzon Ciudadano is unavailable",
+    "new_badge": "New",
+    "mark_read": "Mark as read",
+    "mark_unread": "Mark as unread",
+    "archive": "Archive",
+    "open": "Open",
     "all_caught_up": "All caught up",
     "no_pending": "You have no pending notifications",
-    "view_all": "View all",
-    "items": {
-      "n1": {
-        "title": "Security update",
-        "message": "Your account security policy has been updated. Review the changes in the privacy section.",
-        "time": "2 hours ago"
+    "view_all": "View all"
+  },
+  "notifications_page": {
+    "title": "Notifications",
+    "subtitle": "Review notifications delivered by Buzon Ciudadano to the Cuenta Unica Ciudadana portal channel.",
+    "mark_all_read": "Mark all as read",
+    "mark_read": "Mark as read",
+    "mark_unread": "Mark as unread",
+    "archive": "Archive",
+    "open": "Open",
+    "read": "Read",
+    "unread": "Unread",
+    "archived": "Archived",
+    "unavailable": "Buzon Ciudadano is unavailable. A temporary empty state is shown.",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read",
+      "archived": "Archived"
+    },
+    "empty": {
+      "title": "No notifications",
+      "desc": "Notifications will appear here when Buzon Ciudadano delivers them to the portal."
+    }
+  },
+  "notification_preferences": {
+    "title": "Notification preferences",
+    "description": "Choose how you want to receive notices about your account and its security. Mandatory security notifications are always delivered in the portal.",
+    "save": "Save preferences",
+    "saving": "Saving",
+    "required": "Required",
+    "load_error": "Notification preferences could not be loaded.",
+    "save_error": "Notification preferences could not be saved.",
+    "save_success": "Notification preferences updated.",
+    "channels": {
+      "portal": "Portal",
+      "email": "Email",
+      "sms": "SMS",
+      "whatsapp": "WhatsApp"
+    },
+    "topics": {
+      "security": {
+        "title": "Security",
+        "desc": "Access, devices, authentication, and account protection."
       },
-      "n2": {
-        "title": "Verification completed",
-        "message": "Your two-factor authentication has been successfully configured.",
-        "time": "1 day ago"
-      },
-      "n3": {
-        "title": "Security review",
-        "message": "We recommend reviewing the devices connected to your account periodically.",
-        "time": "2 days ago"
-      },
-      "n4": {
-        "title": "Suspicious login attempt",
-        "message": "A login attempt was detected from an unrecognized location. If it wasn't you, change your password.",
-        "time": "3 days ago"
-      },
-      "n5": {
-        "title": "New feature available",
-        "message": "You can now use passkeys to access your account without a password. Set it up in security settings.",
-        "time": "1 week ago"
+      "account": {
+        "title": "Account",
+        "desc": "Profile changes, personal data, and preferences."
       }
     }
   },
   "sidebar": {
     "home": "Home",
     "personal_data": "Personal Data",
+    "notifications": "Notifications",
     "support": "Support & Help",
     "about": "About",
     "security": "Security",
