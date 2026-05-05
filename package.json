@@ -28,6 +28,7 @@
     "test:hooks": "vitest run __tests__/hooks",
     "test:actions": "vitest run __tests__/actions",
     "test:middleware": "vitest run __tests__/middleware",
+    "test:notifications:e2e": "bun scripts/notifications-e2e.mjs",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "test:playwright:debug": "playwright test --debug",

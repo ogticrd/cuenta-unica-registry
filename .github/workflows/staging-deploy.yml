@@ -74,6 +74,8 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD }}
             FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD }}
+            BUZON_API_BASE_URL=${{ vars.BUZON_API_BASE_URL }}
+            BUZON_PORTAL_API_KEY=${{ secrets.BUZON_PORTAL_API_KEY }}
           min-instances: "0"
           max-instances: "10"
           cpu: "1"
