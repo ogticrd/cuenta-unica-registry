@@ -25,11 +25,6 @@ export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const path = url.pathname;
 
-  // Redirect root to dashboard
-  if (path === "/") {
-    url.pathname = ROUTES.dashboard;
-    return NextResponse.redirect(url);
-  }
 
   // Let Ory handle its own internal proxy routes
   if (
