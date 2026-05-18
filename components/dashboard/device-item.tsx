@@ -1,15 +1,18 @@
-﻿"use client";
+"use client";
 
 import { Monitor, Smartphone } from "lucide-react";
-import { useT } from "@/hooks/use-t";
+import { useLocale, useT } from "@/hooks/use-t";
 import { ActionButton } from "./action-button";
+import { getRelativeTime } from "@/lib/utils/date";
 
 interface DeviceItemProps {
   device: string;
   ipAddress: string;
   location: string;
   lastAccess: string;
+  lastAccessRaw?: string;
   expirationDate: string;
+  expirationDateRaw?: string;
   status: {
     text: string;
     variant: "active" | "current";
@@ -22,11 +25,14 @@ export function DeviceItem({
   ipAddress,
   location,
   lastAccess,
+  lastAccessRaw,
   expirationDate,
+  expirationDateRaw,
   status,
   onUnlink,
 }: DeviceItemProps) {
   const t = useT("history");
+  const locale = useLocale();
   const isMobile =
     device.toLowerCase().includes("mobile") ||
     device.toLowerCase().includes("android") ||
@@ -87,13 +93,29 @@ export function DeviceItem({
           <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">
             {t("last_access")}
           </div>
-          <div className="font-medium">{lastAccess}</div>
+          <div className="font-medium">
+            {lastAccess}
+            <br />
+            {lastAccessRaw && (
+              <span className="text-muted-foreground text-xs font-normal lowercase">
+                ({getRelativeTime(lastAccessRaw, locale)})
+              </span>
+            )}
+          </div>
         </div>
         <div>
           <div className="text-muted-foreground mb-1 text-xs uppercase tracking-wider font-medium">
             {t("expires_on")}
           </div>
-          <div className="font-medium">{expirationDate}</div>
+          <div className="font-medium">
+            {expirationDate}
+            <br />
+            {expirationDateRaw && (
+              <span className="text-muted-foreground text-xs font-normal lowercase">
+                ({getRelativeTime(expirationDateRaw, locale)})
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>

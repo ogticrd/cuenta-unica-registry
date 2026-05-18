@@ -12,6 +12,8 @@ import {
   type OrySession,
   sessionService,
 } from "@/lib/services/ory/session.service";
+import { formatSessionDate } from "@/lib/utils/date";
+import { formatUserAgent } from "@/lib/utils/device";
 
 type DeviceStatus = {
   text: string;
@@ -24,7 +26,9 @@ type DeviceRow = {
   ipAddress: string;
   location: string;
   lastAccess: string;
+  lastAccessRaw?: string;
   expirationDate: string;
+  expirationDateRaw?: string;
   isCurrentSession: boolean;
   status: DeviceStatus;
 };
@@ -61,21 +65,12 @@ export default function HistoryPage() {
 
   const allSessions: OrySession[] = session
     ? [
-        session,
-        ...(Array.isArray(session.other_sessions)
-          ? session.other_sessions
-          : []),
-      ]
+      session,
+      ...(Array.isArray(session.other_sessions)
+        ? session.other_sessions
+        : []),
+    ]
     : [];
-
-  const formatSessionDate = (value: string | undefined, fallback: string) => {
-    if (!value) return fallback;
-
-    const parsedDate = new Date(value);
-    if (Number.isNaN(parsedDate.getTime())) return fallback;
-
-    return parsedDate.toLocaleString(dateLocale);
-  };
 
   const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
     const device = currentSession.devices?.[0];
@@ -83,17 +78,25 @@ export default function HistoryPage() {
 
     return {
       id: currentSession.id || `fallback-${index}`,
-      device: device?.user_agent || t("device_unknown"),
+      device: formatUserAgent(device?.user_agent, t("device_unknown"), {
+        unknownBrowser: t("browser_unknown"),
+        unknownOS: t("os_unknown"),
+        connector: t("device_connector")
+      }),
       ipAddress: device?.ip_address || t("ip_unknown"),
       location: device?.location || t("location_unknown"),
       lastAccess: formatSessionDate(
         currentSession.authenticated_at,
         t("recent"),
+        dateLocale
       ),
+      lastAccessRaw: currentSession.authenticated_at,
       expirationDate: formatSessionDate(
         currentSession.expires_at,
         t("indefinite"),
+        dateLocale
       ),
+      expirationDateRaw: currentSession.expires_at,
       isCurrentSession,
       status: isCurrentSession
         ? { text: t("session_active"), variant: "current" }
@@ -236,13 +239,15 @@ export default function HistoryPage() {
                   ipAddress={device.ipAddress}
                   location={device.location}
                   lastAccess={device.lastAccess}
+                  lastAccessRaw={device.lastAccessRaw}
                   expirationDate={device.expirationDate}
+                  expirationDateRaw={device.expirationDateRaw}
                   status={device.status}
                   onUnlink={
                     device.isCurrentSession
                       ? undefined
                       : () =>
-                          handleOpenUnlinkDeviceModal(device.id, device.device)
+                        handleOpenUnlinkDeviceModal(device.id, device.device)
                   }
                 />
               ))

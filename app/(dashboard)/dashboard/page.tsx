@@ -216,24 +216,28 @@ export default function DashboardPage() {
               ? t("stats_cards.devices.desc_singular")
               : t("stats_cards.devices.desc_plural")
           }
+          href={ROUTES.history}
         />
         <StatsCard
           title={t("stats_cards.services.title")}
           value="12"
           icon={<Globe size={24} />}
           description={t("stats_cards.services.desc")}
+          href="#"
         />
         <StatsCard
           title={t("stats_cards.actions.title")}
           value="8"
           icon={<Activity size={24} />}
           description={t("stats_cards.actions.desc")}
+          href="#"
         />
         <StatsCard
           title={t("stats_cards.security.title")}
           value={securityLevel}
           icon={<Shield size={24} />}
           description={securityDesc}
+          href={ROUTES.settings}
         />
       </div>
 
