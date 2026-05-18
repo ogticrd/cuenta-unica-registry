@@ -84,6 +84,8 @@
       },
       "terms_label": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>",
       "terms_label_link": "I accept the terms of use and privacy policy",
+      "terms_accept_checkbox": "I accept the terms and conditions",
+      "terms_read_document": "View terms",
       "terms_required": "You must accept the terms of use and privacy policy to continue.",
       "start_process": "START PROCESS",
       "modal": {
@@ -94,7 +96,8 @@
         "verified": "Verified!",
         "face_position": "Position your face here",
         "allow_camera": "Allow camera and scan",
-        "analyzing": "Analyzing facial features..."
+        "analyzing": "Analyzing facial features...",
+        "success_redirect_description": "We will redirect you to verify your account..."
       },
       "liveness": {
         "instructions_header": "Instructions",
@@ -318,6 +321,9 @@
     "active": "ACTIVE",
     "session_current_badge": "Current session",
     "device_unknown": "Unknown device",
+    "browser_unknown": "Unknown browser",
+    "os_unknown": "Unknown OS",
+    "device_connector": " on ",
     "ip_unknown": "Unknown IP",
     "location_unknown": "Unknown location",
     "recent": "Recent",

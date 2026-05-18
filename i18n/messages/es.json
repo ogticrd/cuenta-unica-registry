@@ -84,6 +84,8 @@
       },
       "terms_label": "Acepto los <terms>términos de uso</terms> y la <privacy>política de privacidad</privacy>",
       "terms_label_link": "Acepto los términos de uso y la política de privacidad",
+      "terms_accept_checkbox": "Acepto los términos y condiciones",
+      "terms_read_document": "Ver términos",
       "terms_required": "Debes aceptar los términos de uso y la política de privacidad para continuar.",
       "start_process": "INICIAR PROCESO",
       "modal": {
@@ -94,7 +96,8 @@
         "verified": "¡Verificado!",
         "face_position": "Posiciona tu rostro aquí",
         "allow_camera": "Permitir cámara y escanear",
-        "analyzing": "Analizando rasgos faciales..."
+        "analyzing": "Analizando rasgos faciales...",
+        "success_redirect_description": "Te redirigiremos para verificar tu cuenta..."
       },
       "liveness": {
         "instructions_header": "Instrucciones",
@@ -318,6 +321,9 @@
     "active": "ACTIVO",
     "session_current_badge": "Sesión actual",
     "device_unknown": "Dispositivo desconocido",
+    "browser_unknown": "Navegador desconocido",
+    "os_unknown": "SO desconocido",
+    "device_connector": " en ",
     "ip_unknown": "IP desconocida",
     "location_unknown": "Ubicación desconocida",
     "recent": "Reciente",

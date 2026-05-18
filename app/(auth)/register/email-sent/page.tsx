@@ -68,11 +68,11 @@ export default async function EmailSentPage({
               )}
 
               {/* Help info */}
-              <div className="w-full bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900 rounded-xl px-4 py-3 text-left">
-                <p className="text-xs font-semibold text-primary dark:text-blue-300 uppercase tracking-wide mb-1">
+              <div className="w-full bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900 rounded px-4 py-3 text-left">
+                <p className="text-xs font-semibold text-primary dark:text-blue-300 tracking-wide mb-1">
                   {t("help_title")}
                 </p>
-                <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                   {t("help_description", {
                     spam: t("help_spam"),
                     junk: t("help_junk"),

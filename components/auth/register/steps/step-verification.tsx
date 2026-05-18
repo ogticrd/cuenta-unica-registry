@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  AlertCircle,
   ArrowLeft,
   Camera,
   Check,
+  ExternalLink,
   ShieldAlert,
   Smile,
 } from "lucide-react";
@@ -70,7 +70,7 @@ export function StepVerification({
     null,
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showTermsError, setShowTermsError] = useState(false);
+  // const [showTermsError, setShowTermsError] = useState(false);
   const isHandlingError = useRef(false);
 
   const firstName =
@@ -116,12 +116,12 @@ export function StepVerification({
   }, [onRequireIdentification, t]);
 
   const handleStartVerification = async () => {
-    if (!termsAccepted) {
-      setShowTermsError(true);
-      return;
-    }
+    // if (!termsAccepted) {
+    //   setShowTermsError(true);
+    //   return;
+    // }
 
-    setShowTermsError(false);
+    // setShowTermsError(false);
 
     if (!accountDraft.email || !accountDraft.password) {
       onRequireAccount();
@@ -199,7 +199,7 @@ export function StepVerification({
     }
 
     setTimeout(() => {
-      setIsModalOpen(false);
+      // setIsModalOpen(false);
 
       const isExternal = /^https?:\/\//i.test(accountResult.redirectTo);
       if (isExternal) {
@@ -289,33 +289,44 @@ export function StepVerification({
         </div>
       </div>
 
-      <div className="flex items-start gap-3 mt-6">
-        <Checkbox
-          id="terms"
-          className="h-5 w-5 rounded border-gray-300 data-[state=checked]:bg-secondary data-[state=checked]:text-white mt-0.5 shrink-0"
-          checked={termsAccepted}
-          onCheckedChange={(checked) => {
-            setTermsAccepted(checked as boolean);
-            if (checked) setShowTermsError(false);
-          }}
-        />
-        <label
-          htmlFor="terms"
-          className="text-sm font-medium leading-relaxed text-secondary dark:text-blue-100 cursor-pointer"
-        >
-          <Link
-            href={ROUTES.terms}
-            target="_blank"
-            className="underline decoration-blue-400 dark:decoration-blue-500 underline-offset-4 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+      <div
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border-2 border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors mt-6 w-full"
+        onClick={() => {
+          setTermsAccepted(!termsAccepted);
+          // setShowTermsError(false);
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id="terms"
+            className="h-6 w-6 rounded-md border-2 border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-white data-[state=checked]:border-primary shrink-0"
+            checked={termsAccepted}
+            onClick={(e) => e.stopPropagation()}
+            onCheckedChange={(checked) => {
+              setTermsAccepted(checked as boolean);
+              // if (checked) setShowTermsError(false);
+            }}
+          />
+          <label
+            htmlFor="terms"
+            className="text-base font-semibold leading-relaxed text-primary dark:text-blue-100 cursor-pointer select-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {t("verification.terms_label_link")}
-          </Link>{" "}
-          <span className="text-destructive">*</span>
-        </label>
+            {t("verification.terms_accept_checkbox")} <span className="text-destructive">*</span>
+          </label>
+        </div>
+
+        <Link
+          href={ROUTES.terms}
+          target="_blank"
+          onClick={(e) => e.stopPropagation()}
+          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline inline-flex items-center gap-1 shrink-0 bg-blue-50 dark:bg-blue-950/30 px-3 py-1.5 rounded-full transition-colors"
+        >
+          {t("verification.terms_read_document")} <ExternalLink className="w-3.5 h-3.5" />
+        </Link>
       </div>
 
-      {showTermsError && (
+      {/* {showTermsError && (
         <Alert
           variant="destructive"
           className="mt-4 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 animate-in fade-in slide-in-from-top-2 duration-300"
@@ -325,11 +336,12 @@ export function StepVerification({
             {t("verification.terms_required")}
           </AlertDescription>
         </Alert>
-      )}
+      )} */}
 
       <Button
         onClick={handleStartVerification}
-        className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4"
+        disabled={!termsAccepted}
+        className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {t("verification.start_process")}
       </Button>
@@ -371,9 +383,6 @@ export function StepVerification({
                   <p className="text-lg font-semibold text-white">
                     {t("verification.verifying_identity")}
                   </p>
-                  <p className="text-sm text-white/40">
-                    {t("verification.modal.description")}
-                  </p>
                 </div>
               </div>
             )}
@@ -390,7 +399,7 @@ export function StepVerification({
                     {t("verification.modal.verified")}
                   </p>
                   <p className="text-sm text-white/40">
-                    {t("account.success_description")}
+                    {t("verification.modal.success_redirect_description")}
                   </p>
                 </div>
               </div>
