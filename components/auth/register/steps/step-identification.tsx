@@ -47,7 +47,7 @@ export function StepIdentification({
 
   const form = useForm({
     resolver: zodResolver(identificationSchema),
-    reValidateMode: "onChange",
+    mode: "onChange",
     defaultValues: {
       cedula: formatCedula(defaultValues.cedula),
     },
@@ -150,8 +150,8 @@ export function StepIdentification({
           <div className="pt-2">
             <Button
               type="submit"
-              className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
-              disabled={isLoading}
+              className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              disabled={isLoading || !form.formState.isValid}
             >
               {isLoading ? (
                 <>

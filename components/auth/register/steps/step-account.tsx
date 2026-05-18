@@ -88,7 +88,7 @@ export function StepAccount({
 
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
-    reValidateMode: "onBlur",
+    mode: "onChange",
     defaultValues,
   });
 
@@ -170,10 +170,6 @@ export function StepAccount({
                     onChange={(event) => {
                       field.onChange(event);
                       setOryAlertMessages([]);
-
-                      if (form.formState.errors.email) {
-                        form.clearErrors("email");
-                      }
                     }}
                     onPaste={preventClipboardAction}
                     onCopy={preventClipboardAction}
@@ -203,10 +199,6 @@ export function StepAccount({
                     onChange={(event) => {
                       field.onChange(event);
                       setOryAlertMessages([]);
-
-                      if (form.formState.errors.confirmEmail) {
-                        form.clearErrors("confirmEmail");
-                      }
                     }}
                     onPaste={preventClipboardAction}
                     onCopy={preventClipboardAction}
@@ -237,10 +229,6 @@ export function StepAccount({
                       onChange={(event) => {
                         field.onChange(event);
                         setOryAlertMessages([]);
-
-                        if (form.formState.errors.password) {
-                          form.clearErrors("password");
-                        }
                       }}
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
@@ -318,6 +306,13 @@ export function StepAccount({
                           <span>{req.label}</span>
                         </li>
                       ))}
+                      {form.formState.errors.password?.message ===
+                        t("account.validation.password_compromised") && (
+                          <li className="flex items-center gap-2.5 transition-colors text-red-500 dark:text-red-400">
+                            <X className="w-4 h-4 text-red-500 dark:text-red-400" />
+                            <span>{t("account.validation.password_compromised")}</span>
+                          </li>
+                        )}
                     </ul>
                   </div>
                 )}
@@ -343,10 +338,6 @@ export function StepAccount({
                       onChange={(event) => {
                         field.onChange(event);
                         setOryAlertMessages([]);
-
-                        if (form.formState.errors.confirmPassword) {
-                          form.clearErrors("confirmPassword");
-                        }
                       }}
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
@@ -380,22 +371,9 @@ export function StepAccount({
           />
 
           <div className="flex flex-col items-center w-full gap-4">
-            {form.formState.errors.password?.message ===
-              t("account.validation.password_compromised") && (
-              <Alert
-                variant="destructive"
-                className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
-              >
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  {t("account.validation.password_compromised")}
-                </AlertDescription>
-              </Alert>
-            )}
-
             {oryAlertMessages.length > 0 &&
               form.formState.errors.password?.message !==
-                t("account.validation.password_compromised") && (
+              t("account.validation.password_compromised") && (
                 <Alert
                   variant="destructive"
                   className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
@@ -413,7 +391,8 @@ export function StepAccount({
 
             <Button
               type="submit"
-              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!form.formState.isValid || form.formState.isSubmitting || form.formState.isValidating}
+              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {t("account.continue")}
             </Button>

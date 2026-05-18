@@ -36,38 +36,76 @@ async function sha1(value: string) {
     .toUpperCase();
 }
 
-export async function isBreachedPassword(password: string) {
+const breachCache = new Map<string, boolean>();
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingResolve: ((value: boolean) => void) | null = null;
+
+export async function isBreachedPassword(password: string): Promise<boolean> {
   if (!password || !isPasswordStrongEnough(password)) {
     return false;
   }
 
-  try {
-    const hash = await sha1(password);
-    const prefix = hash.slice(0, 5);
-    const suffix = hash.slice(5);
-    const response = await fetch(
-      `https://api.pwnedpasswords.com/range/${prefix}`,
-      {
-        headers: {
-          "Add-Padding": "true",
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return false;
-    }
-
-    const responseBody = await response.text();
-
-    return responseBody
-      .split("\n")
-      .some((line) => line.split(":")[0]?.trim().toUpperCase() === suffix);
-  } catch (error) {
-    console.error(
-      "[password] Failed to validate password breach status:",
-      error,
-    );
-    return false;
+  if (breachCache.has(password)) {
+    return breachCache.get(password)!;
   }
+
+  return new Promise((resolve) => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    
+    if (pendingResolve) {
+      pendingResolve(false);
+    }
+    
+    pendingResolve = resolve;
+
+    debounceTimer = setTimeout(async () => {
+      try {
+        const hash = await sha1(password);
+        const prefix = hash.slice(0, 5);
+        const suffix = hash.slice(5);
+        const response = await fetch(
+          `https://api.pwnedpasswords.com/range/${prefix}`,
+          {
+            headers: {
+              "Add-Padding": "true",
+            },
+          },
+        );
+
+        if (!response.ok) {
+          resolve(false);
+          return;
+        }
+
+        const responseBody = await response.text();
+
+        const isBreached = responseBody
+          .split("\n")
+          .some((line) => line.split(":")[0]?.trim().toUpperCase() === suffix);
+
+        if (breachCache.size > 50) {
+          const firstKey = breachCache.keys().next().value;
+          if (firstKey) breachCache.delete(firstKey);
+        }
+
+        breachCache.set(password, isBreached);
+
+        resolve(isBreached);
+      } catch (error) {
+        console.error(
+          "[password] Failed to validate password breach status:",
+          error,
+        );
+        resolve(false);
+      } finally {
+        if (pendingResolve === resolve) {
+          pendingResolve = null;
+          debounceTimer = null;
+        }
+      }
+    }, 1000);
+  });
 }
