@@ -3,6 +3,7 @@
 import { ThemeProvider } from "next-themes";
 
 import { AuthProvider } from "@/lib/auth-context";
+import { NotificationProvider } from "@/lib/notifications/notification-context";
 import { AmplifyProvider } from "@/lib/providers/amplify-provider";
 
 /**
@@ -18,7 +19,9 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <AmplifyProvider>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <NotificationProvider>{children}</NotificationProvider>
+        </AuthProvider>
       </AmplifyProvider>
     </ThemeProvider>
   );

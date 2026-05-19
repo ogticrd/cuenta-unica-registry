@@ -26,3 +26,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Vitest coverage
+/coverage/
+
+# Test output
+*.test-output.txt
+*.lcov
+
+# type of test that are still not implemented
+/__tests__/actions/
+/__tests__/components/
+/__tests__/e2e/
+/__tests__/hooks/
+/__tests__/middleware/
+/__tests__/validation/

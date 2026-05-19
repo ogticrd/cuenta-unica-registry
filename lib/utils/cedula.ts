@@ -82,9 +82,18 @@ export async function isValidCedula(cedula: string) {
     return false;
   }
 
+  if (hasAllRepeatedDigits(normalizedCedula)) {
+    return false;
+  }
+
   if (checkLuhn(normalizedCedula)) {
     return true;
   }
 
   return isLuhnException(normalizedCedula);
+}
+
+function hasAllRepeatedDigits(value: string) {
+  const firstDigit = value[0];
+  return value.split("").every((digit) => digit === firstDigit);
 }
