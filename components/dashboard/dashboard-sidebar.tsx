@@ -32,6 +32,7 @@ export function DashboardSidebar({
   const menuItems = [
     { icon: Home, label: t("home"), href: ROUTES.dashboard },
     { icon: User, label: t("personal_data"), href: ROUTES.profile },
+    { icon: Bell, label: t("notifications"), href: ROUTES.notifications },
     { icon: HelpCircle, label: t("support"), href: ROUTES.support },
     { icon: Info, label: t("about"), href: ROUTES.about },
     { icon: Shield, label: t("security"), href: ROUTES.settings },

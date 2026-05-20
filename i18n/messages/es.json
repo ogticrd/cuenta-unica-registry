@@ -221,6 +221,10 @@
       "history": {
         "title": "Historial de Actividad",
         "desc": "Revisa dispositivos conectados y actividad reciente"
+      },
+      "support": {
+        "title": "Soporte y Ayuda",
+        "desc": "Encuentra ayuda y contacta con nuestro equipo de soporte"
       }
     },
     "recent_activities_list": {
@@ -347,6 +351,82 @@
       "scholarship_portal": "Portal de Becas",
       "public_health_ministry": "Ministerio de Salud Pública y Asistencia Social",
       "state_reform_council": "Consejo Nacional de la Reforma del Estado"
+    }
+  },
+  "about": {
+    "title": "Acerca de tu Cuenta Única Ciudadana",
+    "subtitle": "La plataforma oficial del gobierno, diseñada para que interactúes con el Estado de manera centralizada, segura y eficiente desde cualquier lugar.",
+    "video_title": "Conoce la plataforma",
+    "video_desc": "Descubre en este video cómo utilizar todas las herramientas que tienes a tu disposición una vez inicias sesión.",
+    "features_title": "¿Qué puedes hacer?",
+    "features_list": {
+      "personal_data": {
+        "title": "Datos personales",
+        "desc": "Accede a los datos personales asociados a su cuenta de forma segura y actualizada."
+      },
+      "history": {
+        "title": "Historial completo",
+        "desc": "Consulta y revisa todos los movimientos y acciones realizadas en la plataforma."
+      },
+      "security": {
+        "title": "Seguridad avanzada",
+        "desc": "Mantén tu cuenta protegida con autenticación de dos factores y revisión de accesos."
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "desc": "Recibe alertas importantes y actualizaciones sobre los servicios que utilizas."
+      },
+      "ai_assistant": {
+        "title": "Asistente virtual (IA)",
+        "desc": "Recibe ayuda instantánea para resolver dudas sobre la plataforma rápidamente."
+      },
+      "support": {
+        "title": "Soporte técnico",
+        "desc": "Encuentra ayuda especializada y múliples canales de contacto para cualquier problema."
+      }
+    },
+    "stats_list": {
+      "citizens": "Ciudadanos registrados",
+      "queries": "Consultas realizadas",
+      "uptime": "Tiempo de actividad",
+      "availability": "Disponibilidad"
+    }
+  },
+  "support": {
+    "title": "Soporte y Contacto",
+    "subtitle": "¿Tienes dudas o necesitas ayuda con tu Cuenta Única Ciudadana? Estamos aquí para ayudarte y asegurar que tu experiencia sea rápida y segura.",
+    "channels_title": "Canales de Atención",
+    "faqs_title": "Preguntas Frecuentes",
+    "video_tutorials": "Ver tutoriales en video",
+    "faqs_list": {
+      "q1": {
+        "q": "¿Cómo inicio sesión en mi Cuenta Única Ciudadana?",
+        "a": "Para iniciar sesión en tu Cuenta Única Ciudadana, dirígete a la página de inicio de sesión e ingresa tu cédula de identidad o correo electrónico registrado junto con tu contraseña. Si es tu primera vez, deberás crear una cuenta primero."
+      },
+      "q2": {
+        "q": "Olvidé mi contraseña, ¿cómo la recupero?",
+        "a": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      },
+      "q3": {
+        "q": "¿Qué servicios puedo acceder con mi Cuenta Única?",
+        "a": "Con tu Cuenta Unica Ciudadana puedes acceder a todos los servicios digitales del gobierno dominicano, incluyendo consultas de estado, verificacion de identidad, y acceso a los portales de las instituciones gubernamentales."
+      },
+      "q4": {
+        "q": "¿Cómo actualizo mis datos personales?",
+        "a": "Puedes actualizar tus datos personales accediendo a la sección 'Datos personales' en tu panel de usuario. Allí podrás modificar tu información de contacto, dirección y otros datos relevantes."
+      },
+      "q5": {
+        "q": "¿Es segura mi información en la plataforma?",
+        "a": "Sí, tu información está protegida con los más altos estándares de seguridad. Utilizamos encriptación de datos y medidas de protección avanzadas para garantizar la privacidad y seguridad de tu información personal."
+      }
+    },
+    "contact": {
+      "phone_label": "Teléfono principal",
+      "email_label": "Correo electrónico",
+      "hours_label": "Horario de atención",
+      "hours_value": "Lunes a Viernes, 8:00 a.m. - 5:00 p.m.",
+      "office_label": "Oficina Central",
+      "office_value": "Av. Rómulo Betancourt #311, edificio corporativo vista 311, Santo Domingo, D.N."
     }
   },
   "notification_drawer": {
