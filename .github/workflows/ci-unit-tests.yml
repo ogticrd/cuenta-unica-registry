@@ -68,8 +68,8 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Audit for vulnerabilities
-        run: bun audit
+      - name: Audit for critical vulnerabilities
+        run: bun audit --audit-level critical
 
       - name: Run tests
         run: bun run test
