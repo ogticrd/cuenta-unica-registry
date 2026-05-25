@@ -90,17 +90,23 @@ export function LivenessQuickStart({ cedula, redirectUri, state }: Props) {
   };
 
   const handleAnalysisComplete: () => Promise<void> = async () => {
-    const data = await fetch(`/api/biometric/${sessionId}/${cedula}`).then(
-      unwrap,
-    );
+    try {
+      const data = await fetch(`/api/biometric/${sessionId}/${cedula}`).then(
+        unwrap,
+      );
 
-    if (data?.isMatch === true) {
-      handleSuccessfulMatch();
-    } else {
-      setError(data);
-      setSessionId(null);
-      fetchCreateLiveness();
+      if (data?.isMatch === true) {
+        handleSuccessfulMatch();
+        return;
+      }
+
+      setError(new Error(data?.message || 'errors.unknown'));
+    } catch (error) {
+      setError(error instanceof Error ? error : new Error('errors.unknown'));
     }
+
+    setSessionId(null);
+    fetchCreateLiveness();
   };
 
   useEffect(() => {

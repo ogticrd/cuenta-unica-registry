@@ -173,8 +173,8 @@
         "message": "Verification failed due to a client problem"
       },
       "server": {
-        "heading": "Server issue",
-        "message": "Verification cannot be completed due to a server problem"
+        "heading": "We couldn't complete the facial verification",
+        "message": "Try again in a well-lit place, with your face centered and a stable connection."
       },
       "landscape": {
         "heading": "Landscape orientation not supported",

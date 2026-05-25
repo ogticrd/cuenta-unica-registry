@@ -5,7 +5,9 @@
 export const unwrap = async (r: Response) => {
   if (!r.ok) {
     const error = await r.json().catch(() => ({}));
-    throw new Error(error.error_description || error.error || r.statusText);
+    throw new Error(
+      error.error_description || error.error || error.message || r.statusText,
+    );
   }
   return r.json();
 };

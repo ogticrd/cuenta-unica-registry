@@ -168,8 +168,8 @@
         "message": "Verificación fallida debido a un problema con el cliente"
       },
       "server": {
-        "heading": "Problema con el servidor",
-        "message": "No se puede completar la verificación debido a un problema con el servidor"
+        "heading": "No pudimos completar la verificación facial",
+        "message": "Intenta nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable."
       },
       "landscape": {
         "heading": "Orientación horizontal no compatible",
