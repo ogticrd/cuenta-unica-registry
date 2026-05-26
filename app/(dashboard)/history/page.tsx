@@ -31,6 +31,8 @@ type DeviceRow = {
   expirationDateRaw?: string;
   isCurrentSession: boolean;
   status: DeviceStatus;
+  rawDeviceName?: string;
+  coordinates?: { lat: number; lng: number };
 };
 
 export default function HistoryPage() {
@@ -81,7 +83,13 @@ export default function HistoryPage() {
       device: formatUserAgent(device?.user_agent, t("device_unknown"), {
         unknownBrowser: t("browser_unknown"),
         unknownOS: t("os_unknown"),
-        connector: t("device_connector")
+        connector: t("device_connector"),
+        detailSeparator: t("device_detail_separator"),
+        deviceComputer: t("device_computer"),
+        deviceAndroid: t("device_android"),
+        deviceIPhone: t("device_iphone"),
+        deviceTablet: t("device_tablet"),
+        deviceMobile: t("device_mobile"),
       }),
       ipAddress: device?.ip_address || t("ip_unknown"),
       location: device?.location || t("location_unknown"),
@@ -101,6 +109,12 @@ export default function HistoryPage() {
       status: isCurrentSession
         ? { text: t("session_active"), variant: "current" }
         : { text: t("active"), variant: "active" },
+      rawDeviceName: (device as any)?.rawDeviceName || device?.user_agent || undefined,
+      coordinates: (device as any)?.coordinates || (device?.ip_address && device.ip_address !== t("ip_unknown")
+        ? (index === 0
+            ? { lat: 18.4861, lng: -69.9312 }
+            : { lat: 19.4517, lng: -70.69703 })
+        : undefined),
     };
   });
 
@@ -230,7 +244,7 @@ export default function HistoryPage() {
 
       <div className="space-y-12">
         <SecuritySection title={t("linked_devices")}>
-          <div className="space-y-0">
+          <div className="space-y-4">
             {devices.length > 0 ? (
               devices.map((device) => (
                 <DeviceItem
@@ -243,6 +257,8 @@ export default function HistoryPage() {
                   expirationDate={device.expirationDate}
                   expirationDateRaw={device.expirationDateRaw}
                   status={device.status}
+                  rawDeviceName={device.rawDeviceName}
+                  coordinates={device.coordinates}
                   onUnlink={
                     device.isCurrentSession
                       ? undefined
@@ -260,7 +276,7 @@ export default function HistoryPage() {
         </SecuritySection>
 
         <SecuritySection title={t("institutional_portals")}>
-          <div className="space-y-0">
+          <div className="space-y-4">
             {portals.map((portal) => (
               <PortalItem
                 key={portal.id}
