@@ -256,66 +256,80 @@ export function StepAccount({
                 </FormControl>
                 <FormMessage />
 
-                {form.watch("password") && (
-                  <div className="mt-3 space-y-2 text-sm w-full">
-                    <p className="font-medium text-slate-700 dark:text-slate-300">
-                      {t("account.password_requirements.title")}
-                    </p>
-                    <ul className="space-y-1.5 pl-1">
-                      {[
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).length,
-                          label: t("account.password_requirements.length"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).uppercase,
-                          label: t("account.password_requirements.uppercase"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).lowercase,
-                          label: t("account.password_requirements.lowercase"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).number,
-                          label: t("account.password_requirements.number"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).symbol,
-                          label: t("account.password_requirements.symbol"),
-                        },
-                      ].map((req) => (
-                        <li
-                          key={req.label}
-                          className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}
-                        >
-                          {req.met ? (
-                            <Check className="w-4 h-4 text-green-600 dark:text-green-500" />
-                          ) : (
-                            <X className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                          )}
-                          <span>{req.label}</span>
-                        </li>
-                      ))}
-                      {form.formState.errors.password?.message ===
-                        t("account.validation.password_compromised") && (
-                          <li className="flex items-center gap-2.5 transition-colors text-red-500 dark:text-red-400">
-                            <X className="w-4 h-4 text-red-500 dark:text-red-400" />
-                            <span>{t("account.validation.password_compromised")}</span>
-                          </li>
+                <div className="mt-3 space-y-2 text-sm w-full">
+                  <p className="font-medium text-slate-700 dark:text-slate-300">
+                    {t("account.password_requirements.title")}
+                  </p>
+                  <ul className="space-y-1.5 pl-1">
+                    {[
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).length,
+                        label: t("account.password_requirements.length"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).uppercase,
+                        label: t("account.password_requirements.uppercase"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).lowercase,
+                        label: t("account.password_requirements.lowercase"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).number,
+                        label: t("account.password_requirements.number"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).symbol,
+                        label: t("account.password_requirements.symbol"),
+                      },
+                    ].map((req) => (
+                      <li
+                        key={req.label}
+                        className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}
+                      >
+                        {req.met ? (
+                          <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        ) : (
+                          <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         )}
-                    </ul>
-                  </div>
-                )}
+                        <span>{req.label}</span>
+                      </li>
+                    ))}
+                    {(form.formState.errors.password?.message ===
+                      t("account.validation.password_compromised") || !form.watch("password")) ?
+                      <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
+                        <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
+                        <span>{t("account.validation.password_secure")}</span>
+                      </li>
+                      :
+                      <li className="flex items-center gap-2.5 transition-colors text-green-600 dark:text-green-500">
+                        <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        <span>{t("account.validation.password_secure")}</span>
+                      </li>
+                    }
+                    {(form.watch("password") !== form.watch("confirmPassword") || !form.watch("confirmPassword")) ?
+                      <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
+                        <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
+                        <span>{t("account.validation.password_match")}</span>
+                      </li>
+                      :
+                      <li className="flex items-center gap-2.5 transition-colors text-green-600 dark:text-green-500">
+                        <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        <span>{t("account.validation.password_match")}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
               </FormItem>
             )}
           />

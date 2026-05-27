@@ -320,7 +320,7 @@ export function StepVerification({
           href={ROUTES.terms}
           target="_blank"
           onClick={(e) => e.stopPropagation()}
-          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline inline-flex items-center gap-1 shrink-0 bg-blue-50 dark:bg-blue-950/30 px-3 py-1.5 rounded-full transition-colors"
+          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline inline-flex items-center gap-1 shrink-0 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 rounded-full transition-colors"
         >
           {t("verification.terms_read_document")} <ExternalLink className="w-3.5 h-3.5" />
         </Link>
