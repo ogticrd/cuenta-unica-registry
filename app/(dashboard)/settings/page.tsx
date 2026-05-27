@@ -1,7 +1,6 @@
 import type { OryPageParams } from "@ory/nextjs/app";
 import { headers } from "next/headers";
 import { Suspense } from "react";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { NotificationPreferences } from "@/components/notifications/notification-preferences";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingFallback } from "@/components/ui/loading-fallback";

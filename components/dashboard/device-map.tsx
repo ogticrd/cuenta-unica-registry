@@ -29,8 +29,7 @@ export function DeviceMap({ lat, lng }: DeviceMapProps) {
     <div className="w-full h-[200px] overflow-hidden rounded-md border border-border relative z-0">
       <MapContainer
         center={[lat, lng]}
-        zoom={6}
-        scrollWheelZoom={false}
+        zoom={11}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer

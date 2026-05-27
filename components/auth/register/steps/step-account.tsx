@@ -305,8 +305,7 @@ export function StepAccount({
                         <span>{req.label}</span>
                       </li>
                     ))}
-                    {(form.formState.errors.password?.message ===
-                      t("account.validation.password_compromised") || !form.watch("password")) ?
+                    {(!form.watch("password") || form.formState.errors.password?.message) ?
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         <span>{t("account.validation.password_secure")}</span>

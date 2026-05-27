@@ -166,7 +166,7 @@ export function DeviceItem({
               className="relative z-10 py-1.5 h-8 text-[11px] font-bold tracking-wider uppercase rounded-full bg-card flex items-center gap-1.5"
             >
               <span>{isOpen ? t("see_less") : t("see_more")}</span>
-              <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${isOpen ? "transform rotate-180 text-primary" : "text-muted-foreground"}`} />
+              <ChevronDown className={`h-3 w-3 transition-transform duration-300 text-muted-foreground ${isOpen && "transform rotate-180"}`} />
             </Button>
           </CollapsibleTrigger>
         </div>

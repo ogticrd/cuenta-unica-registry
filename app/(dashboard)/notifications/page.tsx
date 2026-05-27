@@ -7,9 +7,9 @@ export default function NotificationsPage() {
   const t = useT("notifications_page");
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4 border-b pb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-primary">
+    <div className="space-y-8">
+      <div className="space-y-4 pb-8 border-b dark:border-border">
+        <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
           {t("title")}
         </h1>
         <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
