@@ -1,6 +1,6 @@
 "use client";
 
-import { Monitor, Smartphone, MapPin, Clock, ShieldCheck, Laptop, Unlink, ChevronDown, X } from "lucide-react";
+import { Monitor, Smartphone, MapPin, Clock, Laptop, Unlink, ChevronDown, X } from "lucide-react";
 import { useLocale, useT } from "@/hooks/use-t";
 import { ActionButton } from "./action-button";
 import { getRelativeTime } from "@/lib/utils/date";
@@ -114,10 +114,25 @@ export function DeviceItem({
               )}
             </div>
 
-            <div className="text-sm text-muted-foreground flex flex-col gap-1.5 mt-2">
+            <div className="text-sm text-muted-foreground flex flex-col gap-2 mt-3">
               <div className="flex items-start gap-2">
                 <MapPin size={14} className="opacity-70 flex-shrink-0 mt-0.5" />
-                <span className="break-words">{location}</span>
+                <span className="break-words">
+                  <span className="font-semibold">{t("location")}: </span>
+                  {location}
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Clock size={14} className="opacity-70 flex-shrink-0 mt-0.5" />
+                <span className="break-words flex items-baseline gap-1.5 flex-wrap">
+                  <span className="font-semibold">{t("last_access_prefix")}: </span>
+                  <span>{lastAccess}</span>
+                  {lastAccessRaw && (
+                    <span className="text-xs opacity-80">
+                      ({getRelativeTime(lastAccessRaw, locale)})
+                    </span>
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -137,45 +152,7 @@ export function DeviceItem({
         )}
       </div>
 
-      <div className="mt-6 pt-5 border-t border-border/50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex items-start sm:items-center gap-3 bg-muted/30 p-3.5 rounded-xl border border-border/50 transition-colors">
-          <div className="bg-background p-2 rounded-lg text-muted-foreground shadow-sm flex-shrink-0">
-            <Clock size={16} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">
-              {t("last_access")}
-            </div>
-            <div className="text-sm font-medium text-foreground flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 break-words">
-              <span>{lastAccess}</span>
-              {lastAccessRaw && (
-                <span className="text-muted-foreground font-normal text-xs">
-                  ({getRelativeTime(lastAccessRaw, locale)})
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
 
-        <div className="flex items-start sm:items-center gap-3 bg-muted/30 p-3.5 rounded-xl border border-border/50 transition-colors">
-          <div className="bg-background p-2 rounded-lg text-muted-foreground shadow-sm flex-shrink-0">
-            <ShieldCheck size={16} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-0.5">
-              {t("expires_on")}
-            </div>
-            <div className="text-sm font-medium text-foreground flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 break-words">
-              <span>{expirationDate}</span>
-              {expirationDateRaw && (
-                <span className="text-muted-foreground font-normal text-xs">
-                  ({getRelativeTime(expirationDateRaw, locale)})
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full mt-6">
         <div className="relative flex items-center justify-center">
@@ -196,6 +173,20 @@ export function DeviceItem({
         <CollapsibleContent className="mt-2 space-y-4 pt-4 transition-all duration-300">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+                  {t("expires_on")}
+                </span>
+                <span className="text-sm font-medium text-foreground break-all flex flex-wrap items-baseline gap-1.5">
+                  <span>{expirationDate}</span>
+                  {expirationDateRaw && (
+                    <span className="text-muted-foreground font-normal text-xs">
+                      ({getRelativeTime(expirationDateRaw, locale)})
+                    </span>
+                  )}
+                </span>
+              </div>
+
               <div className="flex flex-col gap-1">
                 <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                   {t("ip_address")}

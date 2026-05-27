@@ -4,6 +4,7 @@ export interface UserAgentTranslations {
   unknownBrowser: string;
   unknownOS: string;
   connector: string;
+  inBrowser?: string;
   detailSeparator?: string;
   deviceComputer?: string;
   deviceAndroid?: string;
@@ -59,12 +60,12 @@ export function formatUserAgent(
     hardwareStr = `${device.vendor} ${device.model}`;
   }
 
-  const detailSeparator = translations.detailSeparator || " · ";
-
-  let result = `${deviceType}${detailSeparator}${browserName}${translations.connector}${osName}${osVersion}`;
+  const baseDevice = hardwareStr ? hardwareStr : deviceType;
   
-  if (hardwareStr) {
-    result += `${detailSeparator}${hardwareStr}`;
+  let result = `${baseDevice} ${osName}${osVersion}`;
+  
+  if (browserName && browserName !== translations.unknownBrowser) {
+    result += `${translations.inBrowser || " en navegador "}${browserName}`;
   }
 
   return result;

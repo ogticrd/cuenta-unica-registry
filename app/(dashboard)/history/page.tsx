@@ -84,6 +84,7 @@ export default function HistoryPage() {
         unknownBrowser: t("browser_unknown"),
         unknownOS: t("os_unknown"),
         connector: t("device_connector"),
+        inBrowser: t("device_in_browser"),
         detailSeparator: t("device_detail_separator"),
         deviceComputer: t("device_computer"),
         deviceAndroid: t("device_android"),

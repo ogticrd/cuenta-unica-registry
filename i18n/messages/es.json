@@ -151,15 +151,17 @@
         "password_min": "La contraseña debe tener al menos 10 caracteres",
         "password_weak": "La contraseña es muy débil. Usa mayúsculas, minúsculas, números o caracteres especiales.",
         "password_max": "La contraseña excede la longitud permitida",
-        "password_compromised": "La contraseña no es segura, elige una diferente",
+        "password_secure": "No se encontraron indicios de que esta contraseña haya sido expuesta públicamente",
+        "password_compromised": "Muchas personas ya han utilizado esta contraseña y ha sido expuesta en incidentes de seguridad. Escriba una contraseña más exclusiva",
         "password_policy": "La contraseña no cumple con la política de seguridad",
         "password_cedula_similarity": "La contraseña no puede contener la cédula",
         "password_email_similarity": "La contraseña no puede contener el correo electrónico",
         "email_mismatch": "Los correos electrónicos no coinciden",
-        "password_mismatch": "Las contraseñas no coinciden"
+        "password_mismatch": "Las contraseñas no coinciden",
+        "password_match": "Las contraseñas coinciden"
       },
       "password_requirements": {
-        "title": "Tu contraseña debe contener:",
+        "title": "Su contraseña debe cumplir los siguientes requisitos:",
         "length": "Al menos 10 caracteres",
         "uppercase": "Una letra mayúscula",
         "lowercase": "Una letra minúscula",
@@ -284,13 +286,11 @@
       "security": {
         "title": "Nivel de Seguridad",
         "level_high": "Alto",
-        "level_medium": "Medio",
-        "level_low": "Bajo",
         "alert_low_title": "Mejora la seguridad de tu cuenta",
-        "alert_low_desc": "Te recomendamos habilitar la autenticación de dos factores (2FA) para proteger mejor tu cuenta.",
-        "improve_security": "Configurar 2FA",
+        "alert_low_desc": "Agrega un método de autenticación adicional para proteger mejor tu cuenta.",
+        "improve_security": "Mejorar seguridad",
         "level_standard": "Estándar",
-        "desc_2fa": "2FA activado",
+        "desc_2fa": "Reforzado",
         "desc_password": "Contraseña"
       }
     },
@@ -332,6 +332,7 @@
     "browser_unknown": "Navegador desconocido",
     "os_unknown": "SO desconocido",
     "device_connector": " en ",
+    "device_in_browser": " en navegador ",
     "device_detail_separator": " · ",
     "device_computer": "Computadora",
     "device_android": "Android",

@@ -151,15 +151,17 @@
         "password_min": "The password must be at least 10 characters long",
         "password_weak": "The password is too weak. Use uppercase, lowercase, numbers, or special characters.",
         "password_max": "The password exceeds the allowed length",
-        "password_compromised": "The password is not secure, choose a different one",
+        "password_secure": "No evidence was found that this password has been publicly exposed",
+        "password_compromised": "Many people have already used this password, and it has been exposed in security incidents. Please create a more unique password",
         "password_policy": "The password does not meet the security policy",
         "password_cedula_similarity": "The password cannot contain the national ID",
         "password_email_similarity": "The password cannot contain the email address",
         "email_mismatch": "The email addresses do not match",
-        "password_mismatch": "The passwords do not match"
+        "password_mismatch": "The passwords do not match",
+        "password_match": "The passwords match"
       },
       "password_requirements": {
-        "title": "Your password must contain:",
+        "title": "Your password must meet the following requirements:",
         "length": "At least 10 characters",
         "uppercase": "One uppercase letter",
         "lowercase": "One lowercase letter",
@@ -284,13 +286,11 @@
       "security": {
         "title": "Security Level",
         "level_high": "High",
-        "level_medium": "Medium",
-        "level_low": "Low",
         "alert_low_title": "Improve your account security",
-        "alert_low_desc": "We recommend enabling two-factor authentication (2FA) to better protect your account.",
-        "improve_security": "Set up 2FA",
+        "alert_low_desc": "Add an additional authentication method to better protect your account.",
+        "improve_security": "Improve security",
         "level_standard": "Standard",
-        "desc_2fa": "2FA activated",
+        "desc_2fa": "Enhanced",
         "desc_password": "Password"
       }
     },
@@ -332,6 +332,7 @@
     "browser_unknown": "Unknown browser",
     "os_unknown": "Unknown OS",
     "device_connector": " on ",
+    "device_in_browser": " in browser ",
     "device_detail_separator": " · ",
     "device_computer": "Computer",
     "device_android": "Android",
