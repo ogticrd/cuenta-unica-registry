@@ -63,21 +63,25 @@ export function DeviceItem({
   const [isOpen, setIsOpen] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null | undefined>(coordinates);
   const [isLoadingCoords, setIsLoadingCoords] = useState(false);
+  const [coordsError, setCoordsError] = useState(false);
 
   const handleOpenChange = async (open: boolean) => {
     setIsOpen(open);
 
     if (open && coords === undefined && ipAddress && ipAddress !== t("ip_unknown")) {
       setIsLoadingCoords(true);
+      setCoordsError(false);
       try {
         const fetchedCoords = await locationApiService.getCoordinates(ipAddress);
         if (fetchedCoords) {
           setCoords(fetchedCoords);
         } else {
           setCoords(null);
+          setCoordsError(true);
         }
       } catch (error) {
         setCoords(null);
+        setCoordsError(true);
       } finally {
         setIsLoadingCoords(false);
       }
@@ -231,7 +235,7 @@ export function DeviceItem({
               )}
             </div>
 
-            {(isLoadingCoords || coords) && (
+            {(isLoadingCoords || coords || coordsError) && (
               <div className="w-full flex flex-col gap-2">
                 <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                   {t("location")}
@@ -241,9 +245,14 @@ export function DeviceItem({
                     <Loader2 className="h-5 w-5 animate-spin mr-2" />
                     {t("loading_map")}
                   </div>
-                ) : (
-                  <DeviceMap lat={coords!.lat} lng={coords!.lng} />
-                )}
+                ) : coordsError ? (
+                  <div className="w-full h-[200px] bg-muted/10 rounded-md border border-dashed border-red-500/30 flex flex-col items-center justify-center text-muted-foreground text-sm gap-2">
+                    <MapPin className="h-8 w-8 text-red-400/50" />
+                    <span className="text-red-500/80 font-medium">{t("location_unknown")}</span>
+                  </div>
+                ) : coords ? (
+                  <DeviceMap lat={coords.lat} lng={coords.lng} />
+                ) : null}
               </div>
             )}
           </div>
