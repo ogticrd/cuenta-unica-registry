@@ -18,7 +18,7 @@ describe('unwrap', () => {
       'errors.liveness.lowConfidence',
     );
     expect(localizeString(es, 'errors.liveness.lowConfidence')).toBe(
-      'La prueba de vida no ha sido exitosa. Verifique las instrucciones e intente nuevamente.',
+      'No pudimos completar la verificación facial. Intenta nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable.',
     );
   });
 

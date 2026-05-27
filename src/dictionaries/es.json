@@ -119,7 +119,7 @@
     "unknown": "Ha ocurrido un error inesperado, por favor inténtelo más tarde.",
     "liveness": {
       "noMatch": "No se ha podido validar su identidad con la JCE. Intente nuevamente o actualice su foto en la JCE.",
-      "lowConfidence": "La prueba de vida no ha sido exitosa. Verifique las instrucciones e intente nuevamente."
+      "lowConfidence": "No pudimos completar la verificación facial. Intenta nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable."
     },
     "recaptcha": {
       "issues": "Al parecer el reCaptcha no ha validado correctamente su solicitud, refresque e intente nuevamente",

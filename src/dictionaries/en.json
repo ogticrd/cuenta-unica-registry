@@ -119,7 +119,7 @@
     "unknown": "An unexpected error has occurred, please try again later.",
     "liveness": {
       "noMatch": "We could not validate your identity with the JCE. Try again or update your photo at the JCE.",
-      "lowConfidence": "The life test has not been successful. Check the instructions and try again."
+      "lowConfidence": "We couldn't complete the facial verification. Try again in a well-lit place, with your face centered and a stable connection."
     },
     "recaptcha": {
       "issues": "It seems the reCaptcha has not correctly validated your request, refresh and try again",
