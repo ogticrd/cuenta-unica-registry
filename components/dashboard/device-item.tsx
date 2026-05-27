@@ -1,6 +1,6 @@
 "use client";
 
-import { Monitor, Smartphone, MapPin, Clock, Laptop, Unlink, ChevronDown, X } from "lucide-react";
+import { Monitor, Smartphone, MapPin, Clock, Laptop, ChevronDown, X, Loader2 } from "lucide-react";
 import { useLocale, useT } from "@/hooks/use-t";
 import { ActionButton } from "./action-button";
 import { getRelativeTime } from "@/lib/utils/date";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { locationApiService } from "@/lib/services/location/location-api.service";
 
 const DeviceMap = dynamic(
   () => import("./device-map").then((mod) => mod.DeviceMap),
@@ -60,6 +61,28 @@ export function DeviceItem({
   const t = useT("history");
   const locale = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null | undefined>(coordinates);
+  const [isLoadingCoords, setIsLoadingCoords] = useState(false);
+
+  const handleOpenChange = async (open: boolean) => {
+    setIsOpen(open);
+
+    if (open && coords === undefined && ipAddress && ipAddress !== t("ip_unknown")) {
+      setIsLoadingCoords(true);
+      try {
+        const fetchedCoords = await locationApiService.getCoordinates(ipAddress);
+        if (fetchedCoords) {
+          setCoords(fetchedCoords);
+        } else {
+          setCoords(null);
+        }
+      } catch (error) {
+        setCoords(null);
+      } finally {
+        setIsLoadingCoords(false);
+      }
+    }
+  };
   const deviceLower = device.toLowerCase();
 
   const isMobile =
@@ -154,7 +177,7 @@ export function DeviceItem({
 
 
 
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full mt-6">
+      <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="w-full mt-6">
         <div className="relative flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-dashed border-border/80" />
@@ -208,12 +231,19 @@ export function DeviceItem({
               )}
             </div>
 
-            {coordinates && (
+            {(isLoadingCoords || coords) && (
               <div className="w-full flex flex-col gap-2">
                 <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                   {t("location")}
                 </span>
-                <DeviceMap lat={coordinates.lat} lng={coordinates.lng} />
+                {isLoadingCoords ? (
+                  <div className="w-full h-[200px] bg-muted/50 animate-pulse rounded-md border border-border/50 flex items-center justify-center text-muted-foreground text-sm">
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    {t("loading_map")}
+                  </div>
+                ) : (
+                  <DeviceMap lat={coords!.lat} lng={coords!.lng} />
+                )}
               </div>
             )}
           </div>

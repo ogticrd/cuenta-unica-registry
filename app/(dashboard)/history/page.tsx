@@ -111,11 +111,7 @@ export default function HistoryPage() {
         ? { text: t("session_active"), variant: "current" }
         : { text: t("active"), variant: "active" },
       rawDeviceName: (device as any)?.rawDeviceName || device?.user_agent || undefined,
-      coordinates: (device as any)?.coordinates || (device?.ip_address && device.ip_address !== t("ip_unknown")
-        ? (index === 0
-            ? { lat: 18.4861, lng: -69.9312 }
-            : { lat: 19.4517, lng: -70.69703 })
-        : undefined),
+      coordinates: (device as any)?.coordinates || undefined,
     };
   });
 
