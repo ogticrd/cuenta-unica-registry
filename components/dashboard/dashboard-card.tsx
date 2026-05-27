@@ -18,10 +18,10 @@ export function DashboardCard({
       className={`p-6 bg-transparent dark:bg-card/30 rounded-2xl border-t sm:border border-border dark:border-border/50 ${className}`}
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-foreground tracking-tight">
+        <h3 className="text-md font-bold text-foreground tracking-tight">
           {title}
         </h3>
-        {action && <div className="hidden sm:block">{action}</div>}
+        {action && <div>{action}</div>}
       </div>
       {children}
     </div>

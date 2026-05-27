@@ -26,6 +26,7 @@ import { useAuth } from "@/lib/auth-context";
 import { ROUTES } from "@/lib/constants/routes";
 import { getImportantNotifications } from "@/lib/notifications/selectors";
 import { useNotifications } from "@/lib/notifications/notification-context";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const { user, session } = useAuth();
@@ -49,9 +50,18 @@ export default function DashboardPage() {
     ) || false;
   const devicesCount = session ? 1 + (session.other_sessions?.length || 0) : 1;
   const isAal2 = session?.authenticator_assurance_level === "aal2";
-  const securityLevel = isAal2
-    ? t("stats_cards.security.level_high")
-    : t("stats_cards.security.level_standard");
+
+  let securityLevelText = "";
+  let securityColorClass = "";
+
+  if (isAal2) {
+    securityLevelText = t("stats_cards.security.level_high");
+    securityColorClass = "bg-green-50 border-green-200 hover:bg-green-100 text-green-700 dark:bg-green-900/20 dark:border-green-800/50 dark:hover:bg-green-900/40 dark:text-green-400";
+  } else {
+    securityLevelText = t("stats_cards.security.level_standard");
+    securityColorClass = "bg-amber-50 border-amber-200 hover:bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800/50 dark:hover:bg-amber-900/40 dark:text-amber-400";
+  }
+
   const securityDesc = isAal2
     ? t("stats_cards.security.desc_2fa")
     : t("stats_cards.security.desc_password");
@@ -209,6 +219,32 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Security Alert */}
+      {!isAal2 && (
+        <div className="bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-800/30 rounded-md p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="bg-amber-100/60 dark:bg-amber-900/30 p-2 rounded-full flex-shrink-0 mt-0.5">
+              <Shield className="text-amber-600 dark:text-amber-500" size={18} />
+            </div>
+            <div>
+              <h6 className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                {t("stats_cards.security.alert_low_title")}
+              </h6>
+              <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
+                {t("stats_cards.security.alert_low_desc")}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={() => router.push(ROUTES.settings)}
+            className="whitespace-nowrap w-full sm:w-auto bg-white/60 hover:bg-amber-100/50 border border-amber-700 text-amber-700 border-amber-200/60 dark:bg-transparent dark:hover:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50"
+          >
+            {t("stats_cards.security.improve_security")}
+          </Button>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatsCard
@@ -238,10 +274,11 @@ export default function DashboardPage() {
         />
         <StatsCard
           title={t("stats_cards.security.title")}
-          value={securityLevel}
+          value={securityLevelText}
           icon={<Shield size={24} />}
           description={securityDesc}
           href={ROUTES.settings}
+          className={securityColorClass}
         />
       </div>
 

@@ -7,11 +7,16 @@ interface StatsCardProps {
   icon: ReactNode;
   description?: string;
   href?: string;
+  className?: string;
 }
 
-export function StatsCard({ title, value, icon, description, href }: StatsCardProps) {
+export function StatsCard({ title, value, icon, description, href, className = "" }: StatsCardProps) {
+  const baseClasses = "flex flex-col items-center justify-center p-5 rounded-2xl border text-center transition-colors h-full w-full";
+  const defaultClasses = "bg-gray-50 dark:bg-card/50 border-transparent dark:border-border/50 hover:bg-gray-100 dark:hover:bg-card/80";
+  const finalClassName = className || defaultClasses;
+
   return (
-    <Link href={href || "#"} className="flex flex-col items-center justify-center p-5 bg-gray-50 dark:bg-card/50 rounded-2xl border border-transparent dark:border-border/50 text-center hover:bg-gray-100 dark:hover:bg-card/80 transition-colors h-full w-full">
+    <Link href={href || "#"} className={`${baseClasses} ${finalClassName}`}>
       <div className="text-secondary mb-3 bg-secondary/5 dark:bg-secondary/20 p-2.5 rounded-full">
         {icon}
       </div>
