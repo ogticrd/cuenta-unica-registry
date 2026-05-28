@@ -1,9 +1,26 @@
 import "server-only";
 
-import { Configuration, FlowType, FrontendApi } from "@ory/client-fetch";
+import {
+  type ApiResponse,
+  Configuration,
+  FlowType,
+  FrontendApi,
+  type LoginFlow,
+  type RecoveryFlow,
+  type RegistrationFlow,
+  type SettingsFlow,
+  type VerificationFlow,
+} from "@ory/client-fetch";
 import type { OryClientConfiguration } from "@ory/elements-react";
 import { getFlowFactory } from "@ory/nextjs/app";
 import { headers } from "next/headers";
+import { getAnalyticsTransientPayload } from "@/lib/analytics/transient-payload";
+import type { AnalyticsTransientPayload } from "@/lib/analytics/transient-payload-core";
+import {
+  addAnalyticsTransientPayloadNode,
+  type OryFlowLike,
+  resolveAnalyticsTransientPayloadForFlow,
+} from "@/lib/analytics/transient-payload-core";
 
 const initOverrides = { cache: "no-cache" as RequestCache };
 
@@ -65,6 +82,24 @@ async function withReturnTo(
   return params;
 }
 
+function withAnalyticsTransientPayloadResponse<T extends object>(
+  response: ApiResponse<T>,
+  payload: AnalyticsTransientPayload | undefined,
+): ApiResponse<T> {
+  return {
+    raw: response.raw,
+    value: async () => {
+      const flow = await response.value();
+      const flowLike = flow as unknown as OryFlowLike;
+
+      return addAnalyticsTransientPayloadNode(
+        flowLike,
+        resolveAnalyticsTransientPayloadForFlow(flowLike, payload),
+      ) as T;
+    },
+  };
+}
+
 /**
  * Replacement for @ory/nextjs getLoginFlow that works in production.
  *
@@ -78,13 +113,18 @@ async function withReturnTo(
 export async function getLoginFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-) {
-  return getFlowFactory(
+): Promise<LoginFlow | null | void> {
+  const transientPayload = await getAnalyticsTransientPayload();
+
+  return getFlowFactory<LoginFlow>(
     await withReturnTo(await params),
     async () =>
-      (await createServerClient()).getLoginFlowRaw(
-        await toFlowParams(params),
-        initOverrides,
+      withAnalyticsTransientPayloadResponse(
+        await (await createServerClient()).getLoginFlowRaw(
+          await toFlowParams(params),
+          initOverrides,
+        ),
+        transientPayload,
       ),
     FlowType.Login,
     await getPublicUrl(),
@@ -95,13 +135,18 @@ export async function getLoginFlow(
 export async function getRegistrationFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-) {
-  return getFlowFactory(
+): Promise<RegistrationFlow | null | void> {
+  const transientPayload = await getAnalyticsTransientPayload();
+
+  return getFlowFactory<RegistrationFlow>(
     await withReturnTo(await params),
     async () =>
-      (await createServerClient()).getRegistrationFlowRaw(
-        await toFlowParams(params),
-        initOverrides,
+      withAnalyticsTransientPayloadResponse(
+        await (await createServerClient()).getRegistrationFlowRaw(
+          await toFlowParams(params),
+          initOverrides,
+        ),
+        transientPayload,
       ),
     FlowType.Registration,
     await getPublicUrl(),
@@ -112,13 +157,18 @@ export async function getRegistrationFlow(
 export async function getRecoveryFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-) {
-  return getFlowFactory(
+): Promise<RecoveryFlow | null | void> {
+  const transientPayload = await getAnalyticsTransientPayload();
+
+  return getFlowFactory<RecoveryFlow>(
     await withReturnTo(await params),
     async () =>
-      (await createServerClient()).getRecoveryFlowRaw(
-        await toFlowParams(params),
-        initOverrides,
+      withAnalyticsTransientPayloadResponse(
+        await (await createServerClient()).getRecoveryFlowRaw(
+          await toFlowParams(params),
+          initOverrides,
+        ),
+        transientPayload,
       ),
     FlowType.Recovery,
     await getPublicUrl(),
@@ -129,13 +179,18 @@ export async function getRecoveryFlow(
 export async function getVerificationFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-) {
-  return getFlowFactory(
+): Promise<VerificationFlow | null | void> {
+  const transientPayload = await getAnalyticsTransientPayload();
+
+  return getFlowFactory<VerificationFlow>(
     await withReturnTo(await params),
     async () =>
-      (await createServerClient()).getVerificationFlowRaw(
-        await toFlowParams(params),
-        initOverrides,
+      withAnalyticsTransientPayloadResponse(
+        await (await createServerClient()).getVerificationFlowRaw(
+          await toFlowParams(params),
+          initOverrides,
+        ),
+        transientPayload,
       ),
     FlowType.Verification,
     await getPublicUrl(),
@@ -146,13 +201,18 @@ export async function getVerificationFlow(
 export async function getSettingsFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-) {
-  return getFlowFactory(
+): Promise<SettingsFlow | null | void> {
+  const transientPayload = await getAnalyticsTransientPayload();
+
+  return getFlowFactory<SettingsFlow>(
     await withReturnTo(await params),
     async () =>
-      (await createServerClient()).getSettingsFlowRaw(
-        await toFlowParams(params),
-        initOverrides,
+      withAnalyticsTransientPayloadResponse(
+        await (await createServerClient()).getSettingsFlowRaw(
+          await toFlowParams(params),
+          initOverrides,
+        ),
+        transientPayload,
       ),
     FlowType.Settings,
     await getPublicUrl(),

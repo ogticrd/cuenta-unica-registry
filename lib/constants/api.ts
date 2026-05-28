@@ -6,6 +6,7 @@ export const API = {
   session: "/api/ory/session",
   logout: "/api/ory/logout",
   sessions: "/api/ory/sessions",
+  analyticsJourney: "/api/analytics/journey",
   registrationCitizen: "/api/registration/citizen",
   registrationAccount: "/api/registration/account",
   registrationVerification: "/api/registration/verification",
