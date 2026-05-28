@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -98,6 +99,11 @@ export function StepIdentification({
 
   return (
     <div className="space-y-6 flex flex-col w-full animate-in fade-in zoom-in-95 duration-300">
+      <JourneyEvent
+        eventName="journey.registration.identification.entered"
+        step="identification"
+        returnUrl={returnUrl}
+      />
       <div className="text-center space-y-2 mb-2">
         <p className="text-sm text-primary dark:text-blue-100/80 font-medium leading-relaxed">
           {t("identification.intro")}

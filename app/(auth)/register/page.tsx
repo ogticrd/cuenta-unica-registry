@@ -1,3 +1,4 @@
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -17,6 +18,11 @@ export default async function RegistrationPage({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
+      <JourneyEvent
+        eventName="journey.registration.entered"
+        step="register"
+        returnUrl={params.return_url}
+      />
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12">

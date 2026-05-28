@@ -1,11 +1,16 @@
 import { Login } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
 import { WelcomeSection } from "@/components/auth/welcome-section";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
+import {
+  type OryFlowLike,
+  resolveAnalyticsTransientPayloadForFlow,
+} from "@/lib/analytics/transient-payload-core";
 import { getT } from "@/lib/i18n/server";
 import { getLoginFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
@@ -19,17 +24,35 @@ async function LoginFlow({ searchParams }: OryPageParams) {
     return <LoadingFallback message={t("loading")} />;
   }
 
+  const analytics = resolveAnalyticsTransientPayloadForFlow(
+    flow as unknown as OryFlowLike,
+    undefined,
+  )?.analytics;
+
   return (
-    <Login
-      flow={flow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucCardHeader,
-          Footer: CucCardFooter,
-        },
-      }}
-    />
+    <>
+      <JourneyEvent
+        eventName="journey.login.entered"
+        step="login"
+        flowId={flow.id}
+        oryFlowType="login"
+        clientId={analytics?.clientId}
+        clientName={analytics?.clientName}
+        institutionName={analytics?.institutionName}
+        linkageStatus={analytics?.linkageStatus}
+        returnUrl={analytics?.returnUrl}
+      />
+      <Login
+        flow={flow}
+        config={dynamicConfig}
+        components={{
+          Card: {
+            Header: CucCardHeader,
+            Footer: CucCardFooter,
+          },
+        }}
+      />
+    </>
   );
 }
 

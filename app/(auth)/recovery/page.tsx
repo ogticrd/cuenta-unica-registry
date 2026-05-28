@@ -1,6 +1,7 @@
 import { Recovery } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import {
   CucRecoveryFooter,
   CucRecoveryHeader,
@@ -36,8 +37,16 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
 }
 
 export default async function ForgotPasswordPage(props: OryPageParams) {
+  const params = await props.searchParams;
+
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
+      <JourneyEvent
+        eventName="journey.recovery.entered"
+        step="recovery"
+        flowId={params.flow?.toString()}
+        oryFlowType="recovery"
+      />
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12">

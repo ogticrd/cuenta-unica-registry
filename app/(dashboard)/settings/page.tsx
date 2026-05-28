@@ -1,5 +1,6 @@
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
@@ -20,9 +21,16 @@ async function SettingsFlowComponent({ searchParams }: OryPageParams) {
 }
 
 export default async function SettingsPage(props: OryPageParams) {
+  const params = await props.searchParams;
   const t = await getT("settings");
   return (
     <DashboardLayout>
+      <JourneyEvent
+        eventName="journey.settings.entered"
+        step="settings"
+        flowId={params.flow?.toString()}
+        oryFlowType="settings"
+      />
       <div className="space-y-8">
         <div className="space-y-4 pb-8 border-b dark:border-border">
           <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">

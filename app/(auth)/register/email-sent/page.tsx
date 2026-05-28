@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { VerificationOTPForm } from "@/components/auth/verification/verification-otp-form";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -21,6 +22,13 @@ export default async function EmailSentPage({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
+      <JourneyEvent
+        eventName="journey.registration.email_verification.entered"
+        step="email_verification"
+        flowId={flowId}
+        oryFlowType="verification"
+        returnUrl={returnUrl}
+      />
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12">
