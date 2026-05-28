@@ -9,6 +9,7 @@ export const API = {
   notifications: "/api/notifications",
   notificationsMarkAllRead: "/api/notifications/mark-all-read",
   notificationPreferences: "/api/notifications/preferences",
+  analyticsJourney: "/api/analytics/journey",
   registrationCitizen: "/api/registration/citizen",
   registrationAccount: "/api/registration/account",
   registrationAccountDraft: "/api/registration/account-draft",

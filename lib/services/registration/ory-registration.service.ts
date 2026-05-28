@@ -6,6 +6,7 @@ import type {
   UiNode,
   VerificationFlow,
 } from "@ory/client";
+import { withAnalyticsTransientPayload } from "@/lib/analytics/transient-payload";
 import { createOryClient } from "@/lib/ory/client";
 import { extractSetCookieHeaders, mergeCookieHeaders } from "@/lib/ory/cookies";
 
@@ -107,7 +108,7 @@ export async function registerOryAccount(
       {
         flow: createFlowResponse.data.id,
         cookie: csrfCookieHeader || input.cookie,
-        updateRegistrationFlowBody: {
+        updateRegistrationFlowBody: await withAnalyticsTransientPayload({
           csrf_token: csrfToken,
           method: "password",
           password: input.password,
@@ -121,7 +122,7 @@ export async function registerOryAccount(
             birthdate: input.birthDate,
             gender: input.gender,
           },
-        },
+        }),
       },
       {
         headers: {
