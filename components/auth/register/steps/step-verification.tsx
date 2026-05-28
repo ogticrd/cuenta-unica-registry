@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
+import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
 import type {
@@ -226,6 +227,11 @@ export function StepVerification({
       onRequireAccount();
       return;
     }
+
+    void trackJourneyEvent({
+      eventName: "journey.registration.liveness.started",
+      step: "liveness",
+    });
 
     isHandlingError.current = false;
     isCompletingLiveness.current = false;

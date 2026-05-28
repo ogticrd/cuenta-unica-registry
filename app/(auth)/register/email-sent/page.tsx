@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import { VerificationOTPForm } from "@/components/auth/verification/verification-otp-form";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -35,7 +36,15 @@ export default async function EmailSentPage({
   const t = await getT("email_sent");
 
   return (
-    <main className="flex-1 flex items-center justify-center py-12">
+    <>
+      <JourneyEvent
+        eventName="journey.registration.email_verification.entered"
+        step="email_verification"
+        flowId={flowId}
+        oryFlowType="verification"
+        returnUrl={returnUrl}
+      />
+      <main className="flex-1 flex items-center justify-center py-12">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="w-full mx-auto ory-auth-scope">
           <Card className="w-full max-w-[420px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card">
@@ -95,6 +104,7 @@ export default async function EmailSentPage({
           </Card>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Verification } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
+import { JourneyEvent } from "@/components/analytics/journey-event";
 import {
   CucVerificationFooter,
   CucVerificationHeader,
@@ -36,7 +37,14 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
 
 export default async function VerificationPage(props: OryPageParams) {
   return (
-    <main className="flex-1 flex items-center justify-center py-12">
+    <>
+      <JourneyEvent
+        eventName="journey.verification.entered"
+        step="verification"
+        flowId={params.flow?.toString()}
+        oryFlowType="verification"
+      />
+      <main className="flex-1 flex items-center justify-center py-12">
       <div className="container mx-auto px-4">
         <div className="w-full max-w-md mx-auto">
           <Suspense fallback={<LoadingFallback />}>
@@ -44,6 +52,7 @@ export default async function VerificationPage(props: OryPageParams) {
           </Suspense>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
