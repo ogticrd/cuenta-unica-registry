@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies } from "@/lib/ory/cookies";
 import { accountRequestSchema } from "@/lib/schemas/registration";
@@ -16,6 +17,30 @@ import type {
   RegisterAccountResponse,
 } from "@/lib/types/registration/account";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
+
+async function emitRegistrationOutcome(options: {
+  success: boolean;
+  errorCode?: string;
+  identityId?: string;
+  flowId?: string;
+  metadata?: Record<string, unknown>;
+}) {
+  await emitAnalyticsEvent(
+    {
+      eventName: options.success
+        ? "identity.registration.succeeded"
+        : "identity.registration.failed",
+      source: "registry-app",
+      step: "account",
+      outcome: options.success ? "succeeded" : "failed",
+      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+      ...(options.identityId ? { identityId: options.identityId } : {}),
+      ...(options.flowId ? { flowId: options.flowId } : {}),
+      ...(options.metadata ? { metadata: options.metadata } : {}),
+    },
+    { entryPath: "/api/registration/account" },
+  );
+}
 
 function setOryCookies(response: NextResponse, setCookies: string[]) {
   for (const raw of setCookies) {
@@ -90,38 +115,73 @@ export async function POST(request: Request) {
     body = (await request.json()) as RegisterAccountRequest;
   } catch (error) {
     console.error("[/api/registration/account] Invalid request body:", error);
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "invalid_payload",
+      metadata: { stage: "request_body" },
+    });
     return createErrorResponse("invalid_payload", 400);
   }
 
   const parsedRequest = accountRequestSchema.safeParse(body);
 
   if (!parsedRequest.success) {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "invalid_payload",
+      metadata: { stage: "schema_validation" },
+    });
     return createErrorResponse("invalid_payload", 400);
   }
 
   const registrationSession = await getRegistrationSession();
 
   if (!registrationSession) {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "registration_session_missing",
+      metadata: { stage: "session_check" },
+    });
     return createErrorResponse("registration_session_missing", 400);
   }
 
   if (registrationSession.status !== "verified") {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "verification_required",
+      metadata: { stage: "session_state" },
+    });
     return createErrorResponse("verification_required", 400);
   }
 
   const cedula = normalizeCedula(registrationSession.cedula);
 
   if (!(await isValidCedula(cedula))) {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "invalid_cedula",
+      metadata: { stage: "cedula_validation" },
+    });
     return createErrorResponse("invalid_cedula", 400);
   }
 
   if (hasPasswordCedulaSimilarity(parsedRequest.data.password, cedula)) {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "password_cedula_similarity",
+      metadata: { stage: "password_validation" },
+    });
     return createErrorResponse("password_cedula_similarity", 400);
   }
 
   const citizen = await findCitizenByCedula(cedula);
 
   if (!citizen) {
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "citizen_not_found",
+      metadata: { stage: "citizen_lookup" },
+    });
     return createErrorResponse("citizen_not_found", 404);
   }
 
@@ -140,6 +200,11 @@ export async function POST(request: Request) {
 
     if (payload.ui) {
       const errorDetails = mapOryAccountErrors(payload);
+      await emitRegistrationOutcome({
+        success: false,
+        errorCode: errorDetails.code,
+        metadata: { stage: "ory_validation", hasUi: true },
+      });
 
       return createErrorResponse(errorDetails.code, 400, {
         fieldErrors: errorDetails.fieldErrors,
@@ -155,6 +220,11 @@ export async function POST(request: Request) {
         "[/api/registration/account] Ory returned an error payload:",
         payload.error,
       );
+      await emitRegistrationOutcome({
+        success: false,
+        errorCode: errorDetails.code,
+        metadata: { stage: "ory_error", status },
+      });
 
       return createErrorResponse(errorDetails.code, status, {
         fieldErrors: errorDetails.fieldErrors,
@@ -168,6 +238,15 @@ export async function POST(request: Request) {
       if (block.action === "show_verification_ui" && block.flow?.id) {
         // Ory already sent the verification email via its after-registration hook.
         // Redirect to our custom OTP verification page with the flow ID.
+        await emitRegistrationOutcome({
+          success: true,
+          flowId: block.flow.id,
+          metadata: {
+            stage: "registration_created",
+            destination: "email-sent",
+          },
+        });
+
         const emailSentParams = new URLSearchParams({
           flow: block.flow.id,
           ...(returnUrl ? { return_url: returnUrl } : {}),
@@ -187,6 +266,15 @@ export async function POST(request: Request) {
     }
 
     if (payload.identity?.id) {
+      await emitRegistrationOutcome({
+        success: true,
+        identityId: payload.identity.id,
+        metadata: {
+          stage: "registration_created",
+          destination: "login",
+        },
+      });
+
       const responsePayload: RegisterAccountResponse = {
         success: true,
         destination: "login",
@@ -199,9 +287,19 @@ export async function POST(request: Request) {
       return response;
     }
 
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "unexpected_error",
+      metadata: { stage: "unexpected_branch" },
+    });
     return createErrorResponse("unexpected_error", 500, { setCookies });
   } catch (error) {
     console.error("[/api/registration/account] Registration failed:", error);
+    await emitRegistrationOutcome({
+      success: false,
+      errorCode: "unexpected_error",
+      metadata: { stage: "exception" },
+    });
     return createErrorResponse("unexpected_error", 500);
   }
 }
