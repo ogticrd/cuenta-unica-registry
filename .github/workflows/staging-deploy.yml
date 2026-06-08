@@ -53,6 +53,28 @@ jobs:
           project-id: ${{ vars.GOOGLE_PROJECT_ID }}
           credentials-json: ${{ secrets.GAR_JSON_KEY }}
 
+      - name: Validate analytics deployment config
+        env:
+          ANALYTICS_ENVIRONMENT: ${{ vars.ANALYTICS_ENVIRONMENT }}
+          ANALYTICS_INGRESS_URL: ${{ vars.ANALYTICS_INGRESS_URL }}
+          ANALYTICS_INGRESS_API_KEY_HEADER: ${{ vars.ANALYTICS_INGRESS_API_KEY_HEADER }}
+          ANALYTICS_INGRESS_API_KEY: ${{ secrets.ANALYTICS_INGRESS_API_KEY }}
+          ANALYTICS_PROJECT_ID: ${{ secrets.ANALYTICS_PROJECT_ID }}
+        run: |
+          missing=0
+          for name in \
+            ANALYTICS_ENVIRONMENT \
+            ANALYTICS_INGRESS_URL \
+            ANALYTICS_INGRESS_API_KEY_HEADER \
+            ANALYTICS_INGRESS_API_KEY \
+            ANALYTICS_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::${name} is required for analytics instrumentation"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: ogticrd/actions/actions/gcp/cloudrun/deploy@main
