@@ -12,6 +12,10 @@ import {
   serializeAnalyticsContext,
   shouldRefreshAnalyticsContext,
 } from "@/lib/analytics/context-core";
+import {
+  resolveAnalyticsEnvironment,
+  resolveAnalyticsProjectId,
+} from "@/lib/analytics/environment";
 import { buildTrustedJourneyEventInput } from "@/lib/analytics/journey-event";
 import {
   addAnalyticsTransientPayloadNode,
@@ -32,6 +36,16 @@ if (!currentCrypto?.subtle || typeof currentCrypto.randomUUID !== "function") {
       randomUUID,
     },
   });
+}
+
+function setNodeEnv(value: string | undefined) {
+  const env = process.env as Record<string, string | undefined>;
+
+  if (value === undefined) {
+    delete env.NODE_ENV;
+  } else {
+    env.NODE_ENV = value;
+  }
 }
 
 describe("analytics context", () => {
@@ -102,6 +116,57 @@ describe("analytics catalog", () => {
     expect(resolveLinkageStatus("__unlinked__")).toBe("unlinked");
     expect(isJourneyEventName("journey.login.entered")).toBe(true);
     expect(isJourneyEventName("identity.registration.succeeded")).toBe(false);
+  });
+});
+
+describe("analytics runtime environment", () => {
+  test("does not classify production runtime as production without explicit analytics environment", () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalAnalyticsEnvironment = process.env.ANALYTICS_ENVIRONMENT;
+
+    setNodeEnv("production");
+    delete process.env.ANALYTICS_ENVIRONMENT;
+
+    try {
+      expect(() => resolveAnalyticsEnvironment()).toThrow(
+        "ANALYTICS_ENVIRONMENT is required in production",
+      );
+    } finally {
+      setNodeEnv(originalNodeEnv);
+      if (originalAnalyticsEnvironment === undefined) {
+        delete process.env.ANALYTICS_ENVIRONMENT;
+      } else {
+        process.env.ANALYTICS_ENVIRONMENT = originalAnalyticsEnvironment;
+      }
+    }
+  });
+
+  test("requires a real project id in production analytics payloads", () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalAnalyticsProjectId = process.env.ANALYTICS_PROJECT_ID;
+    const originalOryProjectId = process.env.ORY_PROJECT_ID;
+
+    setNodeEnv("production");
+    delete process.env.ANALYTICS_PROJECT_ID;
+    delete process.env.ORY_PROJECT_ID;
+
+    try {
+      expect(() => resolveAnalyticsProjectId()).toThrow(
+        "ANALYTICS_PROJECT_ID or ORY_PROJECT_ID is required",
+      );
+    } finally {
+      setNodeEnv(originalNodeEnv);
+      if (originalAnalyticsProjectId === undefined) {
+        delete process.env.ANALYTICS_PROJECT_ID;
+      } else {
+        process.env.ANALYTICS_PROJECT_ID = originalAnalyticsProjectId;
+      }
+      if (originalOryProjectId === undefined) {
+        delete process.env.ORY_PROJECT_ID;
+      } else {
+        process.env.ORY_PROJECT_ID = originalOryProjectId;
+      }
+    }
   });
 });
 

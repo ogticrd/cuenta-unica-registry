@@ -8,6 +8,10 @@ import {
 } from "./catalog";
 import { resolveAnalyticsContext } from "./context";
 import type { AnalyticsContext } from "./context-core";
+import {
+  resolveAnalyticsEnvironment,
+  resolveAnalyticsProjectId,
+} from "./environment";
 
 export interface AnalyticsEventInput {
   eventName: string;
@@ -77,24 +81,6 @@ function getIngressHeaderValue() {
   return process.env.ANALYTICS_INGRESS_API_KEY || "";
 }
 
-function getEnvironment(value?: string) {
-  return (
-    value ||
-    process.env.ANALYTICS_ENVIRONMENT ||
-    process.env.NODE_ENV ||
-    "production"
-  );
-}
-
-function getProjectId(value?: string) {
-  return (
-    value ||
-    process.env.ANALYTICS_PROJECT_ID ||
-    process.env.ORY_PROJECT_ID ||
-    "registry"
-  );
-}
-
 function buildPayload(
   input: AnalyticsEventInput,
   context: AnalyticsContext,
@@ -112,8 +98,8 @@ function buildPayload(
     source: input.source,
     eventName: input.eventName,
     occurredAt: input.occurredAt ?? new Date().toISOString(),
-    environment: getEnvironment(input.environment),
-    projectId: getProjectId(input.projectId),
+    environment: resolveAnalyticsEnvironment(input.environment),
+    projectId: resolveAnalyticsProjectId(input.projectId),
     journeyId: input.journeyId ?? context.journeyId,
     clientId,
     ...(input.clientName ? { clientName: input.clientName } : {}),
@@ -142,13 +128,18 @@ export async function emitAnalyticsEvent(
   if (!ingressUrl) {
     return;
   }
+  if (!isCanonicalEventName(input.eventName)) {
+    throw new Error(`Unsupported analytics event: ${input.eventName}`);
+  }
 
   const context = await resolveAnalyticsContext(fallback);
-  const payload = buildPayload(input, context);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
   try {
+    const payload = buildPayload(input, context);
+    const controller = new AbortController();
+    timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+
     const response = await fetch(ingressUrl, {
       method: "POST",
       headers: {
@@ -177,6 +168,8 @@ export async function emitAnalyticsEvent(
 
     console.error("[analytics] Failed to emit event:", error);
   } finally {
-    clearTimeout(timeout);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
   }
 }

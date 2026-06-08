@@ -5,18 +5,10 @@ import {
   type AnalyticsTransientPayload,
   buildAnalyticsTransientPayload,
 } from "./transient-payload-core";
-
-function getEnvironment() {
-  return (
-    process.env.ANALYTICS_ENVIRONMENT || process.env.NODE_ENV || "production"
-  );
-}
-
-function getProjectId() {
-  return (
-    process.env.ANALYTICS_PROJECT_ID || process.env.ORY_PROJECT_ID || "registry"
-  );
-}
+import {
+  resolveAnalyticsEnvironment,
+  resolveAnalyticsProjectId,
+} from "./environment";
 
 export async function getAnalyticsTransientPayload(): Promise<
   AnalyticsTransientPayload | undefined
@@ -27,10 +19,15 @@ export async function getAnalyticsTransientPayload(): Promise<
     return undefined;
   }
 
-  return buildAnalyticsTransientPayload(context, {
-    projectId: getProjectId(),
-    environment: getEnvironment(),
-  });
+  try {
+    return buildAnalyticsTransientPayload(context, {
+      projectId: resolveAnalyticsProjectId(),
+      environment: resolveAnalyticsEnvironment(),
+    });
+  } catch (error) {
+    console.error("[analytics] Failed to build transient payload:", error);
+    return undefined;
+  }
 }
 
 export async function withAnalyticsTransientPayload<
