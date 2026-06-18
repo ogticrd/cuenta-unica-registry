@@ -48,3 +48,5 @@ next-env.d.ts
 /__tests__/hooks/
 /__tests__/middleware/
 /__tests__/validation/
+
+.DS_Store
