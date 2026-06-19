@@ -21,7 +21,7 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 | `GOOGLE_PROJECT_ID` | `auth-do` | staging GCP project | production GCP project |
 | `GOOGLE_CLOUD_REGION` | `us-east1` | Cloud Run region | Cloud Run region |
 | `ORY_SDK_URL` | `https://focused-gagarin-ywepc2q5bu.projects.oryapis.com` | staging Ory URL | production Ory URL |
-| `NEXT_PUBLIC_ORY_SDK_URL` | `https://focused-gagarin-ywepc2q5bu.projects.oryapis.com` | same as `ORY_SDK_URL` | same as `ORY_SDK_URL` |
+| `NEXT_PUBLIC_ORY_SDK_URL` | `https://cuenta-unica-registry-dev-x6fzoay5ua-ue.a.run.app` | staging app URL | production app URL |
 | `CITIZENS_API_BASE_URL` | `https://api.devs.digital.gob.do` | shared citizens API URL | production citizens API URL |
 | `AWS_REGION` | `us-east-1` | Rekognition region | Rekognition region |
 | `NEXT_PUBLIC_AWS_REGION` | `us-east-1` | Amplify region | Amplify region |
@@ -33,6 +33,8 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 | `BUZON_API_BASE_URL` | `https://buzon-ciudadano-staging-i42qq4zxeq-ue.a.run.app` | Buzon service URL | Buzon service URL |
 
 `CLOUD_RUN_SERVICE` and `IMAGE_NAME` are optional in the workflow, but they should be set for `development` so dev deploys cannot overwrite the staging or production Cloud Run service.
+
+`ORY_SDK_URL` is the server-side Ory endpoint. `NEXT_PUBLIC_ORY_SDK_URL` is baked into the frontend bundle and must point to the deployed app origin so browser self-service requests use the same-origin proxy instead of calling Ory cross-origin.
 
 ## Secrets
 
@@ -60,7 +62,7 @@ gh variable set ORY_SDK_URL \
 gh variable set NEXT_PUBLIC_ORY_SDK_URL \
   --env development \
   --repo ogticrd/cuenta-unica-registry \
-  --body "https://focused-gagarin-ywepc2q5bu.projects.oryapis.com"
+  --body "https://cuenta-unica-registry-dev-x6fzoay5ua-ue.a.run.app"
 
 gh variable set ORY_API_URL \
   --env development \
