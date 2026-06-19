@@ -21,6 +21,7 @@ export type CitizenLookupErrorCode =
   | "invalid_cedula"
   | "identity_exists"
   | "citizen_not_found"
+  | "registration_disabled"
   | "unexpected_error";
 
 export type CitizenLookupResponse =

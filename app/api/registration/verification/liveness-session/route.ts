@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import { createLivenessSession } from "@/lib/services/registration/rekognition.service";
 import type {
@@ -16,6 +17,10 @@ function createErrorResponse(
 }
 
 export async function POST() {
+  if (!(await isAccountRegistrationEnabled())) {
+    return createErrorResponse("registration_disabled", 404);
+  }
+
   const session = await getRegistrationSession();
 
   if (!session) {

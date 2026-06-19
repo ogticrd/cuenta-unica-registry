@@ -71,6 +71,7 @@ export function StepIdentification({
           invalid_cedula: t("identification.id_invalid"),
           identity_exists: t("identification.account_exists"),
           citizen_not_found: t("identification.id_not_found"),
+          registration_disabled: t("account.error"),
           unexpected_error: t("identification.lookup_error"),
         };
 

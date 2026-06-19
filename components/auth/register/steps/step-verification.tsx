@@ -66,6 +66,7 @@ export function StepVerification({
     useMemo(
       () => ({
         registration_session_missing: t("verification.session_error"),
+        registration_disabled: t("account.error"),
         invalid_session_id: t("verification.verification_failed"),
         liveness_check_failed: t("verification.liveness_failed"),
         citizen_photo_unavailable: t("verification.citizen_photo_unavailable"),
@@ -146,6 +147,7 @@ export function StepVerification({
         invalid_cedula: t("identification.id_invalid"),
         citizen_not_found: t("identification.id_not_found"),
         identity_exists: t("account.identity_exists"),
+        registration_disabled: t("account.error"),
         ory_validation_error: t("account.error"),
         unexpected_error: t("account.error"),
       };

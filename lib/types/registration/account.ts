@@ -32,6 +32,7 @@ export type RegisterAccountErrorCode =
   | "invalid_cedula"
   | "citizen_not_found"
   | "identity_exists"
+  | "registration_disabled"
   | "ory_validation_error"
   | "unexpected_error";
 

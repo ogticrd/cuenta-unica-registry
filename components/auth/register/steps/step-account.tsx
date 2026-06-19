@@ -57,6 +57,8 @@ function translateGeneralError(
       return t("account.identity_exists");
     case "registration_session_missing":
       return t("account.session_missing");
+    case "registration_disabled":
+      return t("account.error");
     case "password_cedula_similarity":
       return t("account.validation.password_cedula_similarity");
     case "invalid_cedula":

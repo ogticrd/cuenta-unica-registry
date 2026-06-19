@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies } from "@/lib/ory/cookies";
 import { accountRequestSchema } from "@/lib/schemas/registration";
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import { registerOryAccount } from "@/lib/services/registration/ory-registration.service";
@@ -84,6 +85,10 @@ function hasPasswordCedulaSimilarity(password: string, cedula: string) {
 }
 
 export async function POST(request: Request) {
+  if (!(await isAccountRegistrationEnabled())) {
+    return createErrorResponse("registration_disabled", 404);
+  }
+
   let body: RegisterAccountRequest | null = null;
 
   try {

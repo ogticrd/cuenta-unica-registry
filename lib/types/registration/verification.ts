@@ -1,5 +1,6 @@
 export type CreateLivenessSessionErrorCode =
   | "registration_session_missing"
+  | "registration_disabled"
   | "rekognition_error"
   | "unexpected_error";
 
@@ -10,6 +11,7 @@ export type CreateLivenessSessionResponse =
 export type VerifyLivenessErrorCode =
   | "registration_session_missing"
   | "invalid_session_id"
+  | "registration_disabled"
   | "liveness_check_failed"
   | "citizen_photo_unavailable"
   | "face_mismatch"

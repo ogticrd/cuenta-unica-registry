@@ -1,7 +1,12 @@
+import { notFound } from "next/navigation";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface RegistrationPageProps {
   searchParams: Promise<{ return_url?: string }>;
@@ -10,6 +15,12 @@ interface RegistrationPageProps {
 export default async function RegistrationPage({
   searchParams,
 }: RegistrationPageProps) {
+  const canRegister = await isAccountRegistrationEnabled();
+
+  if (!canRegister) {
+    notFound();
+  }
+
   const [registrationWizardState, params] = await Promise.all([
     getRegistrationWizardState(),
     searchParams,

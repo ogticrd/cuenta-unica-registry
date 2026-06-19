@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
@@ -20,6 +21,10 @@ function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
 }
 
 export async function POST(request: Request) {
+  if (!(await isAccountRegistrationEnabled())) {
+    return createErrorResponse("registration_disabled", 404);
+  }
+
   let body: CitizenLookupRequest | null = null;
 
   try {

@@ -10,6 +10,7 @@ export interface RegistrationSession {
 
 export type RegistrationVerificationErrorCode =
   | "registration_session_missing"
+  | "registration_disabled"
   | "unexpected_error";
 
 export type RegistrationSessionResetErrorCode = "unexpected_error";

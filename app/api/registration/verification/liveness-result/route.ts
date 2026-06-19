@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
 import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
 import {
   createRegistrationSessionCookie,
@@ -26,6 +27,10 @@ function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
 }
 
 export async function POST(request: Request) {
+  if (!(await isAccountRegistrationEnabled())) {
+    return createErrorResponse("registration_disabled", 404);
+  }
+
   try {
     const session = await getRegistrationSession();
 

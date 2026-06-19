@@ -9,9 +9,16 @@ import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getLoginFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
+import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function LoginFlow({ searchParams }: OryPageParams) {
-  const dynamicConfig = await getServerOryConfig();
+  const [dynamicConfig, canRegister] = await Promise.all([
+    getServerOryConfig(),
+    isAccountRegistrationEnabled(),
+  ]);
   const flow = await getLoginFlow(dynamicConfig, searchParams);
   const t = await getT("login");
 
@@ -26,7 +33,7 @@ async function LoginFlow({ searchParams }: OryPageParams) {
       components={{
         Card: {
           Header: CucCardHeader,
-          Footer: CucCardFooter,
+          ...(canRegister ? { Footer: CucCardFooter } : {}),
         },
       }}
     />
