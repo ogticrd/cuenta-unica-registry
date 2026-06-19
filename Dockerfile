@@ -7,7 +7,18 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# NEXT_PUBLIC_* vars must be present at build time (baked into the JS bundle).
+# ===================== Install dependencies =====================
+FROM base AS deps
+
+COPY package.json bun.lock bunfig.toml ./
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
+
+# ===================== Build =====================
+FROM base AS build
+
+# NEXT_PUBLIC_* vars must be present at build time (baked into the JS bundle),
+# but must not leak into the runtime environment used by the Ory proxy.
 ARG NEXT_PUBLIC_ORY_SDK_URL
 ARG NEXT_PUBLIC_AWS_REGION
 ARG NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID
@@ -19,16 +30,6 @@ ENV NEXT_PUBLIC_AWS_REGION=${NEXT_PUBLIC_AWS_REGION}
 ENV NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID}
 ENV NEXT_PUBLIC_COGNITO_USER_POOL_ID=${NEXT_PUBLIC_COGNITO_USER_POOL_ID}
 ENV NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID=${NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID}
-
-# ===================== Install dependencies =====================
-FROM base AS deps
-
-COPY package.json bun.lock bunfig.toml ./
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
-
-# ===================== Build =====================
-FROM base AS build
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

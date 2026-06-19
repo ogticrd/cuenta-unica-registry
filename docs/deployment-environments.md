@@ -34,7 +34,7 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 
 `CLOUD_RUN_SERVICE` and `IMAGE_NAME` are optional in the workflow, but they should be set for `development` so dev deploys cannot overwrite the staging or production Cloud Run service.
 
-`ORY_SDK_URL` is the server-side Ory endpoint. `NEXT_PUBLIC_ORY_SDK_URL` is baked into the frontend bundle and must point to the deployed app origin so browser self-service requests use the same-origin proxy instead of calling Ory cross-origin.
+`ORY_SDK_URL` is the server-side Ory endpoint. `NEXT_PUBLIC_ORY_SDK_URL` is build-time only, is baked into the frontend bundle, and must point to the deployed app origin so browser self-service requests use the same-origin proxy instead of calling Ory cross-origin. Do not expose `NEXT_PUBLIC_ORY_SDK_URL` as a runtime variable in the Cloud Run service because the Ory proxy must resolve its upstream from `ORY_SDK_URL`.
 
 ## Secrets
 
