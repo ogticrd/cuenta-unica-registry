@@ -1,0 +1,189 @@
+name: Deploy
+
+on:
+  push:
+    branches: [develop, staging]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'release' && github.event.release.tag_name || github.ref_name || inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      deploy_environment: ${{ steps.context.outputs.deploy_environment }}
+      min_instances: ${{ steps.context.outputs.min_instances }}
+      max_instances: ${{ steps.context.outputs.max_instances }}
+      cpu: ${{ steps.context.outputs.cpu }}
+      memory: ${{ steps.context.outputs.memory }}
+    steps:
+      - name: Resolve deployment context
+        id: context
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_ENVIRONMENT: ${{ inputs.environment || '' }}
+        run: |
+          set -euo pipefail
+
+          case "$EVENT_NAME:$REF_NAME:$INPUT_ENVIRONMENT" in
+            push:develop:*)
+              deploy_environment="development"
+              ;;
+            push:staging:*)
+              deploy_environment="staging"
+              ;;
+            release:*:*)
+              deploy_environment="Production"
+              ;;
+            workflow_dispatch:*:development)
+              deploy_environment="development"
+              ;;
+            workflow_dispatch:*:staging)
+              deploy_environment="staging"
+              ;;
+            *)
+              echo "Unsupported deployment context: event=$EVENT_NAME ref=$REF_NAME input=$INPUT_ENVIRONMENT" >&2
+              exit 1
+              ;;
+          esac
+
+          if [ "$deploy_environment" = "Production" ]; then
+            min_instances="1"
+            max_instances="300"
+            cpu="2"
+            memory="1Gi"
+          else
+            min_instances="0"
+            max_instances="10"
+            cpu="1"
+            memory="512Mi"
+          fi
+
+          {
+            echo "deploy_environment=$deploy_environment"
+            echo "min_instances=$min_instances"
+            echo "max_instances=$max_instances"
+            echo "cpu=$cpu"
+            echo "memory=$memory"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout release refs
+        if: ${{ github.event_name == 'release' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure production releases come from master
+        if: ${{ github.event_name == 'release' }}
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          git fetch --force origin \
+            +refs/heads/master:refs/remotes/origin/master \
+            +refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}
+
+          release_commit="$(git rev-list -n 1 "$RELEASE_TAG")"
+
+          if ! git merge-base --is-ancestor "$release_commit" origin/master; then
+            echo "Release tag $RELEASE_TAG does not point to a commit contained in master." >&2
+            exit 1
+          fi
+
+  build:
+    needs: [preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ needs.preflight.outputs.deploy_environment }}
+    outputs:
+      image: ${{ steps.build.outputs.primary-image }}
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & push image
+        id: build
+        uses: ogticrd/actions/actions/docker/build@main
+        with:
+          image-name: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}/${{ vars.IMAGE_NAME || vars.APP_NAME }}
+          registry-username: _json_key
+          registry-password: ${{ secrets.GAR_JSON_KEY }}
+          target: runner
+          environment: ${{ needs.preflight.outputs.deploy_environment }}
+          build-args: |
+            NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL || vars.ORY_SDK_URL || vars.ORY_API_URL }}
+            NEXT_PUBLIC_AWS_REGION=${{ vars.NEXT_PUBLIC_AWS_REGION || vars.AWS_REGION }}
+            NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || vars.AMPLIFY_IDENTITYPOOL_ID }}
+            NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_ID || vars.AMPLIFY_USERPOOL_ID }}
+            NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID }}
+
+  deploy:
+    needs: [preflight, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: ${{ needs.preflight.outputs.deploy_environment }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Authenticate to GCP
+        uses: ogticrd/actions/actions/gcp/auth@main
+        with:
+          project-id: ${{ vars.GOOGLE_PROJECT_ID }}
+          credentials-json: ${{ secrets.GAR_JSON_KEY }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: ogticrd/actions/actions/gcp/cloudrun/deploy@main
+        with:
+          image: ${{ needs.build.outputs.image }}
+          service: ${{ vars.CLOUD_RUN_SERVICE || vars.APP_NAME }}
+          region: ${{ vars.GOOGLE_CLOUD_REGION || vars.GCP_REGION }}
+          project-id: ${{ vars.GOOGLE_PROJECT_ID }}
+          env-vars: |
+            NODE_ENV=production
+            ORY_SDK_URL=${{ vars.ORY_SDK_URL || vars.NEXT_PUBLIC_ORY_SDK_URL || vars.ORY_API_URL }}
+            ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN || secrets.ORY_API_TOKEN }}
+            REGISTRATION_SESSION_SECRET=${{ secrets.REGISTRATION_SESSION_SECRET }}
+            CITIZENS_API_BASE_URL=${{ vars.CITIZENS_API_BASE_URL }}
+            CITIZENS_INFO_API_KEY=${{ secrets.CITIZENS_INFO_API_KEY }}
+            CITIZENS_PHOTO_API_KEY=${{ secrets.CITIZENS_PHOTO_API_KEY }}
+            AWS_REGION=${{ vars.AWS_REGION }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD }}
+            FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD }}
+            BUZON_API_BASE_URL=${{ vars.BUZON_API_BASE_URL }}
+            BUZON_PORTAL_API_KEY=${{ secrets.BUZON_PORTAL_API_KEY }}
+          min-instances: ${{ needs.preflight.outputs.min_instances }}
+          max-instances: ${{ needs.preflight.outputs.max_instances }}
+          cpu: ${{ needs.preflight.outputs.cpu }}
+          memory: ${{ needs.preflight.outputs.memory }}
+
+      - name: Allow public access
+        uses: ogticrd/actions/actions/gcp/cloudrun/iam@main
+        with:
+          service: ${{ vars.CLOUD_RUN_SERVICE || vars.APP_NAME }}
+          region: ${{ vars.GOOGLE_CLOUD_REGION || vars.GCP_REGION }}
+
+      - name: Health check
+        run: curl -sf "${{ steps.deploy.outputs.url }}" > /dev/null

@@ -1,9 +1,10 @@
-﻿name: Code Quality (Biome)
+name: Code Quality (Biome)
 
 on:
   push:
-    branches: [main, staging]
+    branches: [develop, staging, master]
   pull_request:
+    branches: [develop, staging, master]
 
 jobs:
   quality:
@@ -12,10 +13,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: latest
+          bun-version: 1.3.11
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
 
       - name: Run Biome CI
-        run: biome ci .
+        run: bun run check
