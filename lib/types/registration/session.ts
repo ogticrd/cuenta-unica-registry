@@ -4,6 +4,8 @@ export interface RegistrationSession {
   cedula: string;
   status: RegistrationSessionStatus;
   returnUrl?: string;
+  livenessSessionId?: string;
+  livenessSessionAttempts?: number;
   issuedAt: number;
   expiresAt: number;
 }

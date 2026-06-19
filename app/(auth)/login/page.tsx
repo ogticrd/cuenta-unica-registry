@@ -1,7 +1,6 @@
-import { Login } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
-import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
+import { LoginForm } from "@/components/auth/login-form";
 import { WelcomeSection } from "@/components/auth/welcome-section";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -9,15 +8,15 @@ import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getLoginFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
-import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
+import { getAccountRegistrationFeatureFlag } from "@/lib/services/feature-flags/feature-flags.service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 async function LoginFlow({ searchParams }: OryPageParams) {
-  const [dynamicConfig, canRegister] = await Promise.all([
+  const [dynamicConfig, registrationFlag] = await Promise.all([
     getServerOryConfig(),
-    isAccountRegistrationEnabled(),
+    getAccountRegistrationFeatureFlag(),
   ]);
   const flow = await getLoginFlow(dynamicConfig, searchParams);
   const t = await getT("login");
@@ -27,15 +26,10 @@ async function LoginFlow({ searchParams }: OryPageParams) {
   }
 
   return (
-    <Login
+    <LoginForm
       flow={flow}
       config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucCardHeader,
-          ...(canRegister ? { Footer: CucCardFooter } : {}),
-        },
-      }}
+      registrationFlag={registrationFlag}
     />
   );
 }

@@ -1,6 +1,7 @@
 export type CreateLivenessSessionErrorCode =
   | "registration_session_missing"
   | "registration_disabled"
+  | "too_many_liveness_sessions"
   | "rekognition_error"
   | "unexpected_error";
 

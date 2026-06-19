@@ -35,6 +35,14 @@ function serializeSession(session: RegistrationSession) {
   return `${payload}.${signature}`;
 }
 
+function createCookieFromSession(session: RegistrationSession): ResponseCookie {
+  return {
+    name: REGISTRATION_SESSION_COOKIE,
+    value: serializeSession(session),
+    ...getCookieBaseOptions(),
+  };
+}
+
 function parseSessionCookie(value: string): RegistrationSession | null {
   const [payload, signature] = value.split(".");
 
@@ -89,11 +97,19 @@ export function createRegistrationSessionCookie(
     expiresAt: issuedAt + REGISTRATION_SESSION_DURATION_MS,
   };
 
-  return {
-    name: REGISTRATION_SESSION_COOKIE,
-    value: serializeSession(session),
-    ...getCookieBaseOptions(),
-  };
+  return createCookieFromSession(session);
+}
+
+export function createLivenessRegistrationSessionCookie(
+  session: RegistrationSession,
+  livenessSessionId: string,
+): ResponseCookie {
+  return createCookieFromSession({
+    ...session,
+    status: "identified",
+    livenessSessionId,
+    livenessSessionAttempts: (session.livenessSessionAttempts ?? 0) + 1,
+  });
 }
 
 export function clearRegistrationSessionCookie(): ResponseCookie {

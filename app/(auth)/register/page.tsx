@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
+import { FeatureFlagDisabledFallback } from "@/components/feature-flags/feature-flag-disabled-fallback";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import { isAccountRegistrationEnabled } from "@/lib/services/feature-flags/feature-flags.service";
+import { getAccountRegistrationFeatureFlag } from "@/lib/services/feature-flags/feature-flags.service";
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
 
 export const dynamic = "force-dynamic";
@@ -15,10 +15,14 @@ interface RegistrationPageProps {
 export default async function RegistrationPage({
   searchParams,
 }: RegistrationPageProps) {
-  const canRegister = await isAccountRegistrationEnabled();
+  const registrationFlag = await getAccountRegistrationFeatureFlag();
 
-  if (!canRegister) {
-    notFound();
+  if (!registrationFlag.enabled) {
+    return (
+      <FeatureFlagDisabledFallback
+        advancedSettings={registrationFlag.advancedSettings}
+      />
+    );
   }
 
   const [registrationWizardState, params] = await Promise.all([
