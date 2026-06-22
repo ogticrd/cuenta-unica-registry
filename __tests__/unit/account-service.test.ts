@@ -195,4 +195,31 @@ describe("accountService.registerAccount", () => {
       code: "registration_session_missing",
     });
   });
+
+  it.each([
+    "password_cedula_similarity",
+    "password_email_similarity",
+    "password_weak",
+    "password_compromised",
+  ] as const)("preserves draft password error code %s", async (code) => {
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          success: false,
+          code,
+        }),
+        { status: 400 },
+      ),
+    );
+
+    const result = await accountService.saveAccountDraft({
+      email: "test@example.com",
+      password: "StrongPass123!",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      code,
+    });
+  });
 });

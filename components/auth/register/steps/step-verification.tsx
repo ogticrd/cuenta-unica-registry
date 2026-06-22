@@ -133,6 +133,11 @@ export function StepVerification({
           password_cedula_similarity: t(
             "account.validation.password_cedula_similarity",
           ),
+          password_email_similarity: t(
+            "account.validation.password_email_similarity",
+          ),
+          password_weak: t("account.validation.password_weak"),
+          password_compromised: t("account.validation.password_compromised"),
           invalid_cedula: t("identification.id_invalid"),
           citizen_not_found: t("identification.id_not_found"),
           identity_exists: t("account.identity_exists"),

@@ -1,18 +1,22 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StepAccount } from "@/components/auth/register/steps/step-account";
 import type { RegisterAccountDraft } from "@/lib/types/registration/account";
 
-vi.mock("next-intl", () => ({
-  useLocale: () => "es",
+const { mockToastError } = vi.hoisted(() => ({
+  mockToastError: vi.fn(),
 }));
 
 vi.mock("sonner", () => ({
   toast: {
-    error: vi.fn(),
+    error: mockToastError,
   },
+}));
+
+vi.mock("next-intl", () => ({
+  useLocale: () => "es",
 }));
 
 vi.mock("@/hooks/use-t", () => ({
@@ -44,6 +48,15 @@ vi.mock("@/hooks/use-t", () => ({
         "La contraseña no puede contener tu cédula",
       "account.validation.password_email_similarity":
         "La contraseña no puede contener tu correo",
+      "account.validation.password_compromised":
+        "Esta contraseña ha sido expuesta en filtraciones conocidas",
+      "account.session_missing": "La sesión de registro expiró",
+      "account.verification_required": "Completa la prueba de vida",
+      "account.draft_missing": "Vuelve a ingresar los datos de la cuenta",
+      "account.identity_exists": "Ya existe una cuenta con este correo",
+      "account.error": "No pudimos crear tu cuenta",
+      "identification.id_invalid": "La cédula ingresada no es válida",
+      "identification.id_not_found": "No encontramos esta cédula",
       "common.back": "Volver al paso anterior",
       "common.continue": "CONTINUAR",
     };
@@ -78,6 +91,7 @@ function renderStepAccount(
 describe("StepAccount", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    mockToastError.mockReset();
     vi.spyOn(global, "fetch").mockResolvedValue(
       new Response("", { status: 200 }),
     );
@@ -190,6 +204,51 @@ describe("StepAccount", () => {
       ),
     ).toBeInTheDocument();
     expect(onNext).not.toHaveBeenCalled();
+  });
+
+  it("shows server-side password errors on the password field", async () => {
+    renderStepAccount({
+      initialErrors: {
+        code: "password_email_similarity",
+        fieldErrors: {
+          password: "account.validation.password_email_similarity",
+        },
+      },
+    });
+
+    expect(
+      await screen.findByText("La contraseña no puede contener tu correo"),
+    ).toBeInTheDocument();
+  });
+
+  it("does not show a general toast for server-side password errors", async () => {
+    renderStepAccount({
+      initialErrors: {
+        code: "password_compromised",
+      },
+    });
+
+    expect(
+      await screen.findByText(
+        "Esta contraseña ha sido expuesta en filtraciones conocidas",
+      ),
+    ).toBeInTheDocument();
+    expect(mockToastError).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["invalid_payload", "No pudimos crear tu cuenta"],
+    ["verification_required", "Completa la prueba de vida"],
+  ] as const)("shows %s as a visible account error", async (code, message) => {
+    renderStepAccount({
+      initialErrors: {
+        code,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith(message);
+    });
   });
 
   it("shows a visible confirm password mismatch error and does not continue", async () => {

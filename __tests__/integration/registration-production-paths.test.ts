@@ -12,6 +12,8 @@ const {
   mockCreateBrowserVerificationFlow,
   mockUpdateVerificationFlow,
   mockRekognitionSend,
+  mockIsPasswordStrongEnough,
+  mockIsBreachedPassword,
 } = vi.hoisted(() => {
   const cookies = new Map<string, string>();
   let cookieHeader = "";
@@ -30,6 +32,8 @@ const {
     mockCreateBrowserVerificationFlow: vi.fn(),
     mockUpdateVerificationFlow: vi.fn(),
     mockRekognitionSend: vi.fn(),
+    mockIsPasswordStrongEnough: vi.fn(),
+    mockIsBreachedPassword: vi.fn(),
   };
 });
 
@@ -70,6 +74,12 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
   getRekognitionClient: () => ({
     send: mockRekognitionSend,
   }),
+}));
+
+vi.mock("@/lib/utils/password", () => ({
+  PASSWORD_MIN_LENGTH: 10,
+  isPasswordStrongEnough: mockIsPasswordStrongEnough,
+  isBreachedPassword: mockIsBreachedPassword,
 }));
 
 import { POST as postAccount } from "@/app/api/registration/account/route";
@@ -128,6 +138,8 @@ beforeEach(() => {
   );
 
   mockListIdentities.mockResolvedValue({ data: [] });
+  mockIsPasswordStrongEnough.mockReturnValue(true);
+  mockIsBreachedPassword.mockResolvedValue(false);
   vi.spyOn(global, "fetch").mockImplementation(() => {
     throw new Error("Unexpected fetch call");
   });

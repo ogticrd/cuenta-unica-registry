@@ -3,6 +3,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies, mergeCookieHeaders } from "@/lib/ory/cookies";
+import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import {
@@ -123,10 +124,6 @@ export function createAccountRegistrationErrorResult(
   );
 }
 
-function hasPasswordCedulaSimilarity(password: string, cedula: string) {
-  return password.includes(cedula);
-}
-
 function buildEmailSentRedirect(flowId: string, returnUrl?: string) {
   const emailSentParams = new URLSearchParams({
     flow: flowId,
@@ -214,11 +211,14 @@ export async function completeRegistrationAccount(
     return createAccountRegistrationErrorResult("invalid_cedula", 400);
   }
 
-  if (hasPasswordCedulaSimilarity(input.password, cedula)) {
-    return createAccountRegistrationErrorResult(
-      "password_cedula_similarity",
-      400,
-    );
+  const credentialError = await validateRegistrationAccountCredentials(input, {
+    cedula,
+  });
+
+  if (credentialError) {
+    return createAccountRegistrationErrorResult(credentialError.code, 400, {
+      fieldErrors: credentialError.fieldErrors,
+    });
   }
 
   const citizen = await findCitizenByCedula(cedula);

@@ -15,6 +15,8 @@ const {
   mockGetServerCookies,
   mockIsValidCedula,
   mockNormalizeCedula,
+  mockIsPasswordStrongEnough,
+  mockIsBreachedPassword,
   mockGetRequestOrigin,
   mockGetSafeReturnUrl,
   mockParseAllowedReturnOrigins,
@@ -39,6 +41,8 @@ const {
   mockGetServerCookies: vi.fn(),
   mockIsValidCedula: vi.fn(),
   mockNormalizeCedula: vi.fn((value: string) => value),
+  mockIsPasswordStrongEnough: vi.fn(),
+  mockIsBreachedPassword: vi.fn(),
   mockGetRequestOrigin: vi.fn(),
   mockGetSafeReturnUrl: vi.fn(),
   mockParseAllowedReturnOrigins: vi.fn(),
@@ -97,6 +101,12 @@ vi.mock("@/lib/utils/cedula", () => ({
   normalizeCedula: mockNormalizeCedula,
 }));
 
+vi.mock("@/lib/utils/password", () => ({
+  PASSWORD_MIN_LENGTH: 10,
+  isPasswordStrongEnough: mockIsPasswordStrongEnough,
+  isBreachedPassword: mockIsBreachedPassword,
+}));
+
 vi.mock("@/lib/utils/return-url", () => ({
   getRequestOrigin: mockGetRequestOrigin,
   getSafeReturnUrl: mockGetSafeReturnUrl,
@@ -121,10 +131,17 @@ import { POST as postLivenessComplete } from "@/app/api/registration/verificatio
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 
+beforeEach(() => {
+  mockIsPasswordStrongEnough.mockReturnValue(true);
+  mockIsBreachedPassword.mockResolvedValue(false);
+});
+
 describe("registration route orchestration - account", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockNormalizeCedula.mockImplementation((value: string) => value);
+    mockIsPasswordStrongEnough.mockReturnValue(true);
+    mockIsBreachedPassword.mockResolvedValue(false);
     mockClearRegistrationSessionCookie.mockReturnValue({
       name: "registration_session",
       value: "",
@@ -143,6 +160,11 @@ describe("registration route orchestration - account", () => {
   });
 
   it("rejects invalid JSON payloads", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
     const request = new Request("http://localhost/api/registration/account", {
       method: "POST",
       body: "{invalid",
@@ -155,6 +177,24 @@ describe("registration route orchestration - account", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "invalid_payload",
+    });
+  });
+
+  it("requires a registration session before validating account payloads", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce(null);
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: "{invalid",
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "registration_session_missing",
     });
   });
 
@@ -225,6 +265,101 @@ describe("registration route orchestration - account", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_cedula_similarity",
+      fieldErrors: {
+        password: "account.validation.password_cedula_similarity",
+      },
+    });
+  });
+
+  it("rejects passwords that contain the email local part before Ory registration", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockIsValidCedula.mockResolvedValueOnce(true);
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "UserStrong123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_email_similarity",
+      fieldErrors: {
+        password: "account.validation.password_email_similarity",
+      },
+    });
+  });
+
+  it("rejects weak passwords before Ory registration", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockIsValidCedula.mockResolvedValueOnce(true);
+    mockIsPasswordStrongEnough.mockReturnValueOnce(false);
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "abcdefghij",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_weak",
+      fieldErrors: {
+        password: "account.validation.password_weak",
+      },
+    });
+  });
+
+  it("rejects compromised passwords before Ory registration", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockIsValidCedula.mockResolvedValueOnce(true);
+    mockIsBreachedPassword.mockResolvedValueOnce(true);
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_compromised",
+      fieldErrors: {
+        password: "account.validation.password_compromised",
+      },
     });
   });
 
@@ -487,6 +622,10 @@ describe("registration route orchestration - account", () => {
   });
 
   it("requires an account draft when account registration is finalized without a body", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
     mockGetRegistrationAccountDraft.mockResolvedValueOnce(null);
 
     const response = await postAccount(
@@ -500,14 +639,35 @@ describe("registration route orchestration - account", () => {
       success: false,
       code: "account_draft_missing",
     });
-    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetRegistrationSession).toHaveBeenCalledTimes(1);
     expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalledTimes(1);
+  });
+
+  it("requires a registration session before finalizing from an account draft", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce(null);
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+      }),
+    );
+
+    expect(mockGetRegistrationAccountDraft).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "registration_session_missing",
+    });
   });
 
   it("returns unexpected_error when the account draft cannot be read", async () => {
     const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
     mockGetRegistrationAccountDraft.mockRejectedValueOnce(
       new Error("cookie store unavailable"),
     );
@@ -523,7 +683,7 @@ describe("registration route orchestration - account", () => {
       success: false,
       code: "unexpected_error",
     });
-    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetRegistrationSession).toHaveBeenCalledTimes(1);
     expect(mockRegisterOryAccount).not.toHaveBeenCalled();
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
@@ -637,6 +797,130 @@ describe("registration route orchestration - account-draft", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "registration_session_missing",
+    });
+  });
+
+  it("does not validate account credentials before the registration session exists", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce(null);
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationAccountDraftCookie).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "registration_session_missing",
+    });
+  });
+
+  it("rejects invalid account draft payloads after the registration session is present", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+    });
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationAccountDraftCookie).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+  });
+
+  it("rejects account drafts with weak passwords before storing credentials", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+    });
+    mockIsPasswordStrongEnough.mockReturnValueOnce(false);
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "abcdefghij",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationAccountDraftCookie).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_weak",
+    });
+  });
+
+  it("rejects account drafts with compromised passwords before storing credentials", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+    });
+    mockIsBreachedPassword.mockResolvedValueOnce(true);
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationAccountDraftCookie).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_compromised",
+    });
+  });
+
+  it("rejects account drafts with passwords that contain the email local part", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+    });
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "UserStrong123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationAccountDraftCookie).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_email_similarity",
     });
   });
 
@@ -1252,6 +1536,54 @@ describe("registration route orchestration - liveness-complete", () => {
       success: false,
       stage: "account",
       code: "account_draft_missing",
+    });
+  });
+
+  it("keeps the verified registration session when account draft reading fails after liveness", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+      returnUrl: "https://example.com/dashboard",
+    });
+    mockGetRegistrationAccountDraft.mockRejectedValueOnce(
+      new Error("cookie store unavailable"),
+    );
+    mockGetLivenessResults.mockResolvedValueOnce({
+      confidence: 99,
+      referenceImageBytes: new Uint8Array([1, 2, 3]),
+    });
+    mockFetchCitizenPhoto.mockResolvedValueOnce(new Uint8Array([4, 5, 6]));
+    mockCompareFaces.mockResolvedValueOnce({
+      isMatch: true,
+      similarity: 96,
+    });
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockCreateRegistrationSessionCookie).toHaveBeenCalledWith(
+      "00100063362",
+      "verified",
+      "https://example.com/dashboard",
+    );
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(mockClearRegistrationSessionCookie).not.toHaveBeenCalled();
+    expect(response.cookies.get("registration_session")?.value).toBe(
+      "signed-verified-session",
+    );
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "account",
+      code: "unexpected_error",
     });
   });
 

@@ -5,21 +5,23 @@ import {
   createAccountRegistrationResponse,
 } from "@/lib/services/registration/account-registration.service";
 import { getRegistrationAccountDraft } from "@/lib/services/registration/registration-account-draft.service";
+import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import type { RegisterAccountRequest } from "@/lib/types/registration/account";
+import type { RegistrationSession } from "@/lib/types/registration/session";
 
-type OptionalAccountRequestResult =
+type OptionalAccountBodyResult =
   | {
       success: true;
-      data: RegisterAccountRequest | null;
+      rawBody: string;
     }
   | {
       success: false;
       code: "invalid_payload";
     };
 
-async function readOptionalAccountRequest(
+async function readOptionalAccountBody(
   request: Request,
-): Promise<OptionalAccountRequestResult> {
+): Promise<OptionalAccountBodyResult> {
   const rawBody = await request.text().catch(() => null);
 
   if (rawBody === null) {
@@ -29,6 +31,21 @@ async function readOptionalAccountRequest(
     };
   }
 
+  return {
+    success: true,
+    rawBody,
+  };
+}
+
+function parseOptionalAccountRequest(rawBody: string):
+  | {
+      success: true;
+      data: RegisterAccountRequest | null;
+    }
+  | {
+      success: false;
+      code: "invalid_payload";
+    } {
   if (!rawBody.trim()) {
     return {
       success: true,
@@ -64,7 +81,36 @@ async function readOptionalAccountRequest(
 }
 
 export async function POST(request: Request) {
-  const parsedRequest = await readOptionalAccountRequest(request);
+  const bodyResult = await readOptionalAccountBody(request);
+
+  if (!bodyResult.success) {
+    return createAccountRegistrationResponse(
+      createAccountRegistrationErrorResult(bodyResult.code, 400),
+    );
+  }
+
+  let registrationSession: RegistrationSession | null;
+
+  try {
+    registrationSession = await getRegistrationSession();
+  } catch (error) {
+    console.error(
+      "[/api/registration/account] Failed to read registration session:",
+      error,
+    );
+
+    return createAccountRegistrationResponse(
+      createAccountRegistrationErrorResult("unexpected_error", 500),
+    );
+  }
+
+  if (!registrationSession) {
+    return createAccountRegistrationResponse(
+      createAccountRegistrationErrorResult("registration_session_missing", 400),
+    );
+  }
+
+  const parsedRequest = parseOptionalAccountRequest(bodyResult.rawBody);
 
   if (!parsedRequest.success) {
     return createAccountRegistrationResponse(
@@ -74,7 +120,9 @@ export async function POST(request: Request) {
 
   if (parsedRequest.data) {
     return createAccountRegistrationResponse(
-      await completeRegistrationAccount(parsedRequest.data),
+      await completeRegistrationAccount(parsedRequest.data, {
+        registrationSession,
+      }),
     );
   }
 
@@ -107,7 +155,7 @@ export async function POST(request: Request) {
         email: draft.email,
         password: draft.password,
       },
-      { draft },
+      { draft, registrationSession },
     ),
   );
 }

@@ -30,6 +30,9 @@ export type RegisterAccountErrorCode =
   | "verification_required"
   | "account_draft_missing"
   | "password_cedula_similarity"
+  | "password_email_similarity"
+  | "password_weak"
+  | "password_compromised"
   | "invalid_cedula"
   | "citizen_not_found"
   | "identity_exists"
@@ -48,6 +51,15 @@ export type RegisterAccountResponse =
       fieldErrors?: RegisterAccountFieldErrors;
     };
 
+export type SaveRegisterAccountDraftErrorCode =
+  | "invalid_payload"
+  | "registration_session_missing"
+  | "password_cedula_similarity"
+  | "password_email_similarity"
+  | "password_weak"
+  | "password_compromised"
+  | "unexpected_error";
+
 export type SaveRegisterAccountDraftResponse =
   | {
       success: true;
@@ -55,8 +67,5 @@ export type SaveRegisterAccountDraftResponse =
     }
   | {
       success: false;
-      code:
-        | "invalid_payload"
-        | "registration_session_missing"
-        | "unexpected_error";
+      code: SaveRegisterAccountDraftErrorCode;
     };

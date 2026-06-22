@@ -10,6 +10,7 @@ import {
   getRegistrationAccountDraft,
 } from "@/lib/services/registration/registration-account-draft.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
+import type { RegisterAccountErrorCode } from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
 import type {
   CompleteLivenessRegistrationResponse,
@@ -32,6 +33,24 @@ function createVerificationErrorResponse(
     } satisfies CompleteLivenessRegistrationResponse,
     { status },
   );
+}
+
+function createAccountErrorResponse(
+  code: RegisterAccountErrorCode,
+  status: number,
+  session: RegistrationSession,
+) {
+  const response = NextResponse.json(
+    {
+      success: false,
+      stage: "account",
+      code,
+    } satisfies CompleteLivenessRegistrationResponse,
+    { status },
+  );
+  setVerifiedSessionCookie(response, session);
+
+  return response;
 }
 
 function setVerifiedSessionCookie(
@@ -67,18 +86,29 @@ export async function POST(request: Request) {
       );
     }
 
-    const draft = await getRegistrationAccountDraft();
+    let draft: Awaited<ReturnType<typeof getRegistrationAccountDraft>>;
+
+    try {
+      draft = await getRegistrationAccountDraft();
+    } catch (error) {
+      console.error(
+        "[/api/registration/verification/liveness-complete] Failed to read account draft:",
+        error,
+      );
+
+      return createAccountErrorResponse(
+        "unexpected_error",
+        500,
+        livenessResult.session,
+      );
+    }
 
     if (!draft) {
-      const response = NextResponse.json(
-        {
-          success: false,
-          stage: "account",
-          code: "account_draft_missing",
-        } satisfies CompleteLivenessRegistrationResponse,
-        { status: 400 },
+      const response = createAccountErrorResponse(
+        "account_draft_missing",
+        400,
+        livenessResult.session,
       );
-      setVerifiedSessionCookie(response, livenessResult.session);
       response.cookies.set(clearRegistrationAccountDraftCookie());
 
       return response;

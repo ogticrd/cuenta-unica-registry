@@ -47,12 +47,16 @@ function preventClipboardAction<T extends SyntheticEvent>(event: T) {
   return false;
 }
 
-function translateFieldErrorKey(key: string, locale: "es" | "en") {
+function translateFieldErrorKey(
+  key: string,
+  locale: "es" | "en",
+  t: ReturnType<typeof useT>,
+) {
   if (key.startsWith("identities.messages.")) {
     return translateOryMessageKey(key, locale);
   }
 
-  return key;
+  return t(key);
 }
 
 function translateGeneralError(
@@ -60,14 +64,24 @@ function translateGeneralError(
   t: ReturnType<typeof useT>,
 ) {
   switch (errors.code) {
+    case "invalid_payload":
+      return t("account.error");
     case "identity_exists":
       return t("account.identity_exists");
     case "registration_session_missing":
       return t("account.session_missing");
+    case "verification_required":
+      return t("account.verification_required");
     case "account_draft_missing":
       return t("account.draft_missing");
     case "password_cedula_similarity":
       return t("account.validation.password_cedula_similarity");
+    case "password_email_similarity":
+      return t("account.validation.password_email_similarity");
+    case "password_weak":
+      return t("account.validation.password_weak");
+    case "password_compromised":
+      return t("account.validation.password_compromised");
     case "invalid_cedula":
       return t("identification.id_invalid");
     case "citizen_not_found":
@@ -78,6 +92,31 @@ function translateGeneralError(
     default:
       return undefined;
   }
+}
+
+function getPasswordErrorMessage(
+  code: RegisterAccountStepErrors["code"],
+  t: ReturnType<typeof useT>,
+) {
+  switch (code) {
+    case "password_cedula_similarity":
+      return t("account.validation.password_cedula_similarity");
+    case "password_email_similarity":
+      return t("account.validation.password_email_similarity");
+    case "password_weak":
+      return t("account.validation.password_weak");
+    case "password_compromised":
+      return t("account.validation.password_compromised");
+    default:
+      return undefined;
+  }
+}
+
+function areMessagesEqual(current: string[], next: string[]) {
+  return (
+    current.length === next.length &&
+    current.every((message, index) => message === next[index])
+  );
 }
 
 export function StepAccount({
@@ -116,8 +155,13 @@ export function StepAccount({
   const initialGeneralError = initialErrors
     ? translateGeneralError(initialErrors, t)
     : undefined;
+  const initialPasswordErrorMessage = initialErrors
+    ? getPasswordErrorMessage(initialErrors.code, t)
+    : undefined;
   const hasInitialFieldErrors = Boolean(
-    initialErrors?.fieldErrors?.email || initialErrors?.fieldErrors?.password,
+    initialErrors?.fieldErrors?.email ||
+      initialErrors?.fieldErrors?.password ||
+      initialPasswordErrorMessage,
   );
 
   useEffect(() => {
@@ -151,24 +195,38 @@ export function StepAccount({
       initialErrors.fieldErrors?.email,
       initialErrors.fieldErrors?.password,
     ]
-      .filter((message): message is string => Boolean(message))
-      .map((message) => translateFieldErrorKey(message, locale));
+      .filter(
+        (message): message is string =>
+          typeof message === "string" &&
+          message.startsWith("identities.messages."),
+      )
+      .map((message) => translateFieldErrorKey(message, locale, t));
 
     if (nextOryMessages.length > 0) {
-      setOryAlertMessages([...new Set(nextOryMessages)]);
+      const nextMessages = [...new Set(nextOryMessages)];
+      setOryAlertMessages((current) =>
+        areMessagesEqual(current, nextMessages) ? current : nextMessages,
+      );
     } else {
-      setOryAlertMessages([]);
+      setOryAlertMessages((current) => (current.length > 0 ? [] : current));
     }
 
-    if (initialErrors.code === "password_cedula_similarity") {
+    const passwordErrorMessage = getPasswordErrorMessage(initialErrors.code, t);
+
+    if (
+      passwordErrorMessage &&
+      form.getFieldState("password").error?.message !== passwordErrorMessage
+    ) {
       form.setError("password", {
-        message: t("account.validation.password_cedula_similarity"),
+        message: passwordErrorMessage,
       });
     }
 
     const generalError = translateGeneralError(initialErrors, t);
     const hasFieldErrors = Boolean(
-      initialErrors.fieldErrors?.email || initialErrors.fieldErrors?.password,
+      initialErrors.fieldErrors?.email ||
+        initialErrors.fieldErrors?.password ||
+        passwordErrorMessage,
     );
 
     if (
@@ -429,19 +487,6 @@ export function StepAccount({
               >
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{initialGeneralError}</AlertDescription>
-              </Alert>
-            )}
-
-            {form.formState.errors.password?.message ===
-              t("account.validation.password_compromised") && (
-              <Alert
-                variant="destructive"
-                className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
-              >
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  {t("account.validation.password_compromised")}
-                </AlertDescription>
               </Alert>
             )}
 

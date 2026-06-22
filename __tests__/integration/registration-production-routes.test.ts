@@ -12,6 +12,8 @@ const {
   mockCreateBrowserVerificationFlow,
   mockUpdateVerificationFlow,
   mockRekognitionSend,
+  mockIsPasswordStrongEnough,
+  mockIsBreachedPassword,
 } = vi.hoisted(() => {
   const cookies = new Map<string, string>();
   let cookieHeader = "";
@@ -30,6 +32,8 @@ const {
     mockCreateBrowserVerificationFlow: vi.fn(),
     mockUpdateVerificationFlow: vi.fn(),
     mockRekognitionSend: vi.fn(),
+    mockIsPasswordStrongEnough: vi.fn(),
+    mockIsBreachedPassword: vi.fn(),
   };
 });
 
@@ -70,6 +74,12 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
   getRekognitionClient: () => ({
     send: mockRekognitionSend,
   }),
+}));
+
+vi.mock("@/lib/utils/password", () => ({
+  PASSWORD_MIN_LENGTH: 10,
+  isPasswordStrongEnough: mockIsPasswordStrongEnough,
+  isBreachedPassword: mockIsBreachedPassword,
 }));
 
 import { POST as postAccount } from "@/app/api/registration/account/route";
@@ -137,6 +147,8 @@ beforeEach(() => {
   );
 
   mockListIdentities.mockResolvedValue({ data: [] });
+  mockIsPasswordStrongEnough.mockReturnValue(true);
+  mockIsBreachedPassword.mockResolvedValue(false);
   vi.spyOn(global, "fetch").mockImplementation(() => {
     throw new Error("Unexpected fetch call");
   });
@@ -324,6 +336,154 @@ describe("registration production routes", () => {
     });
   });
 
+  it("requires a registration session before validating account draft credentials", async () => {
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "registration_session_missing",
+    });
+    expect(response.cookies.get("registration_account_draft")).toBeUndefined();
+  });
+
+  it("rejects account drafts with weak passwords before storing credentials", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "identified",
+      ).value,
+    });
+    mockIsPasswordStrongEnough.mockReturnValueOnce(false);
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "abcdefghij",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_weak",
+    });
+    expect(response.cookies.get("registration_account_draft")).toBeUndefined();
+  });
+
+  it("rejects account drafts with compromised passwords before storing credentials", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "identified",
+      ).value,
+    });
+    mockIsBreachedPassword.mockResolvedValueOnce(true);
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_compromised",
+    });
+    expect(response.cookies.get("registration_account_draft")).toBeUndefined();
+  });
+
+  it("rejects direct account registration with weak passwords before external calls", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "verified",
+      ).value,
+    });
+    mockIsPasswordStrongEnough.mockReturnValueOnce(false);
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockRejectedValue(new Error("Unexpected fetch call"));
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "abcdefghij",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(mockCreateBrowserRegistrationFlow).not.toHaveBeenCalled();
+    expect(mockUpdateRegistrationFlow).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_weak",
+      fieldErrors: {
+        password: "account.validation.password_weak",
+      },
+    });
+  });
+
+  it("rejects direct account registration with compromised passwords before external calls", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "verified",
+      ).value,
+    });
+    mockIsBreachedPassword.mockResolvedValueOnce(true);
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockRejectedValue(new Error("Unexpected fetch call"));
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(mockCreateBrowserRegistrationFlow).not.toHaveBeenCalled();
+    expect(mockUpdateRegistrationFlow).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "password_compromised",
+      fieldErrors: {
+        password: "account.validation.password_compromised",
+      },
+    });
+  });
+
   it("completes liveness and creates the account from the encrypted draft without client credentials", async () => {
     const registrationSessionCookie = createRegistrationSessionCookie(
       "40200612345",
@@ -462,6 +622,82 @@ describe("registration production routes", () => {
     });
     expect(response.cookies.get("registration_session")?.value).toBe("");
     expect(response.cookies.get("registration_account_draft")?.value).toBe("");
+  });
+
+  it("keeps the verified session when account draft reading fails after liveness", async () => {
+    const registrationSessionCookie = createRegistrationSessionCookie(
+      "40200612345",
+      "identified",
+      "https://example.com/dashboard",
+    ).value;
+
+    setRequestCookies({
+      registration_session: registrationSessionCookie,
+    });
+
+    const cookieStore = {
+      get(name: string) {
+        const value = requestCookies.get(name);
+        return value ? { name, value } : undefined;
+      },
+    };
+
+    mockCookies
+      .mockResolvedValueOnce(cookieStore)
+      .mockRejectedValueOnce(new Error("cookie store unavailable"));
+
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      buildBinaryResponse([4, 5, 6]),
+    );
+
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) => {
+        if (command.input?.SessionId) {
+          return {
+            Confidence: 99,
+            ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+            Status: "SUCCEEDED",
+          };
+        }
+
+        return {
+          FaceMatches: [{ Similarity: 96 }],
+        };
+      },
+    );
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
+    expect(mockUpdateRegistrationFlow).not.toHaveBeenCalled();
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "account",
+      code: "unexpected_error",
+    });
+
+    const verifiedCookie = response.cookies.get("registration_session");
+    expect(verifiedCookie?.value).toBeTruthy();
+
+    setRequestCookies({
+      registration_session: verifiedCookie?.value ?? "",
+    });
+
+    await expect(getRegistrationSession()).resolves.toMatchObject({
+      cedula: "40200612345",
+      status: "verified",
+      returnUrl: "https://example.com/dashboard",
+    });
   });
 
   it("maps Ory registration success into email verification while clearing the registration session", async () => {

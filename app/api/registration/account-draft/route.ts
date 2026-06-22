@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { accountRequestSchema } from "@/lib/schemas/registration";
+import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
 import { createRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import type {
-  RegisterAccountRequest,
+  SaveRegisterAccountDraftErrorCode,
   SaveRegisterAccountDraftResponse,
 } from "@/lib/types/registration/account";
 
 function createErrorResponse(
-  code: "invalid_payload" | "registration_session_missing" | "unexpected_error",
+  code: SaveRegisterAccountDraftErrorCode,
   status: number,
 ) {
   return NextResponse.json(
@@ -21,18 +22,12 @@ function createErrorResponse(
 }
 
 export async function POST(request: Request) {
-  let body: RegisterAccountRequest | null = null;
+  let body: unknown;
 
   try {
-    body = (await request.json()) as RegisterAccountRequest;
+    body = await request.json();
   } catch (error) {
     console.error("[/api/registration/account-draft] Invalid body:", error);
-    return createErrorResponse("invalid_payload", 400);
-  }
-
-  const parsedRequest = accountRequestSchema.safeParse(body);
-
-  if (!parsedRequest.success) {
     return createErrorResponse("invalid_payload", 400);
   }
 
@@ -41,6 +36,23 @@ export async function POST(request: Request) {
 
     if (!registrationSession) {
       return createErrorResponse("registration_session_missing", 400);
+    }
+
+    const parsedRequest = accountRequestSchema.safeParse(body);
+
+    if (!parsedRequest.success) {
+      return createErrorResponse("invalid_payload", 400);
+    }
+
+    const credentialError = await validateRegistrationAccountCredentials(
+      parsedRequest.data,
+      {
+        cedula: registrationSession.cedula,
+      },
+    );
+
+    if (credentialError) {
+      return createErrorResponse(credentialError.code, 400);
     }
 
     const response = NextResponse.json(
