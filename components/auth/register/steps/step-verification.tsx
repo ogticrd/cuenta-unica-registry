@@ -24,7 +24,10 @@ import type {
   RegisterAccountErrorCode,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
-import type { VerifyLivenessErrorCode } from "@/lib/types/registration/verification";
+import type {
+  CreateLivenessSessionErrorCode,
+  VerifyLivenessErrorCode,
+} from "@/lib/types/registration/verification";
 
 type VerificationPhase =
   | "idle"
@@ -69,6 +72,9 @@ export function StepVerification({
       () => ({
         invalid_payload: t("verification.verification_failed"),
         registration_session_missing: t("verification.session_error"),
+        verification_already_completed: t(
+          "verification.session_creation_failed",
+        ),
         invalid_session_id: t("verification.verification_failed"),
         liveness_check_failed: t("verification.liveness_failed"),
         citizen_photo_unavailable: t("verification.citizen_photo_unavailable"),
@@ -78,6 +84,19 @@ export function StepVerification({
       }),
       [t],
     );
+
+  const livenessSessionErrorMessages: Record<
+    CreateLivenessSessionErrorCode,
+    string
+  > = useMemo(
+    () => ({
+      registration_session_missing: t("verification.session_error"),
+      verification_already_completed: t("verification.session_creation_failed"),
+      rekognition_error: t("verification.rekognition_error"),
+      unexpected_error: t("verification.session_creation_failed"),
+    }),
+    [t],
+  );
 
   const createSession = useCallback(async () => {
     setPhase("creating_session");
@@ -93,13 +112,13 @@ export function StepVerification({
         onRequireIdentification();
       }
 
-      toast.error(t("verification.session_creation_failed"));
+      toast.error(livenessSessionErrorMessages[result.code]);
       return;
     }
 
     setLivenessSessionId(result.sessionId);
     setPhase("liveness_active");
-  }, [onRequireIdentification, t]);
+  }, [livenessSessionErrorMessages, onRequireIdentification]);
 
   const handleAccountRegistrationResult = useCallback(
     (

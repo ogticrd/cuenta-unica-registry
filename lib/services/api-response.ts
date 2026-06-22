@@ -40,3 +40,18 @@ export async function parseJsonResponse<T>(response: Response): Promise<T> {
 
   return payload;
 }
+
+export function getCodedApiErrorPayload<
+  TPayload extends { success: false; code: string },
+>(error: unknown): TPayload | null {
+  if (
+    error instanceof ApiResponseError &&
+    error.payload?.success === false &&
+    typeof error.payload.code === "string" &&
+    error.payload.code !== "invalid_json"
+  ) {
+    return error.payload as TPayload;
+  }
+
+  return null;
+}

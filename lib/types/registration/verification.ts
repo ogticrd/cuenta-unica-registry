@@ -6,6 +6,7 @@ import type {
 
 export type CreateLivenessSessionErrorCode =
   | "registration_session_missing"
+  | "verification_already_completed"
   | "rekognition_error"
   | "unexpected_error";
 
@@ -16,6 +17,7 @@ export type CreateLivenessSessionResponse =
 export type VerifyLivenessErrorCode =
   | "invalid_payload"
   | "registration_session_missing"
+  | "verification_already_completed"
   | "invalid_session_id"
   | "liveness_check_failed"
   | "citizen_photo_unavailable"

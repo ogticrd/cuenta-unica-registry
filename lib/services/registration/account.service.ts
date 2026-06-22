@@ -1,23 +1,46 @@
 import { API } from "@/lib/constants/api";
+import {
+  getCodedApiErrorPayload,
+  parseJsonResponse,
+} from "@/lib/services/api-response";
 import type {
   RegisterAccountRequest,
   RegisterAccountResponse,
   SaveRegisterAccountDraftResponse,
 } from "@/lib/types/registration/account";
 
-async function parseRegisterAccountResponse(response: Response) {
-  const payload = (await response
-    .json()
-    .catch(() => null)) as RegisterAccountResponse | null;
+function getRegisterAccountFailure(error: unknown): RegisterAccountResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<RegisterAccountResponse, { success: false }>
+    >(error);
 
-  if (!payload) {
-    return {
-      success: false,
-      code: "unexpected_error",
-    } satisfies RegisterAccountResponse;
+  if (payload) {
+    return payload;
   }
 
-  return payload;
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
+}
+
+function getAccountDraftFailure(
+  error: unknown,
+): SaveRegisterAccountDraftResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<SaveRegisterAccountDraftResponse, { success: false }>
+    >(error);
+
+  if (payload) {
+    return payload;
+  }
+
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
 }
 
 export const accountService = {
@@ -38,14 +61,11 @@ export const accountService = {
           : {}),
       });
 
-      return parseRegisterAccountResponse(response);
+      return await parseJsonResponse<RegisterAccountResponse>(response);
     } catch (error) {
       console.error("[accountService.registerAccount] Request failed:", error);
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getRegisterAccountFailure(error);
     }
   },
 
@@ -61,25 +81,13 @@ export const accountService = {
         credentials: "include",
         body: JSON.stringify(input),
       });
-      const payload = (await response
-        .json()
-        .catch(() => null)) as SaveRegisterAccountDraftResponse | null;
-
-      if (!payload) {
-        return {
-          success: false,
-          code: "unexpected_error",
-        };
-      }
-
-      return payload;
+      return await parseJsonResponse<SaveRegisterAccountDraftResponse>(
+        response,
+      );
     } catch (error) {
       console.error("[accountService.saveAccountDraft] Request failed:", error);
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getAccountDraftFailure(error);
     }
   },
 };

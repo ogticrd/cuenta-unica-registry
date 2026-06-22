@@ -504,6 +504,60 @@ describe("registration route orchestration - account", () => {
     expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalledTimes(1);
   });
 
+  it("returns unexpected_error when the account draft cannot be read", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    mockGetRegistrationAccountDraft.mockRejectedValueOnce(
+      new Error("cookie store unavailable"),
+    );
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "unexpected_error",
+    });
+    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  it("rejects account drafts tied to a different cedula", async () => {
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce({
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 30_000,
+    });
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "account_draft_missing",
+    });
+    expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalledTimes(1);
+    expect(mockIsValidCedula).not.toHaveBeenCalled();
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+  });
+
   it("returns mapped Ory field errors from the real route", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
@@ -637,6 +691,47 @@ describe("registration route orchestration - citizen", () => {
     });
   });
 
+  it("rejects malformed JSON payloads before identity lookup", async () => {
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: "{invalid",
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+    expect(mockIsValidCedula).not.toHaveBeenCalled();
+    expect(mockCheckCitizenIdentity).not.toHaveBeenCalled();
+    expect(mockFindCitizenSummaryByCedula).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid payload shapes before identity lookup", async () => {
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: JSON.stringify({
+          cedula: 40200612345,
+          returnUrl: { href: "https://example.com/dashboard" },
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+    expect(mockIsValidCedula).not.toHaveBeenCalled();
+    expect(mockCheckCitizenIdentity).not.toHaveBeenCalled();
+    expect(mockFindCitizenSummaryByCedula).not.toHaveBeenCalled();
+  });
+
   it("rejects invalid cedulas before identity lookup", async () => {
     mockIsValidCedula.mockResolvedValueOnce(false);
 
@@ -750,6 +845,41 @@ describe("registration route orchestration - liveness-session", () => {
       success: false,
       code: "registration_session_missing",
     });
+  });
+
+  it("maps registration session read failures to unexpected_error", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    mockGetRegistrationSession.mockRejectedValueOnce(
+      new Error("cookie store unavailable"),
+    );
+
+    const response = await postLivenessSession();
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "unexpected_error",
+    });
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  it("does not create a new liveness session after registration is verified", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
+    const response = await postLivenessSession();
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "verification_already_completed",
+    });
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
   });
 
   it("returns the created liveness session id", async () => {
@@ -902,6 +1032,34 @@ describe("registration route orchestration - liveness-complete", () => {
       stage: "verification",
       code: "invalid_payload",
     });
+  });
+
+  it("rejects completed verification sessions before liveness verification", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "verification",
+      code: "verification_already_completed",
+    });
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
+    expect(mockGetRegistrationAccountDraft).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
   });
 
   it("completes liveness, creates the account from the draft, and clears temporary cookies", async () => {
@@ -1096,6 +1254,56 @@ describe("registration route orchestration - liveness-complete", () => {
       code: "account_draft_missing",
     });
   });
+
+  it("rejects account drafts tied to a different cedula after liveness", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "identified",
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce({
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 30_000,
+    });
+    mockGetLivenessResults.mockResolvedValueOnce({
+      confidence: 99,
+      referenceImageBytes: new Uint8Array([1, 2, 3]),
+    });
+    mockFetchCitizenPhoto.mockResolvedValueOnce(new Uint8Array([4, 5, 6]));
+    mockCompareFaces.mockResolvedValueOnce({
+      isMatch: true,
+      similarity: 96,
+    });
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockCreateRegistrationSessionCookie).toHaveBeenCalledWith(
+      "00100063362",
+      "verified",
+      undefined,
+    );
+    expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalledTimes(1);
+    expect(mockIsValidCedula).not.toHaveBeenCalled();
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "account",
+      code: "account_draft_missing",
+    });
+  });
 });
 
 describe("registration route orchestration - liveness-result", () => {
@@ -1171,6 +1379,32 @@ describe("registration route orchestration - liveness-result", () => {
       success: false,
       code: "invalid_payload",
     });
+  });
+
+  it("rejects completed verification sessions before reading liveness results", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
+    const response = await postLivenessResult(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "verification_already_completed",
+    });
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
+    expect(mockCreateRegistrationSessionCookie).not.toHaveBeenCalled();
   });
 
   it("rejects liveness results below the configured threshold", async () => {

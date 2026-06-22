@@ -1,19 +1,24 @@
 import { API } from "@/lib/constants/api";
+import {
+  getCodedApiErrorPayload,
+  parseJsonResponse,
+} from "@/lib/services/api-response";
 import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 
-async function parseResetResponse(response: Response) {
-  const payload = (await response
-    .json()
-    .catch(() => null)) as RegistrationSessionResetResponse | null;
+function getResetFailure(error: unknown): RegistrationSessionResetResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<RegistrationSessionResetResponse, { success: false }>
+    >(error);
 
-  if (!payload) {
-    return {
-      success: false,
-      code: "unexpected_error",
-    } satisfies RegistrationSessionResetResponse;
+  if (payload?.code === "unexpected_error") {
+    return payload;
   }
 
-  return payload;
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
 }
 
 export const registrationSessionApiService = {
@@ -24,17 +29,16 @@ export const registrationSessionApiService = {
         credentials: "include",
       });
 
-      return parseResetResponse(response);
+      return await parseJsonResponse<RegistrationSessionResetResponse>(
+        response,
+      );
     } catch (error) {
       console.error(
         "[registrationSessionApiService.reset] Request failed:",
         error,
       );
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getResetFailure(error);
     }
   },
 };

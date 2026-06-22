@@ -203,9 +203,9 @@ describe("registrationSessionApiService", () => {
 
   describe("reset", () => {
     it("returns success on successful reset", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.resolve({ success: true }),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify({ success: true }), { status: 200 }),
+      );
 
       const result = await registrationSessionApiService.reset();
 
@@ -213,9 +213,11 @@ describe("registrationSessionApiService", () => {
     });
 
     it("sends POST with credentials include to the reset endpoint", async () => {
-      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.resolve({ success: true }),
-      } as Response);
+      const fetchSpy = vi
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ success: true }), { status: 200 }),
+        );
 
       await registrationSessionApiService.reset();
 
@@ -229,9 +231,9 @@ describe("registrationSessionApiService", () => {
     });
 
     it("returns unexpected_error when JSON parsing fails", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.reject(new Error("invalid json")),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response("invalid json", { status: 200 }),
+      );
 
       const result = await registrationSessionApiService.reset();
 
@@ -251,6 +253,25 @@ describe("registrationSessionApiService", () => {
       const result = await registrationSessionApiService.reset();
 
       expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(result).toEqual({
+        success: false,
+        code: "unexpected_error",
+      });
+    });
+
+    it("preserves reset API error codes from non-OK responses", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: false,
+            code: "unexpected_error",
+          }),
+          { status: 500 },
+        ),
+      );
+
+      const result = await registrationSessionApiService.reset();
+
       expect(result).toEqual({
         success: false,
         code: "unexpected_error",

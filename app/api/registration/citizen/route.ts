@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type {
   CitizenLookupErrorCode,
-  CitizenLookupRequest,
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
@@ -13,6 +13,11 @@ import {
   getSafeReturnUrl,
   parseAllowedReturnOrigins,
 } from "@/lib/utils/return-url";
+
+const citizenLookupRequestSchema = z.object({
+  cedula: z.string(),
+  returnUrl: z.string().optional(),
+});
 
 function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
   const payload: CitizenLookupResponse = {
@@ -24,17 +29,23 @@ function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
 }
 
 export async function POST(request: Request) {
-  let body: CitizenLookupRequest | null = null;
+  let body: unknown = null;
 
   try {
-    body = (await request.json()) as CitizenLookupRequest;
+    body = await request.json();
   } catch (error) {
     console.error("[/api/registration/citizen] Invalid request body:", error);
-    return createErrorResponse("invalid_cedula", 400);
+    return createErrorResponse("invalid_payload", 400);
   }
 
-  const cedula = normalizeCedula(body?.cedula ?? "");
-  const returnUrl = getSafeReturnUrl(body?.returnUrl, {
+  const parsedRequest = citizenLookupRequestSchema.safeParse(body);
+
+  if (!parsedRequest.success) {
+    return createErrorResponse("invalid_payload", 400);
+  }
+
+  const cedula = normalizeCedula(parsedRequest.data.cedula);
+  const returnUrl = getSafeReturnUrl(parsedRequest.data.returnUrl, {
     currentOrigin: getRequestOrigin(request.headers, request.url),
     allowedOrigins: parseAllowedReturnOrigins(
       process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,

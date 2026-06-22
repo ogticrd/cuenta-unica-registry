@@ -16,10 +16,24 @@ function createErrorResponse(
 }
 
 export async function POST() {
-  const session = await getRegistrationSession();
+  let session: Awaited<ReturnType<typeof getRegistrationSession>>;
 
-  if (!session) {
-    return createErrorResponse("registration_session_missing", 400);
+  try {
+    session = await getRegistrationSession();
+
+    if (!session) {
+      return createErrorResponse("registration_session_missing", 400);
+    }
+
+    if (session.status === "verified") {
+      return createErrorResponse("verification_already_completed", 409);
+    }
+  } catch (error) {
+    console.error(
+      "[/api/registration/verification/liveness-session] Failed to read registration session:",
+      error,
+    );
+    return createErrorResponse("unexpected_error", 500);
   }
 
   try {

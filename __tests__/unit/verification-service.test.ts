@@ -2,6 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { API } from "@/lib/constants/api";
 import { verificationService } from "@/lib/services/registration/verification.service";
 
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), { status });
+}
+
 describe("verificationService", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -9,13 +13,12 @@ describe("verificationService", () => {
 
   describe("createLivenessSession", () => {
     it("returns sessionId on success", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            sessionId: "liveness-session-123",
-          }),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse({
+          success: true,
+          sessionId: "liveness-session-123",
+        }),
+      );
 
       const result = await verificationService.createLivenessSession();
 
@@ -26,10 +29,11 @@ describe("verificationService", () => {
     });
 
     it("sends the correct request shape", async () => {
-      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({ success: true, sessionId: "liveness-session-123" }),
-      } as Response);
+      const fetchSpy = vi
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce(
+          jsonResponse({ success: true, sessionId: "liveness-session-123" }),
+        );
 
       await verificationService.createLivenessSession();
 
@@ -43,9 +47,9 @@ describe("verificationService", () => {
     });
 
     it("returns unexpected_error when JSON parsing fails", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.reject(new Error("invalid json")),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response("invalid json", { status: 200 }),
+      );
 
       const result = await verificationService.createLivenessSession();
 
@@ -70,18 +74,36 @@ describe("verificationService", () => {
         code: "unexpected_error",
       });
     });
+
+    it("preserves verified-session errors from the API", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse(
+          {
+            success: false,
+            code: "verification_already_completed",
+          },
+          409,
+        ),
+      );
+
+      const result = await verificationService.createLivenessSession();
+
+      expect(result).toEqual({
+        success: false,
+        code: "verification_already_completed",
+      });
+    });
   });
 
   describe("verifyLiveness", () => {
     it("returns confidence and similarity on success", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            confidence: 99.5,
-            similarity: 98.2,
-          }),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse({
+          success: true,
+          confidence: 99.5,
+          similarity: 98.2,
+        }),
+      );
 
       const result = await verificationService.verifyLiveness("session-abc");
 
@@ -93,14 +115,13 @@ describe("verificationService", () => {
     });
 
     it("sends the correct request shape with sessionId in body", async () => {
-      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            confidence: 99.5,
-            similarity: 98.2,
-          }),
-      } as Response);
+      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse({
+          success: true,
+          confidence: 99.5,
+          similarity: 98.2,
+        }),
+      );
 
       await verificationService.verifyLiveness("session-abc");
 
@@ -116,9 +137,9 @@ describe("verificationService", () => {
     });
 
     it("returns unexpected_error when JSON parsing fails", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.reject(new Error("invalid json")),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response("invalid json", { status: 200 }),
+      );
 
       const result = await verificationService.verifyLiveness("session-abc");
 
@@ -145,13 +166,15 @@ describe("verificationService", () => {
     });
 
     it("returns error response from the API", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse(
+          {
             success: false,
             code: "liveness_check_failed",
-          }),
-      } as Response);
+          },
+          422,
+        ),
+      );
 
       const result = await verificationService.verifyLiveness("session-abc");
 
@@ -160,20 +183,38 @@ describe("verificationService", () => {
         code: "liveness_check_failed",
       });
     });
+
+    it("preserves completed verification errors from the API", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse(
+          {
+            success: false,
+            code: "verification_already_completed",
+          },
+          409,
+        ),
+      );
+
+      const result = await verificationService.verifyLiveness("session-abc");
+
+      expect(result).toEqual({
+        success: false,
+        code: "verification_already_completed",
+      });
+    });
   });
 
   describe("completeLivenessRegistration", () => {
     it("returns the account redirect destination on success", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            confidence: 99,
-            similarity: 96,
-            destination: "email-sent",
-            redirectTo: "/register/email-sent?flow=flow-123",
-          }),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse({
+          success: true,
+          confidence: 99,
+          similarity: 96,
+          destination: "email-sent",
+          redirectTo: "/register/email-sent?flow=flow-123",
+        }),
+      );
 
       const result =
         await verificationService.completeLivenessRegistration("session-abc");
@@ -188,16 +229,15 @@ describe("verificationService", () => {
     });
 
     it("sends the correct request shape with sessionId in body", async () => {
-      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            confidence: 99,
-            similarity: 96,
-            destination: "email-sent",
-            redirectTo: "/register/email-sent?flow=flow-123",
-          }),
-      } as Response);
+      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse({
+          success: true,
+          confidence: 99,
+          similarity: 96,
+          destination: "email-sent",
+          redirectTo: "/register/email-sent?flow=flow-123",
+        }),
+      );
 
       await verificationService.completeLivenessRegistration("session-abc");
 
@@ -213,9 +253,9 @@ describe("verificationService", () => {
     });
 
     it("returns verification unexpected_error when parsing fails", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () => Promise.reject(new Error("invalid json")),
-      } as Response);
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response("invalid json", { status: 200 }),
+      );
 
       const result =
         await verificationService.completeLivenessRegistration("session-abc");
@@ -228,15 +268,17 @@ describe("verificationService", () => {
     });
 
     it("returns account-stage errors from the API", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse(
+          {
             success: false,
             stage: "account",
             code: "identity_exists",
             fieldErrors: { email: "identities.messages.4000007" },
-          }),
-      } as Response);
+          },
+          409,
+        ),
+      );
 
       const result =
         await verificationService.completeLivenessRegistration("session-abc");
@@ -246,6 +288,28 @@ describe("verificationService", () => {
         stage: "account",
         code: "identity_exists",
         fieldErrors: { email: "identities.messages.4000007" },
+      });
+    });
+
+    it("preserves completed verification errors from the API", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce(
+        jsonResponse(
+          {
+            success: false,
+            stage: "verification",
+            code: "verification_already_completed",
+          },
+          409,
+        ),
+      );
+
+      const result =
+        await verificationService.completeLivenessRegistration("session-abc");
+
+      expect(result).toEqual({
+        success: false,
+        stage: "verification",
+        code: "verification_already_completed",
       });
     });
   });

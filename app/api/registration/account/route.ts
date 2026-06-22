@@ -78,7 +78,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const draft = await getRegistrationAccountDraft();
+  let draft: Awaited<ReturnType<typeof getRegistrationAccountDraft>>;
+
+  try {
+    draft = await getRegistrationAccountDraft();
+  } catch (error) {
+    console.error(
+      "[/api/registration/account] Failed to read account draft:",
+      error,
+    );
+
+    return createAccountRegistrationResponse(
+      createAccountRegistrationErrorResult("unexpected_error", 500),
+    );
+  }
 
   if (!draft) {
     return createAccountRegistrationResponse(

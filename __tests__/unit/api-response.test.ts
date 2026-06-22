@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   type ApiResponseError,
+  getCodedApiErrorPayload,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 
@@ -60,5 +61,28 @@ describe("parseJsonResponse", () => {
       status: 200,
       code: "invalid_json",
     } satisfies Partial<ApiResponseError>);
+  });
+
+  it("extracts coded API error payloads and ignores invalid JSON failures", async () => {
+    const response = new Response(
+      JSON.stringify({
+        success: false,
+        code: "registration_session_missing",
+      }),
+      { status: 401 },
+    );
+
+    const error = await parseJsonResponse(response).catch((err) => err);
+
+    expect(getCodedApiErrorPayload(error)).toEqual({
+      success: false,
+      code: "registration_session_missing",
+    });
+
+    const invalidJsonError = await parseJsonResponse(
+      new Response("not-json", { status: 500 }),
+    ).catch((err) => err);
+
+    expect(getCodedApiErrorPayload(invalidJsonError)).toBeNull();
   });
 });

@@ -18,6 +18,7 @@ export interface CitizenProfileResult {
 }
 
 export type CitizenLookupErrorCode =
+  | "invalid_payload"
   | "invalid_cedula"
   | "identity_exists"
   | "citizen_not_found"

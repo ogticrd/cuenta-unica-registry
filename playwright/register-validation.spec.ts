@@ -57,9 +57,15 @@ async function continueFromIdentification(page: Page) {
   await cedulaInput.fill(VALID_CEDULA);
   await expect(cedulaInput).toHaveValue(VALID_CEDULA_FORMATTED);
 
-  const citizenRequest = page.waitForRequest("**/api/registration/citizen");
-  await page.getByRole("button", { name: "CONTINUAR" }).click();
-  await citizenRequest;
+  const continueButton = page.getByRole("button", { name: "CONTINUAR" });
+  await expect(continueButton).toBeEnabled();
+  await expect(async () => {
+    const citizenRequest = page
+      .waitForRequest("**/api/registration/citizen", { timeout: 2_000 })
+      .catch(() => null);
+    await continueButton.click();
+    expect(await citizenRequest).not.toBeNull();
+  }).toPass({ timeout: 15_000 });
   await expect(page.getByLabel(/^Correo electrónico/)).toBeVisible({
     timeout: 15_000,
   });

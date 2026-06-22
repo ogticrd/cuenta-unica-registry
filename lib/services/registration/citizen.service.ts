@@ -1,22 +1,27 @@
 import { API } from "@/lib/constants/api";
+import {
+  getCodedApiErrorPayload,
+  parseJsonResponse,
+} from "@/lib/services/api-response";
 import type {
   CitizenLookupRequest,
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
 
-async function parseCitizenLookupResponse(response: Response) {
-  const payload = (await response
-    .json()
-    .catch(() => null)) as CitizenLookupResponse | null;
+function getCitizenLookupFailure(error: unknown): CitizenLookupResponse {
+  const payload =
+    getCodedApiErrorPayload<Extract<CitizenLookupResponse, { success: false }>>(
+      error,
+    );
 
-  if (!payload) {
-    return {
-      success: false,
-      code: "unexpected_error",
-    } satisfies CitizenLookupResponse;
+  if (payload) {
+    return payload;
   }
 
-  return payload;
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
 }
 
 export const citizenService = {
@@ -36,14 +41,11 @@ export const citizenService = {
         body: JSON.stringify(requestBody),
       });
 
-      return parseCitizenLookupResponse(response);
+      return await parseJsonResponse<CitizenLookupResponse>(response);
     } catch (error) {
       console.error("[citizenService.identifyCitizen] Request failed:", error);
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getCitizenLookupFailure(error);
     }
   },
 };

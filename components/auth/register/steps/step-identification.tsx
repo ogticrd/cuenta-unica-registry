@@ -68,6 +68,7 @@ export function StepIdentification({
 
       if (!result.success) {
         const messageByErrorCode: Record<CitizenLookupErrorCode, string> = {
+          invalid_payload: t("identification.id_invalid"),
           invalid_cedula: t("identification.id_invalid"),
           identity_exists: t("identification.account_exists"),
           citizen_not_found: t("identification.id_not_found"),

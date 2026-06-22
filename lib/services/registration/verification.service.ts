@@ -1,38 +1,65 @@
 import { API } from "@/lib/constants/api";
+import {
+  getCodedApiErrorPayload,
+  parseJsonResponse,
+} from "@/lib/services/api-response";
 import type {
   CompleteLivenessRegistrationResponse,
   CreateLivenessSessionResponse,
   VerifyLivenessResponse,
 } from "@/lib/types/registration/verification";
 
-async function parseLivenessSessionResponse(response: Response) {
-  const payload = (await response
-    .json()
-    .catch(() => null)) as CreateLivenessSessionResponse | null;
+function getCreateLivenessFailure(
+  error: unknown,
+): CreateLivenessSessionResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<CreateLivenessSessionResponse, { success: false }>
+    >(error);
 
-  if (!payload) {
-    return {
-      success: false,
-      code: "unexpected_error",
-    } satisfies CreateLivenessSessionResponse;
+  if (payload) {
+    return payload;
   }
 
-  return payload;
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
 }
 
-async function parseVerifyLivenessResponse(response: Response) {
-  const payload = (await response
-    .json()
-    .catch(() => null)) as VerifyLivenessResponse | null;
+function getVerifyLivenessFailure(error: unknown): VerifyLivenessResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<VerifyLivenessResponse, { success: false }>
+    >(error);
 
-  if (!payload) {
-    return {
-      success: false,
-      code: "unexpected_error",
-    } satisfies VerifyLivenessResponse;
+  if (payload) {
+    return payload;
   }
 
-  return payload;
+  return {
+    success: false,
+    code: "unexpected_error",
+  };
+}
+
+function getCompleteLivenessFailure(
+  error: unknown,
+): CompleteLivenessRegistrationResponse {
+  const payload =
+    getCodedApiErrorPayload<
+      Extract<CompleteLivenessRegistrationResponse, { success: false }>
+    >(error);
+
+  if (payload) {
+    return payload;
+  }
+
+  return {
+    success: false,
+    stage: "verification",
+    code: "unexpected_error",
+  };
 }
 
 export const verificationService = {
@@ -43,17 +70,14 @@ export const verificationService = {
         credentials: "include",
       });
 
-      return parseLivenessSessionResponse(response);
+      return await parseJsonResponse<CreateLivenessSessionResponse>(response);
     } catch (error) {
       console.error(
         "[verificationService.createLivenessSession] Request failed:",
         error,
       );
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getCreateLivenessFailure(error);
     }
   },
 
@@ -66,17 +90,14 @@ export const verificationService = {
         body: JSON.stringify({ sessionId }),
       });
 
-      return parseVerifyLivenessResponse(response);
+      return await parseJsonResponse<VerifyLivenessResponse>(response);
     } catch (error) {
       console.error(
         "[verificationService.verifyLiveness] Request failed:",
         error,
       );
 
-      return {
-        success: false,
-        code: "unexpected_error",
-      };
+      return getVerifyLivenessFailure(error);
     }
   },
 
@@ -90,30 +111,16 @@ export const verificationService = {
         credentials: "include",
         body: JSON.stringify({ sessionId }),
       });
-      const payload = (await response
-        .json()
-        .catch(() => null)) as CompleteLivenessRegistrationResponse | null;
-
-      if (!payload) {
-        return {
-          success: false,
-          stage: "verification",
-          code: "unexpected_error",
-        };
-      }
-
-      return payload;
+      return await parseJsonResponse<CompleteLivenessRegistrationResponse>(
+        response,
+      );
     } catch (error) {
       console.error(
         "[verificationService.completeLivenessRegistration] Request failed:",
         error,
       );
 
-      return {
-        success: false,
-        stage: "verification",
-        code: "unexpected_error",
-      };
+      return getCompleteLivenessFailure(error);
     }
   },
 };

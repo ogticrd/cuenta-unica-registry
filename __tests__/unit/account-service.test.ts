@@ -8,14 +8,16 @@ describe("accountService.registerAccount", () => {
   });
 
   it("returns parsed response data on success", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () =>
-        Promise.resolve({
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
           success: true,
           redirectTo: "/verification",
           destination: "verification",
         }),
-    } as Response);
+        { status: 200 },
+      ),
+    );
 
     const result = await accountService.registerAccount({
       email: "test@example.com",
@@ -30,9 +32,11 @@ describe("accountService.registerAccount", () => {
   });
 
   it("sends the correct request shape", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () => Promise.resolve({ success: true }),
-    } as Response);
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ success: true }), { status: 200 }),
+      );
 
     await accountService.registerAccount({
       email: "test@example.com",
@@ -54,14 +58,16 @@ describe("accountService.registerAccount", () => {
   });
 
   it("can finalize using the server-side account draft without a request body", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () =>
-        Promise.resolve({
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
           success: true,
           redirectTo: "/register/email-sent?flow=flow-123",
           destination: "email-sent",
         }),
-    } as Response);
+        { status: 200 },
+      ),
+    );
 
     await accountService.registerAccount();
 
@@ -76,13 +82,15 @@ describe("accountService.registerAccount", () => {
   });
 
   it("saves the account draft before liveness starts", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () =>
-        Promise.resolve({
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
           success: true,
           sessionStatus: "identified",
         }),
-    } as Response);
+        { status: 200 },
+      ),
+    );
 
     const result = await accountService.saveAccountDraft({
       email: "test@example.com",
@@ -108,9 +116,9 @@ describe("accountService.registerAccount", () => {
   });
 
   it("returns unexpected_error when JSON parsing fails", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () => Promise.reject(new Error("invalid json")),
-    } as Response);
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response("invalid json", { status: 200 }),
+    );
 
     const result = await accountService.registerAccount({
       email: "test@example.com",
@@ -143,14 +151,16 @@ describe("accountService.registerAccount", () => {
   });
 
   it("returns error response with code and fieldErrors from the API", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      json: () =>
-        Promise.resolve({
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
           success: false,
           code: "identity_exists",
           fieldErrors: { email: "identities.messages.4000007" },
         }),
-    } as Response);
+        { status: 400 },
+      ),
+    );
 
     const result = await accountService.registerAccount({
       email: "test@example.com",
@@ -161,6 +171,28 @@ describe("accountService.registerAccount", () => {
       success: false,
       code: "identity_exists",
       fieldErrors: { email: "identities.messages.4000007" },
+    });
+  });
+
+  it("preserves draft API error codes from non-OK responses", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          success: false,
+          code: "registration_session_missing",
+        }),
+        { status: 401 },
+      ),
+    );
+
+    const result = await accountService.saveAccountDraft({
+      email: "test@example.com",
+      password: "StrongPass123!",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      code: "registration_session_missing",
     });
   });
 });

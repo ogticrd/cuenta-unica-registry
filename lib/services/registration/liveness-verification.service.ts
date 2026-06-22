@@ -63,6 +63,14 @@ export async function verifyRegistrationLiveness(
     };
   }
 
+  if (session.status === "verified") {
+    return {
+      success: false,
+      status: 409,
+      code: "verification_already_completed",
+    };
+  }
+
   if (!sessionId) {
     return {
       success: false,
