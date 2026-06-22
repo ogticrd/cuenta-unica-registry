@@ -37,13 +37,41 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
 }));
 
 // We import this dynamically inside the test so vi.resetModules() only affects this file
+import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
+
+const TEST_REGISTRATION_SESSION_ID = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
 
 function setRequestCookies(cookies: Record<string, string>) {
   requestCookies.clear();
   for (const [name, value] of Object.entries(cookies)) {
     requestCookies.set(name, value);
   }
+}
+
+function setIdentifiedSessionWithLivenessChallenge() {
+  const expiresAt = Date.now() + 30 * 60 * 1000;
+  const sessionCookie = createRegistrationSessionCookie(
+    "40200612345",
+    "identified",
+    undefined,
+    TEST_REGISTRATION_SESSION_ID,
+  );
+  const challengeCookie = createRegistrationLivenessChallengeCookie(
+    {
+      sessionId: TEST_REGISTRATION_SESSION_ID,
+      cedula: "40200612345",
+      status: "identified",
+      issuedAt: Date.now(),
+      expiresAt,
+    },
+    "session-123",
+  );
+
+  setRequestCookies({
+    registration_session: sessionCookie.value,
+    registration_liveness_challenge: challengeCookie.value,
+  });
 }
 
 beforeEach(() => {
@@ -89,12 +117,7 @@ describe("liveness threshold configuration", () => {
       "@/app/api/registration/verification/liveness-result/route"
     );
 
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-      ).value,
-    });
+    setIdentifiedSessionWithLivenessChallenge();
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),
@@ -146,12 +169,7 @@ describe("liveness threshold configuration", () => {
       "@/app/api/registration/verification/liveness-result/route"
     );
 
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-      ).value,
-    });
+    setIdentifiedSessionWithLivenessChallenge();
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),
@@ -198,12 +216,7 @@ describe("liveness threshold configuration", () => {
       "@/app/api/registration/verification/liveness-result/route"
     );
 
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-      ).value,
-    });
+    setIdentifiedSessionWithLivenessChallenge();
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),

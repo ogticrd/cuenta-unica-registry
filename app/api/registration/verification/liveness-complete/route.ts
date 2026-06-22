@@ -9,7 +9,8 @@ import {
   clearRegistrationAccountDraftCookie,
   getRegistrationAccountDraft,
 } from "@/lib/services/registration/registration-account-draft.service";
-import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
+import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
+import { createRegistrationSessionCookieFromSession } from "@/lib/services/registration/registration-session.service";
 import type { RegisterAccountErrorCode } from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
 import type {
@@ -58,11 +59,7 @@ function setVerifiedSessionCookie(
   session: RegistrationSession,
 ) {
   response.cookies.set(
-    createRegistrationSessionCookie(
-      session.cedula,
-      "verified",
-      session.returnUrl,
-    ),
+    createRegistrationSessionCookieFromSession(session, "verified"),
   );
 }
 
@@ -148,6 +145,7 @@ export async function POST(request: Request) {
       status: accountResult.status,
     });
     applyAccountRegistrationCookies(response, accountResult);
+    response.cookies.set(clearRegistrationLivenessChallengeCookie());
 
     if (!accountResult.payload.success) {
       setVerifiedSessionCookie(response, livenessResult.session);

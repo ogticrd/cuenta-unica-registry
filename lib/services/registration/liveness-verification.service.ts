@@ -1,6 +1,7 @@
 import "server-only";
 
 import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
+import { getRegistrationLivenessChallenge } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import {
   compareFaces,
@@ -72,6 +73,20 @@ export async function verifyRegistrationLiveness(
   }
 
   if (!sessionId) {
+    return {
+      success: false,
+      status: 400,
+      code: "invalid_session_id",
+    };
+  }
+
+  const challenge = await getRegistrationLivenessChallenge();
+
+  if (
+    !challenge ||
+    challenge.registrationSessionId !== session.sessionId ||
+    challenge.livenessSessionId !== sessionId
+  ) {
     return {
       success: false,
       status: 400,

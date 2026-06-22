@@ -1,6 +1,11 @@
 import "server-only";
 
-import { createHmac, timingSafeEqual } from "node:crypto";
+import {
+  createHash,
+  createHmac,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
@@ -17,6 +22,7 @@ const REGISTRATION_SESSION_STATUSES = new Set<RegistrationSessionStatus>([
   "identified",
   "verified",
 ]);
+const REGISTRATION_SESSION_KEY_CONTEXT = "registration-session-cookie:v1";
 
 function getRegistrationSessionSecret() {
   const secret = process.env.REGISTRATION_SESSION_SECRET;
@@ -25,7 +31,11 @@ function getRegistrationSessionSecret() {
     throw new Error("Missing REGISTRATION_SESSION_SECRET environment variable");
   }
 
-  return secret;
+  return createHash("sha256")
+    .update(REGISTRATION_SESSION_KEY_CONTEXT)
+    .update("\0")
+    .update(secret)
+    .digest();
 }
 
 function signPayload(payload: string) {
@@ -49,6 +59,15 @@ function isValidSessionPayload(
   }
 
   const session = payload as Partial<RegistrationSession>;
+
+  if (
+    typeof session.sessionId !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+      session.sessionId,
+    )
+  ) {
+    return false;
+  }
 
   if (
     typeof session.cedula !== "string" ||
@@ -98,7 +117,13 @@ function isValidSessionPayload(
 }
 
 function parseSessionCookie(value: string): RegistrationSession | null {
-  const [payload, signature] = value.split(".");
+  const parts = value.split(".");
+
+  if (parts.length !== 2) {
+    return null;
+  }
+
+  const [payload, signature] = parts;
 
   if (!payload || !signature) {
     return null;
@@ -139,13 +164,22 @@ function getCookieBaseOptions(): Pick<
   };
 }
 
+function getSessionCookieOptionsForExpiresAt(expiresAt: number) {
+  return {
+    ...getCookieBaseOptions(),
+    maxAge: Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000)),
+  };
+}
+
 export function createRegistrationSessionCookie(
   cedula: string,
   status: RegistrationSessionStatus = "identified",
   returnUrl?: string,
+  sessionId: string = randomUUID(),
 ): ResponseCookie {
   const issuedAt = Date.now();
   const session: RegistrationSession = {
+    sessionId,
     cedula: normalizeCedula(cedula),
     status,
     ...(returnUrl ? { returnUrl } : {}),
@@ -157,6 +191,23 @@ export function createRegistrationSessionCookie(
     name: REGISTRATION_SESSION_COOKIE,
     value: serializeSession(session),
     ...getCookieBaseOptions(),
+  };
+}
+
+export function createRegistrationSessionCookieFromSession(
+  session: RegistrationSession,
+  status: RegistrationSessionStatus = session.status,
+): ResponseCookie {
+  const updatedSession: RegistrationSession = {
+    ...session,
+    cedula: normalizeCedula(session.cedula),
+    status,
+  };
+
+  return {
+    name: REGISTRATION_SESSION_COOKIE,
+    value: serializeSession(updatedSession),
+    ...getSessionCookieOptionsForExpiresAt(updatedSession.expiresAt),
   };
 }
 

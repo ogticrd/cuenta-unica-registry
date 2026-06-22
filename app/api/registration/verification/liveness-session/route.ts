@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import { createLivenessSession } from "@/lib/services/registration/rekognition.service";
 import type {
@@ -44,7 +45,12 @@ export async function POST() {
       sessionId,
     };
 
-    return NextResponse.json(payload, { status: 200 });
+    const response = NextResponse.json(payload, { status: 200 });
+    response.cookies.set(
+      createRegistrationLivenessChallengeCookie(session, sessionId),
+    );
+
+    return response;
   } catch (error) {
     console.error(
       "[/api/registration/verification/liveness-session] Failed to create liveness session:",

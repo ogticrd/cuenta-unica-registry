@@ -16,9 +16,15 @@ const REGISTRATION_ACCOUNT_DRAFT_COOKIE = "registration_account_draft";
 const REGISTRATION_ACCOUNT_DRAFT_DURATION_MS = 30 * 60 * 1000;
 const REGISTRATION_ACCOUNT_DRAFT_CLOCK_SKEW_MS = 60 * 1000;
 const ACCOUNT_DRAFT_COOKIE_VERSION = "v1";
+const ACCOUNT_DRAFT_KEY_CONTEXT = "registration-account-draft-cookie:v1";
+const ACCOUNT_DRAFT_AUTH_CONTEXT = Buffer.from(
+  "registration_account_draft.v1",
+  "utf8",
+);
 const AES_GCM_IV_BYTES = 12;
 
 export interface RegistrationAccountDraft {
+  sessionId: string;
   cedula: string;
   email: string;
   password: string;
@@ -27,10 +33,15 @@ export interface RegistrationAccountDraft {
 }
 
 interface RegistrationAccountDraftInput {
+  sessionId: string;
+  sessionExpiresAt: number;
   cedula: string;
   email: string;
   password: string;
 }
+
+const UUID_V4_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 function getRegistrationAccountDraftSecret() {
   const secret = process.env.REGISTRATION_SESSION_SECRET;
@@ -39,7 +50,11 @@ function getRegistrationAccountDraftSecret() {
     throw new Error("Missing REGISTRATION_SESSION_SECRET environment variable");
   }
 
-  return createHash("sha256").update(secret).digest();
+  return createHash("sha256")
+    .update(ACCOUNT_DRAFT_KEY_CONTEXT)
+    .update("\0")
+    .update(secret)
+    .digest();
 }
 
 function encodeBase64Url(bytes: Buffer | Uint8Array | string) {
@@ -63,6 +78,13 @@ function getCookieBaseOptions(): Pick<
   };
 }
 
+function getDraftCookieOptionsForExpiresAt(expiresAt: number) {
+  return {
+    ...getCookieBaseOptions(),
+    maxAge: Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000)),
+  };
+}
+
 function isValidDraftPayload(
   payload: unknown,
 ): payload is RegistrationAccountDraft {
@@ -71,6 +93,13 @@ function isValidDraftPayload(
   }
 
   const draft = payload as Partial<RegistrationAccountDraft>;
+
+  if (
+    typeof draft.sessionId !== "string" ||
+    !UUID_V4_PATTERN.test(draft.sessionId)
+  ) {
+    return false;
+  }
 
   if (
     typeof draft.cedula !== "string" ||
@@ -121,6 +150,8 @@ export function serializeRegistrationAccountDraft(
     getRegistrationAccountDraftSecret(),
     iv,
   );
+  cipher.setAAD(ACCOUNT_DRAFT_AUTH_CONTEXT);
+
   const ciphertext = Buffer.concat([
     cipher.update(JSON.stringify(draft), "utf8"),
     cipher.final(),
@@ -138,8 +169,13 @@ export function serializeRegistrationAccountDraft(
 export function parseRegistrationAccountDraftCookie(
   value: string,
 ): RegistrationAccountDraft | null {
-  const [version, encodedIv, encodedCiphertext, encodedAuthTag] =
-    value.split(".");
+  const parts = value.split(".");
+
+  if (parts.length !== 4) {
+    return null;
+  }
+
+  const [version, encodedIv, encodedCiphertext, encodedAuthTag] = parts;
 
   if (
     version !== ACCOUNT_DRAFT_COOKIE_VERSION ||
@@ -156,6 +192,7 @@ export function parseRegistrationAccountDraftCookie(
       getRegistrationAccountDraftSecret(),
       decodeBase64Url(encodedIv),
     );
+    decipher.setAAD(ACCOUNT_DRAFT_AUTH_CONTEXT);
     decipher.setAuthTag(decodeBase64Url(encodedAuthTag));
 
     const plaintext = Buffer.concat([
@@ -175,23 +212,30 @@ export function parseRegistrationAccountDraftCookie(
 }
 
 export function createRegistrationAccountDraftCookie({
+  sessionId,
+  sessionExpiresAt,
   cedula,
   email,
   password,
 }: RegistrationAccountDraftInput): ResponseCookie {
   const issuedAt = Date.now();
+  const expiresAt = Math.min(
+    sessionExpiresAt,
+    issuedAt + REGISTRATION_ACCOUNT_DRAFT_DURATION_MS,
+  );
   const draft: RegistrationAccountDraft = {
+    sessionId,
     cedula: normalizeCedula(cedula),
     email,
     password,
     issuedAt,
-    expiresAt: issuedAt + REGISTRATION_ACCOUNT_DRAFT_DURATION_MS,
+    expiresAt,
   };
 
   return {
     name: REGISTRATION_ACCOUNT_DRAFT_COOKIE,
     value: serializeRegistrationAccountDraft(draft),
-    ...getCookieBaseOptions(),
+    ...getDraftCookieOptionsForExpiresAt(expiresAt),
   };
 }
 

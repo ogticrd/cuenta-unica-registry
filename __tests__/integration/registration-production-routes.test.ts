@@ -92,6 +92,7 @@ import {
   createRegistrationAccountDraftCookie,
   getRegistrationAccountDraft,
 } from "@/lib/services/registration/registration-account-draft.service";
+import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import {
   createRegistrationSessionCookie,
   getRegistrationSession,
@@ -581,20 +582,36 @@ describe("registration production routes", () => {
   });
 
   it("completes liveness and creates the account from the encrypted draft without client credentials", async () => {
+    const registrationSessionId = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
     const registrationSessionCookie = createRegistrationSessionCookie(
       "40200612345",
       "identified",
       "https://example.com/dashboard",
+      registrationSessionId,
     ).value;
     const draftCookie = createRegistrationAccountDraftCookie({
+      sessionId: registrationSessionId,
+      sessionExpiresAt: Date.now() + 30 * 60 * 1000,
       cedula: "40200612345",
       email: "user@example.com",
       password: "Password123!",
     }).value;
+    const livenessChallengeCookie = createRegistrationLivenessChallengeCookie(
+      {
+        sessionId: registrationSessionId,
+        cedula: "40200612345",
+        status: "identified",
+        returnUrl: "https://example.com/dashboard",
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 30 * 60 * 1000,
+      },
+      "session-123",
+    ).value;
 
     setRequestCookies({
       registration_session: registrationSessionCookie,
       registration_account_draft: draftCookie,
+      registration_liveness_challenge: livenessChallengeCookie,
     });
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
@@ -721,14 +738,28 @@ describe("registration production routes", () => {
   });
 
   it("keeps the verified session when account draft reading fails after liveness", async () => {
+    const registrationSessionId = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
     const registrationSessionCookie = createRegistrationSessionCookie(
       "40200612345",
       "identified",
       "https://example.com/dashboard",
+      registrationSessionId,
+    ).value;
+    const livenessChallengeCookie = createRegistrationLivenessChallengeCookie(
+      {
+        sessionId: registrationSessionId,
+        cedula: "40200612345",
+        status: "identified",
+        returnUrl: "https://example.com/dashboard",
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 30 * 60 * 1000,
+      },
+      "session-123",
     ).value;
 
     setRequestCookies({
       registration_session: registrationSessionCookie,
+      registration_liveness_challenge: livenessChallengeCookie,
     });
 
     const cookieStore = {
@@ -739,6 +770,7 @@ describe("registration production routes", () => {
     };
 
     mockCookies
+      .mockResolvedValueOnce(cookieStore)
       .mockResolvedValueOnce(cookieStore)
       .mockRejectedValueOnce(new Error("cookie store unavailable"));
 
@@ -1192,12 +1224,28 @@ describe("registration production routes", () => {
   });
 
   it("upgrades the signed session to verified after a successful liveness result", async () => {
+    const registrationSessionId = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
+    const registrationSessionCookie = createRegistrationSessionCookie(
+      "40200612345",
+      "identified",
+      "https://example.com/dashboard",
+      registrationSessionId,
+    ).value;
+    const livenessChallengeCookie = createRegistrationLivenessChallengeCookie(
+      {
+        sessionId: registrationSessionId,
+        cedula: "40200612345",
+        status: "identified",
+        returnUrl: "https://example.com/dashboard",
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 30 * 60 * 1000,
+      },
+      "session-123",
+    ).value;
+
     setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-        "https://example.com/dashboard",
-      ).value,
+      registration_session: registrationSessionCookie,
+      registration_liveness_challenge: livenessChallengeCookie,
     });
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(

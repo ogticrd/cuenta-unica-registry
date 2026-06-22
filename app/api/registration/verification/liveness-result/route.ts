@@ -4,7 +4,8 @@ import {
   createVerifyLivenessPayload,
   verifyRegistrationLiveness,
 } from "@/lib/services/registration/liveness-verification.service";
-import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
+import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
+import { createRegistrationSessionCookieFromSession } from "@/lib/services/registration/registration-session.service";
 import type {
   VerifyLivenessErrorCode,
   VerifyLivenessResponse,
@@ -38,12 +39,9 @@ export async function POST(request: Request) {
       status: 200,
     });
     response.cookies.set(
-      createRegistrationSessionCookie(
-        result.session.cedula,
-        "verified",
-        result.session.returnUrl,
-      ),
+      createRegistrationSessionCookieFromSession(result.session, "verified"),
     );
+    response.cookies.set(clearRegistrationLivenessChallengeCookie());
 
     return response;
   } catch (error) {

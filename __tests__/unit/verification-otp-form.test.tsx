@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import type * as React from "react";
 import { useActionState } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { VerificationOTPForm } from "@/components/auth/verification/verification-otp-form";
@@ -30,6 +31,33 @@ vi.mock("sonner", () => ({
   toast: {
     success: mockToastSuccess,
   },
+}));
+
+vi.mock("@/components/ui/input-otp", () => ({
+  InputOTP: ({
+    children,
+    onChange,
+    value,
+    ...props
+  }: React.InputHTMLAttributes<HTMLInputElement> & {
+    children: React.ReactNode;
+    onChange?: (value: string) => void;
+  }) => (
+    <div>
+      <input
+        {...props}
+        value={value}
+        onChange={(event) => onChange?.(event.currentTarget.value)}
+      />
+      {children}
+    </div>
+  ),
+  InputOTPGroup: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  InputOTPSlot: ({ index }: { index: number }) => (
+    <span data-testid={`otp-slot-${index}`} />
+  ),
 }));
 
 vi.mock("@/hooks/use-t", () => ({

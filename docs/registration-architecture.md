@@ -20,12 +20,27 @@ Crear una identidad Ory solamente cuando una persona:
 | --- | --- | --- |
 | `registration_session: identified` | `/api/registration/citizen` | Cedula validada e identificada; habilita captura de cuenta y liveness. |
 | `registration_account_draft` | `/api/registration/account-draft` | Draft cifrado de email/password para sobrevivir reloads durante liveness. |
+| `registration_liveness_challenge` | `/api/registration/verification/liveness-session` | Challenge firmado que liga la sesion Rekognition a `registration_session`. |
 | `registration_session: verified` | liveness exitoso | Biometria aprobada; habilita creacion de cuenta en backend. |
 
 Reglas:
 
-- `registration_account_draft` debe estar cifrada, ser `httpOnly`, expirar y
-  limpiarse en reset o exito.
+- `registration_account_draft` debe estar cifrada con una clave derivada para
+  este proposito, autenticada contra su contexto de cookie, ser `httpOnly`,
+  expirar y limpiarse en reset o exito.
+- `registration_session` debe estar firmada con una clave derivada para este
+  proposito, ser `httpOnly`, expirar y rechazar formatos alterados.
+- `registration_account_draft` debe pertenecer al mismo `sessionId` de
+  `registration_session`; un draft de otra sesion no puede finalizar cuenta,
+  aunque tenga la misma cedula.
+- `registration_account_draft` no puede sobrevivir a `registration_session`;
+  su `expiresAt` y `maxAge` deben limitarse al tiempo restante de la sesion.
+- La promocion de `registration_session` de `identified` a `verified` debe
+  conservar `sessionId`, `issuedAt` y `expiresAt`; liveness no renueva la
+  ventana temporal del registro.
+- `registration_liveness_challenge` debe existir y coincidir con
+  `registration_session.sessionId` y el `sessionId` de Rekognition antes de
+  consultar resultados; una prueba de vida creada en otra sesion se rechaza.
 - `return_url` se valida antes de firmar `registration_session`: solo se acepta
   el origen actual de la peticion o los origenes configurados en
   `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
@@ -44,7 +59,7 @@ Reglas:
 | `POST /api/registration/verification/liveness-result` | Validar liveness y actualizar cookie a `verified`; mantiene compatibilidad. |
 | `POST /api/registration/verification/liveness-complete` | Validar liveness y finalizar cuenta con draft cifrado. |
 | `POST /api/registration/account` | Crear cuenta Ory si la sesion esta `verified`; usa body o draft cifrado. |
-| `POST /api/registration/session/reset` | Limpiar sesion y draft. |
+| `POST /api/registration/session/reset` | Limpiar sesion, draft y challenge de liveness. |
 
 ## Integraciones
 

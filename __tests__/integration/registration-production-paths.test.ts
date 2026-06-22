@@ -87,10 +87,13 @@ import { POST as postCitizen } from "@/app/api/registration/citizen/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 import { POST as postVerification } from "@/app/api/registration/verification/route";
+import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import {
   createRegistrationSessionCookie,
   getRegistrationSession,
 } from "@/lib/services/registration/registration-session.service";
+
+const TEST_REGISTRATION_SESSION_ID = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
 
 function setRequestCookies(cookies: Record<string, string>) {
   requestCookies.clear();
@@ -98,6 +101,32 @@ function setRequestCookies(cookies: Record<string, string>) {
   for (const [name, value] of Object.entries(cookies)) {
     requestCookies.set(name, value);
   }
+}
+
+function createIdentifiedSessionWithLivenessChallenge(returnUrl?: string) {
+  const expiresAt = Date.now() + 30 * 60 * 1000;
+  const sessionCookie = createRegistrationSessionCookie(
+    "40200612345",
+    "identified",
+    returnUrl,
+    TEST_REGISTRATION_SESSION_ID,
+  );
+  const challengeCookie = createRegistrationLivenessChallengeCookie(
+    {
+      sessionId: TEST_REGISTRATION_SESSION_ID,
+      cedula: "40200612345",
+      status: "identified",
+      ...(returnUrl ? { returnUrl } : {}),
+      issuedAt: Date.now(),
+      expiresAt,
+    },
+    "session-123",
+  );
+
+  return {
+    registration_session: sessionCookie.value,
+    registration_liveness_challenge: challengeCookie.value,
+  };
 }
 
 function buildJsonResponse(body: unknown, status = 200) {
@@ -488,13 +517,11 @@ describe("registration production paths", () => {
   });
 
   it("returns citizen_photo_unavailable when the official citizen photo cannot be fetched", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
+    setRequestCookies(
+      createIdentifiedSessionWithLivenessChallenge(
         "https://example.com/dashboard",
-      ).value,
-    });
+      ),
+    );
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       new Response("unavailable", {
@@ -527,12 +554,7 @@ describe("registration production paths", () => {
   });
 
   it("returns rekognition_error when face comparison fails after loading real images", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-      ).value,
-    });
+    setRequestCookies(createIdentifiedSessionWithLivenessChallenge());
 
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       new Response(Uint8Array.from([4, 5, 6]), { status: 200 }),
@@ -564,12 +586,7 @@ describe("registration production paths", () => {
   });
 
   it("treats missing liveness reference images as a failed check", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "identified",
-      ).value,
-    });
+    setRequestCookies(createIdentifiedSessionWithLivenessChallenge());
 
     mockRekognitionSend.mockResolvedValueOnce({
       Confidence: 99,
@@ -746,6 +763,15 @@ describe("registration production paths", () => {
     await expect(livenessSessionResponse.json()).resolves.toEqual({
       success: true,
       sessionId: "session-123",
+    });
+    const livenessChallengeCookie = livenessSessionResponse.cookies.get(
+      "registration_liveness_challenge",
+    );
+    expect(livenessChallengeCookie?.value).toBeTruthy();
+
+    setRequestCookies({
+      registration_session: identifiedCookie?.value ?? "",
+      registration_liveness_challenge: livenessChallengeCookie?.value ?? "",
     });
 
     const livenessResultResponse = await postLivenessResult(

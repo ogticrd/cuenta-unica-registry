@@ -201,7 +201,11 @@ export async function completeRegistrationAccount(
 
   const cedula = normalizeCedula(registrationSession.cedula);
 
-  if (options.draft && normalizeCedula(options.draft.cedula) !== cedula) {
+  if (
+    options.draft &&
+    (normalizeCedula(options.draft.cedula) !== cedula ||
+      options.draft.sessionId !== registrationSession.sessionId)
+  ) {
     return createAccountRegistrationErrorResult("account_draft_missing", 400, {
       clearAccountDraft: true,
     });

@@ -78,6 +78,8 @@ export async function POST(request: Request) {
     );
     response.cookies.set(
       createRegistrationAccountDraftCookie({
+        sessionId: registrationSession.sessionId,
+        sessionExpiresAt: registrationSession.expiresAt,
         cedula: registrationSession.cedula,
         email: parsedRequest.data.email,
         password: parsedRequest.data.password,

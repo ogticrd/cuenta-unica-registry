@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { clearRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
+import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { clearRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 
@@ -12,6 +13,7 @@ export async function POST() {
     );
     response.cookies.set(clearRegistrationSessionCookie());
     response.cookies.set(clearRegistrationAccountDraftCookie());
+    response.cookies.set(clearRegistrationLivenessChallengeCookie());
 
     return response;
   } catch (error) {
