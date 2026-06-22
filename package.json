@@ -30,6 +30,7 @@
     "test:middleware": "vitest run __tests__/middleware",
     "test:notifications:e2e": "bun scripts/notifications-e2e.mjs",
     "test:playwright": "playwright test",
+    "test:playwright:registration": "playwright test playwright/register-validation.spec.ts",
     "test:playwright:ui": "playwright test --ui",
     "test:playwright:debug": "playwright test --debug",
     "test:all": "vitest run && playwright test",

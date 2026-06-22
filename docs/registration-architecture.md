@@ -95,6 +95,9 @@ Cuando el error pertenece a campos de cuenta:
 No usar mensajes ambiguos como unica fuente de verdad. El UI puede traducir
 mensajes, pero la logica debe depender de codigos.
 
+Las server actions de activacion, como `verifyCodeAction`, tambien deben
+devolver un `code` estable junto al mensaje visible.
+
 ## Pruebas Obligatorias Para Cambios En Registro
 
 Ejecutar:
@@ -103,6 +106,7 @@ Ejecutar:
 bun run check
 bun run lint
 bun run test
+bun run test:playwright:registration
 ```
 
 Para cambios profundos, agregar o actualizar pruebas que cubran:
@@ -113,18 +117,20 @@ Para cambios profundos, agregar o actualizar pruebas que cubran:
 - liveness exitoso y fallido;
 - creacion Ory con `continue_with`;
 - fallback cuando Ory crea identidad no verificada sin `continue_with`;
+- activacion OTP con errores codificados;
 - errores Ory mapeados a `fieldErrors`;
 - reset limpiando cookies de registro;
 - validaciones visibles de formularios.
 
-## Deuda E2E
+## Cobertura E2E
 
-`playwright.config.ts` existe, pero falta una suite `playwright/`. Los primeros
-escenarios e2e deben ser:
+La suite inicial `playwright/register-validation.spec.ts` cubre validaciones
+visibles del registro, protege contra overlays/runtime errors durante la
+validacion y verifica el avance asistido hasta Rekognition. Los siguientes
+escenarios e2e siguen pendientes:
 
-- cedula invalida muestra error visible sin overlay;
-- cuenta invalida muestra errores visibles;
-- registro asistido hasta liveness;
 - liveness exitoso redirige a activacion de email;
 - OTP invalido muestra error;
 - sesion autenticada accede al dashboard.
+
+La estrategia de pruebas completa vive en `docs/testing-strategy.md`.

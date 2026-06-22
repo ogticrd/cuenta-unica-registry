@@ -30,6 +30,7 @@ export function VerificationOTPForm({
   const t = useT("email_sent");
   const [otpValue, setOtpValue] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const errorId = "verification-code-error";
 
   const [state, formAction, isPending] = useActionState<
     VerifyCodeState,
@@ -88,11 +89,18 @@ export function VerificationOTPForm({
       <input type="hidden" name="code" value={otpValue} />
 
       <div className="flex flex-col items-center gap-3">
+        <label className="sr-only" htmlFor="verification-code">
+          {t("code_label")}
+        </label>
         <InputOTP
+          id="verification-code"
           maxLength={6}
           value={otpValue}
           onChange={setOtpValue}
           disabled={isPending}
+          aria-describedby={state.error ? errorId : undefined}
+          aria-invalid={Boolean(state.error)}
+          aria-label={t("code_label")}
         >
           <InputOTPGroup>
             <InputOTPSlot index={0} />
@@ -105,7 +113,12 @@ export function VerificationOTPForm({
         </InputOTP>
 
         {state.error && (
-          <p className="text-xs text-red-500 dark:text-red-400 text-center animate-in fade-in duration-200">
+          <p
+            id={errorId}
+            className="text-xs text-red-500 dark:text-red-400 text-center animate-in fade-in duration-200"
+            data-error-code={state.code}
+            role="alert"
+          >
             {state.error}
           </p>
         )}

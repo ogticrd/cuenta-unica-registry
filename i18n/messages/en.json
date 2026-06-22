@@ -561,6 +561,7 @@
     "help_description": "Check your {spam} or {junk} folder. It may take a few minutes to arrive.",
     "help_spam": "Spam",
     "help_junk": "Junk",
+    "code_label": "Verification code",
     "verify_button": "Verify code",
     "verifying": "Verifying...",
     "success_title": "Account verified!",

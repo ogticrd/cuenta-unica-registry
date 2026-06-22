@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,6 +7,10 @@ import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { ROUTES } from "@/lib/constants/routes";
 import { getT } from "@/lib/i18n/server";
+import {
+  getSafeReturnUrl,
+  parseAllowedReturnOrigins,
+} from "@/lib/utils/return-url";
 
 interface EmailSentPageProps {
   searchParams: Promise<{ flow?: string; return_url?: string }>;
@@ -15,8 +20,20 @@ export default async function EmailSentPage({
   searchParams,
 }: EmailSentPageProps) {
   const params = await searchParams;
+  const requestHeaders = await headers();
+  const forwardedProto = requestHeaders.get("x-forwarded-proto");
+  const forwardedHost = requestHeaders.get("x-forwarded-host");
+  const host = forwardedHost ?? requestHeaders.get("host");
+  const currentOrigin = host
+    ? `${forwardedProto ?? "http"}://${host}`
+    : undefined;
   const flowId = params.flow;
-  const returnUrl = params.return_url;
+  const returnUrl = getSafeReturnUrl(params.return_url, {
+    currentOrigin,
+    allowedOrigins: parseAllowedReturnOrigins(
+      process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,
+    ),
+  });
   const t = await getT("email_sent");
 
   return (

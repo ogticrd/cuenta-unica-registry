@@ -347,7 +347,7 @@ export function StepVerification({
             {phase === "creating_session" && <FaceLivenessLoader />}
 
             {phase === "liveness_active" && livenessSessionId && (
-              <div className="w-full">
+              <div className="w-full" data-testid="rekognition-liveness">
                 <FaceLiveness
                   sessionId={livenessSessionId}
                   onComplete={handleLivenessComplete}

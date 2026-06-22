@@ -28,8 +28,6 @@ yarn-error.log*
 next-env.d.ts
 
 # Playwright
-/playwright/
-!/playwright.config.ts
 /test-results/
 /playwright-report/
 /blob-report/

@@ -72,7 +72,11 @@ bun run test
 
 For registration changes, add or update tests for each affected state transition,
 error code and cookie behavior. Browser validation is expected for user-visible
-registration behavior.
+registration behavior. Run:
+
+```sh
+bun run test:playwright:registration
+```
 
 ## Git
 

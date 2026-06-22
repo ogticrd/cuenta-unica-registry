@@ -40,7 +40,7 @@ export default defineConfig({
 
   // Run local dev server before starting the tests
   webServer: {
-    command: "bun run build && bun run start",
+    command: "node scripts/playwright-web-server.mjs",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 300 * 1000,

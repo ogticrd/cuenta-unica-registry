@@ -561,6 +561,7 @@
     "help_description": "Revisa tu carpeta de {spam} o {junk}. Podría tardar unos minutos en llegar.",
     "help_spam": "Spam",
     "help_junk": "Correo no deseado",
+    "code_label": "Código de verificación",
     "verify_button": "Verificar código",
     "verifying": "Verificando...",
     "success_title": "¡Cuenta verificada!",

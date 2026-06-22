@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { isValidReturnUrl } from "@/lib/utils/return-url";
+import {
+  getSafeReturnUrl,
+  isValidReturnUrl,
+  parseAllowedReturnOrigins,
+} from "@/lib/utils/return-url";
 
 describe("isValidReturnUrl", () => {
   it("accepts a valid HTTPS URL", () => {
@@ -50,5 +54,63 @@ describe("isValidReturnUrl", () => {
 
   it("rejects file: protocol", () => {
     expect(isValidReturnUrl("file:///etc/passwd")).toBe(false);
+  });
+});
+
+describe("getSafeReturnUrl", () => {
+  it("accepts same-origin absolute URLs", () => {
+    expect(
+      getSafeReturnUrl("https://cuentaunica.gob.do/dashboard?tab=home", {
+        currentOrigin: "https://cuentaunica.gob.do",
+      }),
+    ).toBe("https://cuentaunica.gob.do/dashboard?tab=home");
+  });
+
+  it("accepts allowlisted external origins", () => {
+    expect(
+      getSafeReturnUrl("https://services.gob.do/callback", {
+        currentOrigin: "https://cuentaunica.gob.do",
+        allowedOrigins: ["https://services.gob.do"],
+      }),
+    ).toBe("https://services.gob.do/callback");
+  });
+
+  it("rejects external origins that are not allowlisted", () => {
+    expect(
+      getSafeReturnUrl("https://attacker.example/phishing", {
+        currentOrigin: "https://cuentaunica.gob.do",
+        allowedOrigins: ["https://services.gob.do"],
+      }),
+    ).toBeUndefined();
+  });
+
+  it("rejects non-http protocols", () => {
+    expect(
+      getSafeReturnUrl("javascript:alert(1)", {
+        currentOrigin: "https://cuentaunica.gob.do",
+      }),
+    ).toBeUndefined();
+  });
+
+  it("rejects malformed URLs", () => {
+    expect(
+      getSafeReturnUrl("not-a-url", {
+        currentOrigin: "https://cuentaunica.gob.do",
+      }),
+    ).toBeUndefined();
+  });
+});
+
+describe("parseAllowedReturnOrigins", () => {
+  it("parses comma separated origins", () => {
+    expect(
+      parseAllowedReturnOrigins(
+        "https://services.gob.do, https://portal.gob.do ",
+      ),
+    ).toEqual(["https://services.gob.do", "https://portal.gob.do"]);
+  });
+
+  it("returns an empty list when unset", () => {
+    expect(parseAllowedReturnOrigins(undefined)).toEqual([]);
   });
 });

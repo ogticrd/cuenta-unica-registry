@@ -13,7 +13,7 @@ ciudadanos y Buzon Ciudadano.
 - AWS Rekognition Face Liveness para prueba de vida y comparacion facial.
 - `next-intl` para internacionalizacion.
 - Vitest y Testing Library para pruebas unitarias e integracion.
-- Playwright configurado para e2e; la suite e2e debe vivir en `playwright/`.
+- Playwright para e2e; las suites viven en `playwright/`.
 
 ## Primeros Pasos
 
@@ -23,21 +23,27 @@ ciudadanos y Buzon Ciudadano.
    bun install
    ```
 
-2. Crear `.env` desde `.env.example` y completar credenciales locales.
+2. Instalar browsers de Playwright si se ejecutaran pruebas e2e:
 
-3. Levantar el tunnel de Ory para desarrollo local:
+   ```sh
+   bunx playwright install
+   ```
+
+3. Crear `.env` desde `.env.example` y completar credenciales locales.
+
+4. Levantar el tunnel de Ory para desarrollo local:
 
    ```sh
    ory tunnel http://localhost:3000 --project focused-gagarin-ywepc2q5bu --dev
    ```
 
-4. Levantar la aplicacion:
+5. Levantar la aplicacion:
 
    ```sh
    bun dev
    ```
 
-5. Abrir `http://localhost:3000/register`.
+6. Abrir `http://localhost:3000/register`.
 
 ## Comandos
 
@@ -48,6 +54,7 @@ bun run test
 bun run test:unit
 bun run test:integration
 bun run test:playwright
+bun run test:playwright:registration
 ```
 
 Antes de entregar cambios en registro, ejecutar como minimo:
@@ -56,6 +63,7 @@ Antes de entregar cambios en registro, ejecutar como minimo:
 bun run check
 bun run lint
 bun run test
+bun run test:playwright:registration
 ```
 
 ## Flujo Critico de Registro
@@ -85,7 +93,7 @@ Invariantes:
 - No se deben cambiar umbrales biometricos sin actualizar pruebas y documentar
   la razon operativa.
 
-Mas detalle en `docs/registration-architecture.md`.
+Mas detalle en `docs/registration-architecture.md` y `docs/testing-strategy.md`.
 
 ## Estructura Principal
 
@@ -96,6 +104,7 @@ Mas detalle en `docs/registration-architecture.md`.
 - `lib/schemas/registration/*`: validacion de formularios y payloads.
 - `lib/types/registration/*`: contratos de respuesta y codigos de error.
 - `__tests__/unit` y `__tests__/integration`: pruebas automatizadas.
+- `playwright/*`: pruebas e2e de comportamiento visible en browser.
 
 ## Convenciones de Seguridad
 
@@ -105,9 +114,12 @@ Mas detalle en `docs/registration-architecture.md`.
 - Passwords temporales solo pueden persistir cifrados y con TTL corto.
 - El backend debe hacer cumplir cada paso critico; la UI solo guia al usuario.
 - No exponer detalles sensibles en errores visibles al usuario.
+- `return_url` de activacion solo puede redirigir al origen actual o a origenes
+  definidos en `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
 
 ## Estado de Calidad
 
-El repositorio ya tiene cobertura importante de registro y autenticacion. Hay
-deuda pendiente en e2e: `playwright.config.ts` existe, pero falta crear suites
-e2e reales para registro, login, activacion de email y dashboard autenticado.
+El repositorio ya tiene cobertura importante de registro y autenticacion. La
+suite Playwright inicial cubre validaciones visibles del registro y avance
+asistido hasta Rekognition. Queda deuda e2e pendiente para liveness exitoso,
+activacion de email, login y dashboard autenticado.

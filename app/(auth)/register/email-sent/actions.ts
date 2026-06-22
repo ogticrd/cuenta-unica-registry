@@ -6,8 +6,16 @@ import { getServerCookies } from "@/lib/ory/cookies";
 
 export interface VerifyCodeState {
   success?: boolean;
+  code?: VerifyCodeErrorCode;
   error?: string;
 }
+
+export type VerifyCodeErrorCode =
+  | "missing_data"
+  | "invalid_code_length"
+  | "invalid_code"
+  | "ory_verification_error"
+  | "expired_code";
 
 export async function verifyCodeAction(
   _prevState: VerifyCodeState,
@@ -18,11 +26,11 @@ export async function verifyCodeAction(
   const code = formData.get("code") as string;
 
   if (!flow || !code) {
-    return { error: t("error_missing_data") };
+    return { code: "missing_data", error: t("error_missing_data") };
   }
 
   if (code.length !== 6) {
-    return { error: t("error_code_length") };
+    return { code: "invalid_code_length", error: t("error_code_length") };
   }
 
   try {
@@ -42,7 +50,7 @@ export async function verifyCodeAction(
       return { success: true };
     }
 
-    return { error: t("error_invalid_code") };
+    return { code: "invalid_code", error: t("error_invalid_code") };
   } catch (err: unknown) {
     const oryError = err as {
       response?: { data?: { ui?: { messages?: Array<{ text: string }> } } };
@@ -50,10 +58,10 @@ export async function verifyCodeAction(
     const messages = oryError?.response?.data?.ui?.messages;
 
     if (messages && messages.length > 0) {
-      return { error: messages[0].text };
+      return { code: "ory_verification_error", error: messages[0].text };
     }
 
     console.error("[verifyCodeAction] Unexpected error:", err);
-    return { error: t("error_expired_code") };
+    return { code: "expired_code", error: t("error_expired_code") };
   }
 }

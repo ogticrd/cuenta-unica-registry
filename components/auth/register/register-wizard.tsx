@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
@@ -42,6 +42,7 @@ export function RegisterWizard({
   returnUrl,
 }: RegisterWizardProps) {
   const t = useT("register");
+  const [isHydrated, setIsHydrated] = useState(false);
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
   const [sessionStatus, setSessionStatus] =
     useState<RegistrationSessionStatus | null>(initialSessionStatus);
@@ -78,6 +79,10 @@ export function RegisterWizard({
           } satisfies RegisterAccountStepErrors)
         : undefined,
   });
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const handleNext = () => {
     setActiveStep((prev) => {
@@ -189,7 +194,11 @@ export function RegisterWizard({
   };
 
   return (
-    <Card className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card">
+    <Card
+      className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card"
+      data-hydrated={isHydrated}
+      data-testid="registration-wizard"
+    >
       <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-border dark:border-slate-800 mx-6">
         <Image
           src="/images/cuenta-unica-icon.png"

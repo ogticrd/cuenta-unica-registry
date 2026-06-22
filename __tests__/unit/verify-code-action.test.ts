@@ -55,4 +55,75 @@ describe("verifyCodeAction", () => {
       },
     });
   });
+
+  it("returns a stable code when required form data is missing", async () => {
+    const formData = new FormData();
+    formData.set("flow", "verification-flow-123");
+
+    await expect(verifyCodeAction({}, formData)).resolves.toEqual({
+      code: "missing_data",
+      error: "error_missing_data",
+    });
+    expect(mockUpdateFlow).not.toHaveBeenCalled();
+  });
+
+  it("returns a stable code when the verification code length is invalid", async () => {
+    const formData = new FormData();
+    formData.set("flow", "verification-flow-123");
+    formData.set("code", "12345");
+
+    await expect(verifyCodeAction({}, formData)).resolves.toEqual({
+      code: "invalid_code_length",
+      error: "error_code_length",
+    });
+    expect(mockUpdateFlow).not.toHaveBeenCalled();
+  });
+
+  it("returns invalid_code when Ory does not pass the challenge", async () => {
+    mockUpdateFlow.mockResolvedValueOnce({
+      data: {
+        state: "sent_email",
+      },
+    });
+    const formData = new FormData();
+    formData.set("flow", "verification-flow-123");
+    formData.set("code", "123456");
+
+    await expect(verifyCodeAction({}, formData)).resolves.toEqual({
+      code: "invalid_code",
+      error: "error_invalid_code",
+    });
+  });
+
+  it("preserves Ory verification messages with a stable error code", async () => {
+    mockUpdateFlow.mockRejectedValueOnce({
+      response: {
+        data: {
+          ui: {
+            messages: [{ text: "The verification code is invalid." }],
+          },
+        },
+      },
+    });
+    const formData = new FormData();
+    formData.set("flow", "verification-flow-123");
+    formData.set("code", "123456");
+
+    await expect(verifyCodeAction({}, formData)).resolves.toEqual({
+      code: "ory_verification_error",
+      error: "The verification code is invalid.",
+    });
+  });
+
+  it("returns expired_code for unexpected Ory errors", async () => {
+    mockUpdateFlow.mockRejectedValueOnce(new Error("network unavailable"));
+    const formData = new FormData();
+    formData.set("flow", "verification-flow-123");
+    formData.set("code", "123456");
+
+    await expect(verifyCodeAction({}, formData)).resolves.toEqual({
+      code: "expired_code",
+      error: "error_expired_code",
+    });
+  });
 });
