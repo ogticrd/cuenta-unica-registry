@@ -24,6 +24,8 @@ export type CitizenLookupErrorCode =
   | "citizen_not_found"
   | "unexpected_error";
 
+export type CitizenLookupFieldErrors = Partial<Record<"cedula", string>>;
+
 export type CitizenLookupResponse =
   | {
       success: true;
@@ -32,4 +34,5 @@ export type CitizenLookupResponse =
   | {
       success: false;
       code: CitizenLookupErrorCode;
+      fieldErrors?: CitizenLookupFieldErrors;
     };

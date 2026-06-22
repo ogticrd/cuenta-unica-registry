@@ -76,7 +76,9 @@ export function StepIdentification({
         };
 
         form.setError("cedula", {
-          message: messageByErrorCode[result.code],
+          message: result.fieldErrors?.cedula
+            ? t(result.fieldErrors.cedula)
+            : messageByErrorCode[result.code],
         });
 
         return;

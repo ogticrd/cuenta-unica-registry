@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { RegisterAccountFieldErrors } from "@/lib/types/registration/account";
 import { normalizeCedula } from "@/lib/utils/cedula";
 import {
   isBreachedPassword,
@@ -12,6 +13,26 @@ export const accountRequestSchema = z.object({
   email: z.string().email(),
   password: z.string().min(PASSWORD_MIN_LENGTH),
 });
+
+export function getAccountRequestFieldErrors(
+  error: z.ZodError,
+): RegisterAccountFieldErrors | undefined {
+  const fieldErrors: RegisterAccountFieldErrors = {};
+
+  for (const issue of error.issues) {
+    const [field] = issue.path;
+
+    if (field === "email") {
+      fieldErrors.email ??= "account.validation.email_invalid";
+    }
+
+    if (field === "password") {
+      fieldErrors.password ??= "account.validation.password_min";
+    }
+  }
+
+  return Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined;
+}
 
 function validatePasswordExcludesCedula(cedula: string) {
   return (data: { password: string }) => {

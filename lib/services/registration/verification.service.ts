@@ -1,6 +1,7 @@
 import { API } from "@/lib/constants/api";
 import {
   getCodedApiErrorPayload,
+  logUnexpectedApiError,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 import type {
@@ -72,8 +73,8 @@ export const verificationService = {
 
       return await parseJsonResponse<CreateLivenessSessionResponse>(response);
     } catch (error) {
-      console.error(
-        "[verificationService.createLivenessSession] Request failed:",
+      logUnexpectedApiError(
+        "[verificationService.createLivenessSession]",
         error,
       );
 
@@ -92,10 +93,7 @@ export const verificationService = {
 
       return await parseJsonResponse<VerifyLivenessResponse>(response);
     } catch (error) {
-      console.error(
-        "[verificationService.verifyLiveness] Request failed:",
-        error,
-      );
+      logUnexpectedApiError("[verificationService.verifyLiveness]", error);
 
       return getVerifyLivenessFailure(error);
     }
@@ -115,8 +113,8 @@ export const verificationService = {
         response,
       );
     } catch (error) {
-      console.error(
-        "[verificationService.completeLivenessRegistration] Request failed:",
+      logUnexpectedApiError(
+        "[verificationService.completeLivenessRegistration]",
         error,
       );
 

@@ -1,6 +1,7 @@
 import { API } from "@/lib/constants/api";
 import {
   getCodedApiErrorPayload,
+  logUnexpectedApiError,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 import type {
@@ -43,7 +44,7 @@ export const citizenService = {
 
       return await parseJsonResponse<CitizenLookupResponse>(response);
     } catch (error) {
-      console.error("[citizenService.identifyCitizen] Request failed:", error);
+      logUnexpectedApiError("[citizenService.identifyCitizen]", error);
 
       return getCitizenLookupFailure(error);
     }

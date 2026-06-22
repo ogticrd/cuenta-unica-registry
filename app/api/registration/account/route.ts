@@ -1,4 +1,7 @@
-import { accountRequestSchema } from "@/lib/schemas/registration";
+import {
+  accountRequestSchema,
+  getAccountRequestFieldErrors,
+} from "@/lib/schemas/registration";
 import {
   completeRegistrationAccount,
   createAccountRegistrationErrorResult,
@@ -6,7 +9,10 @@ import {
 } from "@/lib/services/registration/account-registration.service";
 import { getRegistrationAccountDraft } from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
-import type { RegisterAccountRequest } from "@/lib/types/registration/account";
+import type {
+  RegisterAccountFieldErrors,
+  RegisterAccountRequest,
+} from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
 
 type OptionalAccountBodyResult =
@@ -17,6 +23,7 @@ type OptionalAccountBodyResult =
   | {
       success: false;
       code: "invalid_payload";
+      fieldErrors?: RegisterAccountFieldErrors;
     };
 
 async function readOptionalAccountBody(
@@ -45,6 +52,7 @@ function parseOptionalAccountRequest(rawBody: string):
   | {
       success: false;
       code: "invalid_payload";
+      fieldErrors?: RegisterAccountFieldErrors;
     } {
   if (!rawBody.trim()) {
     return {
@@ -71,6 +79,7 @@ function parseOptionalAccountRequest(rawBody: string):
     return {
       success: false,
       code: "invalid_payload" as const,
+      fieldErrors: getAccountRequestFieldErrors(parsedRequest.error),
     };
   }
 
@@ -114,7 +123,9 @@ export async function POST(request: Request) {
 
   if (!parsedRequest.success) {
     return createAccountRegistrationResponse(
-      createAccountRegistrationErrorResult(parsedRequest.code, 400),
+      createAccountRegistrationErrorResult(parsedRequest.code, 400, {
+        fieldErrors: parsedRequest.fieldErrors,
+      }),
     );
   }
 

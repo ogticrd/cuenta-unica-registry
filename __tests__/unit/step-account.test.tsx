@@ -221,6 +221,28 @@ describe("StepAccount", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows Ory email field errors on the email field", async () => {
+    renderStepAccount({
+      initialErrors: {
+        code: "identity_exists",
+        fieldErrors: {
+          email: "identities.messages.4000007",
+        },
+      },
+    });
+
+    expect(
+      await screen.findByText(
+        "Ya existe una cuenta con este correo electrónico.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Correo electrónico *")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(mockToastError).not.toHaveBeenCalled();
+  });
+
   it("does not show a general toast for server-side password errors", async () => {
     renderStepAccount({
       initialErrors: {

@@ -243,6 +243,36 @@ describe("registration route orchestration - account", () => {
     });
   });
 
+  it("returns field errors for invalid account payloads after session validation", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockFindCitizenByCedula).not.toHaveBeenCalled();
+    expect(mockRegisterOryAccount).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        email: "account.validation.email_invalid",
+        password: "account.validation.password_min",
+      },
+    });
+  });
+
   it("rejects passwords that contain the verified cedula", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
@@ -844,6 +874,10 @@ describe("registration route orchestration - account-draft", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "invalid_payload",
+      fieldErrors: {
+        email: "account.validation.email_invalid",
+        password: "account.validation.password_min",
+      },
     });
   });
 
@@ -870,6 +904,9 @@ describe("registration route orchestration - account-draft", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_weak",
+      fieldErrors: {
+        password: "account.validation.password_weak",
+      },
     });
   });
 
@@ -896,6 +933,9 @@ describe("registration route orchestration - account-draft", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_compromised",
+      fieldErrors: {
+        password: "account.validation.password_compromised",
+      },
     });
   });
 
@@ -921,6 +961,9 @@ describe("registration route orchestration - account-draft", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_email_similarity",
+      fieldErrors: {
+        password: "account.validation.password_email_similarity",
+      },
     });
   });
 
@@ -1010,6 +1053,9 @@ describe("registration route orchestration - citizen", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "invalid_payload",
+      fieldErrors: {
+        cedula: "identification.id_invalid",
+      },
     });
     expect(mockIsValidCedula).not.toHaveBeenCalled();
     expect(mockCheckCitizenIdentity).not.toHaveBeenCalled();
@@ -1031,6 +1077,9 @@ describe("registration route orchestration - citizen", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "invalid_cedula",
+      fieldErrors: {
+        cedula: "identification.id_invalid",
+      },
     });
     expect(mockCheckCitizenIdentity).not.toHaveBeenCalled();
   });

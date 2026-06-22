@@ -76,6 +76,10 @@ describe("verificationService", () => {
     });
 
     it("preserves verified-session errors from the API", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         jsonResponse(
           {
@@ -92,6 +96,7 @@ describe("verificationService", () => {
         success: false,
         code: "verification_already_completed",
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -166,6 +171,10 @@ describe("verificationService", () => {
     });
 
     it("returns error response from the API", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         jsonResponse(
           {
@@ -182,9 +191,14 @@ describe("verificationService", () => {
         success: false,
         code: "liveness_check_failed",
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
     it("preserves completed verification errors from the API", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         jsonResponse(
           {
@@ -201,6 +215,7 @@ describe("verificationService", () => {
         success: false,
         code: "verification_already_completed",
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -268,6 +283,10 @@ describe("verificationService", () => {
     });
 
     it("returns account-stage errors from the API", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         jsonResponse(
           {
@@ -289,9 +308,14 @@ describe("verificationService", () => {
         code: "identity_exists",
         fieldErrors: { email: "identities.messages.4000007" },
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
     it("preserves completed verification errors from the API", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         jsonResponse(
           {
@@ -311,6 +335,7 @@ describe("verificationService", () => {
         stage: "verification",
         code: "verification_already_completed",
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 });

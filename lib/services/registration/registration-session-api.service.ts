@@ -1,6 +1,7 @@
 import { API } from "@/lib/constants/api";
 import {
   getCodedApiErrorPayload,
+  logUnexpectedApiError,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
@@ -33,10 +34,7 @@ export const registrationSessionApiService = {
         response,
       );
     } catch (error) {
-      console.error(
-        "[registrationSessionApiService.reset] Request failed:",
-        error,
-      );
+      logUnexpectedApiError("[registrationSessionApiService.reset]", error);
 
       return getResetFailure(error);
     }

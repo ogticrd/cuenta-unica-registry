@@ -294,6 +294,29 @@ describe("registration production routes", () => {
     });
   });
 
+  it("returns field errors for invalid citizen lookup payloads", async () => {
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: JSON.stringify({
+          cedula: 40200612345,
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockListIdentities).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        cedula: "identification.id_invalid",
+      },
+    });
+  });
+
   it("stores an encrypted account draft cookie for the active registration session", async () => {
     setRequestCookies({
       registration_session: createRegistrationSessionCookie(
@@ -356,6 +379,37 @@ describe("registration production routes", () => {
     expect(response.cookies.get("registration_account_draft")).toBeUndefined();
   });
 
+  it("returns field errors for invalid account draft payloads", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "identified",
+      ).value,
+    });
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        email: "account.validation.email_invalid",
+        password: "account.validation.password_min",
+      },
+    });
+    expect(response.cookies.get("registration_account_draft")).toBeUndefined();
+  });
+
   it("rejects account drafts with weak passwords before storing credentials", async () => {
     setRequestCookies({
       registration_session: createRegistrationSessionCookie(
@@ -380,6 +434,9 @@ describe("registration production routes", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_weak",
+      fieldErrors: {
+        password: "account.validation.password_weak",
+      },
     });
     expect(response.cookies.get("registration_account_draft")).toBeUndefined();
   });
@@ -408,8 +465,47 @@ describe("registration production routes", () => {
     await expect(response.json()).resolves.toEqual({
       success: false,
       code: "password_compromised",
+      fieldErrors: {
+        password: "account.validation.password_compromised",
+      },
     });
     expect(response.cookies.get("registration_account_draft")).toBeUndefined();
+  });
+
+  it("returns field errors for invalid direct account payloads", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "verified",
+      ).value,
+    });
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockRejectedValue(new Error("Unexpected fetch call"));
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "not-an-email",
+          password: "",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(mockCreateBrowserRegistrationFlow).not.toHaveBeenCalled();
+    expect(mockUpdateRegistrationFlow).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        email: "account.validation.email_invalid",
+        password: "account.validation.password_min",
+      },
+    });
   });
 
   it("rejects direct account registration with weak passwords before external calls", async () => {

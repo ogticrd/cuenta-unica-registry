@@ -86,4 +86,32 @@ describe("StepIdentification", () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it("shows citizen API field errors on the cedula field", async () => {
+    const user = userEvent.setup();
+    vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        cedula: "identification.id_invalid",
+      },
+    });
+    const { props } = renderStepIdentification();
+
+    await user.type(screen.getByLabelText("Cédula *"), "40224888319");
+    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+
+    expect(citizenService.identifyCitizen).toHaveBeenCalledWith(
+      "40224888319",
+      undefined,
+    );
+    expect(
+      await screen.findByText("La cédula ingresada no es válida"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Cédula *")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(props.onNext).not.toHaveBeenCalled();
+  });
 });

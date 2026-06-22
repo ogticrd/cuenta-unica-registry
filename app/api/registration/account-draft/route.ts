@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { accountRequestSchema } from "@/lib/schemas/registration";
+import {
+  accountRequestSchema,
+  getAccountRequestFieldErrors,
+} from "@/lib/schemas/registration";
 import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
 import { createRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import type {
+  RegisterAccountFieldErrors,
   SaveRegisterAccountDraftErrorCode,
   SaveRegisterAccountDraftResponse,
 } from "@/lib/types/registration/account";
@@ -11,11 +15,13 @@ import type {
 function createErrorResponse(
   code: SaveRegisterAccountDraftErrorCode,
   status: number,
+  fieldErrors?: RegisterAccountFieldErrors,
 ) {
   return NextResponse.json(
     {
       success: false,
       code,
+      ...(fieldErrors ? { fieldErrors } : {}),
     } satisfies SaveRegisterAccountDraftResponse,
     { status },
   );
@@ -41,7 +47,11 @@ export async function POST(request: Request) {
     const parsedRequest = accountRequestSchema.safeParse(body);
 
     if (!parsedRequest.success) {
-      return createErrorResponse("invalid_payload", 400);
+      return createErrorResponse(
+        "invalid_payload",
+        400,
+        getAccountRequestFieldErrors(parsedRequest.error),
+      );
     }
 
     const credentialError = await validateRegistrationAccountCredentials(
@@ -52,7 +62,11 @@ export async function POST(request: Request) {
     );
 
     if (credentialError) {
-      return createErrorResponse(credentialError.code, 400);
+      return createErrorResponse(
+        credentialError.code,
+        400,
+        credentialError.fieldErrors,
+      );
     }
 
     const response = NextResponse.json(

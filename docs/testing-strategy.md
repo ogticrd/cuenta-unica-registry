@@ -53,6 +53,12 @@ La activacion OTP debe conservar mensajes visibles y codigos de error estables.
 Los errores de `verifyCodeAction` se prueban unitariamente porque dependen del
 contrato server-side con Ory y cookies del browser.
 
+Los errores de formulario deben probarse en dos niveles: las rutas deben
+devolver `fieldErrors` tipados para `cedula`, `email` o `password` cuando el
+fallo pertenece a un campo concreto, y los componentes deben renderizarlos con
+`FormMessage`/`react-hook-form`. Los cuerpos JSON malformados siguen siendo
+errores generales `invalid_payload` sin `fieldErrors`.
+
 ## Reglas
 
 - No depender de texto traducido para contratos de API; usar codigos estables.

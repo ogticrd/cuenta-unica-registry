@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import {
+  citizenLookupRequestSchema,
+  getCitizenLookupFieldErrors,
+} from "@/lib/schemas/registration";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type {
   CitizenLookupErrorCode,
+  CitizenLookupFieldErrors,
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
@@ -14,15 +18,15 @@ import {
   parseAllowedReturnOrigins,
 } from "@/lib/utils/return-url";
 
-const citizenLookupRequestSchema = z.object({
-  cedula: z.string(),
-  returnUrl: z.string().optional(),
-});
-
-function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
+function createErrorResponse(
+  code: CitizenLookupErrorCode,
+  status: number,
+  fieldErrors?: CitizenLookupFieldErrors,
+) {
   const payload: CitizenLookupResponse = {
     success: false,
     code,
+    ...(fieldErrors ? { fieldErrors } : {}),
   };
 
   return NextResponse.json(payload, { status });
@@ -41,7 +45,11 @@ export async function POST(request: Request) {
   const parsedRequest = citizenLookupRequestSchema.safeParse(body);
 
   if (!parsedRequest.success) {
-    return createErrorResponse("invalid_payload", 400);
+    return createErrorResponse(
+      "invalid_payload",
+      400,
+      getCitizenLookupFieldErrors(parsedRequest.error),
+    );
   }
 
   const cedula = normalizeCedula(parsedRequest.data.cedula);
@@ -53,7 +61,9 @@ export async function POST(request: Request) {
   });
 
   if (!(await isValidCedula(cedula))) {
-    return createErrorResponse("invalid_cedula", 400);
+    return createErrorResponse("invalid_cedula", 400, {
+      cedula: "identification.id_invalid",
+    });
   }
 
   try {

@@ -178,6 +178,7 @@ export function RegisterWizard({
         ...prev,
         accountErrors: {
           code: result.code,
+          fieldErrors: result.fieldErrors,
         },
       }));
       return;

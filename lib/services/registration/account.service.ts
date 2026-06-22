@@ -1,6 +1,7 @@
 import { API } from "@/lib/constants/api";
 import {
   getCodedApiErrorPayload,
+  logUnexpectedApiError,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 import type {
@@ -63,7 +64,7 @@ export const accountService = {
 
       return await parseJsonResponse<RegisterAccountResponse>(response);
     } catch (error) {
-      console.error("[accountService.registerAccount] Request failed:", error);
+      logUnexpectedApiError("[accountService.registerAccount]", error);
 
       return getRegisterAccountFailure(error);
     }
@@ -85,7 +86,7 @@ export const accountService = {
         response,
       );
     } catch (error) {
-      console.error("[accountService.saveAccountDraft] Request failed:", error);
+      logUnexpectedApiError("[accountService.saveAccountDraft]", error);
 
       return getAccountDraftFailure(error);
     }

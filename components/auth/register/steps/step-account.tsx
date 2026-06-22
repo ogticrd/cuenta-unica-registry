@@ -5,7 +5,6 @@ import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import {
   type SyntheticEvent,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -112,13 +111,6 @@ function getPasswordErrorMessage(
   }
 }
 
-function areMessagesEqual(current: string[], next: string[]) {
-  return (
-    current.length === next.length &&
-    current.every((message, index) => message === next[index])
-  );
-}
-
 export function StepAccount({
   onBack,
   onNext,
@@ -130,15 +122,11 @@ export function StepAccount({
   const locale = useLocale() as "es" | "en";
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [oryAlertMessages, setOryAlertMessages] = useState<string[]>([]);
   const accountSchema = useMemo(
     () => createAccountSchema(t, cedula),
     [cedula, t],
   );
   type AccountValues = z.infer<typeof accountSchema>;
-  const clearOryAlertMessages = useCallback(() => {
-    setOryAlertMessages((current) => (current.length > 0 ? [] : current));
-  }, []);
 
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
@@ -155,13 +143,16 @@ export function StepAccount({
   const initialGeneralError = initialErrors
     ? translateGeneralError(initialErrors, t)
     : undefined;
+  const initialEmailErrorMessage = initialErrors?.fieldErrors?.email
+    ? translateFieldErrorKey(initialErrors.fieldErrors.email, locale, t)
+    : undefined;
   const initialPasswordErrorMessage = initialErrors
-    ? getPasswordErrorMessage(initialErrors.code, t)
+    ? initialErrors.fieldErrors?.password
+      ? translateFieldErrorKey(initialErrors.fieldErrors.password, locale, t)
+      : getPasswordErrorMessage(initialErrors.code, t)
     : undefined;
   const hasInitialFieldErrors = Boolean(
-    initialErrors?.fieldErrors?.email ||
-      initialErrors?.fieldErrors?.password ||
-      initialPasswordErrorMessage,
+    initialEmailErrorMessage || initialPasswordErrorMessage,
   );
 
   useEffect(() => {
@@ -187,46 +178,31 @@ export function StepAccount({
 
   useEffect(() => {
     if (!initialErrors) {
-      clearOryAlertMessages();
       return;
     }
 
-    const nextOryMessages = [
-      initialErrors.fieldErrors?.email,
-      initialErrors.fieldErrors?.password,
-    ]
-      .filter(
-        (message): message is string =>
-          typeof message === "string" &&
-          message.startsWith("identities.messages."),
-      )
-      .map((message) => translateFieldErrorKey(message, locale, t));
-
-    if (nextOryMessages.length > 0) {
-      const nextMessages = [...new Set(nextOryMessages)];
-      setOryAlertMessages((current) =>
-        areMessagesEqual(current, nextMessages) ? current : nextMessages,
-      );
-    } else {
-      setOryAlertMessages((current) => (current.length > 0 ? [] : current));
+    if (
+      initialEmailErrorMessage &&
+      form.getFieldState("email").error?.message !== initialEmailErrorMessage
+    ) {
+      form.setError("email", {
+        message: initialEmailErrorMessage,
+      });
     }
 
-    const passwordErrorMessage = getPasswordErrorMessage(initialErrors.code, t);
-
     if (
-      passwordErrorMessage &&
-      form.getFieldState("password").error?.message !== passwordErrorMessage
+      initialPasswordErrorMessage &&
+      form.getFieldState("password").error?.message !==
+        initialPasswordErrorMessage
     ) {
       form.setError("password", {
-        message: passwordErrorMessage,
+        message: initialPasswordErrorMessage,
       });
     }
 
     const generalError = translateGeneralError(initialErrors, t);
     const hasFieldErrors = Boolean(
-      initialErrors.fieldErrors?.email ||
-        initialErrors.fieldErrors?.password ||
-        passwordErrorMessage,
+      initialEmailErrorMessage || initialPasswordErrorMessage,
     );
 
     if (
@@ -237,7 +213,13 @@ export function StepAccount({
     ) {
       toast.error(generalError);
     }
-  }, [clearOryAlertMessages, form, initialErrors, locale, t]);
+  }, [
+    form,
+    initialEmailErrorMessage,
+    initialErrors,
+    initialPasswordErrorMessage,
+    t,
+  ]);
 
   const onSubmit = (data: AccountValues) => onNext(data);
 
@@ -271,7 +253,6 @@ export function StepAccount({
                     {...field}
                     onChange={(event) => {
                       field.onChange(event);
-                      clearOryAlertMessages();
 
                       if (form.formState.errors.email) {
                         form.clearErrors("email");
@@ -304,7 +285,6 @@ export function StepAccount({
                     {...field}
                     onChange={(event) => {
                       field.onChange(event);
-                      clearOryAlertMessages();
 
                       if (form.formState.errors.confirmEmail) {
                         form.clearErrors("confirmEmail");
@@ -338,7 +318,6 @@ export function StepAccount({
                       {...field}
                       onChange={(event) => {
                         field.onChange(event);
-                        clearOryAlertMessages();
 
                         if (form.formState.errors.password) {
                           form.clearErrors("password");
@@ -444,7 +423,6 @@ export function StepAccount({
                       {...field}
                       onChange={(event) => {
                         field.onChange(event);
-                        clearOryAlertMessages();
 
                         if (form.formState.errors.confirmPassword) {
                           form.clearErrors("confirmPassword");
@@ -489,24 +467,6 @@ export function StepAccount({
                 <AlertDescription>{initialGeneralError}</AlertDescription>
               </Alert>
             )}
-
-            {oryAlertMessages.length > 0 &&
-              form.formState.errors.password?.message !==
-                t("account.validation.password_compromised") && (
-                <Alert
-                  variant="destructive"
-                  className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
-                >
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    <div className="space-y-1">
-                      {oryAlertMessages.map((message) => (
-                        <p key={message}>{message}</p>
-                      ))}
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
 
             <Button
               type="submit"

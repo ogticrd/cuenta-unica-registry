@@ -101,6 +101,10 @@ describe("citizenService.identifyCitizen", () => {
   });
 
   it("preserves coded API failures from non-OK responses", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       jsonResponse(
         {
@@ -117,5 +121,6 @@ describe("citizenService.identifyCitizen", () => {
       success: false,
       code: "invalid_payload",
     });
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 });

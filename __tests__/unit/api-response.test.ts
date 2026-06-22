@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   type ApiResponseError,
   getCodedApiErrorPayload,
+  isExpectedCodedApiError,
+  logUnexpectedApiError,
   parseJsonResponse,
 } from "@/lib/services/api-response";
 
@@ -84,5 +86,49 @@ describe("parseJsonResponse", () => {
     ).catch((err) => err);
 
     expect(getCodedApiErrorPayload(invalidJsonError)).toBeNull();
+  });
+
+  it("identifies coded API errors as expected client-side failures", async () => {
+    const codedError = await parseJsonResponse(
+      new Response(
+        JSON.stringify({
+          success: false,
+          code: "invalid_payload",
+        }),
+        { status: 400 },
+      ),
+    ).catch((err) => err);
+    const invalidJsonError = await parseJsonResponse(
+      new Response("not-json", { status: 400 }),
+    ).catch((err) => err);
+
+    expect(isExpectedCodedApiError(codedError)).toBe(true);
+    expect(isExpectedCodedApiError(invalidJsonError)).toBe(false);
+    expect(isExpectedCodedApiError(new Error("offline"))).toBe(false);
+  });
+
+  it("logs only unexpected API failures", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    const codedError = await parseJsonResponse(
+      new Response(
+        JSON.stringify({
+          success: false,
+          code: "invalid_payload",
+        }),
+        { status: 400 },
+      ),
+    ).catch((err) => err);
+    const offlineError = new Error("offline");
+
+    logUnexpectedApiError("[testService.operation]", codedError);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    logUnexpectedApiError("[testService.operation]", offlineError);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "[testService.operation] Request failed:",
+      offlineError,
+    );
   });
 });

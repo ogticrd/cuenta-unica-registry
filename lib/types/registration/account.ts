@@ -68,4 +68,5 @@ export type SaveRegisterAccountDraftResponse =
   | {
       success: false;
       code: SaveRegisterAccountDraftErrorCode;
+      fieldErrors?: RegisterAccountFieldErrors;
     };

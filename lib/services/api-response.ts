@@ -55,3 +55,13 @@ export function getCodedApiErrorPayload<
 
   return null;
 }
+
+export function isExpectedCodedApiError(error: unknown) {
+  return getCodedApiErrorPayload(error) !== null;
+}
+
+export function logUnexpectedApiError(context: string, error: unknown) {
+  if (!isExpectedCodedApiError(error)) {
+    console.error(`${context} Request failed:`, error);
+  }
+}

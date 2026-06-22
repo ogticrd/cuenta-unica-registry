@@ -82,11 +82,24 @@ Todas las rutas de registro deben responder con contratos tipados:
 { success: false, code: "..." }
 ```
 
-Cuando el error pertenece a campos de cuenta:
+Cuando el error pertenece a un campo editable del formulario, la API debe
+devolver `fieldErrors` con claves de traduccion estables, no texto renderizado:
 
 ```ts
-{ success: false, code: "...", fieldErrors: { email?: "...", password?: "..." } }
+{
+  success: false,
+  code: "...",
+  fieldErrors: {
+    cedula?: "identification.id_invalid",
+    email?: "account.validation.email_invalid" | "identities.messages....",
+    password?: "account.validation...." | "identities.messages....",
+  },
+}
 ```
+
+`fieldErrors` solo debe emitirse cuando el backend puede asociar el fallo a un
+campo concreto. Un JSON malformado conserva `{ success: false, code:
+"invalid_payload" }` sin `fieldErrors`, porque no hay payload confiable.
 
 `liveness-complete` distingue etapas:
 
@@ -122,6 +135,8 @@ Para cambios profundos, agregar o actualizar pruebas que cubran:
 - fallback cuando Ory crea identidad no verificada sin `continue_with`;
 - activacion OTP con errores codificados;
 - errores Ory mapeados a `fieldErrors`;
+- errores de payload de `cedula`, `email` y `password` propagados a
+  `FormMessage`;
 - reset limpiando cookies de registro;
 - validaciones visibles de formularios.
 

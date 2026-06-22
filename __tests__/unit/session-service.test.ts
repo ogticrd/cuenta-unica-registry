@@ -260,6 +260,10 @@ describe("registrationSessionApiService", () => {
     });
 
     it("preserves reset API error codes from non-OK responses", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
       vi.spyOn(global, "fetch").mockResolvedValueOnce(
         new Response(
           JSON.stringify({
@@ -276,6 +280,7 @@ describe("registrationSessionApiService", () => {
         success: false,
         code: "unexpected_error",
       });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 });
