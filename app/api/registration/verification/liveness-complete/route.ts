@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import {
   applyAccountRegistrationCookies,
   completeRegistrationAccount,
@@ -14,6 +15,10 @@ import type {
   CompleteLivenessRegistrationResponse,
   VerifyLivenessErrorCode,
 } from "@/lib/types/registration/verification";
+
+const livenessCompleteRequestSchema = z.object({
+  sessionId: z.string().min(1),
+});
 
 function createVerificationErrorResponse(
   code: VerifyLivenessErrorCode,
@@ -44,11 +49,15 @@ function setVerifiedSessionCookie(
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json().catch(() => null)) as {
-      sessionId?: string;
-    } | null;
+    const body = await request.json().catch(() => null);
+    const parsedBody = livenessCompleteRequestSchema.safeParse(body);
+
+    if (!parsedBody.success) {
+      return createVerificationErrorResponse("invalid_payload", 400);
+    }
+
     const livenessResult = await verifyRegistrationLiveness(
-      body?.sessionId ?? "",
+      parsedBody.data.sessionId,
     );
 
     if (!livenessResult.success) {

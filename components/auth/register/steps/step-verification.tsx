@@ -67,6 +67,7 @@ export function StepVerification({
   const verificationErrorMessages: Record<VerifyLivenessErrorCode, string> =
     useMemo(
       () => ({
+        invalid_payload: t("verification.verification_failed"),
         registration_session_missing: t("verification.session_error"),
         invalid_session_id: t("verification.verification_failed"),
         liveness_check_failed: t("verification.liveness_failed"),

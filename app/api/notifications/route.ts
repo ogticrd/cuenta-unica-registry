@@ -21,6 +21,7 @@ export async function GET(request: Request) {
     if (!citizenId) {
       return NextResponse.json(
         {
+          success: false,
           notifications: [],
           unreadCount: 0,
           code: "citizen_id_unavailable",
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
   } catch {
     return NextResponse.json(
       {
+        success: false,
         notifications: [],
         unreadCount: 0,
         unavailable: true,

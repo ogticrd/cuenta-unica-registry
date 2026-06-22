@@ -860,6 +860,50 @@ describe("registration route orchestration - liveness-complete", () => {
     mockGetServerCookies.mockResolvedValue("ory_cookie=value");
   });
 
+  it("rejects malformed payloads before liveness verification", async () => {
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: "not-json",
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "verification",
+      code: "invalid_payload",
+    });
+  });
+
+  it("rejects requests without a liveness session id before liveness verification", async () => {
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({}),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "verification",
+      code: "invalid_payload",
+    });
+  });
+
   it("completes liveness, creates the account from the draft, and clears temporary cookies", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
@@ -1066,6 +1110,27 @@ describe("registration route orchestration - liveness-result", () => {
     });
   });
 
+  it("rejects malformed payloads before liveness verification", async () => {
+    const response = await postLivenessResult(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: "not-json",
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+  });
+
   it("requires an existing registration session", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce(null);
 
@@ -1087,12 +1152,7 @@ describe("registration route orchestration - liveness-result", () => {
     });
   });
 
-  it("rejects requests without a liveness session id", async () => {
-    mockGetRegistrationSession.mockResolvedValueOnce({
-      cedula: "00100063362",
-      status: "identified",
-    });
-
+  it("rejects requests without a liveness session id before liveness verification", async () => {
     const response = await postLivenessResult(
       new Request(
         "http://localhost/api/registration/verification/liveness-result",
@@ -1104,10 +1164,12 @@ describe("registration route orchestration - liveness-result", () => {
       ),
     );
 
+    expect(mockGetRegistrationSession).not.toHaveBeenCalled();
+    expect(mockGetLivenessResults).not.toHaveBeenCalled();
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       success: false,
-      code: "invalid_session_id",
+      code: "invalid_payload",
     });
   });
 

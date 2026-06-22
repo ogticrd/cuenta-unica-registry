@@ -68,6 +68,7 @@ describe("DELETE /api/ory/sessions/[id]", () => {
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body).toEqual({
+      success: false,
       code: "ory_session_id_required",
       error: "Session ID is required",
     });
@@ -94,6 +95,7 @@ describe("DELETE /api/ory/sessions/[id]", () => {
     expect(response.status).toBe(500);
     const body = await response.json();
     expect(body).toEqual({
+      success: false,
       code: "ory_session_revoke_failed",
       error: "Failed to disable session",
     });
@@ -153,6 +155,7 @@ describe("DELETE /api/ory/sessions/[id]", () => {
     });
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toMatchObject({
+      success: false,
       code: "ory_session_revoke_failed",
       error: "Failed to disable session",
     });

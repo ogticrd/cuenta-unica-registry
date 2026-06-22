@@ -21,7 +21,10 @@ vi.mock("@ory/client", () => ({
 
 import { PATCH } from "@/app/api/notifications/[id]/route";
 import { POST as markAllRead } from "@/app/api/notifications/mark-all-read/route";
-import { GET as GETPreferences } from "@/app/api/notifications/preferences/route";
+import {
+  GET as GETPreferences,
+  PUT as PUTPreferences,
+} from "@/app/api/notifications/preferences/route";
 import { GET } from "@/app/api/notifications/route";
 
 function buildNotification(overrides: Record<string, unknown>) {
@@ -133,6 +136,7 @@ describe("GET /api/notifications", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
+      success: false,
       notifications: [],
       unreadCount: 0,
       unavailable: true,
@@ -156,6 +160,7 @@ describe("GET /api/notifications", () => {
 
     expect(response.status).toBe(409);
     expect(await response.json()).toMatchObject({
+      success: false,
       notifications: [],
       unreadCount: 0,
       code: "citizen_id_unavailable",
@@ -216,13 +221,175 @@ describe("GET /api/notifications/preferences", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
+      success: false,
       unavailable: true,
       code: "notifications_unavailable",
     });
   });
+
+  it("returns a stable code when the authenticated citizen id is unavailable", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {},
+        },
+      },
+    });
+
+    const response = await GETPreferences();
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toMatchObject({
+      success: false,
+      code: "citizen_id_unavailable",
+      error: "citizen_id_unavailable",
+    });
+  });
+
+  it("returns a stable code when preference updates are unauthenticated", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {},
+        },
+      },
+    });
+
+    const response = await PUTPreferences(
+      new Request("http://localhost/api/notifications/preferences", {
+        method: "PUT",
+        body: JSON.stringify({ preferences: [] }),
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({
+      success: false,
+      preferences: [],
+      code: "citizen_id_unavailable",
+      error: "citizen_id_unavailable",
+    });
+  });
+
+  it("returns invalid_payload when preference updates contain malformed JSON", async () => {
+    const response = await PUTPreferences(
+      new Request("http://localhost/api/notifications/preferences", {
+        method: "PUT",
+        body: "not-json",
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      success: false,
+      code: "invalid_payload",
+      error: "invalid_payload",
+    });
+  });
+
+  it("returns invalid_payload when preference updates do not match the contract", async () => {
+    const response = await PUTPreferences(
+      new Request("http://localhost/api/notifications/preferences", {
+        method: "PUT",
+        body: JSON.stringify({
+          preferences: [
+            {
+              topic: "security",
+              channel: "portal",
+              enabled: "yes",
+            },
+          ],
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      success: false,
+      code: "invalid_payload",
+      error: "invalid_payload",
+    });
+  });
+
+  it("does not trust client-provided required preference flags", async () => {
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            preferences: [
+              {
+                topic: "security",
+                channel: "portal",
+                enabled: true,
+                required: true,
+              },
+            ],
+          }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            preferences: [
+              {
+                topic: "security",
+                channel: "portal",
+                enabled: false,
+                required: true,
+              },
+            ],
+          }),
+      } as Response);
+
+    const response = await PUTPreferences(
+      new Request("http://localhost/api/notifications/preferences", {
+        method: "PUT",
+        body: JSON.stringify({
+          preferences: [
+            {
+              topic: "security",
+              channel: "portal",
+              enabled: false,
+              required: false,
+            },
+          ],
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(fetchSpy).toHaveBeenLastCalledWith(
+      "https://buzon.example.test/api/v1/preferences",
+      expect.objectContaining({
+        method: "PUT",
+        body: expect.not.stringContaining("required"),
+      }),
+    );
+  });
 });
 
 describe("PATCH /api/notifications/[id]", () => {
+  it("returns invalid_payload for malformed JSON bodies", async () => {
+    const response = await PATCH(
+      new Request("http://localhost/api/notifications/security", {
+        method: "PATCH",
+        body: "not-json",
+      }),
+      { params: Promise.resolve({ id: "security" }) },
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      success: false,
+      code: "invalid_payload",
+      error: "invalid_payload",
+    });
+  });
+
   it("returns a stable code for invalid status payloads", async () => {
     const response = await PATCH(
       new Request("http://localhost/api/notifications/security", {
@@ -261,7 +428,7 @@ describe("PATCH /api/notifications/[id]", () => {
     );
     const payload = await response.json();
 
-    expect(response.status).toBe(503);
+    expect(response.status).toBe(404);
     expect(payload).toEqual({
       success: false,
       code: "not_found",
@@ -326,6 +493,47 @@ describe("POST /api/notifications/mark-all-read", () => {
       success: false,
       unavailable: true,
       code: "notifications_unavailable",
+    });
+  });
+
+  it("returns a stable code when one notification cannot be updated", async () => {
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            notifications: [
+              buildNotification({ id: "security", topic: "security" }),
+            ],
+            unreadCount: 1,
+          }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            notifications: [
+              buildNotification({ id: "security", topic: "security" }),
+            ],
+            unreadCount: 1,
+          }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            code: "notification_update_failed",
+          }),
+      } as Response);
+
+    const response = await markAllRead();
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      success: false,
+      code: "notification_update_failed",
+      error: "notification_update_failed",
     });
   });
 });

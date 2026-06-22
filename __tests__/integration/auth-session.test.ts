@@ -141,6 +141,7 @@ describe("GET /api/ory/session", () => {
 
     expect(response.status).toBe(500);
     const body = await response.json();
+    expect(body.success).toBe(false);
     expect(body.isAuthenticated).toBe(false);
     expect(body.code).toBe("ory_session_fetch_failed");
     expect(body.error).toBe("Failed to fetch session");
@@ -158,6 +159,7 @@ describe("GET /api/ory/session", () => {
 
     expect(response.status).toBe(500);
     const body = await response.json();
+    expect(body.success).toBe(false);
     expect(body.isAuthenticated).toBe(false);
     expect(body.code).toBe("ory_session_fetch_failed");
     expect(body.error).toBe("Failed to fetch session");

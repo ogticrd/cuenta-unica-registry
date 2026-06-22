@@ -14,6 +14,7 @@ export type CreateLivenessSessionResponse =
   | { success: false; code: CreateLivenessSessionErrorCode };
 
 export type VerifyLivenessErrorCode =
+  | "invalid_payload"
   | "registration_session_missing"
   | "invalid_session_id"
   | "liveness_check_failed"

@@ -26,10 +26,12 @@ export async function fetchCitizenPhoto(cedula: string): Promise<Uint8Array> {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch citizen photo: ${response.status} ${response.statusText}`,
+      `Citizen photo request failed with status ${response.status}`,
     );
   }
 
-  const arrayBuffer = await response.arrayBuffer();
+  const arrayBuffer = await response.arrayBuffer().catch(() => {
+    throw new Error("Citizen photo response could not be read");
+  });
   return new Uint8Array(arrayBuffer);
 }

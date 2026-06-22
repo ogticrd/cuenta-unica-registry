@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import {
   queryCitizenNotificationPreferences,
   updateCitizenNotificationPreferences,
@@ -6,6 +7,37 @@ import {
 import { buildDefaultNotificationPreferences } from "@/lib/notifications/default-preferences";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
 import type { NotificationPreference } from "@/lib/notifications/types";
+import {
+  NOTIFICATION_CHANNELS,
+  NOTIFICATION_TOPICS,
+} from "@/lib/notifications/types";
+
+const notificationPreferenceUpdateRequestSchema = z.object({
+  preferences: z
+    .array(
+      z
+        .object({
+          topic: z.enum(NOTIFICATION_TOPICS),
+          channel: z.enum(NOTIFICATION_CHANNELS),
+          enabled: z.boolean(),
+          required: z.boolean().optional(),
+        })
+        .strict(),
+    )
+    .default([]),
+});
+
+function createInvalidPayloadResponse(defaults: NotificationPreference[]) {
+  return NextResponse.json(
+    {
+      success: false,
+      preferences: defaults,
+      code: "invalid_payload",
+      error: "invalid_payload",
+    },
+    { status: 400 },
+  );
+}
 
 export async function GET() {
   try {
@@ -15,6 +47,7 @@ export async function GET() {
     if (!citizenId) {
       return NextResponse.json(
         {
+          success: false,
           preferences: defaults,
           code: "citizen_id_unavailable",
           error: "citizen_id_unavailable",
@@ -31,6 +64,7 @@ export async function GET() {
     return NextResponse.json(result);
   } catch {
     return NextResponse.json({
+      success: false,
       preferences: buildDefaultNotificationPreferences(),
       unavailable: true,
       code: "notifications_unavailable",
@@ -40,14 +74,22 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
+    const defaults = buildDefaultNotificationPreferences();
     const [citizenId, body] = await Promise.all([
       getAuthenticatedCitizenId(),
-      request.json() as Promise<{ preferences?: NotificationPreference[] }>,
+      request.json().catch(() => null),
     ]);
+    const parsedBody =
+      notificationPreferenceUpdateRequestSchema.safeParse(body);
+
+    if (!parsedBody.success) {
+      return createInvalidPayloadResponse(defaults);
+    }
 
     if (!citizenId) {
       return NextResponse.json(
         {
+          success: false,
           preferences: [],
           code: "citizen_id_unavailable",
           error: "citizen_id_unavailable",
@@ -58,14 +100,22 @@ export async function PUT(request: Request) {
 
     const result = await updateCitizenNotificationPreferences({
       citizenId,
-      preferences: body.preferences ?? [],
-      defaults: buildDefaultNotificationPreferences(),
+      preferences: parsedBody.data.preferences.map(
+        ({ topic, channel, enabled }) => ({
+          topic,
+          channel,
+          enabled,
+          required: false,
+        }),
+      ),
+      defaults,
     });
 
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
       {
+        success: false,
         preferences: buildDefaultNotificationPreferences(),
         unavailable: true,
         code: "notifications_unavailable",

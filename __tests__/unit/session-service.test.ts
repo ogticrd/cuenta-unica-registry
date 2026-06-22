@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { API } from "@/lib/constants/api";
+import type { ApiResponseError } from "@/lib/services/api-response";
 import { authService } from "@/lib/services/ory/auth.service";
 import { sessionService } from "@/lib/services/ory/session.service";
 import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
@@ -41,16 +42,30 @@ describe("sessionService", () => {
       );
     });
 
-    it("throws when response status is not ok", async () => {
+    it("throws a coded API error when response status is not ok", async () => {
       vi.spyOn(global, "fetch").mockResolvedValueOnce({
         ok: false,
-        status: 401,
-        json: () => Promise.resolve({ isAuthenticated: false }),
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            isAuthenticated: false,
+            code: "ory_session_fetch_failed",
+            error: "Failed to fetch session",
+          }),
       } as Response);
 
-      await expect(sessionService.getSession()).rejects.toThrow(
-        "Request failed with status 401",
-      );
+      await expect(sessionService.getSession()).rejects.toMatchObject({
+        name: "ApiResponseError",
+        status: 500,
+        code: "ory_session_fetch_failed",
+        payload: {
+          success: false,
+          isAuthenticated: false,
+          code: "ory_session_fetch_failed",
+          error: "Failed to fetch session",
+        },
+      } satisfies Partial<ApiResponseError>);
     });
   });
 
@@ -80,16 +95,30 @@ describe("sessionService", () => {
       expect(result).toEqual({ success: true });
     });
 
-    it("throws when response status is not ok", async () => {
+    it("throws a coded API error when response status is not ok", async () => {
       vi.spyOn(global, "fetch").mockResolvedValueOnce({
         ok: false,
-        status: 404,
-        json: () => Promise.resolve({ success: false, error: "Not found" }),
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            code: "ory_session_revoke_failed",
+            error: "Failed to disable session",
+          }),
       } as Response);
 
       await expect(
         sessionService.revokeSession("invalid-session"),
-      ).rejects.toThrow("Request failed with status 404");
+      ).rejects.toMatchObject({
+        name: "ApiResponseError",
+        status: 500,
+        code: "ory_session_revoke_failed",
+        payload: {
+          success: false,
+          code: "ory_session_revoke_failed",
+          error: "Failed to disable session",
+        },
+      } satisfies Partial<ApiResponseError>);
     });
   });
 });
@@ -102,6 +131,7 @@ describe("authService", () => {
   describe("logout", () => {
     it("returns redirect_to on success", async () => {
       vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        ok: true,
         json: () =>
           Promise.resolve({
             success: true,
@@ -119,6 +149,7 @@ describe("authService", () => {
 
     it("sends POST with credentials include", async () => {
       const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        ok: true,
         json: () => Promise.resolve({ success: true }),
       } as Response);
 
@@ -137,6 +168,30 @@ describe("authService", () => {
       vi.spyOn(global, "fetch").mockRejectedValueOnce(new Error("offline"));
 
       await expect(authService.logout()).rejects.toThrow("offline");
+    });
+
+    it("throws a coded API error when logout fails", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            code: "ory_logout_failed",
+            error: "Failed to logout",
+          }),
+      } as Response);
+
+      await expect(authService.logout()).rejects.toMatchObject({
+        name: "ApiResponseError",
+        status: 500,
+        code: "ory_logout_failed",
+        payload: {
+          success: false,
+          code: "ory_logout_failed",
+          error: "Failed to logout",
+        },
+      } satisfies Partial<ApiResponseError>);
     });
   });
 });

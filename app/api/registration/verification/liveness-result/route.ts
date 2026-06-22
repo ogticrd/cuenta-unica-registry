@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import {
   createVerifyLivenessPayload,
   verifyRegistrationLiveness,
@@ -9,6 +10,10 @@ import type {
   VerifyLivenessResponse,
 } from "@/lib/types/registration/verification";
 
+const livenessResultRequestSchema = z.object({
+  sessionId: z.string().min(1),
+});
+
 function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
   const payload: VerifyLivenessResponse = { success: false, code };
   return NextResponse.json(payload, { status });
@@ -16,10 +21,14 @@ function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json().catch(() => null)) as {
-      sessionId?: string;
-    } | null;
-    const result = await verifyRegistrationLiveness(body?.sessionId ?? "");
+    const body = await request.json().catch(() => null);
+    const parsedBody = livenessResultRequestSchema.safeParse(body);
+
+    if (!parsedBody.success) {
+      return createErrorResponse("invalid_payload", 400);
+    }
+
+    const result = await verifyRegistrationLiveness(parsedBody.data.sessionId);
 
     if (!result.success) {
       return createErrorResponse(result.code, result.status);

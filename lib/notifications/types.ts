@@ -29,7 +29,9 @@ export type NotificationStatus = (typeof NOTIFICATION_STATUSES)[number];
 export type NotificationPriority = "low" | "normal" | "high" | "critical";
 export type NotificationErrorCode =
   | "citizen_id_unavailable"
+  | "invalid_payload"
   | "invalid_status"
+  | "notification_update_failed"
   | "not_found"
   | "notifications_unavailable";
 
@@ -60,6 +62,7 @@ export interface NotificationPreference {
 export interface NotificationsResponse {
   notifications: CitizenNotification[];
   unreadCount: number;
+  success?: false;
   unavailable?: boolean;
   code?: NotificationErrorCode;
   error?: NotificationErrorCode;
@@ -67,6 +70,7 @@ export interface NotificationsResponse {
 
 export interface NotificationPreferencesResponse {
   preferences: NotificationPreference[];
+  success?: false;
   unavailable?: boolean;
   code?: NotificationErrorCode;
   error?: NotificationErrorCode;

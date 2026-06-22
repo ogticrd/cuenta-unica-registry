@@ -23,13 +23,14 @@ function getRequiredEnv(name: string) {
 
 async function parseJsonResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const errorText = await response.text().catch(() => "");
     throw new Error(
-      `Request failed with status ${response.status}${errorText ? `: ${errorText}` : ""}`,
+      `Citizen registry request failed with status ${response.status}`,
     );
   }
 
-  return response.json() as Promise<T>;
+  return response.json().catch(() => {
+    throw new Error("Citizen registry response was not valid JSON");
+  }) as Promise<T>;
 }
 
 function buildCitizenInfoUrl(cedula: string, resource: "basic" | "birth") {

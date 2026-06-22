@@ -53,15 +53,26 @@ describe("fetchCitizenPhoto", () => {
     );
   });
 
-  it("throws with the upstream status when the photo request fails", async () => {
+  it("throws a sanitized error when the photo request fails", async () => {
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: false,
       status: 404,
-      statusText: "Not Found",
+      statusText: "Sensitive upstream status",
     } as Response);
 
     await expect(fetchCitizenPhoto("40200612345")).rejects.toThrow(
-      "Failed to fetch citizen photo: 404 Not Found",
+      "Citizen photo request failed with status 404",
+    );
+  });
+
+  it("throws a stable error when the photo response cannot be read", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      ok: true,
+      arrayBuffer: () => Promise.reject(new Error("invalid binary")),
+    } as unknown as Response);
+
+    await expect(fetchCitizenPhoto("40200612345")).rejects.toThrow(
+      "Citizen photo response could not be read",
     );
   });
 });

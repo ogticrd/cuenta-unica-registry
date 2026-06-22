@@ -162,6 +162,7 @@ export async function queryCitizenNotifications(input: {
 
   if (!result.data) {
     return {
+      success: false,
       notifications: [],
       unreadCount: 0,
       unavailable: result.unavailable,
@@ -245,6 +246,7 @@ export async function queryCitizenNotificationPreferences(input: {
 
   if (!result.data) {
     return {
+      success: false,
       preferences: input.defaults,
       unavailable: result.unavailable,
       code: "notifications_unavailable",
@@ -273,6 +275,7 @@ export async function updateCitizenNotificationPreferences(input: {
 
   if (!currentResult.data) {
     return {
+      success: false,
       preferences:
         input.preferences.length > 0 ? input.preferences : input.defaults,
       unavailable: currentResult.unavailable,
@@ -300,6 +303,7 @@ export async function updateCitizenNotificationPreferences(input: {
 
   if (!result.data) {
     return {
+      success: false,
       preferences: input.preferences,
       unavailable: result.unavailable,
       code: "notifications_unavailable",

@@ -39,48 +39,50 @@ describe("findCitizenSummaryByCedula", () => {
     expect(result).toBeNull();
   });
 
-  it("throws when API request fails", async () => {
+  it("throws a sanitized error when API request fails", async () => {
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: false,
       status: 500,
-      text: () => Promise.resolve("Server Error"),
+      text: () => Promise.resolve("sensitive upstream body"),
     } as Response);
 
     const { findCitizenSummaryByCedula } = await import(
       "@/lib/services/registration/citizen-registry.service"
     );
     await expect(findCitizenSummaryByCedula("40200612345")).rejects.toThrow(
-      "Request failed with status 500",
+      "Citizen registry request failed with status 500",
     );
   });
 
-  it("throws with minimal message when API fails without error text", async () => {
+  it("does not read upstream error bodies when API request fails", async () => {
+    const text = vi.fn(() => Promise.resolve("sensitive upstream body"));
+
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: false,
       status: 404,
-      text: () => Promise.resolve(""),
-    } as Response);
+      text,
+    } as unknown as Response);
 
     const { findCitizenSummaryByCedula } = await import(
       "@/lib/services/registration/citizen-registry.service"
     );
     await expect(findCitizenSummaryByCedula("40200612345")).rejects.toThrow(
-      "Request failed with status 404",
+      "Citizen registry request failed with status 404",
     );
+    expect(text).not.toHaveBeenCalled();
   });
 
-  it("throws with minimal message when API text() throws", async () => {
+  it("throws a stable error when the API returns invalid JSON", async () => {
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
-      ok: false,
-      status: 503,
-      text: () => Promise.reject(new Error("network")),
+      ok: true,
+      json: () => Promise.reject(new Error("invalid json")),
     } as Response);
 
     const { findCitizenSummaryByCedula } = await import(
       "@/lib/services/registration/citizen-registry.service"
     );
     await expect(findCitizenSummaryByCedula("40200612345")).rejects.toThrow(
-      "Request failed with status 503",
+      "Citizen registry response was not valid JSON",
     );
   });
 });

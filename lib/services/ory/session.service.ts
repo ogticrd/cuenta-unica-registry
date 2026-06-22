@@ -1,4 +1,5 @@
 import { API } from "@/lib/constants/api";
+import { parseJsonResponse } from "@/lib/services/api-response";
 
 export interface OryIdentity {
   id: string;
@@ -28,6 +29,9 @@ export interface OrySession {
 
 export interface SessionResponse {
   isAuthenticated: boolean;
+  success?: false;
+  code?: "ory_session_fetch_failed";
+  error?: string;
   identity?: OryIdentity;
   session?: OrySession;
   otherSessions?: OrySession[];
@@ -35,17 +39,8 @@ export interface SessionResponse {
 
 export interface RevokeSessionResponse {
   success: boolean;
+  code?: "ory_session_id_required" | "ory_session_revoke_failed";
   error?: string;
-}
-
-async function parseJsonResponse<T>(response: Response): Promise<T> {
-  const payload = (await response.json()) as T;
-
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-
-  return payload;
 }
 
 export const sessionService = {

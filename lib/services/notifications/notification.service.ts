@@ -5,16 +5,7 @@ import type {
   NotificationStatus,
   NotificationsResponse,
 } from "@/lib/notifications/types";
-
-async function parseJsonResponse<T>(response: Response): Promise<T> {
-  const payload = (await response.json()) as T;
-
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-
-  return payload;
-}
+import { parseJsonResponse } from "@/lib/services/api-response";
 
 export const notificationService = {
   getNotifications(
