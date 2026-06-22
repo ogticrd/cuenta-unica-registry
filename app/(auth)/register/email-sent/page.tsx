@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/header";
 import { ROUTES } from "@/lib/constants/routes";
 import { getT } from "@/lib/i18n/server";
 import {
+  getRequestOrigin,
   getSafeReturnUrl,
   parseAllowedReturnOrigins,
 } from "@/lib/utils/return-url";
@@ -21,15 +22,9 @@ export default async function EmailSentPage({
 }: EmailSentPageProps) {
   const params = await searchParams;
   const requestHeaders = await headers();
-  const forwardedProto = requestHeaders.get("x-forwarded-proto");
-  const forwardedHost = requestHeaders.get("x-forwarded-host");
-  const host = forwardedHost ?? requestHeaders.get("host");
-  const currentOrigin = host
-    ? `${forwardedProto ?? "http"}://${host}`
-    : undefined;
   const flowId = params.flow;
   const returnUrl = getSafeReturnUrl(params.return_url, {
-    currentOrigin,
+    currentOrigin: getRequestOrigin(requestHeaders),
     allowedOrigins: parseAllowedReturnOrigins(
       process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,
     ),

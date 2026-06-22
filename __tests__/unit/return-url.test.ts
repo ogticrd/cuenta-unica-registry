@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  getRequestOrigin,
   getSafeReturnUrl,
   isValidReturnUrl,
   parseAllowedReturnOrigins,
@@ -98,6 +99,38 @@ describe("getSafeReturnUrl", () => {
         currentOrigin: "https://cuentaunica.gob.do",
       }),
     ).toBeUndefined();
+  });
+});
+
+describe("getRequestOrigin", () => {
+  it("uses the request URL when proxy headers are absent", () => {
+    expect(
+      getRequestOrigin(new Headers(), "http://localhost:3000/register"),
+    ).toBe("http://localhost:3000");
+  });
+
+  it("uses forwarded protocol and host when present", () => {
+    expect(
+      getRequestOrigin(
+        new Headers({
+          "x-forwarded-proto": "https",
+          "x-forwarded-host": "cuentaunica.gob.do",
+        }),
+        "http://internal:3000/register",
+      ),
+    ).toBe("https://cuentaunica.gob.do");
+  });
+
+  it("uses the first forwarded value from comma-separated proxy chains", () => {
+    expect(
+      getRequestOrigin(
+        new Headers({
+          "x-forwarded-proto": "https, http",
+          "x-forwarded-host": "cuentaunica.gob.do, internal:3000",
+        }),
+        "http://internal:3000/register",
+      ),
+    ).toBe("https://cuentaunica.gob.do");
   });
 });
 

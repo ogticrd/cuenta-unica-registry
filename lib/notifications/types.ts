@@ -27,6 +27,11 @@ export type CuentaUnicaNotificationTopic =
   (typeof CUENTA_UNICA_NOTIFICATION_TOPICS)[number];
 export type NotificationStatus = (typeof NOTIFICATION_STATUSES)[number];
 export type NotificationPriority = "low" | "normal" | "high" | "critical";
+export type NotificationErrorCode =
+  | "citizen_id_unavailable"
+  | "invalid_status"
+  | "not_found"
+  | "notifications_unavailable";
 
 export interface CitizenNotification {
   id: string;
@@ -56,15 +61,20 @@ export interface NotificationsResponse {
   notifications: CitizenNotification[];
   unreadCount: number;
   unavailable?: boolean;
+  code?: NotificationErrorCode;
+  error?: NotificationErrorCode;
 }
 
 export interface NotificationPreferencesResponse {
   preferences: NotificationPreference[];
   unavailable?: boolean;
+  code?: NotificationErrorCode;
+  error?: NotificationErrorCode;
 }
 
 export interface NotificationMutationResponse {
   success: boolean;
   unavailable?: boolean;
-  error?: string;
+  code?: NotificationErrorCode;
+  error?: NotificationErrorCode;
 }

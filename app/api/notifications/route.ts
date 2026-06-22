@@ -20,7 +20,12 @@ export async function GET(request: Request) {
 
     if (!citizenId) {
       return NextResponse.json(
-        { notifications: [], unreadCount: 0, error: "citizen_id_unavailable" },
+        {
+          notifications: [],
+          unreadCount: 0,
+          code: "citizen_id_unavailable",
+          error: "citizen_id_unavailable",
+        },
         { status: 409 },
       );
     }
@@ -34,7 +39,12 @@ export async function GET(request: Request) {
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
-      { notifications: [], unreadCount: 0, unavailable: true },
+      {
+        notifications: [],
+        unreadCount: 0,
+        unavailable: true,
+        code: "notifications_unavailable",
+      },
       { status: 200 },
     );
   }

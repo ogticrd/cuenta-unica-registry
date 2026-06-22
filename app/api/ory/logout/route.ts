@@ -68,7 +68,11 @@ export async function POST() {
     }
 
     return NextResponse.json(
-      { success: false, error: "Failed to logout" },
+      {
+        success: false,
+        code: "ory_logout_failed",
+        error: "Failed to logout",
+      },
       { status: 500 },
     );
   }

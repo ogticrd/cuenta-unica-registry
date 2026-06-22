@@ -8,7 +8,11 @@ import type {
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
 import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
-import { isValidReturnUrl } from "@/lib/utils/return-url";
+import {
+  getRequestOrigin,
+  getSafeReturnUrl,
+  parseAllowedReturnOrigins,
+} from "@/lib/utils/return-url";
 
 function createErrorResponse(code: CitizenLookupErrorCode, status: number) {
   const payload: CitizenLookupResponse = {
@@ -30,10 +34,12 @@ export async function POST(request: Request) {
   }
 
   const cedula = normalizeCedula(body?.cedula ?? "");
-  const returnUrl =
-    body?.returnUrl && isValidReturnUrl(body.returnUrl)
-      ? body.returnUrl
-      : undefined;
+  const returnUrl = getSafeReturnUrl(body?.returnUrl, {
+    currentOrigin: getRequestOrigin(request.headers, request.url),
+    allowedOrigins: parseAllowedReturnOrigins(
+      process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,
+    ),
+  });
 
   if (!(await isValidCedula(cedula))) {
     return createErrorResponse("invalid_cedula", 400);

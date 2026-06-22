@@ -11,7 +11,11 @@ export async function POST() {
 
     if (!citizenId) {
       return NextResponse.json(
-        { success: false, error: "citizen_id_unavailable" },
+        {
+          success: false,
+          code: "citizen_id_unavailable",
+          error: "citizen_id_unavailable",
+        },
         { status: 409 },
       );
     }
@@ -24,7 +28,11 @@ export async function POST() {
 
     if (unreadNotifications.unavailable) {
       return NextResponse.json(
-        { success: false, unavailable: true },
+        {
+          success: false,
+          unavailable: true,
+          code: "notifications_unavailable",
+        },
         { status: 503 },
       );
     }
@@ -43,7 +51,11 @@ export async function POST() {
     return NextResponse.json({ success }, { status: success ? 200 : 503 });
   } catch {
     return NextResponse.json(
-      { success: false, unavailable: true },
+      {
+        success: false,
+        unavailable: true,
+        code: "notifications_unavailable",
+      },
       { status: 503 },
     );
   }

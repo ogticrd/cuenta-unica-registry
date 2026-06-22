@@ -24,12 +24,19 @@ export async function PATCH(
     const status = parseStatus(body.status);
 
     if (!status) {
-      return NextResponse.json({ error: "invalid_status" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, code: "invalid_status", error: "invalid_status" },
+        { status: 400 },
+      );
     }
 
     if (!citizenId) {
       return NextResponse.json(
-        { success: false, error: "citizen_id_unavailable" },
+        {
+          success: false,
+          code: "citizen_id_unavailable",
+          error: "citizen_id_unavailable",
+        },
         { status: 409 },
       );
     }
@@ -38,7 +45,11 @@ export async function PATCH(
     return NextResponse.json(result, { status: result.success ? 200 : 503 });
   } catch {
     return NextResponse.json(
-      { success: false, unavailable: true },
+      {
+        success: false,
+        unavailable: true,
+        code: "notifications_unavailable",
+      },
       { status: 503 },
     );
   }

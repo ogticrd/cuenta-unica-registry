@@ -8,9 +8,15 @@ import type {
   RegistrationSession,
   RegistrationSessionStatus,
 } from "@/lib/types/registration/session";
+import { normalizeCedula } from "@/lib/utils/cedula";
 
 const REGISTRATION_SESSION_COOKIE = "registration_session";
 const REGISTRATION_SESSION_DURATION_MS = 30 * 60 * 1000;
+const REGISTRATION_SESSION_CLOCK_SKEW_MS = 60 * 1000;
+const REGISTRATION_SESSION_STATUSES = new Set<RegistrationSessionStatus>([
+  "identified",
+  "verified",
+]);
 
 function getRegistrationSessionSecret() {
   const secret = process.env.REGISTRATION_SESSION_SECRET;
@@ -35,6 +41,62 @@ function serializeSession(session: RegistrationSession) {
   return `${payload}.${signature}`;
 }
 
+function isValidSessionPayload(
+  payload: unknown,
+): payload is RegistrationSession {
+  if (!payload || typeof payload !== "object") {
+    return false;
+  }
+
+  const session = payload as Partial<RegistrationSession>;
+
+  if (
+    typeof session.cedula !== "string" ||
+    normalizeCedula(session.cedula) !== session.cedula ||
+    session.cedula.length !== 11
+  ) {
+    return false;
+  }
+
+  if (
+    typeof session.status !== "string" ||
+    !REGISTRATION_SESSION_STATUSES.has(
+      session.status as RegistrationSessionStatus,
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    session.returnUrl !== undefined &&
+    typeof session.returnUrl !== "string"
+  ) {
+    return false;
+  }
+
+  const { issuedAt, expiresAt } = session;
+
+  if (
+    typeof issuedAt !== "number" ||
+    typeof expiresAt !== "number" ||
+    !Number.isFinite(issuedAt) ||
+    !Number.isFinite(expiresAt)
+  ) {
+    return false;
+  }
+
+  const now = Date.now();
+  const ttl = expiresAt - issuedAt;
+
+  return (
+    issuedAt > 0 &&
+    issuedAt <= now + REGISTRATION_SESSION_CLOCK_SKEW_MS &&
+    expiresAt > now &&
+    ttl > 0 &&
+    ttl <= REGISTRATION_SESSION_DURATION_MS
+  );
+}
+
 function parseSessionCookie(value: string): RegistrationSession | null {
   const [payload, signature] = value.split(".");
 
@@ -54,9 +116,11 @@ function parseSessionCookie(value: string): RegistrationSession | null {
   }
 
   try {
-    return JSON.parse(
+    const session = JSON.parse(
       Buffer.from(payload, "base64url").toString("utf-8"),
-    ) as RegistrationSession;
+    ) as unknown;
+
+    return isValidSessionPayload(session) ? session : null;
   } catch {
     return null;
   }
@@ -82,7 +146,7 @@ export function createRegistrationSessionCookie(
 ): ResponseCookie {
   const issuedAt = Date.now();
   const session: RegistrationSession = {
-    cedula,
+    cedula: normalizeCedula(cedula),
     status,
     ...(returnUrl ? { returnUrl } : {}),
     issuedAt,
@@ -113,11 +177,5 @@ export async function getRegistrationSession(): Promise<RegistrationSession | nu
     return null;
   }
 
-  const session = parseSessionCookie(cookieValue);
-
-  if (!session || session.expiresAt < Date.now()) {
-    return null;
-  }
-
-  return session;
+  return parseSessionCookie(cookieValue);
 }

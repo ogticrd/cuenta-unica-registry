@@ -117,6 +117,7 @@ beforeEach(() => {
   process.env.CITIZENS_PHOTO_API_KEY = "citizens-photo-key";
   process.env.ORY_SDK_URL = "https://ory.example.test";
   process.env.ORY_SDK_TOKEN = "ory-token";
+  delete process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS;
   delete process.env.LIVENESS_CONFIDENCE_THRESHOLD;
   delete process.env.FACE_SIMILARITY_THRESHOLD;
 
@@ -143,6 +144,8 @@ beforeEach(() => {
 
 describe("registration production routes", () => {
   it("creates a signed registration session cookie from the citizen route", async () => {
+    process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS = "https://example.com";
+
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       buildJsonResponse({
         valid: true,
@@ -196,6 +199,86 @@ describe("registration production routes", () => {
       cedula: "40200612345",
       status: "identified",
       returnUrl: "https://example.com/dashboard",
+    });
+  });
+
+  it("drops unallowlisted external return urls from the registration session", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      buildJsonResponse({
+        valid: true,
+        payload: {
+          id: "402-0061234-5",
+          names: "Juan Pablo",
+          firstSurname: "Perez",
+          secondSurname: "Gomez",
+          gender: "M",
+        },
+      }),
+    );
+
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: JSON.stringify({
+          cedula: "40200612345",
+          returnUrl: "https://attacker.example/phishing",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const sessionCookie = response.cookies.get("registration_session");
+
+    setRequestCookies({
+      registration_session: sessionCookie?.value ?? "",
+    });
+
+    await expect(getRegistrationSession()).resolves.toMatchObject({
+      cedula: "40200612345",
+      status: "identified",
+    });
+    await expect(getRegistrationSession()).resolves.not.toHaveProperty(
+      "returnUrl",
+    );
+  });
+
+  it("keeps same-origin return urls without allowlist configuration", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      buildJsonResponse({
+        valid: true,
+        payload: {
+          id: "402-0061234-5",
+          names: "Juan Pablo",
+          firstSurname: "Perez",
+          secondSurname: "Gomez",
+          gender: "M",
+        },
+      }),
+    );
+
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: JSON.stringify({
+          cedula: "40200612345",
+          returnUrl: "http://localhost/dashboard",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const sessionCookie = response.cookies.get("registration_session");
+
+    setRequestCookies({
+      registration_session: sessionCookie?.value ?? "",
+    });
+
+    await expect(getRegistrationSession()).resolves.toMatchObject({
+      cedula: "40200612345",
+      status: "identified",
+      returnUrl: "http://localhost/dashboard",
     });
   });
 

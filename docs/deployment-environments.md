@@ -30,11 +30,26 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 | `NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID` | `6lkb58rrpita167ncvqmnkq1gl` | Cognito app client ID | Cognito app client ID |
 | `LIVENESS_CONFIDENCE_THRESHOLD` | `90` | `90` unless changed by operations | production threshold |
 | `FACE_SIMILARITY_THRESHOLD` | `80` | `80` unless changed by operations | production threshold |
+| `REGISTRATION_ALLOWED_RETURN_ORIGINS` | comma-separated trusted app origins | comma-separated trusted app origins | comma-separated trusted app origins |
 | `BUZON_API_BASE_URL` | `https://buzon-ciudadano-staging-i42qq4zxeq-ue.a.run.app` | Buzon service URL | Buzon service URL |
 
 `CLOUD_RUN_SERVICE` and `IMAGE_NAME` are optional in the workflow, but they should be set for `development` so dev deploys cannot overwrite the staging or production Cloud Run service.
 
 `ORY_SDK_URL` is the server-side Ory endpoint. `NEXT_PUBLIC_ORY_SDK_URL` is build-time only, is baked into the frontend bundle, and must point to the deployed app origin so browser self-service requests use the same-origin proxy instead of calling Ory cross-origin. Do not expose `NEXT_PUBLIC_ORY_SDK_URL` as a runtime variable in the Cloud Run service because the Ory proxy must resolve its upstream from `ORY_SDK_URL`.
+
+`REGISTRATION_ALLOWED_RETURN_ORIGINS` should include only trusted relying-party origins that may receive users after account activation. The registration API always allows the current request origin and drops any other `return_url` before it is stored in the signed registration session.
+
+## Security headers
+
+The app applies baseline browser hardening headers from `next.config.mjs` to every route:
+
+- `Content-Security-Policy: frame-ancestors 'none'`
+- `X-Frame-Options: DENY`
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy` disables unused device capabilities while keeping `camera=(self)` for Rekognition liveness.
+
+Do not remove camera access from `Permissions-Policy`; registration liveness depends on it.
 
 ## Secrets
 

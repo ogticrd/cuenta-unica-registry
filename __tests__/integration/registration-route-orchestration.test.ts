@@ -15,7 +15,9 @@ const {
   mockGetServerCookies,
   mockIsValidCedula,
   mockNormalizeCedula,
-  mockIsValidReturnUrl,
+  mockGetRequestOrigin,
+  mockGetSafeReturnUrl,
+  mockParseAllowedReturnOrigins,
   mockCreateLivenessSession,
   mockGetLivenessResults,
   mockCompareFaces,
@@ -37,7 +39,9 @@ const {
   mockGetServerCookies: vi.fn(),
   mockIsValidCedula: vi.fn(),
   mockNormalizeCedula: vi.fn((value: string) => value),
-  mockIsValidReturnUrl: vi.fn(),
+  mockGetRequestOrigin: vi.fn(),
+  mockGetSafeReturnUrl: vi.fn(),
+  mockParseAllowedReturnOrigins: vi.fn(),
   mockCreateLivenessSession: vi.fn(),
   mockGetLivenessResults: vi.fn(),
   mockCompareFaces: vi.fn(),
@@ -94,7 +98,9 @@ vi.mock("@/lib/utils/cedula", () => ({
 }));
 
 vi.mock("@/lib/utils/return-url", () => ({
-  isValidReturnUrl: mockIsValidReturnUrl,
+  getRequestOrigin: mockGetRequestOrigin,
+  getSafeReturnUrl: mockGetSafeReturnUrl,
+  parseAllowedReturnOrigins: mockParseAllowedReturnOrigins,
 }));
 
 vi.mock("@/lib/services/registration/rekognition.service", () => ({
@@ -619,7 +625,9 @@ describe("registration route orchestration - citizen", () => {
     mockNormalizeCedula.mockImplementation((value: string) =>
       value.replace(/\D/g, ""),
     );
-    mockIsValidReturnUrl.mockReturnValue(true);
+    mockGetRequestOrigin.mockReturnValue("http://localhost");
+    mockGetSafeReturnUrl.mockImplementation((url?: string) => url);
+    mockParseAllowedReturnOrigins.mockReturnValue([]);
     mockCreateRegistrationSessionCookie.mockReturnValue({
       name: "registration_session",
       value: "signed-session",
@@ -690,7 +698,7 @@ describe("registration route orchestration - citizen", () => {
   it("creates the identified registration session and drops invalid return urls", async () => {
     mockIsValidCedula.mockResolvedValueOnce(true);
     mockCheckCitizenIdentity.mockResolvedValueOnce({ exists: false });
-    mockIsValidReturnUrl.mockReturnValueOnce(false);
+    mockGetSafeReturnUrl.mockReturnValueOnce(undefined);
     mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
       id: "402-0061234-5",
       firstName: "Juan",
@@ -712,6 +720,10 @@ describe("registration route orchestration - citizen", () => {
       "identified",
       undefined,
     );
+    expect(mockGetSafeReturnUrl).toHaveBeenCalledWith("javascript:alert(1)", {
+      currentOrigin: "http://localhost",
+      allowedOrigins: [],
+    });
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       success: true,

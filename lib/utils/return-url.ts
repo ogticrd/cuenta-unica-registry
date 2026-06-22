@@ -24,6 +24,24 @@ function normalizeOrigin(origin: string) {
   }
 }
 
+function getFirstHeaderValue(value: string | null) {
+  return value?.split(",")[0]?.trim() || undefined;
+}
+
+export function getRequestOrigin(headers: Headers, requestUrl?: string) {
+  const parsedRequestUrl = requestUrl ? new URL(requestUrl) : undefined;
+  const forwardedProto = getFirstHeaderValue(headers.get("x-forwarded-proto"));
+  const forwardedHost = getFirstHeaderValue(headers.get("x-forwarded-host"));
+  const host =
+    forwardedHost ??
+    getFirstHeaderValue(headers.get("host")) ??
+    parsedRequestUrl?.host;
+  const protocol =
+    forwardedProto ?? parsedRequestUrl?.protocol.replace(":", "") ?? "http";
+
+  return host ? `${protocol}://${host}` : undefined;
+}
+
 export function getSafeReturnUrl(
   url: string | undefined,
   { currentOrigin, allowedOrigins = [] }: SafeReturnUrlOptions,

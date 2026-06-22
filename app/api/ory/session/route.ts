@@ -56,7 +56,11 @@ export async function GET() {
 
     console.error("[/api/ory/session] Error fetching session:", error);
     return NextResponse.json(
-      { isAuthenticated: false, error: "Failed to fetch session" },
+      {
+        isAuthenticated: false,
+        code: "ory_session_fetch_failed",
+        error: "Failed to fetch session",
+      },
       { status: 500 },
     );
   }

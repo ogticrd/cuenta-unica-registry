@@ -9,8 +9,12 @@ import {
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
+import { accountRequestSchema } from "@/lib/schemas/registration";
+import { normalizeCedula } from "@/lib/utils/cedula";
+
 const REGISTRATION_ACCOUNT_DRAFT_COOKIE = "registration_account_draft";
 const REGISTRATION_ACCOUNT_DRAFT_DURATION_MS = 30 * 60 * 1000;
+const REGISTRATION_ACCOUNT_DRAFT_CLOCK_SKEW_MS = 60 * 1000;
 const ACCOUNT_DRAFT_COOKIE_VERSION = "v1";
 const AES_GCM_IV_BYTES = 12;
 
@@ -68,12 +72,43 @@ function isValidDraftPayload(
 
   const draft = payload as Partial<RegistrationAccountDraft>;
 
+  if (
+    typeof draft.cedula !== "string" ||
+    normalizeCedula(draft.cedula) !== draft.cedula ||
+    draft.cedula.length !== 11
+  ) {
+    return false;
+  }
+
+  if (
+    !accountRequestSchema.safeParse({
+      email: draft.email,
+      password: draft.password,
+    }).success
+  ) {
+    return false;
+  }
+
+  const { issuedAt, expiresAt } = draft;
+
+  if (
+    typeof issuedAt !== "number" ||
+    typeof expiresAt !== "number" ||
+    !Number.isFinite(issuedAt) ||
+    !Number.isFinite(expiresAt)
+  ) {
+    return false;
+  }
+
+  const now = Date.now();
+  const ttl = expiresAt - issuedAt;
+
   return (
-    typeof draft.cedula === "string" &&
-    typeof draft.email === "string" &&
-    typeof draft.password === "string" &&
-    typeof draft.issuedAt === "number" &&
-    typeof draft.expiresAt === "number"
+    issuedAt > 0 &&
+    issuedAt <= now + REGISTRATION_ACCOUNT_DRAFT_CLOCK_SKEW_MS &&
+    expiresAt > now &&
+    ttl > 0 &&
+    ttl <= REGISTRATION_ACCOUNT_DRAFT_DURATION_MS
   );
 }
 
@@ -129,7 +164,7 @@ export function parseRegistrationAccountDraftCookie(
     ]);
     const payload = JSON.parse(plaintext.toString("utf8")) as unknown;
 
-    if (!isValidDraftPayload(payload) || payload.expiresAt < Date.now()) {
+    if (!isValidDraftPayload(payload)) {
       return null;
     }
 
@@ -146,7 +181,7 @@ export function createRegistrationAccountDraftCookie({
 }: RegistrationAccountDraftInput): ResponseCookie {
   const issuedAt = Date.now();
   const draft: RegistrationAccountDraft = {
-    cedula,
+    cedula: normalizeCedula(cedula),
     email,
     password,
     issuedAt,

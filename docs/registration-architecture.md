@@ -26,6 +26,9 @@ Reglas:
 
 - `registration_account_draft` debe estar cifrada, ser `httpOnly`, expirar y
   limpiarse en reset o exito.
+- `return_url` se valida antes de firmar `registration_session`: solo se acepta
+  el origen actual de la peticion o los origenes configurados en
+  `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
 - `verified` sin draft no puede crear cuenta automaticamente; debe volver a
   cuenta con error accionable.
 - El backend es la autoridad. No confiar en pasos visuales del wizard para

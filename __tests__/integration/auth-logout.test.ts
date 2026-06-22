@@ -157,6 +157,7 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body).toEqual({
       success: false,
+      code: "ory_logout_failed",
       error: "Failed to logout",
     });
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -188,6 +189,7 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body).toEqual({
       success: false,
+      code: "ory_logout_failed",
       error: "Failed to logout",
     });
     expect(consoleErrorSpy).toHaveBeenCalled();

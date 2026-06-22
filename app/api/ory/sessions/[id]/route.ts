@@ -17,7 +17,7 @@ export async function DELETE(
 
     if (!sessionId) {
       return NextResponse.json(
-        { error: "Session ID is required" },
+        { code: "ory_session_id_required", error: "Session ID is required" },
         { status: 400 },
       );
     }
@@ -31,7 +31,10 @@ export async function DELETE(
   } catch (error: unknown) {
     console.error("[/api/ory/sessions] Error disabling session:", error);
     return NextResponse.json(
-      { error: "Failed to disable session" },
+      {
+        code: "ory_session_revoke_failed",
+        error: "Failed to disable session",
+      },
       { status: 500 },
     );
   }

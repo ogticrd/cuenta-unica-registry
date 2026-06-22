@@ -108,6 +108,7 @@ beforeEach(() => {
   process.env.CITIZENS_PHOTO_API_KEY = "citizens-photo-key";
   process.env.ORY_SDK_URL = "https://ory.example.test";
   process.env.ORY_SDK_TOKEN = "ory-token";
+  delete process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS;
   delete process.env.LIVENESS_CONFIDENCE_THRESHOLD;
   delete process.env.FACE_SIMILARITY_THRESHOLD;
 
@@ -605,6 +606,8 @@ describe("registration production paths", () => {
   });
 
   it("completes the multi-step registration flow across real routes", async () => {
+    process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS = "https://example.com";
+
     vi.spyOn(global, "fetch")
       .mockResolvedValueOnce(
         buildJsonResponse({

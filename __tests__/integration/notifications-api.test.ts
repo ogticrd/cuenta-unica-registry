@@ -20,6 +20,7 @@ vi.mock("@ory/client", () => ({
 }));
 
 import { PATCH } from "@/app/api/notifications/[id]/route";
+import { POST as markAllRead } from "@/app/api/notifications/mark-all-read/route";
 import { GET as GETPreferences } from "@/app/api/notifications/preferences/route";
 import { GET } from "@/app/api/notifications/route";
 
@@ -135,6 +136,30 @@ describe("GET /api/notifications", () => {
       notifications: [],
       unreadCount: 0,
       unavailable: true,
+      code: "notifications_unavailable",
+    });
+  });
+
+  it("returns a stable code when the authenticated citizen id is unavailable", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {},
+        },
+      },
+    });
+
+    const response = await GET(
+      new Request("http://localhost/api/notifications"),
+    );
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toMatchObject({
+      notifications: [],
+      unreadCount: 0,
+      code: "citizen_id_unavailable",
+      error: "citizen_id_unavailable",
     });
   });
 });
@@ -182,9 +207,39 @@ describe("GET /api/notifications/preferences", () => {
     expect(topics).toEqual(["security", "account"]);
     expect(payload.preferences).toHaveLength(8);
   });
+
+  it("returns a stable code when notification preferences are unavailable", async () => {
+    delete process.env.BUZON_API_BASE_URL;
+    delete process.env.BUZON_PORTAL_API_KEY;
+
+    const response = await GETPreferences();
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      unavailable: true,
+      code: "notifications_unavailable",
+    });
+  });
 });
 
 describe("PATCH /api/notifications/[id]", () => {
+  it("returns a stable code for invalid status payloads", async () => {
+    const response = await PATCH(
+      new Request("http://localhost/api/notifications/security", {
+        method: "PATCH",
+        body: JSON.stringify({ status: "deleted" }),
+      }),
+      { params: Promise.resolve({ id: "security" }) },
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      success: false,
+      code: "invalid_status",
+      error: "invalid_status",
+    });
+  });
+
   it("does not mutate out-of-scope Buzon topics from the Cuenta Unica channel", async () => {
     const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: true,
@@ -207,7 +262,11 @@ describe("PATCH /api/notifications/[id]", () => {
     const payload = await response.json();
 
     expect(response.status).toBe(503);
-    expect(payload).toEqual({ success: false, error: "not_found" });
+    expect(payload).toEqual({
+      success: false,
+      code: "not_found",
+      error: "not_found",
+    });
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(fetchSpy).toHaveBeenCalledWith(
       "https://buzon.example.test/api/v1/inbox/query",
@@ -252,5 +311,21 @@ describe("PATCH /api/notifications/[id]", () => {
         method: "PATCH",
       }),
     );
+  });
+});
+
+describe("POST /api/notifications/mark-all-read", () => {
+  it("returns a stable code when Buzon is unavailable", async () => {
+    delete process.env.BUZON_API_BASE_URL;
+    delete process.env.BUZON_PORTAL_API_KEY;
+
+    const response = await markAllRead();
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      success: false,
+      unavailable: true,
+      code: "notifications_unavailable",
+    });
   });
 });

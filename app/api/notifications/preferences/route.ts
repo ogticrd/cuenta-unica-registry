@@ -14,7 +14,11 @@ export async function GET() {
 
     if (!citizenId) {
       return NextResponse.json(
-        { preferences: defaults, error: "citizen_id_unavailable" },
+        {
+          preferences: defaults,
+          code: "citizen_id_unavailable",
+          error: "citizen_id_unavailable",
+        },
         { status: 409 },
       );
     }
@@ -29,6 +33,7 @@ export async function GET() {
     return NextResponse.json({
       preferences: buildDefaultNotificationPreferences(),
       unavailable: true,
+      code: "notifications_unavailable",
     });
   }
 }
@@ -42,7 +47,11 @@ export async function PUT(request: Request) {
 
     if (!citizenId) {
       return NextResponse.json(
-        { preferences: [], error: "citizen_id_unavailable" },
+        {
+          preferences: [],
+          code: "citizen_id_unavailable",
+          error: "citizen_id_unavailable",
+        },
         { status: 409 },
       );
     }
@@ -59,6 +68,7 @@ export async function PUT(request: Request) {
       {
         preferences: buildDefaultNotificationPreferences(),
         unavailable: true,
+        code: "notifications_unavailable",
       },
       { status: 503 },
     );

@@ -165,6 +165,7 @@ export async function queryCitizenNotifications(input: {
       notifications: [],
       unreadCount: 0,
       unavailable: result.unavailable,
+      code: "notifications_unavailable",
     };
   }
 
@@ -183,11 +184,15 @@ export async function updateCitizenNotification(input: {
   });
 
   if (current.unavailable) {
-    return { success: false, unavailable: true };
+    return {
+      success: false,
+      unavailable: true,
+      code: "notifications_unavailable",
+    };
   }
 
   if (current.notifications.length === 0) {
-    return { success: false, error: "not_found" };
+    return { success: false, code: "not_found", error: "not_found" };
   }
 
   const result = await requestBuzon<NotificationMutationResponse>({
@@ -199,7 +204,13 @@ export async function updateCitizenNotification(input: {
     },
   });
 
-  return result.data ?? { success: false, unavailable: result.unavailable };
+  return (
+    result.data ?? {
+      success: false,
+      unavailable: result.unavailable,
+      code: "notifications_unavailable",
+    }
+  );
 }
 
 export async function markAllCitizenNotificationsRead(input: {
@@ -212,7 +223,13 @@ export async function markAllCitizenNotificationsRead(input: {
     },
   });
 
-  return result.data ?? { success: false, unavailable: result.unavailable };
+  return (
+    result.data ?? {
+      success: false,
+      unavailable: result.unavailable,
+      code: "notifications_unavailable",
+    }
+  );
 }
 
 export async function queryCitizenNotificationPreferences(input: {
@@ -227,7 +244,11 @@ export async function queryCitizenNotificationPreferences(input: {
   });
 
   if (!result.data) {
-    return { preferences: input.defaults, unavailable: result.unavailable };
+    return {
+      preferences: input.defaults,
+      unavailable: result.unavailable,
+      code: "notifications_unavailable",
+    };
   }
 
   return {
@@ -255,6 +276,7 @@ export async function updateCitizenNotificationPreferences(input: {
       preferences:
         input.preferences.length > 0 ? input.preferences : input.defaults,
       unavailable: currentResult.unavailable,
+      code: "notifications_unavailable",
     };
   }
 
@@ -277,7 +299,11 @@ export async function updateCitizenNotificationPreferences(input: {
   });
 
   if (!result.data) {
-    return { preferences: input.preferences, unavailable: result.unavailable };
+    return {
+      preferences: input.preferences,
+      unavailable: result.unavailable,
+      code: "notifications_unavailable",
+    };
   }
 
   return {

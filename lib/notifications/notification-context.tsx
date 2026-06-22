@@ -114,7 +114,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       try {
         const result = await notificationService.updateNotification(id, status);
         if (!result.success) {
-          throw new Error(result.error ?? "notification_update_failed");
+          throw new Error(
+            result.code ?? result.error ?? "notification_update_failed",
+          );
         }
       } catch {
         setNotifications(previousNotifications);
@@ -136,8 +138,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     try {
       const result = await notificationService.markAllRead();
-      if (!result.success && result.unavailable) {
-        throw new Error("notifications_unavailable");
+      if (!result.success) {
+        throw new Error(
+          result.code ??
+            (result.unavailable ? "notifications_unavailable" : undefined) ??
+            result.error ??
+            "notification_update_failed",
+        );
       }
     } catch {
       setNotifications(previousNotifications);
