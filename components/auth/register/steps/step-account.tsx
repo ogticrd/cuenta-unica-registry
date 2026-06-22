@@ -195,6 +195,7 @@ export function StepAccount({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4 w-full mt-4"
+          noValidate
         >
           <FormField
             control={form.control}
