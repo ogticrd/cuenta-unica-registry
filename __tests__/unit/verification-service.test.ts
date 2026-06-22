@@ -161,4 +161,92 @@ describe("verificationService", () => {
       });
     });
   });
+
+  describe("completeLivenessRegistration", () => {
+    it("returns the account redirect destination on success", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: () =>
+          Promise.resolve({
+            success: true,
+            confidence: 99,
+            similarity: 96,
+            destination: "email-sent",
+            redirectTo: "/register/email-sent?flow=flow-123",
+          }),
+      } as Response);
+
+      const result =
+        await verificationService.completeLivenessRegistration("session-abc");
+
+      expect(result).toEqual({
+        success: true,
+        confidence: 99,
+        similarity: 96,
+        destination: "email-sent",
+        redirectTo: "/register/email-sent?flow=flow-123",
+      });
+    });
+
+    it("sends the correct request shape with sessionId in body", async () => {
+      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: () =>
+          Promise.resolve({
+            success: true,
+            confidence: 99,
+            similarity: 96,
+            destination: "email-sent",
+            redirectTo: "/register/email-sent?flow=flow-123",
+          }),
+      } as Response);
+
+      await verificationService.completeLivenessRegistration("session-abc");
+
+      expect(fetchSpy).toHaveBeenCalledWith(
+        API.registrationLivenessComplete,
+        expect.objectContaining({
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: "session-abc" }),
+        }),
+      );
+    });
+
+    it("returns verification unexpected_error when parsing fails", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: () => Promise.reject(new Error("invalid json")),
+      } as Response);
+
+      const result =
+        await verificationService.completeLivenessRegistration("session-abc");
+
+      expect(result).toEqual({
+        success: false,
+        stage: "verification",
+        code: "unexpected_error",
+      });
+    });
+
+    it("returns account-stage errors from the API", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: () =>
+          Promise.resolve({
+            success: false,
+            stage: "account",
+            code: "identity_exists",
+            fieldErrors: { email: "identities.messages.4000007" },
+          }),
+      } as Response);
+
+      const result =
+        await verificationService.completeLivenessRegistration("session-abc");
+
+      expect(result).toEqual({
+        success: false,
+        stage: "account",
+        code: "identity_exists",
+        fieldErrors: { email: "identities.messages.4000007" },
+      });
+    });
+  });
 });

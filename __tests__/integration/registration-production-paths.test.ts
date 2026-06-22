@@ -9,6 +9,8 @@ const {
   mockListIdentities,
   mockCreateBrowserRegistrationFlow,
   mockUpdateRegistrationFlow,
+  mockCreateBrowserVerificationFlow,
+  mockUpdateVerificationFlow,
   mockRekognitionSend,
 } = vi.hoisted(() => {
   const cookies = new Map<string, string>();
@@ -25,6 +27,8 @@ const {
     mockListIdentities: vi.fn(),
     mockCreateBrowserRegistrationFlow: vi.fn(),
     mockUpdateRegistrationFlow: vi.fn(),
+    mockCreateBrowserVerificationFlow: vi.fn(),
+    mockUpdateVerificationFlow: vi.fn(),
     mockRekognitionSend: vi.fn(),
   };
 });
@@ -50,6 +54,14 @@ vi.mock("@ory/client", () => ({
 
     updateRegistrationFlow(...args: unknown[]) {
       return mockUpdateRegistrationFlow(...args);
+    }
+
+    createBrowserVerificationFlow(...args: unknown[]) {
+      return mockCreateBrowserVerificationFlow(...args);
+    }
+
+    updateVerificationFlow(...args: unknown[]) {
+      return mockUpdateVerificationFlow(...args);
     }
   },
 }));
@@ -246,6 +258,13 @@ describe("registration production paths", () => {
       data: {
         identity: {
           id: "identity-123",
+          verifiable_addresses: [
+            {
+              value: "user@example.com",
+              verified: true,
+              via: "email",
+            },
+          ],
         },
       },
       headers: {

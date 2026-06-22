@@ -53,6 +53,60 @@ describe("accountService.registerAccount", () => {
     );
   });
 
+  it("can finalize using the server-side account draft without a request body", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      json: () =>
+        Promise.resolve({
+          success: true,
+          redirectTo: "/register/email-sent?flow=flow-123",
+          destination: "email-sent",
+        }),
+    } as Response);
+
+    await accountService.registerAccount();
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      API.registrationAccount,
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+      }),
+    );
+    expect(fetchSpy.mock.calls[0]?.[1]).not.toHaveProperty("body");
+  });
+
+  it("saves the account draft before liveness starts", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      json: () =>
+        Promise.resolve({
+          success: true,
+          sessionStatus: "identified",
+        }),
+    } as Response);
+
+    const result = await accountService.saveAccountDraft({
+      email: "test@example.com",
+      password: "StrongPass123!",
+    });
+
+    expect(result).toEqual({
+      success: true,
+      sessionStatus: "identified",
+    });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      API.registrationAccountDraft,
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: "test@example.com",
+          password: "StrongPass123!",
+        }),
+      }),
+    );
+  });
+
   it("returns unexpected_error when JSON parsing fails", async () => {
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
       json: () => Promise.reject(new Error("invalid json")),

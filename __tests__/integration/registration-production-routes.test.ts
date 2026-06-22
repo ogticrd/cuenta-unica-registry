@@ -9,6 +9,8 @@ const {
   mockListIdentities,
   mockCreateBrowserRegistrationFlow,
   mockUpdateRegistrationFlow,
+  mockCreateBrowserVerificationFlow,
+  mockUpdateVerificationFlow,
   mockRekognitionSend,
 } = vi.hoisted(() => {
   const cookies = new Map<string, string>();
@@ -25,6 +27,8 @@ const {
     mockListIdentities: vi.fn(),
     mockCreateBrowserRegistrationFlow: vi.fn(),
     mockUpdateRegistrationFlow: vi.fn(),
+    mockCreateBrowserVerificationFlow: vi.fn(),
+    mockUpdateVerificationFlow: vi.fn(),
     mockRekognitionSend: vi.fn(),
   };
 });
@@ -51,6 +55,14 @@ vi.mock("@ory/client", () => ({
     updateRegistrationFlow(...args: unknown[]) {
       return mockUpdateRegistrationFlow(...args);
     }
+
+    createBrowserVerificationFlow(...args: unknown[]) {
+      return mockCreateBrowserVerificationFlow(...args);
+    }
+
+    updateVerificationFlow(...args: unknown[]) {
+      return mockUpdateVerificationFlow(...args);
+    }
   },
 }));
 
@@ -61,9 +73,15 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
 }));
 
 import { POST as postAccount } from "@/app/api/registration/account/route";
+import { POST as postAccountDraft } from "@/app/api/registration/account-draft/route";
 import { POST as postCitizen } from "@/app/api/registration/citizen/route";
+import { POST as postLivenessComplete } from "@/app/api/registration/verification/liveness-complete/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import { POST as postVerification } from "@/app/api/registration/verification/route";
+import {
+  createRegistrationAccountDraftCookie,
+  getRegistrationAccountDraft,
+} from "@/lib/services/registration/registration-account-draft.service";
 import {
   createRegistrationSessionCookie,
   getRegistrationSession,
@@ -179,6 +197,188 @@ describe("registration production routes", () => {
       status: "identified",
       returnUrl: "https://example.com/dashboard",
     });
+  });
+
+  it("stores an encrypted account draft cookie for the active registration session", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "identified",
+      ).value,
+    });
+
+    const response = await postAccountDraft(
+      new Request("http://localhost/api/registration/account-draft", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      sessionStatus: "identified",
+    });
+
+    const draftCookie = response.cookies.get("registration_account_draft");
+    expect(draftCookie?.value).toBeTruthy();
+    expect(draftCookie?.value).not.toContain("user@example.com");
+    expect(draftCookie?.value).not.toContain("Password123!");
+    expect(draftCookie?.value).not.toContain("40200612345");
+
+    setRequestCookies({
+      registration_account_draft: draftCookie?.value ?? "",
+    });
+
+    await expect(getRegistrationAccountDraft()).resolves.toMatchObject({
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+    });
+  });
+
+  it("completes liveness and creates the account from the encrypted draft without client credentials", async () => {
+    const registrationSessionCookie = createRegistrationSessionCookie(
+      "40200612345",
+      "identified",
+      "https://example.com/dashboard",
+    ).value;
+    const draftCookie = createRegistrationAccountDraftCookie({
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+    }).value;
+
+    setRequestCookies({
+      registration_session: registrationSessionCookie,
+      registration_account_draft: draftCookie,
+    });
+    setRequestCookieHeader("existing_browser=browser-cookie");
+    mockHeaders.mockResolvedValue(
+      new Headers({ cookie: getRequestCookieHeader() }),
+    );
+
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce(buildBinaryResponse([4, 5, 6]))
+      .mockResolvedValueOnce(
+        buildJsonResponse({
+          valid: true,
+          payload: {
+            id: "402-0061234-5",
+            names: "Juan Pablo",
+            firstSurname: "Perez",
+            secondSurname: "Gomez",
+            gender: "M",
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        buildJsonResponse({
+          valid: true,
+          payload: {
+            id: "402-0061234-5",
+            birthPlace: "Santo Domingo",
+            birthDate: "1990-01-01T00:00:00.000Z",
+            nationality: "DO",
+          },
+        }),
+      );
+
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) => {
+        if (command.input?.SessionId) {
+          return {
+            Confidence: 99,
+            ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+            Status: "SUCCEEDED",
+          };
+        }
+
+        return {
+          FaceMatches: [{ Similarity: 96 }],
+        };
+      },
+    );
+    mockCreateBrowserRegistrationFlow.mockResolvedValueOnce({
+      data: {
+        id: "ory-registration-flow",
+        ui: {
+          nodes: [
+            {
+              attributes: {
+                name: "csrf_token",
+                value: "csrf-123",
+              },
+            },
+          ],
+        },
+      },
+      headers: {
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+    mockUpdateRegistrationFlow.mockResolvedValueOnce({
+      data: {
+        continue_with: [
+          {
+            action: "show_verification_ui",
+            flow: { id: "verification-flow-123" },
+          },
+        ],
+      },
+      headers: {
+        "set-cookie": [
+          "ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
+    expect(mockUpdateRegistrationFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        flow: "ory-registration-flow",
+        updateRegistrationFlowBody: expect.objectContaining({
+          password: "Password123!",
+          traits: expect.objectContaining({
+            email: "user@example.com",
+            username: "40200612345",
+          }),
+        }),
+      }),
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      confidence: 99,
+      similarity: 96,
+      destination: "email-sent",
+      redirectTo:
+        "/register/email-sent?flow=verification-flow-123&return_url=https%3A%2F%2Fexample.com%2Fdashboard",
+    });
+    expect(response.cookies.get("registration_session")?.value).toBe("");
+    expect(response.cookies.get("registration_account_draft")?.value).toBe("");
   });
 
   it("maps Ory registration success into email verification while clearing the registration session", async () => {
@@ -308,6 +508,167 @@ describe("registration production routes", () => {
     });
     expect(response.cookies.get("csrf_token")?.value).toBe("csrf-123");
     expect(response.cookies.get("ory_session")?.value).toBe("ory-session");
+    expect(response.cookies.get("registration_session")?.value).toBe("");
+  });
+
+  it("creates a verification code flow when Ory creates an unverified identity without continue_with", async () => {
+    setRequestCookies({
+      registration_session: createRegistrationSessionCookie(
+        "40200612345",
+        "verified",
+        "https://example.com/dashboard",
+      ).value,
+    });
+    setRequestCookieHeader("existing_browser=browser-cookie");
+    mockHeaders.mockResolvedValue(
+      new Headers({ cookie: getRequestCookieHeader() }),
+    );
+
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce(
+        buildJsonResponse({
+          valid: true,
+          payload: {
+            id: "402-0061234-5",
+            names: "Juan Pablo",
+            firstSurname: "Perez",
+            secondSurname: "Gomez",
+            gender: "M",
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        buildJsonResponse({
+          valid: true,
+          payload: {
+            id: "402-0061234-5",
+            birthPlace: "Santo Domingo",
+            birthDate: "1990-01-01T00:00:00.000Z",
+            nationality: "DO",
+          },
+        }),
+      );
+
+    mockCreateBrowserRegistrationFlow.mockResolvedValueOnce({
+      data: {
+        id: "ory-registration-flow",
+        ui: {
+          nodes: [
+            {
+              attributes: {
+                name: "csrf_token",
+                value: "csrf-123",
+              },
+            },
+          ],
+        },
+      },
+      headers: {
+        "set-cookie": [
+          "csrf_token=csrf-123; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+    mockUpdateRegistrationFlow.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          verifiable_addresses: [
+            {
+              value: "user@example.com",
+              verified: false,
+              via: "email",
+            },
+          ],
+        },
+      },
+      headers: {
+        "set-cookie": [
+          "ory_session=ory-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+    mockCreateBrowserVerificationFlow.mockResolvedValueOnce({
+      data: {
+        id: "verification-flow-456",
+        ui: {
+          nodes: [
+            {
+              attributes: {
+                name: "csrf_token",
+                value: "verification-csrf-456",
+              },
+            },
+          ],
+        },
+      },
+      headers: {
+        "set-cookie": [
+          "verification_csrf=verification-csrf-456; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+    mockUpdateVerificationFlow.mockResolvedValueOnce({
+      data: {
+        id: "verification-flow-456",
+        state: "sent_email",
+      },
+      headers: {
+        "set-cookie": [
+          "ory_verification=verification-session; Path=/; HttpOnly; Domain=ory.test",
+        ],
+      },
+    });
+
+    const response = await postAccount(
+      new Request("http://localhost/api/registration/account", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "user@example.com",
+          password: "Password123!",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateBrowserVerificationFlow).toHaveBeenCalledWith(
+      { returnTo: "https://example.com/dashboard" },
+      {
+        headers: {
+          Accept: "application/json",
+          Cookie:
+            "existing_browser=browser-cookie; csrf_token=csrf-123; ory_session=ory-session",
+        },
+      },
+    );
+    expect(mockUpdateVerificationFlow).toHaveBeenCalledWith(
+      {
+        flow: "verification-flow-456",
+        cookie:
+          "existing_browser=browser-cookie; csrf_token=csrf-123; ory_session=ory-session; verification_csrf=verification-csrf-456",
+        updateVerificationFlowBody: {
+          csrf_token: "verification-csrf-456",
+          method: "code",
+          email: "user@example.com",
+        },
+      },
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      destination: "email-sent",
+      redirectTo:
+        "/register/email-sent?flow=verification-flow-456&return_url=https%3A%2F%2Fexample.com%2Fdashboard",
+    });
+    expect(response.cookies.get("ory_session")?.value).toBe("ory-session");
+    expect(response.cookies.get("ory_verification")?.value).toBe(
+      "verification-session",
+    );
     expect(response.cookies.get("registration_session")?.value).toBe("");
   });
 

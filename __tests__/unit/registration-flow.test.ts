@@ -1,10 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockGetRegistrationSession, mockFindCitizenSummaryByCedula } =
-  vi.hoisted(() => ({
-    mockGetRegistrationSession: vi.fn(),
-    mockFindCitizenSummaryByCedula: vi.fn(),
-  }));
+const {
+  mockGetRegistrationSession,
+  mockFindCitizenSummaryByCedula,
+  mockGetRegistrationAccountDraft,
+} = vi.hoisted(() => ({
+  mockGetRegistrationSession: vi.fn(),
+  mockFindCitizenSummaryByCedula: vi.fn(),
+  mockGetRegistrationAccountDraft: vi.fn(),
+}));
 
 vi.mock("@/lib/services/registration/registration-session.service", () => ({
   getRegistrationSession: mockGetRegistrationSession,
@@ -14,6 +18,13 @@ vi.mock("@/lib/services/registration/citizen-registry.service", () => ({
   findCitizenSummaryByCedula: mockFindCitizenSummaryByCedula,
 }));
 
+vi.mock(
+  "@/lib/services/registration/registration-account-draft.service",
+  () => ({
+    getRegistrationAccountDraft: mockGetRegistrationAccountDraft,
+  }),
+);
+
 vi.mock("server-only", () => ({}));
 
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
@@ -21,6 +32,7 @@ import { getRegistrationWizardState } from "@/lib/services/registration/registra
 describe("getRegistrationWizardState", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetRegistrationAccountDraft.mockResolvedValue(null);
   });
 
   it("returns step 0 when there is no registration session", async () => {
@@ -28,13 +40,17 @@ describe("getRegistrationWizardState", () => {
 
     await expect(getRegistrationWizardState()).resolves.toEqual({
       initialStep: 0,
+      initialCedula: "",
       initialName: "",
+      initialSessionStatus: null,
+      hasAccountDraft: false,
     });
   });
 
-  it("hydrates step 1 from the real service when citizen data exists", async () => {
+  it("hydrates step 1 from an identified session when citizen data exists", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
+      status: "identified",
     });
     mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
       firstName: "Juan",
@@ -42,9 +58,55 @@ describe("getRegistrationWizardState", () => {
 
     await expect(getRegistrationWizardState()).resolves.toEqual({
       initialStep: 1,
+      initialCedula: "00100063362",
       initialName: "Juan",
+      initialSessionStatus: "identified",
+      hasAccountDraft: false,
     });
     expect(mockFindCitizenSummaryByCedula).toHaveBeenCalledWith("00100063362");
+  });
+
+  it("hydrates step 2 from a verified session with an account draft", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
+      firstName: "Juan",
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce({
+      cedula: "00100063362",
+      email: "user@example.com",
+      password: "Password123!",
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 1000,
+    });
+
+    await expect(getRegistrationWizardState()).resolves.toEqual({
+      initialStep: 2,
+      initialCedula: "00100063362",
+      initialName: "Juan",
+      initialSessionStatus: "verified",
+      hasAccountDraft: true,
+    });
+  });
+
+  it("hydrates step 1 from a verified session without a draft so account data can be re-entered", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
+      firstName: "Juan",
+    });
+
+    await expect(getRegistrationWizardState()).resolves.toEqual({
+      initialStep: 1,
+      initialCedula: "00100063362",
+      initialName: "Juan",
+      initialSessionStatus: "verified",
+      hasAccountDraft: false,
+    });
   });
 
   it("falls back to step 0 when the citizen has no first name", async () => {
@@ -57,7 +119,10 @@ describe("getRegistrationWizardState", () => {
 
     await expect(getRegistrationWizardState()).resolves.toEqual({
       initialStep: 0,
+      initialCedula: "",
       initialName: "",
+      initialSessionStatus: null,
+      hasAccountDraft: false,
     });
   });
 
@@ -73,7 +138,10 @@ describe("getRegistrationWizardState", () => {
 
     await expect(getRegistrationWizardState()).resolves.toEqual({
       initialStep: 0,
+      initialCedula: "",
       initialName: "",
+      initialSessionStatus: null,
+      hasAccountDraft: false,
     });
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
@@ -86,7 +154,10 @@ describe("getRegistrationWizardState", () => {
 
     await expect(getRegistrationWizardState()).resolves.toEqual({
       initialStep: 0,
+      initialCedula: "",
       initialName: "",
+      initialSessionStatus: null,
+      hasAccountDraft: false,
     });
     expect(mockFindCitizenSummaryByCedula).toHaveBeenCalledWith("");
   });
