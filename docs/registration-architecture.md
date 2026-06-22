@@ -33,6 +33,10 @@ Reglas:
 - `registration_account_draft` debe pertenecer al mismo `sessionId` de
   `registration_session`; un draft de otra sesion no puede finalizar cuenta,
   aunque tenga la misma cedula.
+- Rekognition no puede iniciarse ni consumirse sin un
+  `registration_account_draft` valido ligado a la misma
+  `registration_session`; el orden cuenta -> liveness se aplica en backend, no
+  solo en el wizard.
 - `registration_account_draft` no puede sobrevivir a `registration_session`;
   su `expiresAt` y `maxAge` deben limitarse al tiempo restante de la sesion.
 - La promocion de `registration_session` de `identified` a `verified` debe
@@ -46,6 +50,12 @@ Reglas:
   `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
 - `verified` sin draft no puede crear cuenta automaticamente; debe volver a
   cuenta con error accionable.
+- Si `POST /api/registration/account` recibe credenciales directas y existe un
+  draft de la misma sesion, las credenciales deben coincidir con el draft; un
+  body no puede reemplazar email/password despues de liveness.
+- `POST /api/registration/account` no puede finalizar una cuenta sin
+  `registration_account_draft`; las credenciales en body son toleradas solo si
+  son redundantes y coinciden con el draft cifrado vigente.
 - El backend es la autoridad. No confiar en pasos visuales del wizard para
   permitir acciones criticas.
 
@@ -55,10 +65,10 @@ Reglas:
 | --- | --- |
 | `POST /api/registration/citizen` | Validar cedula, buscar identidad Ory existente, consultar ciudadano y firmar sesion `identified`. |
 | `POST /api/registration/account-draft` | Validar email/password y guardar draft cifrado. |
-| `POST /api/registration/verification/liveness-session` | Crear sesion Rekognition. |
-| `POST /api/registration/verification/liveness-result` | Validar liveness y actualizar cookie a `verified`; mantiene compatibilidad. |
-| `POST /api/registration/verification/liveness-complete` | Validar liveness y finalizar cuenta con draft cifrado. |
-| `POST /api/registration/account` | Crear cuenta Ory si la sesion esta `verified`; usa body o draft cifrado. |
+| `POST /api/registration/verification/liveness-session` | Crear sesion Rekognition solo si existe draft de cuenta valido para la sesion. |
+| `POST /api/registration/verification/liveness-result` | Validar liveness con draft de cuenta vigente y actualizar cookie a `verified`; mantiene compatibilidad. |
+| `POST /api/registration/verification/liveness-complete` | Validar liveness con draft de cuenta vigente y finalizar cuenta con draft cifrado. |
+| `POST /api/registration/account` | Crear cuenta Ory si la sesion esta `verified`; requiere draft cifrado vigente. |
 | `POST /api/registration/session/reset` | Limpiar sesion, draft y challenge de liveness. |
 
 ## Integraciones

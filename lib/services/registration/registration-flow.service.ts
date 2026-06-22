@@ -1,10 +1,12 @@
 import "server-only";
 
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
-import { getRegistrationAccountDraft } from "@/lib/services/registration/registration-account-draft.service";
+import {
+  getRegistrationAccountDraft,
+  isRegistrationAccountDraftForSession,
+} from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import type { RegistrationSessionStatus } from "@/lib/types/registration/session";
-import { normalizeCedula } from "@/lib/utils/cedula";
 
 export interface RegistrationWizardState {
   initialStep: 0 | 1 | 2;
@@ -41,9 +43,10 @@ export async function getRegistrationWizardState(): Promise<RegistrationWizardSt
     }
 
     const draft = await getRegistrationAccountDraft();
-    const hasAccountDraft =
-      Boolean(draft) &&
-      normalizeCedula(draft?.cedula ?? "") === normalizeCedula(session.cedula);
+    const hasAccountDraft = isRegistrationAccountDraftForSession(
+      draft,
+      session,
+    );
 
     return {
       initialStep: session.status === "verified" && hasAccountDraft ? 2 : 1,

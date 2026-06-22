@@ -10,6 +10,7 @@ import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
 import { accountRequestSchema } from "@/lib/schemas/registration";
+import type { RegistrationSession } from "@/lib/types/registration/session";
 import { normalizeCedula } from "@/lib/utils/cedula";
 
 const REGISTRATION_ACCOUNT_DRAFT_COOKIE = "registration_account_draft";
@@ -246,6 +247,17 @@ export function clearRegistrationAccountDraftCookie(): ResponseCookie {
     ...getCookieBaseOptions(),
     maxAge: 0,
   };
+}
+
+export function isRegistrationAccountDraftForSession(
+  draft: RegistrationAccountDraft | null,
+  session: Pick<RegistrationSession, "cedula" | "sessionId">,
+): draft is RegistrationAccountDraft {
+  return (
+    !!draft &&
+    draft.sessionId === session.sessionId &&
+    normalizeCedula(draft.cedula) === normalizeCedula(session.cedula)
+  );
 }
 
 export async function getRegistrationAccountDraft(): Promise<RegistrationAccountDraft | null> {

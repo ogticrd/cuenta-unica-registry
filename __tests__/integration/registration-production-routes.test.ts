@@ -106,6 +106,30 @@ function setRequestCookies(cookies: Record<string, string>) {
   }
 }
 
+const TEST_REGISTRATION_SESSION_ID = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
+
+function createVerifiedSessionWithAccountDraft(returnUrl?: string) {
+  const expiresAt = Date.now() + 30 * 60 * 1000;
+  const sessionCookie = createRegistrationSessionCookie(
+    "40200612345",
+    "verified",
+    returnUrl,
+    TEST_REGISTRATION_SESSION_ID,
+  );
+  const draftCookie = createRegistrationAccountDraftCookie({
+    sessionId: TEST_REGISTRATION_SESSION_ID,
+    sessionExpiresAt: expiresAt,
+    cedula: "40200612345",
+    email: "user@example.com",
+    password: "Password123!",
+  });
+
+  return {
+    registration_session: sessionCookie.value,
+    registration_account_draft: draftCookie.value,
+  };
+}
+
 function buildJsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -509,14 +533,13 @@ describe("registration production routes", () => {
     });
   });
 
-  it("rejects direct account registration with weak passwords before external calls", async () => {
+  it("rejects direct account registration without an account draft before external calls", async () => {
     setRequestCookies({
       registration_session: createRegistrationSessionCookie(
         "40200612345",
         "verified",
       ).value,
     });
-    mockIsPasswordStrongEnough.mockReturnValueOnce(false);
     const fetchSpy = vi
       .spyOn(global, "fetch")
       .mockRejectedValue(new Error("Unexpected fetch call"));
@@ -538,21 +561,17 @@ describe("registration production routes", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       success: false,
-      code: "password_weak",
-      fieldErrors: {
-        password: "account.validation.password_weak",
-      },
+      code: "account_draft_missing",
     });
   });
 
-  it("rejects direct account registration with compromised passwords before external calls", async () => {
+  it("does not finalize direct account credentials when the draft cookie is missing", async () => {
     setRequestCookies({
       registration_session: createRegistrationSessionCookie(
         "40200612345",
         "verified",
       ).value,
     });
-    mockIsBreachedPassword.mockResolvedValueOnce(true);
     const fetchSpy = vi
       .spyOn(global, "fetch")
       .mockRejectedValue(new Error("Unexpected fetch call"));
@@ -574,10 +593,7 @@ describe("registration production routes", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       success: false,
-      code: "password_compromised",
-      fieldErrors: {
-        password: "account.validation.password_compromised",
-      },
+      code: "account_draft_missing",
     });
   });
 
@@ -737,7 +753,7 @@ describe("registration production routes", () => {
     expect(response.cookies.get("registration_account_draft")?.value).toBe("");
   });
 
-  it("keeps the verified session when account draft reading fails after liveness", async () => {
+  it("returns unexpected_error before Rekognition when account draft reading fails", async () => {
     const registrationSessionId = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
     const registrationSessionCookie = createRegistrationSessionCookie(
       "40200612345",
@@ -756,9 +772,17 @@ describe("registration production routes", () => {
       },
       "session-123",
     ).value;
+    const draftCookie = createRegistrationAccountDraftCookie({
+      sessionId: registrationSessionId,
+      sessionExpiresAt: Date.now() + 30 * 60 * 1000,
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+    }).value;
 
     setRequestCookies({
       registration_session: registrationSessionCookie,
+      registration_account_draft: draftCookie,
       registration_liveness_challenge: livenessChallengeCookie,
     });
 
@@ -774,26 +798,6 @@ describe("registration production routes", () => {
       .mockResolvedValueOnce(cookieStore)
       .mockRejectedValueOnce(new Error("cookie store unavailable"));
 
-    vi.spyOn(global, "fetch").mockResolvedValueOnce(
-      buildBinaryResponse([4, 5, 6]),
-    );
-
-    mockRekognitionSend.mockImplementation(
-      async (command: { input?: Record<string, unknown> }) => {
-        if (command.input?.SessionId) {
-          return {
-            Confidence: 99,
-            ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
-            Status: "SUCCEEDED",
-          };
-        }
-
-        return {
-          FaceMatches: [{ Similarity: 96 }],
-        };
-      },
-    );
-
     const response = await postLivenessComplete(
       new Request(
         "http://localhost/api/registration/verification/liveness-complete",
@@ -805,37 +809,24 @@ describe("registration production routes", () => {
       ),
     );
 
-    expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
+    expect(mockRekognitionSend).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
     expect(mockUpdateRegistrationFlow).not.toHaveBeenCalled();
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({
       success: false,
-      stage: "account",
+      stage: "verification",
       code: "unexpected_error",
     });
 
     const verifiedCookie = response.cookies.get("registration_session");
-    expect(verifiedCookie?.value).toBeTruthy();
-
-    setRequestCookies({
-      registration_session: verifiedCookie?.value ?? "",
-    });
-
-    await expect(getRegistrationSession()).resolves.toMatchObject({
-      cedula: "40200612345",
-      status: "verified",
-      returnUrl: "https://example.com/dashboard",
-    });
+    expect(verifiedCookie).toBeUndefined();
   });
 
   it("maps Ory registration success into email verification while clearing the registration session", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-        "https://example.com/dashboard",
-      ).value,
-    });
+    setRequestCookies(
+      createVerifiedSessionWithAccountDraft("https://example.com/dashboard"),
+    );
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -959,13 +950,9 @@ describe("registration production routes", () => {
   });
 
   it("creates a verification code flow when Ory creates an unverified identity without continue_with", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-        "https://example.com/dashboard",
-      ).value,
-    });
+    setRequestCookies(
+      createVerifiedSessionWithAccountDraft("https://example.com/dashboard"),
+    );
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -1120,12 +1107,7 @@ describe("registration production routes", () => {
   });
 
   it("propagates Ory field errors through the real error mapper", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-      ).value,
-    });
+    setRequestCookies(createVerifiedSessionWithAccountDraft());
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -1242,9 +1224,17 @@ describe("registration production routes", () => {
       },
       "session-123",
     ).value;
+    const draftCookie = createRegistrationAccountDraftCookie({
+      sessionId: registrationSessionId,
+      sessionExpiresAt: Date.now() + 30 * 60 * 1000,
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+    }).value;
 
     setRequestCookies({
       registration_session: registrationSessionCookie,
+      registration_account_draft: draftCookie,
       registration_liveness_challenge: livenessChallengeCookie,
     });
 

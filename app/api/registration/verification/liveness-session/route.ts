@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 
+import {
+  clearRegistrationAccountDraftCookie,
+  getRegistrationAccountDraft,
+  isRegistrationAccountDraftForSession,
+} from "@/lib/services/registration/registration-account-draft.service";
 import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import { createLivenessSession } from "@/lib/services/registration/rekognition.service";
@@ -11,9 +16,16 @@ import type {
 function createErrorResponse(
   code: CreateLivenessSessionErrorCode,
   status: number,
+  options?: { clearAccountDraft?: boolean },
 ) {
   const payload: CreateLivenessSessionResponse = { success: false, code };
-  return NextResponse.json(payload, { status });
+  const response = NextResponse.json(payload, { status });
+
+  if (options?.clearAccountDraft) {
+    response.cookies.set(clearRegistrationAccountDraftCookie());
+  }
+
+  return response;
 }
 
 export async function POST() {
@@ -29,9 +41,17 @@ export async function POST() {
     if (session.status === "verified") {
       return createErrorResponse("verification_already_completed", 409);
     }
+
+    const draft = await getRegistrationAccountDraft();
+
+    if (!isRegistrationAccountDraftForSession(draft, session)) {
+      return createErrorResponse("account_draft_missing", 400, {
+        clearAccountDraft: true,
+      });
+    }
   } catch (error) {
     console.error(
-      "[/api/registration/verification/liveness-session] Failed to read registration session:",
+      "[/api/registration/verification/liveness-session] Failed to read registration state:",
       error,
     );
     return createErrorResponse("unexpected_error", 500);

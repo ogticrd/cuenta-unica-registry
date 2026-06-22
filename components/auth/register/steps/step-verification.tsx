@@ -72,6 +72,7 @@ export function StepVerification({
       () => ({
         invalid_payload: t("verification.verification_failed"),
         registration_session_missing: t("verification.session_error"),
+        account_draft_missing: t("account.draft_missing"),
         verification_already_completed: t(
           "verification.session_creation_failed",
         ),
@@ -91,6 +92,7 @@ export function StepVerification({
   > = useMemo(
     () => ({
       registration_session_missing: t("verification.session_error"),
+      account_draft_missing: t("account.draft_missing"),
       verification_already_completed: t("verification.session_creation_failed"),
       rekognition_error: t("verification.rekognition_error"),
       unexpected_error: t("verification.session_creation_failed"),
@@ -112,13 +114,18 @@ export function StepVerification({
         onRequireIdentification();
       }
 
+      if (result.code === "account_draft_missing") {
+        onRequireAccount({ code: result.code });
+        return;
+      }
+
       toast.error(livenessSessionErrorMessages[result.code]);
       return;
     }
 
     setLivenessSessionId(result.sessionId);
     setPhase("liveness_active");
-  }, [livenessSessionErrorMessages, onRequireIdentification]);
+  }, [livenessSessionErrorMessages, onRequireAccount, onRequireIdentification]);
 
   const handleAccountRegistrationResult = useCallback(
     (

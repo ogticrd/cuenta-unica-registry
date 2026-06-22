@@ -4,6 +4,7 @@ import {
   createVerifyLivenessPayload,
   verifyRegistrationLiveness,
 } from "@/lib/services/registration/liveness-verification.service";
+import { clearRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { createRegistrationSessionCookieFromSession } from "@/lib/services/registration/registration-session.service";
 import type {
@@ -32,7 +33,13 @@ export async function POST(request: Request) {
     const result = await verifyRegistrationLiveness(parsedBody.data.sessionId);
 
     if (!result.success) {
-      return createErrorResponse(result.code, result.status);
+      const response = createErrorResponse(result.code, result.status);
+
+      if (result.code === "account_draft_missing") {
+        response.cookies.set(clearRegistrationAccountDraftCookie());
+      }
+
+      return response;
     }
 
     const response = NextResponse.json(createVerifyLivenessPayload(result), {

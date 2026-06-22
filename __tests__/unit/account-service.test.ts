@@ -19,10 +19,7 @@ describe("accountService.registerAccount", () => {
       ),
     );
 
-    const result = await accountService.registerAccount({
-      email: "test@example.com",
-      password: "StrongPass123!",
-    });
+    const result = await accountService.registerAccount();
 
     expect(result).toEqual({
       success: true,
@@ -31,43 +28,12 @@ describe("accountService.registerAccount", () => {
     });
   });
 
-  it("sends the correct request shape", async () => {
+  it("sends the correct request shape without client credentials", async () => {
     const fetchSpy = vi
       .spyOn(global, "fetch")
       .mockResolvedValueOnce(
         new Response(JSON.stringify({ success: true }), { status: 200 }),
       );
-
-    await accountService.registerAccount({
-      email: "test@example.com",
-      password: "StrongPass123!",
-    });
-
-    expect(fetchSpy).toHaveBeenCalledWith(
-      API.registrationAccount,
-      expect.objectContaining({
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "test@example.com",
-          password: "StrongPass123!",
-        }),
-      }),
-    );
-  });
-
-  it("can finalize using the server-side account draft without a request body", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          success: true,
-          redirectTo: "/register/email-sent?flow=flow-123",
-          destination: "email-sent",
-        }),
-        { status: 200 },
-      ),
-    );
 
     await accountService.registerAccount();
 
@@ -78,6 +44,7 @@ describe("accountService.registerAccount", () => {
         credentials: "include",
       }),
     );
+    expect(fetchSpy.mock.calls[0]?.[1]).not.toHaveProperty("headers");
     expect(fetchSpy.mock.calls[0]?.[1]).not.toHaveProperty("body");
   });
 
@@ -120,10 +87,7 @@ describe("accountService.registerAccount", () => {
       new Response("invalid json", { status: 200 }),
     );
 
-    const result = await accountService.registerAccount({
-      email: "test@example.com",
-      password: "StrongPass123!",
-    });
+    const result = await accountService.registerAccount();
 
     expect(result).toEqual({
       success: false,
@@ -138,10 +102,7 @@ describe("accountService.registerAccount", () => {
 
     vi.spyOn(global, "fetch").mockRejectedValueOnce(new Error("offline"));
 
-    const result = await accountService.registerAccount({
-      email: "test@example.com",
-      password: "StrongPass123!",
-    });
+    const result = await accountService.registerAccount();
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(result).toEqual({
@@ -166,10 +127,7 @@ describe("accountService.registerAccount", () => {
       ),
     );
 
-    const result = await accountService.registerAccount({
-      email: "test@example.com",
-      password: "StrongPass123!",
-    });
+    const result = await accountService.registerAccount();
 
     expect(result).toEqual({
       success: false,

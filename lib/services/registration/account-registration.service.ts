@@ -157,6 +157,16 @@ function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
+function accountInputMatchesDraft(
+  input: RegisterAccountRequest,
+  draft: RegistrationAccountDraft,
+) {
+  return (
+    normalizeEmail(input.email) === normalizeEmail(draft.email) &&
+    input.password === draft.password
+  );
+}
+
 function hasVerifiedEmail(
   identity: OryRegistrationPayload["identity"],
   email: string,
@@ -206,6 +216,12 @@ export async function completeRegistrationAccount(
     (normalizeCedula(options.draft.cedula) !== cedula ||
       options.draft.sessionId !== registrationSession.sessionId)
   ) {
+    return createAccountRegistrationErrorResult("account_draft_missing", 400, {
+      clearAccountDraft: true,
+    });
+  }
+
+  if (options.draft && !accountInputMatchesDraft(input, options.draft)) {
     return createAccountRegistrationErrorResult("account_draft_missing", 400, {
       clearAccountDraft: true,
     });

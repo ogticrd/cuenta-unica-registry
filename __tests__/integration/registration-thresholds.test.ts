@@ -37,6 +37,7 @@ vi.mock("@/lib/aws/rekognition-client", () => ({
 }));
 
 // We import this dynamically inside the test so vi.resetModules() only affects this file
+import { createRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 
@@ -67,9 +68,17 @@ function setIdentifiedSessionWithLivenessChallenge() {
     },
     "session-123",
   );
+  const draftCookie = createRegistrationAccountDraftCookie({
+    sessionId: TEST_REGISTRATION_SESSION_ID,
+    sessionExpiresAt: expiresAt,
+    cedula: "40200612345",
+    email: "user@example.com",
+    password: "Password123!",
+  });
 
   setRequestCookies({
     registration_session: sessionCookie.value,
+    registration_account_draft: draftCookie.value,
     registration_liveness_challenge: challengeCookie.value,
   });
 }

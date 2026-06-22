@@ -1,6 +1,11 @@
 import "server-only";
 
 import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
+import {
+  getRegistrationAccountDraft,
+  isRegistrationAccountDraftForSession,
+  type RegistrationAccountDraft,
+} from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationLivenessChallenge } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import {
@@ -25,6 +30,7 @@ export type RegistrationLivenessVerificationResult =
       success: true;
       status: 200;
       session: RegistrationSession;
+      accountDraft: RegistrationAccountDraft;
       confidence: number;
       similarity: number;
     }
@@ -94,6 +100,29 @@ export async function verifyRegistrationLiveness(
     };
   }
 
+  let accountDraft: Awaited<ReturnType<typeof getRegistrationAccountDraft>>;
+  try {
+    accountDraft = await getRegistrationAccountDraft();
+  } catch (error) {
+    console.error(
+      "[liveness-verification] Failed to read account draft:",
+      error,
+    );
+    return {
+      success: false,
+      status: 500,
+      code: "unexpected_error",
+    };
+  }
+
+  if (!isRegistrationAccountDraftForSession(accountDraft, session)) {
+    return {
+      success: false,
+      status: 400,
+      code: "account_draft_missing",
+    };
+  }
+
   let liveness: LivenessResult;
   try {
     liveness = await getLivenessResults(sessionId);
@@ -157,6 +186,7 @@ export async function verifyRegistrationLiveness(
     success: true,
     status: 200,
     session,
+    accountDraft,
     confidence: liveness.confidence,
     similarity: comparison.similarity,
   };

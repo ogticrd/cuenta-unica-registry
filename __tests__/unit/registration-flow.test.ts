@@ -22,6 +22,13 @@ vi.mock(
   "@/lib/services/registration/registration-account-draft.service",
   () => ({
     getRegistrationAccountDraft: mockGetRegistrationAccountDraft,
+    isRegistrationAccountDraftForSession: (
+      draft: { cedula: string; sessionId: string } | null,
+      session: { cedula: string; sessionId: string },
+    ) =>
+      !!draft &&
+      draft.sessionId === session.sessionId &&
+      draft.cedula === session.cedula,
   }),
 );
 
@@ -68,6 +75,7 @@ describe("getRegistrationWizardState", () => {
 
   it("hydrates step 2 from a verified session with an account draft", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
       cedula: "00100063362",
       status: "verified",
     });
@@ -75,6 +83,7 @@ describe("getRegistrationWizardState", () => {
       firstName: "Juan",
     });
     mockGetRegistrationAccountDraft.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
       cedula: "00100063362",
       email: "user@example.com",
       password: "Password123!",
@@ -91,8 +100,36 @@ describe("getRegistrationWizardState", () => {
     });
   });
 
+  it("hydrates step 1 from a verified session when the draft belongs to another session", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      cedula: "00100063362",
+      status: "verified",
+    });
+    mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
+      firstName: "Juan",
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce({
+      sessionId: "71e8e018-9b9f-4acf-af6e-3a7d781a771b",
+      cedula: "00100063362",
+      email: "user@example.com",
+      password: "Password123!",
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 1000,
+    });
+
+    await expect(getRegistrationWizardState()).resolves.toEqual({
+      initialStep: 1,
+      initialCedula: "00100063362",
+      initialName: "Juan",
+      initialSessionStatus: "verified",
+      hasAccountDraft: false,
+    });
+  });
+
   it("hydrates step 1 from a verified session without a draft so account data can be re-entered", async () => {
     mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
       cedula: "00100063362",
       status: "verified",
     });

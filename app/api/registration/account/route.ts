@@ -129,9 +129,39 @@ export async function POST(request: Request) {
     );
   }
 
+  if (registrationSession.status !== "verified") {
+    return createAccountRegistrationResponse(
+      createAccountRegistrationErrorResult("verification_required", 400),
+    );
+  }
+
   if (parsedRequest.data) {
+    let draft: Awaited<ReturnType<typeof getRegistrationAccountDraft>>;
+
+    try {
+      draft = await getRegistrationAccountDraft();
+    } catch (error) {
+      console.error(
+        "[/api/registration/account] Failed to read account draft:",
+        error,
+      );
+
+      return createAccountRegistrationResponse(
+        createAccountRegistrationErrorResult("unexpected_error", 500),
+      );
+    }
+
+    if (!draft) {
+      return createAccountRegistrationResponse(
+        createAccountRegistrationErrorResult("account_draft_missing", 400, {
+          clearAccountDraft: true,
+        }),
+      );
+    }
+
     return createAccountRegistrationResponse(
       await completeRegistrationAccount(parsedRequest.data, {
+        draft,
         registrationSession,
       }),
     );

@@ -5,13 +5,9 @@ import {
   completeRegistrationAccount,
 } from "@/lib/services/registration/account-registration.service";
 import { verifyRegistrationLiveness } from "@/lib/services/registration/liveness-verification.service";
-import {
-  clearRegistrationAccountDraftCookie,
-  getRegistrationAccountDraft,
-} from "@/lib/services/registration/registration-account-draft.service";
+import { clearRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { createRegistrationSessionCookieFromSession } from "@/lib/services/registration/registration-session.service";
-import type { RegisterAccountErrorCode } from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
 import type {
   CompleteLivenessRegistrationResponse,
@@ -34,24 +30,6 @@ function createVerificationErrorResponse(
     } satisfies CompleteLivenessRegistrationResponse,
     { status },
   );
-}
-
-function createAccountErrorResponse(
-  code: RegisterAccountErrorCode,
-  status: number,
-  session: RegistrationSession,
-) {
-  const response = NextResponse.json(
-    {
-      success: false,
-      stage: "account",
-      code,
-    } satisfies CompleteLivenessRegistrationResponse,
-    { status },
-  );
-  setVerifiedSessionCookie(response, session);
-
-  return response;
 }
 
 function setVerifiedSessionCookie(
@@ -77,47 +55,33 @@ export async function POST(request: Request) {
     );
 
     if (!livenessResult.success) {
+      if (livenessResult.code === "account_draft_missing") {
+        const response = NextResponse.json(
+          {
+            success: false,
+            stage: "account",
+            code: "account_draft_missing",
+          } satisfies CompleteLivenessRegistrationResponse,
+          { status: livenessResult.status },
+        );
+        response.cookies.set(clearRegistrationAccountDraftCookie());
+
+        return response;
+      }
+
       return createVerificationErrorResponse(
         livenessResult.code,
         livenessResult.status,
       );
     }
 
-    let draft: Awaited<ReturnType<typeof getRegistrationAccountDraft>>;
-
-    try {
-      draft = await getRegistrationAccountDraft();
-    } catch (error) {
-      console.error(
-        "[/api/registration/verification/liveness-complete] Failed to read account draft:",
-        error,
-      );
-
-      return createAccountErrorResponse(
-        "unexpected_error",
-        500,
-        livenessResult.session,
-      );
-    }
-
-    if (!draft) {
-      const response = createAccountErrorResponse(
-        "account_draft_missing",
-        400,
-        livenessResult.session,
-      );
-      response.cookies.set(clearRegistrationAccountDraftCookie());
-
-      return response;
-    }
-
     const accountResult = await completeRegistrationAccount(
       {
-        email: draft.email,
-        password: draft.password,
+        email: livenessResult.accountDraft.email,
+        password: livenessResult.accountDraft.password,
       },
       {
-        draft,
+        draft: livenessResult.accountDraft,
         registrationSession: {
           ...livenessResult.session,
           status: "verified",

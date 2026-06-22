@@ -87,6 +87,7 @@ import { POST as postCitizen } from "@/app/api/registration/citizen/route";
 import { POST as postLivenessResult } from "@/app/api/registration/verification/liveness-result/route";
 import { POST as postLivenessSession } from "@/app/api/registration/verification/liveness-session/route";
 import { POST as postVerification } from "@/app/api/registration/verification/route";
+import { createRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { createRegistrationLivenessChallengeCookie } from "@/lib/services/registration/registration-liveness-challenge.service";
 import {
   createRegistrationSessionCookie,
@@ -122,10 +123,40 @@ function createIdentifiedSessionWithLivenessChallenge(returnUrl?: string) {
     },
     "session-123",
   );
+  const draftCookie = createRegistrationAccountDraftCookie({
+    sessionId: TEST_REGISTRATION_SESSION_ID,
+    sessionExpiresAt: expiresAt,
+    cedula: "40200612345",
+    email: "user@example.com",
+    password: "Password123!",
+  });
 
   return {
     registration_session: sessionCookie.value,
+    registration_account_draft: draftCookie.value,
     registration_liveness_challenge: challengeCookie.value,
+  };
+}
+
+function createVerifiedSessionWithAccountDraft(returnUrl?: string) {
+  const expiresAt = Date.now() + 30 * 60 * 1000;
+  const sessionCookie = createRegistrationSessionCookie(
+    "40200612345",
+    "verified",
+    returnUrl,
+    TEST_REGISTRATION_SESSION_ID,
+  );
+  const draftCookie = createRegistrationAccountDraftCookie({
+    sessionId: TEST_REGISTRATION_SESSION_ID,
+    sessionExpiresAt: expiresAt,
+    cedula: "40200612345",
+    email: "user@example.com",
+    password: "Password123!",
+  });
+
+  return {
+    registration_session: sessionCookie.value,
+    registration_account_draft: draftCookie.value,
   };
 }
 
@@ -239,13 +270,9 @@ describe("registration production paths", () => {
   });
 
   it("redirects to the return url when Ory completes registration immediately", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-        "https://example.com/welcome",
-      ).value,
-    });
+    setRequestCookies(
+      createVerifiedSessionWithAccountDraft("https://example.com/welcome"),
+    );
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -338,12 +365,7 @@ describe("registration production paths", () => {
   });
 
   it("maps Ory error payloads to a bad request when Ory reports a csrf violation", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-      ).value,
-    });
+    setRequestCookies(createVerifiedSessionWithAccountDraft());
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -428,12 +450,7 @@ describe("registration production paths", () => {
   });
 
   it("maps other Ory error payloads to a gateway failure", async () => {
-    setRequestCookies({
-      registration_session: createRegistrationSessionCookie(
-        "40200612345",
-        "verified",
-      ).value,
-    });
+    setRequestCookies(createVerifiedSessionWithAccountDraft());
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(
       new Headers({ cookie: getRequestCookieHeader() }),
@@ -758,6 +775,21 @@ describe("registration production paths", () => {
     const verificationResponse = await postVerification();
     expect(verificationResponse.status).toBe(200);
 
+    const identifiedSession = await getRegistrationSession();
+    expect(identifiedSession).toBeTruthy();
+    const accountDraftCookie = createRegistrationAccountDraftCookie({
+      sessionId: identifiedSession?.sessionId ?? "",
+      sessionExpiresAt: identifiedSession?.expiresAt ?? 0,
+      cedula: "40200612345",
+      email: "user@example.com",
+      password: "Password123!",
+    });
+
+    setRequestCookies({
+      registration_session: identifiedCookie?.value ?? "",
+      registration_account_draft: accountDraftCookie.value,
+    });
+
     const livenessSessionResponse = await postLivenessSession();
     expect(livenessSessionResponse.status).toBe(200);
     await expect(livenessSessionResponse.json()).resolves.toEqual({
@@ -771,6 +803,7 @@ describe("registration production paths", () => {
 
     setRequestCookies({
       registration_session: identifiedCookie?.value ?? "",
+      registration_account_draft: accountDraftCookie.value,
       registration_liveness_challenge: livenessChallengeCookie?.value ?? "",
     });
 
@@ -793,6 +826,7 @@ describe("registration production paths", () => {
 
     setRequestCookies({
       registration_session: verifiedCookie?.value ?? "",
+      registration_account_draft: accountDraftCookie.value,
     });
     setRequestCookieHeader("existing_browser=browser-cookie");
     mockHeaders.mockResolvedValue(

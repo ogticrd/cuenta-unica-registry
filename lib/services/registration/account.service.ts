@@ -45,21 +45,11 @@ function getAccountDraftFailure(
 }
 
 export const accountService = {
-  async registerAccount(
-    input?: RegisterAccountRequest,
-  ): Promise<RegisterAccountResponse> {
+  async registerAccount(): Promise<RegisterAccountResponse> {
     try {
       const response = await fetch(API.registrationAccount, {
         method: "POST",
         credentials: "include",
-        ...(input
-          ? {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(input),
-            }
-          : {}),
       });
 
       return await parseJsonResponse<RegisterAccountResponse>(response);

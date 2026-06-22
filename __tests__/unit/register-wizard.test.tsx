@@ -5,6 +5,7 @@ import { createElement } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
 import { accountService } from "@/lib/services/registration/account.service";
+import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
 
 const { mockToastError } = vi.hoisted(() => ({
   mockToastError: vi.fn(),
@@ -16,6 +17,18 @@ vi.mock("next/image", () => ({
     ...props
   }: React.ImgHTMLAttributes<HTMLImageElement> & { alt: string }) =>
     createElement("img", { alt, ...props }),
+}));
+
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
 }));
 
 vi.mock("sonner", () => ({
@@ -52,6 +65,12 @@ vi.mock("@/hooks/use-t", () => ({
       "steps.account.description": "Crea tus credenciales",
       "steps.verification.title": "Verificación",
       "steps.verification.description": "Prueba de vida",
+      "identification.intro": "Ingresa tu cédula para iniciar el registro.",
+      "identification.id_label": "Cédula",
+      "identification.id_placeholder": "000-0000000-0",
+      "identification.continue": "CONTINUAR",
+      "identification.existing_account": "¿Ya tienes una cuenta?",
+      "identification.login_cta": "Inicia sesión",
       "account.intro": "Crea las credenciales de tu cuenta",
       "account.email_label": "Correo electrónico",
       "account.confirm_email_label": "Confirmar correo",
@@ -109,7 +128,11 @@ function renderAccountStepWizard() {
 describe("RegisterWizard", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.clearAllMocks();
     mockToastError.mockReset();
+    vi.mocked(registrationSessionApiService.reset).mockResolvedValue({
+      success: true,
+    });
     vi.spyOn(global, "fetch").mockResolvedValue(
       new Response("", { status: 200 }),
     );
@@ -154,5 +177,38 @@ describe("RegisterWizard", () => {
         password: "GovFlow92817Z!",
       });
     });
+  });
+
+  it("resets temporary registration state when returning from account to identification", async () => {
+    const user = userEvent.setup();
+
+    renderAccountStepWizard();
+
+    await user.type(
+      screen.getByLabelText("Correo electrónico *"),
+      "secure@example.com",
+    );
+    await user.type(
+      screen.getByLabelText("Confirmar correo *"),
+      "secure@example.com",
+    );
+    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
+    await user.type(
+      screen.getByLabelText("Confirmar contraseña *"),
+      "GovFlow92817Z!",
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Volver al paso anterior" }),
+    );
+
+    await waitFor(() => {
+      expect(registrationSessionApiService.reset).toHaveBeenCalledTimes(1);
+    });
+    expect(screen.getByLabelText("Cédula *")).toHaveValue("");
+    expect(
+      screen.queryByLabelText("Correo electrónico *"),
+    ).not.toBeInTheDocument();
+    expect(accountService.saveAccountDraft).not.toHaveBeenCalled();
   });
 });
