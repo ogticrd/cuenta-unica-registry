@@ -1,0 +1,130 @@
+# Arquitectura del Registro
+
+Este documento describe el flujo de registro como contrato de negocio. Cualquier
+cambio en este dominio debe conservar estos estados, errores y validaciones.
+
+## Objetivo
+
+Crear una identidad Ory solamente cuando una persona:
+
+1. provee una cedula dominicana valida;
+2. no posee una identidad existente para esa cedula;
+3. existe en las APIs ciudadanas;
+4. provee credenciales validas;
+5. supera prueba de vida y comparacion facial;
+6. queda encaminada a activacion de email cuando Ory lo requiere.
+
+## Estados y Cookies
+
+| Estado | Fuente | Proposito |
+| --- | --- | --- |
+| `registration_session: identified` | `/api/registration/citizen` | Cedula validada e identificada; habilita captura de cuenta y liveness. |
+| `registration_account_draft` | `/api/registration/account-draft` | Draft cifrado de email/password para sobrevivir reloads durante liveness. |
+| `registration_session: verified` | liveness exitoso | Biometria aprobada; habilita creacion de cuenta en backend. |
+
+Reglas:
+
+- `registration_account_draft` debe estar cifrada, ser `httpOnly`, expirar y
+  limpiarse en reset o exito.
+- `verified` sin draft no puede crear cuenta automaticamente; debe volver a
+  cuenta con error accionable.
+- El backend es la autoridad. No confiar en pasos visuales del wizard para
+  permitir acciones criticas.
+
+## Endpoints
+
+| Endpoint | Responsabilidad |
+| --- | --- |
+| `POST /api/registration/citizen` | Validar cedula, buscar identidad Ory existente, consultar ciudadano y firmar sesion `identified`. |
+| `POST /api/registration/account-draft` | Validar email/password y guardar draft cifrado. |
+| `POST /api/registration/verification/liveness-session` | Crear sesion Rekognition. |
+| `POST /api/registration/verification/liveness-result` | Validar liveness y actualizar cookie a `verified`; mantiene compatibilidad. |
+| `POST /api/registration/verification/liveness-complete` | Validar liveness y finalizar cuenta con draft cifrado. |
+| `POST /api/registration/account` | Crear cuenta Ory si la sesion esta `verified`; usa body o draft cifrado. |
+| `POST /api/registration/session/reset` | Limpiar sesion y draft. |
+
+## Integraciones
+
+### Ory
+
+- El username de Ory es la cedula normalizada.
+- Si Ory devuelve `continue_with.show_verification_ui`, la app redirige a
+  `/register/email-sent?flow=...`.
+- Si Ory crea identidad sin `continue_with`, se debe crear explicitamente un
+  verification flow de codigo.
+- Solo se puede redirigir a login o `return_url` cuando Ory reporta el email
+  como verificado.
+- `verifyCodeAction` debe reenviar cookies del browser a Ory.
+
+### APIs Ciudadanas
+
+- La API de informacion basica se usa para confirmar existencia y nombre.
+- La API de nacimiento se usa para completar traits Ory.
+- La API de foto se usa para comparacion facial.
+- Las respuestas externas no deben filtrarse completas al cliente.
+
+### Rekognition
+
+- Liveness y comparacion facial son checks distintos.
+- No modificar `LIVENESS_CONFIDENCE_THRESHOLD` ni `FACE_SIMILARITY_THRESHOLD`
+  sin pruebas que cubran el cambio.
+- Si liveness pasa pero cuenta falla, conservar sesion `verified` y mostrar
+  error de cuenta para corregir sin repetir biometria.
+
+## Errores
+
+Todas las rutas de registro deben responder con contratos tipados:
+
+```ts
+{ success: false, code: "..." }
+```
+
+Cuando el error pertenece a campos de cuenta:
+
+```ts
+{ success: false, code: "...", fieldErrors: { email?: "...", password?: "..." } }
+```
+
+`liveness-complete` distingue etapas:
+
+```ts
+{ success: false, stage: "verification", code: "..." }
+{ success: false, stage: "account", code: "...", fieldErrors?: ... }
+```
+
+No usar mensajes ambiguos como unica fuente de verdad. El UI puede traducir
+mensajes, pero la logica debe depender de codigos.
+
+## Pruebas Obligatorias Para Cambios En Registro
+
+Ejecutar:
+
+```sh
+bun run check
+bun run lint
+bun run test
+```
+
+Para cambios profundos, agregar o actualizar pruebas que cubran:
+
+- hidratacion del wizard por estado de cookie;
+- rechazo de payloads invalidos;
+- draft cifrado, expirado o alterado;
+- liveness exitoso y fallido;
+- creacion Ory con `continue_with`;
+- fallback cuando Ory crea identidad no verificada sin `continue_with`;
+- errores Ory mapeados a `fieldErrors`;
+- reset limpiando cookies de registro;
+- validaciones visibles de formularios.
+
+## Deuda E2E
+
+`playwright.config.ts` existe, pero falta una suite `playwright/`. Los primeros
+escenarios e2e deben ser:
+
+- cedula invalida muestra error visible sin overlay;
+- cuenta invalida muestra errores visibles;
+- registro asistido hasta liveness;
+- liveness exitoso redirige a activacion de email;
+- OTP invalido muestra error;
+- sesion autenticada accede al dashboard.
