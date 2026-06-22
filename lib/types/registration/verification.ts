@@ -1,3 +1,9 @@
+import type {
+  RegisterAccountDestination,
+  RegisterAccountErrorCode,
+  RegisterAccountFieldErrors,
+} from "./account";
+
 export type CreateLivenessSessionErrorCode =
   | "registration_session_missing"
   | "rekognition_error"
@@ -25,4 +31,24 @@ export type VerifyLivenessResponse =
   | {
       success: false;
       code: VerifyLivenessErrorCode;
+    };
+
+export type CompleteLivenessRegistrationResponse =
+  | {
+      success: true;
+      confidence: number;
+      similarity: number;
+      redirectTo: string;
+      destination: RegisterAccountDestination;
+    }
+  | {
+      success: false;
+      stage: "verification";
+      code: VerifyLivenessErrorCode;
+    }
+  | {
+      success: false;
+      stage: "account";
+      code: RegisterAccountErrorCode;
+      fieldErrors?: RegisterAccountFieldErrors;
     };

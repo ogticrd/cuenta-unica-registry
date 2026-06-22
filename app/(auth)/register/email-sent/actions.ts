@@ -2,6 +2,7 @@
 
 import { getT } from "@/lib/i18n/server";
 import { createOryClient } from "@/lib/ory/client";
+import { getServerCookies } from "@/lib/ory/cookies";
 
 export interface VerifyCodeState {
   success?: boolean;
@@ -26,9 +27,11 @@ export async function verifyCodeAction(
 
   try {
     const oryClient = createOryClient();
+    const cookie = await getServerCookies();
 
     const response = await oryClient.updateVerificationFlow({
       flow,
+      cookie,
       updateVerificationFlowBody: {
         method: "code",
         code,

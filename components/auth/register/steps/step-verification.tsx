@@ -2,8 +2,7 @@
 
 import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   FaceLiveness,
@@ -32,13 +31,14 @@ type VerificationPhase =
   | "creating_session"
   | "liveness_active"
   | "verifying"
-  | "success";
+  | "creating_account";
 
 interface StepVerificationProps {
   onBack: () => void;
   onRequireAccount: (accountErrors?: RegisterAccountStepErrors) => void;
   onRequireIdentification: () => void;
   accountDraft: RegisterAccountDraft;
+  autoFinalizeAccount?: boolean;
   userData: { name: string };
 }
 
@@ -47,10 +47,10 @@ export function StepVerification({
   onRequireAccount,
   onRequireIdentification,
   accountDraft,
+  autoFinalizeAccount = false,
   userData,
 }: StepVerificationProps) {
   const t = useT("register");
-  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phase, setPhase] = useState<VerificationPhase>("idle");
   const [livenessSessionId, setLivenessSessionId] = useState<string | null>(
@@ -58,6 +58,8 @@ export function StepVerification({
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
   const isHandlingError = useRef(false);
+  const isCompletingLiveness = useRef(false);
+  const isFinalizingAccount = useRef(false);
 
   const firstName =
     userData.name.split(" ")[0]?.toUpperCase() || userData.name.toUpperCase();
@@ -98,98 +100,131 @@ export function StepVerification({
     setPhase("liveness_active");
   }, [onRequireIdentification, t]);
 
+  const handleAccountRegistrationResult = useCallback(
+    (
+      accountResult: Awaited<ReturnType<typeof accountService.registerAccount>>,
+    ) => {
+      if (!accountResult.success) {
+        const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
+          invalid_payload: t("account.error"),
+          registration_session_missing: t("account.session_missing"),
+          verification_required: t("account.verification_required"),
+          account_draft_missing: t("account.draft_missing"),
+          password_cedula_similarity: t(
+            "account.validation.password_cedula_similarity",
+          ),
+          invalid_cedula: t("identification.id_invalid"),
+          citizen_not_found: t("identification.id_not_found"),
+          identity_exists: t("account.identity_exists"),
+          ory_validation_error: t("account.error"),
+          unexpected_error: t("account.error"),
+        };
+
+        isFinalizingAccount.current = false;
+        isCompletingLiveness.current = false;
+        setPhase("idle");
+        setIsModalOpen(false);
+
+        if (accountResult.code === "registration_session_missing") {
+          onRequireIdentification();
+          toast.error(messageByErrorCode[accountResult.code]);
+          return;
+        }
+
+        onRequireAccount({
+          code: accountResult.code,
+          fieldErrors: accountResult.fieldErrors,
+        });
+        return;
+      }
+
+      if (accountResult.destination === "login") {
+        toast.success(t("account.success_title"), {
+          description: t("account.success_description"),
+        });
+      }
+
+      window.location.assign(accountResult.redirectTo);
+    },
+    [onRequireAccount, onRequireIdentification, t],
+  );
+
+  const finalizeAccountRegistration = useCallback(async () => {
+    if (isFinalizingAccount.current) return;
+
+    isFinalizingAccount.current = true;
+    setPhase("creating_account");
+
+    const accountResult = await accountService.registerAccount();
+    handleAccountRegistrationResult(accountResult);
+  }, [handleAccountRegistrationResult]);
+
+  useEffect(() => {
+    if (!autoFinalizeAccount) {
+      return;
+    }
+
+    setIsModalOpen(true);
+    void finalizeAccountRegistration();
+  }, [autoFinalizeAccount, finalizeAccountRegistration]);
+
   const handleStartVerification = async () => {
     if (!accountDraft.email || !accountDraft.password) {
       onRequireAccount();
       return;
     }
 
+    isHandlingError.current = false;
+    isCompletingLiveness.current = false;
+    isFinalizingAccount.current = false;
     setIsModalOpen(true);
     await createSession();
   };
 
   const handleLivenessComplete = useCallback(async () => {
-    if (!livenessSessionId) return;
+    if (!livenessSessionId || isCompletingLiveness.current) return;
 
+    isCompletingLiveness.current = true;
     setPhase("verifying");
 
-    const result = await verificationService.verifyLiveness(livenessSessionId);
+    const result =
+      await verificationService.completeLivenessRegistration(livenessSessionId);
 
     if (!result.success) {
+      isCompletingLiveness.current = false;
       setPhase("idle");
       setIsModalOpen(false);
+
+      if (result.stage === "account") {
+        onRequireAccount({
+          code: result.code,
+          fieldErrors: result.fieldErrors,
+        });
+        return;
+      }
 
       if (result.code === "registration_session_missing") {
         onRequireIdentification();
       }
-
       toast.error(verificationErrorMessages[result.code]);
       return;
     }
 
-    // Verification passed — proceed to account creation
-    setPhase("success");
-
-    const accountResult = await accountService.registerAccount({
-      email: accountDraft.email,
-      password: accountDraft.password,
-    });
-
-    if (!accountResult.success) {
-      const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
-        invalid_payload: t("account.error"),
-        registration_session_missing: t("account.session_missing"),
-        verification_required: t("account.verification_required"),
-        password_cedula_similarity: t(
-          "account.validation.password_cedula_similarity",
-        ),
-        invalid_cedula: t("identification.id_invalid"),
-        citizen_not_found: t("identification.id_not_found"),
-        identity_exists: t("account.identity_exists"),
-        ory_validation_error: t("account.error"),
-        unexpected_error: t("account.error"),
-      };
-
-      setPhase("idle");
-      setIsModalOpen(false);
-
-      if (accountResult.code === "registration_session_missing") {
-        onRequireIdentification();
-        toast.error(messageByErrorCode[accountResult.code]);
-        return;
-      }
-
-      onRequireAccount({
-        code: accountResult.code,
-        fieldErrors: accountResult.fieldErrors,
-      });
-      return;
-    }
-
-    if (accountResult.destination === "login") {
+    if (result.destination === "login") {
       toast.success(t("account.success_title"), {
         description: t("account.success_description"),
       });
     }
 
-    setTimeout(() => {
-      setIsModalOpen(false);
-
-      const isExternal = /^https?:\/\//i.test(accountResult.redirectTo);
-      if (isExternal) {
-        window.location.assign(accountResult.redirectTo);
-      } else {
-        router.push(accountResult.redirectTo);
-      }
-    }, 1500);
+    setPhase("creating_account");
+    window.location.assign(result.redirectTo);
+    isCompletingLiveness.current = false;
   }, [
     livenessSessionId,
-    accountDraft,
     onRequireIdentification,
     onRequireAccount,
-    verificationErrorMessages,
-    router,
     t,
+    verificationErrorMessages,
   ]);
 
   const handleLivenessError = useCallback(
@@ -200,18 +235,22 @@ export function StepVerification({
       isHandlingError.current = true;
 
       toast.error(t("verification.verification_failed"));
-      await createSession();
-
-      isHandlingError.current = false;
+      setPhase("idle");
+      setLivenessSessionId(null);
+      setIsModalOpen(false);
+      isCompletingLiveness.current = false;
+      isFinalizingAccount.current = false;
     },
-    [createSession, t],
+    [t],
   );
 
   const handleModalClose = (open: boolean) => {
-    if (!open && phase !== "verifying" && phase !== "success") {
+    if (!open && phase !== "verifying" && phase !== "creating_account") {
       setIsModalOpen(false);
       setPhase("idle");
       setLivenessSessionId(null);
+      isCompletingLiveness.current = false;
+      isFinalizingAccount.current = false;
     }
   };
 
@@ -326,7 +365,7 @@ export function StepVerification({
               </div>
             )}
 
-            {phase === "success" && (
+            {phase === "creating_account" && (
               <div className="text-white text-center space-y-4">
                 <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mx-auto">
                   <Check className="h-12 w-12 text-white" />
@@ -334,6 +373,9 @@ export function StepVerification({
                 <span className="font-bold text-xl text-green-400">
                   {t("verification.modal.verified")}
                 </span>
+                <p className="text-sm font-medium text-white/80">
+                  {t("verification.continuing_registration")}
+                </p>
               </div>
             )}
           </div>

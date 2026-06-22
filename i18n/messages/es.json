@@ -70,6 +70,7 @@
       "creating_session": "Preparando verificación facial...",
       "session_creation_failed": "No se pudo iniciar la verificación facial. Inténtalo de nuevo.",
       "verifying_identity": "Verificando tu identidad...",
+      "continuing_registration": "Continuando con la activación de tu cuenta...",
       "verification_failed": "La verificación facial no fue exitosa. Inténtalo de nuevo.",
       "liveness_failed": "No se pudo confirmar que eres una persona real. Asegúrate de estar frente a la cámara con buena iluminación.",
       "face_mismatch": "Tu rostro no coincide con la foto de tu cédula. Inténtalo de nuevo.",
@@ -139,6 +140,7 @@
       "identity_exists": "Ya existe una cuenta asociada a los datos ingresados.",
       "session_missing": "Tu sesión de registro expiró. Debes iniciar nuevamente desde la identificación.",
       "verification_required": "Debes completar la verificación facial antes de crear la cuenta.",
+      "draft_missing": "Debes confirmar tu correo y contraseña para continuar con la activación.",
       "error": "Error al completar el registro. Inténtalo de nuevo.",
       "validation": {
         "email_invalid": "Ingresa un correo electrónico válido",

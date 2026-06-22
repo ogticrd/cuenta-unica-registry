@@ -28,6 +28,7 @@ export type RegisterAccountErrorCode =
   | "invalid_payload"
   | "registration_session_missing"
   | "verification_required"
+  | "account_draft_missing"
   | "password_cedula_similarity"
   | "invalid_cedula"
   | "citizen_not_found"
@@ -45,4 +46,17 @@ export type RegisterAccountResponse =
       success: false;
       code: RegisterAccountErrorCode;
       fieldErrors?: RegisterAccountFieldErrors;
+    };
+
+export type SaveRegisterAccountDraftResponse =
+  | {
+      success: true;
+      sessionStatus: "identified" | "verified";
+    }
+  | {
+      success: false;
+      code:
+        | "invalid_payload"
+        | "registration_session_missing"
+        | "unexpected_error";
     };

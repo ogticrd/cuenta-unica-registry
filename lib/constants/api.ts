@@ -11,9 +11,12 @@ export const API = {
   notificationPreferences: "/api/notifications/preferences",
   registrationCitizen: "/api/registration/citizen",
   registrationAccount: "/api/registration/account",
+  registrationAccountDraft: "/api/registration/account-draft",
   registrationVerification: "/api/registration/verification",
   registrationSessionReset: "/api/registration/session/reset",
   registrationLivenessSession:
     "/api/registration/verification/liveness-session",
   registrationLivenessResult: "/api/registration/verification/liveness-result",
+  registrationLivenessComplete:
+    "/api/registration/verification/liveness-complete",
 } as const;

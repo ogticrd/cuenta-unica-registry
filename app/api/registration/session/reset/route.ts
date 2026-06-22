@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { clearRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { clearRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 
@@ -10,6 +11,7 @@ export async function POST() {
       { status: 200 },
     );
     response.cookies.set(clearRegistrationSessionCookie());
+    response.cookies.set(clearRegistrationAccountDraftCookie());
 
     return response;
   } catch (error) {

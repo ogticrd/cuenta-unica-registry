@@ -6,28 +6,47 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
 import { useT } from "@/hooks/use-t";
+import { accountService } from "@/lib/services/registration/account.service";
 import { registrationSessionApiService } from "@/lib/services/registration/registration-session-api.service";
 import type {
   RegisterAccountDraft,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
+import type { RegistrationSessionStatus } from "@/lib/types/registration/session";
 import { StepAccount } from "./steps/step-account";
 import { StepIdentification } from "./steps/step-identification";
 import { StepVerification } from "./steps/step-verification";
 
 interface RegisterWizardProps {
   initialStep: 0 | 1 | 2;
+  initialCedula: string;
   initialName: string;
+  initialSessionStatus: RegistrationSessionStatus | null;
+  hasAccountDraft: boolean;
   returnUrl?: string;
+}
+
+interface RegisterWizardData {
+  cedula: string;
+  name: string;
+  accountDraft: RegisterAccountDraft;
+  accountErrors?: RegisterAccountStepErrors;
 }
 
 export function RegisterWizard({
   initialStep,
+  initialCedula,
   initialName,
+  initialSessionStatus,
+  hasAccountDraft,
   returnUrl,
 }: RegisterWizardProps) {
   const t = useT("register");
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
+  const [sessionStatus, setSessionStatus] =
+    useState<RegistrationSessionStatus | null>(initialSessionStatus);
+  const [canFinalizeFromDraft, setCanFinalizeFromDraft] =
+    useState(hasAccountDraft);
   const steps = [
     {
       title: t("steps.identification.title"),
@@ -43,8 +62,8 @@ export function RegisterWizard({
     },
   ];
 
-  const [wizardData, setWizardData] = useState({
-    cedula: "",
+  const [wizardData, setWizardData] = useState<RegisterWizardData>({
+    cedula: initialCedula,
     name: initialName,
     accountDraft: {
       email: "",
@@ -52,7 +71,12 @@ export function RegisterWizard({
       password: "",
       confirmPassword: "",
     } satisfies RegisterAccountDraft,
-    accountErrors: undefined as RegisterAccountStepErrors | undefined,
+    accountErrors:
+      initialSessionStatus === "verified" && !hasAccountDraft
+        ? ({
+            code: "account_draft_missing",
+          } satisfies RegisterAccountStepErrors)
+        : undefined,
   });
 
   const handleNext = () => {
@@ -83,8 +107,8 @@ export function RegisterWizard({
         return;
       }
 
-      setWizardData((prev) => ({
-        cedula: prev.cedula,
+      setWizardData(() => ({
+        cedula: "",
         name: "",
         accountDraft: {
           email: "",
@@ -94,6 +118,8 @@ export function RegisterWizard({
         },
         accountErrors: undefined,
       }));
+      setSessionStatus(null);
+      setCanFinalizeFromDraft(false);
       setActiveStep(0);
       return;
     }
@@ -113,6 +139,8 @@ export function RegisterWizard({
       },
       accountErrors: undefined,
     });
+    setSessionStatus(null);
+    setCanFinalizeFromDraft(false);
     setActiveStep(0);
   };
 
@@ -124,16 +152,39 @@ export function RegisterWizard({
     setActiveStep(1);
   };
 
-  const updateWizardData = (data: Partial<typeof wizardData>) => {
+  const updateWizardData = (data: Partial<RegisterWizardData>) => {
     setWizardData((prev) => ({ ...prev, ...data }));
   };
 
-  const handleAccountNext = (accountDraft: RegisterAccountDraft) => {
+  const handleAccountNext = async (accountDraft: RegisterAccountDraft) => {
+    const result = await accountService.saveAccountDraft({
+      email: accountDraft.email,
+      password: accountDraft.password,
+    });
+
+    if (!result.success) {
+      if (result.code === "registration_session_missing") {
+        handleRequireIdentification();
+        toast.error(t("account.session_missing"));
+        return;
+      }
+
+      setWizardData((prev) => ({
+        ...prev,
+        accountErrors: {
+          code: result.code,
+        },
+      }));
+      return;
+    }
+
     setWizardData((prev) => ({
       ...prev,
       accountDraft,
       accountErrors: undefined,
     }));
+    setSessionStatus(result.sessionStatus);
+    setCanFinalizeFromDraft(result.sessionStatus === "verified");
     setActiveStep(2);
   };
 
@@ -187,6 +238,9 @@ export function RegisterWizard({
             onRequireAccount={handleRequireAccount}
             onRequireIdentification={handleRequireIdentification}
             accountDraft={wizardData.accountDraft}
+            autoFinalizeAccount={
+              sessionStatus === "verified" && canFinalizeFromDraft
+            }
             userData={{ name: wizardData.name }}
           />
         )}

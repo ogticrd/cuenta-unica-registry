@@ -23,7 +23,10 @@ export default async function RegistrationPage({
         <div className="container mx-auto px-4 max-w-3xl">
           <RegisterWizard
             initialStep={registrationWizardState.initialStep}
+            initialCedula={registrationWizardState.initialCedula}
             initialName={registrationWizardState.initialName}
+            initialSessionStatus={registrationWizardState.initialSessionStatus}
+            hasAccountDraft={registrationWizardState.hasAccountDraft}
             returnUrl={params.return_url}
           />
         </div>

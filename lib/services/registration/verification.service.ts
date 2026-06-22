@@ -1,5 +1,6 @@
 import { API } from "@/lib/constants/api";
 import type {
+  CompleteLivenessRegistrationResponse,
   CreateLivenessSessionResponse,
   VerifyLivenessResponse,
 } from "@/lib/types/registration/verification";
@@ -74,6 +75,43 @@ export const verificationService = {
 
       return {
         success: false,
+        code: "unexpected_error",
+      };
+    }
+  },
+
+  async completeLivenessRegistration(
+    sessionId: string,
+  ): Promise<CompleteLivenessRegistrationResponse> {
+    try {
+      const response = await fetch(API.registrationLivenessComplete, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ sessionId }),
+      });
+      const payload = (await response
+        .json()
+        .catch(() => null)) as CompleteLivenessRegistrationResponse | null;
+
+      if (!payload) {
+        return {
+          success: false,
+          stage: "verification",
+          code: "unexpected_error",
+        };
+      }
+
+      return payload;
+    } catch (error) {
+      console.error(
+        "[verificationService.completeLivenessRegistration] Request failed:",
+        error,
+      );
+
+      return {
+        success: false,
+        stage: "verification",
         code: "unexpected_error",
       };
     }

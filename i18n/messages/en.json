@@ -70,6 +70,7 @@
       "creating_session": "Preparing facial verification...",
       "session_creation_failed": "Could not start facial verification. Please try again.",
       "verifying_identity": "Verifying your identity...",
+      "continuing_registration": "Continuing with your account activation...",
       "verification_failed": "Facial verification was not successful. Please try again.",
       "liveness_failed": "We could not confirm you are a real person. Make sure you are facing the camera with good lighting.",
       "face_mismatch": "Your face does not match your ID photo. Please try again.",
@@ -139,6 +140,7 @@
       "identity_exists": "An account already exists for the provided information.",
       "session_missing": "Your registration session expired. You need to start again from identification.",
       "verification_required": "You must complete facial verification before creating the account.",
+      "draft_missing": "Confirm your email and password to continue account activation.",
       "error": "There was an error completing the registration. Please try again.",
       "validation": {
         "email_invalid": "Enter a valid email address",

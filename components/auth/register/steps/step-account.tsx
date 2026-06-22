@@ -3,7 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, X } from "lucide-react";
 import { useLocale } from "next-intl";
-import { type SyntheticEvent, useEffect, useState } from "react";
+import {
+  type SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -29,7 +36,7 @@ import { getPasswordRequirementStatus } from "@/lib/utils/password";
 
 interface StepAccountProps {
   onBack: () => void;
-  onNext: (accountDraft: RegisterAccountDraft) => void;
+  onNext: (accountDraft: RegisterAccountDraft) => Promise<void> | void;
   cedula: string;
   defaultValues: RegisterAccountDraft;
   initialErrors?: RegisterAccountStepErrors;
@@ -57,6 +64,8 @@ function translateGeneralError(
       return t("account.identity_exists");
     case "registration_session_missing":
       return t("account.session_missing");
+    case "account_draft_missing":
+      return t("account.draft_missing");
     case "password_cedula_similarity":
       return t("account.validation.password_cedula_similarity");
     case "invalid_cedula":
@@ -83,22 +92,58 @@ export function StepAccount({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [oryAlertMessages, setOryAlertMessages] = useState<string[]>([]);
-  const accountSchema = createAccountSchema(t, cedula);
+  const accountSchema = useMemo(
+    () => createAccountSchema(t, cedula),
+    [cedula, t],
+  );
   type AccountValues = z.infer<typeof accountSchema>;
+  const clearOryAlertMessages = useCallback(() => {
+    setOryAlertMessages((current) => (current.length > 0 ? [] : current));
+  }, []);
 
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
     reValidateMode: "onBlur",
     defaultValues,
   });
+  const defaultValuesKey = [
+    defaultValues.email,
+    defaultValues.confirmEmail,
+    defaultValues.password,
+    defaultValues.confirmPassword,
+  ].join("\u0000");
+  const lastDefaultValuesKey = useRef(defaultValuesKey);
+  const initialGeneralError = initialErrors
+    ? translateGeneralError(initialErrors, t)
+    : undefined;
+  const hasInitialFieldErrors = Boolean(
+    initialErrors?.fieldErrors?.email || initialErrors?.fieldErrors?.password,
+  );
 
   useEffect(() => {
-    form.reset(defaultValues);
-  }, [defaultValues, form]);
+    if (lastDefaultValuesKey.current === defaultValuesKey) {
+      return;
+    }
+
+    lastDefaultValuesKey.current = defaultValuesKey;
+    form.reset({
+      email: defaultValues.email,
+      confirmEmail: defaultValues.confirmEmail,
+      password: defaultValues.password,
+      confirmPassword: defaultValues.confirmPassword,
+    });
+  }, [
+    defaultValues.confirmEmail,
+    defaultValues.confirmPassword,
+    defaultValues.email,
+    defaultValues.password,
+    defaultValuesKey,
+    form,
+  ]);
 
   useEffect(() => {
     if (!initialErrors) {
-      setOryAlertMessages([]);
+      clearOryAlertMessages();
       return;
     }
 
@@ -134,11 +179,9 @@ export function StepAccount({
     ) {
       toast.error(generalError);
     }
-  }, [form, initialErrors, locale, t]);
+  }, [clearOryAlertMessages, form, initialErrors, locale, t]);
 
-  const onSubmit = (data: AccountValues) => {
-    onNext(data);
-  };
+  const onSubmit = (data: AccountValues) => onNext(data);
 
   return (
     <div className="space-y-6 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300 w-full">
@@ -169,7 +212,7 @@ export function StepAccount({
                     {...field}
                     onChange={(event) => {
                       field.onChange(event);
-                      setOryAlertMessages([]);
+                      clearOryAlertMessages();
 
                       if (form.formState.errors.email) {
                         form.clearErrors("email");
@@ -202,7 +245,7 @@ export function StepAccount({
                     {...field}
                     onChange={(event) => {
                       field.onChange(event);
-                      setOryAlertMessages([]);
+                      clearOryAlertMessages();
 
                       if (form.formState.errors.confirmEmail) {
                         form.clearErrors("confirmEmail");
@@ -228,15 +271,15 @@ export function StepAccount({
                   {t("account.password_label")}{" "}
                   <span className="text-destructive">*</span>
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
+                <div className="relative">
+                  <FormControl>
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
                       {...field}
                       onChange={(event) => {
                         field.onChange(event);
-                        setOryAlertMessages([]);
+                        clearOryAlertMessages();
 
                         if (form.formState.errors.password) {
                           form.clearErrors("password");
@@ -247,25 +290,25 @@ export function StepAccount({
                       autoComplete="off"
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
-                      onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                      <span className="sr-only">
-                        {t("account.toggle_password_visibility")}
-                      </span>
-                    </Button>
-                  </div>
-                </FormControl>
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                    <span className="sr-only">
+                      {t("account.toggle_password_visibility")}
+                    </span>
+                  </Button>
+                </div>
                 <FormMessage />
 
                 {form.watch("password") && (
@@ -334,15 +377,15 @@ export function StepAccount({
                   {t("account.confirm_password_label")}{" "}
                   <span className="text-destructive">*</span>
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
+                <div className="relative">
+                  <FormControl>
                     <Input
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="********"
                       {...field}
                       onChange={(event) => {
                         field.onChange(event);
-                        setOryAlertMessages([]);
+                        clearOryAlertMessages();
 
                         if (form.formState.errors.confirmPassword) {
                           form.clearErrors("confirmPassword");
@@ -353,33 +396,41 @@ export function StepAccount({
                       autoComplete="off"
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      tabIndex={-1}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                      <span className="sr-only">
-                        {t("account.toggle_password_visibility")}
-                      </span>
-                    </Button>
-                  </div>
-                </FormControl>
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                    <span className="sr-only">
+                      {t("account.toggle_password_visibility")}
+                    </span>
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
           <div className="flex flex-col items-center w-full gap-4">
+            {initialGeneralError && !hasInitialFieldErrors && (
+              <Alert
+                variant="destructive"
+                className="border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 w-full text-left"
+              >
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{initialGeneralError}</AlertDescription>
+              </Alert>
+            )}
+
             {form.formState.errors.password?.message ===
               t("account.validation.password_compromised") && (
               <Alert
@@ -414,6 +465,7 @@ export function StepAccount({
             <Button
               type="submit"
               className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={form.formState.isSubmitting}
             >
               {t("account.continue")}
             </Button>
