@@ -3,6 +3,7 @@ import {
   accountRequestSchema,
   getAccountRequestFieldErrors,
 } from "@/lib/schemas/registration";
+import { parseJsonRequest } from "@/lib/services/api-response";
 import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
 import { createRegistrationAccountDraftCookie } from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
@@ -28,15 +29,6 @@ function createErrorResponse(
 }
 
 export async function POST(request: Request) {
-  let body: unknown;
-
-  try {
-    body = await request.json();
-  } catch (error) {
-    console.error("[/api/registration/account-draft] Invalid body:", error);
-    return createErrorResponse("invalid_payload", 400);
-  }
-
   try {
     const registrationSession = await getRegistrationSession();
 
@@ -44,13 +36,19 @@ export async function POST(request: Request) {
       return createErrorResponse("registration_session_missing", 400);
     }
 
-    const parsedRequest = accountRequestSchema.safeParse(body);
+    const parsedRequest = await parseJsonRequest(
+      request,
+      accountRequestSchema,
+      {
+        getFieldErrors: getAccountRequestFieldErrors,
+      },
+    );
 
     if (!parsedRequest.success) {
       return createErrorResponse(
-        "invalid_payload",
+        parsedRequest.code,
         400,
-        getAccountRequestFieldErrors(parsedRequest.error),
+        parsedRequest.fieldErrors,
       );
     }
 

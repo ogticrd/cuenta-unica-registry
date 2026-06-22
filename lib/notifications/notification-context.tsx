@@ -16,10 +16,12 @@ import type {
   CitizenNotification,
   NotificationPreference,
   NotificationStatus,
-  NotificationsResponse,
 } from "./types";
 
-interface NotificationContextType extends NotificationsResponse {
+interface NotificationContextType {
+  notifications: CitizenNotification[];
+  unreadCount: number;
+  unavailable: boolean;
   isLoading: boolean;
   refresh: () => Promise<void>;
   markRead: (id: string) => Promise<void>;
@@ -114,9 +116,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       try {
         const result = await notificationService.updateNotification(id, status);
         if (!result.success) {
-          throw new Error(
-            result.code ?? result.error ?? "notification_update_failed",
-          );
+          throw new Error(result.error);
         }
       } catch {
         setNotifications(previousNotifications);
@@ -139,12 +139,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     try {
       const result = await notificationService.markAllRead();
       if (!result.success) {
-        throw new Error(
-          result.code ??
-            (result.unavailable ? "notifications_unavailable" : undefined) ??
-            result.error ??
-            "notification_update_failed",
-        );
+        throw new Error(result.error);
       }
     } catch {
       setNotifications(previousNotifications);

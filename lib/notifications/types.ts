@@ -35,6 +35,13 @@ export type NotificationErrorCode =
   | "not_found"
   | "notifications_unavailable";
 
+export interface NotificationErrorPayload {
+  success: false;
+  unavailable?: boolean;
+  code: NotificationErrorCode;
+  error: NotificationErrorCode;
+}
+
 export interface CitizenNotification {
   id: string;
   notificationId: string;
@@ -59,26 +66,37 @@ export interface NotificationPreference {
   required: boolean;
 }
 
-export interface NotificationsResponse {
-  notifications: CitizenNotification[];
-  unreadCount: number;
-  success?: false;
-  unavailable?: boolean;
-  code?: NotificationErrorCode;
-  error?: NotificationErrorCode;
-}
+export type NotificationsResponse =
+  | {
+      notifications: CitizenNotification[];
+      unreadCount: number;
+      success?: never;
+      unavailable?: never;
+      code?: never;
+      error?: never;
+    }
+  | ({
+      notifications: CitizenNotification[];
+      unreadCount: number;
+    } & NotificationErrorPayload);
 
-export interface NotificationPreferencesResponse {
-  preferences: NotificationPreference[];
-  success?: false;
-  unavailable?: boolean;
-  code?: NotificationErrorCode;
-  error?: NotificationErrorCode;
-}
+export type NotificationPreferencesResponse =
+  | {
+      preferences: NotificationPreference[];
+      success?: never;
+      unavailable?: never;
+      code?: never;
+      error?: never;
+    }
+  | ({
+      preferences: NotificationPreference[];
+    } & NotificationErrorPayload);
 
-export interface NotificationMutationResponse {
-  success: boolean;
-  unavailable?: boolean;
-  code?: NotificationErrorCode;
-  error?: NotificationErrorCode;
-}
+export type NotificationMutationResponse =
+  | {
+      success: true;
+      unavailable?: never;
+      code?: never;
+      error?: never;
+    }
+  | NotificationErrorPayload;

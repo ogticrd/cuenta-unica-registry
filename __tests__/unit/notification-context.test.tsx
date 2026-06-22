@@ -124,6 +124,7 @@ describe("NotificationProvider", () => {
       success: false,
       unavailable: true,
       code: "notifications_unavailable",
+      error: "notifications_unavailable",
     });
 
     renderProvider();

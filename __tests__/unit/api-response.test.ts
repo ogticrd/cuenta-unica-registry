@@ -1,10 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import {
   type ApiResponseError,
   getCodedApiErrorPayload,
   isExpectedCodedApiError,
   logUnexpectedApiError,
+  parseJsonRequest,
   parseJsonResponse,
+  parseOptionalJsonRequest,
 } from "@/lib/services/api-response";
 
 describe("parseJsonResponse", () => {
@@ -130,5 +133,110 @@ describe("parseJsonResponse", () => {
       "[testService.operation] Request failed:",
       offlineError,
     );
+  });
+});
+
+describe("parseJsonRequest", () => {
+  const schema = z.object({
+    email: z.string().email(),
+  });
+
+  it("returns validated request data", async () => {
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+      body: JSON.stringify({ email: "user@example.com" }),
+    });
+
+    await expect(parseJsonRequest(request, schema)).resolves.toEqual({
+      success: true,
+      data: {
+        email: "user@example.com",
+      },
+    });
+  });
+
+  it("returns invalid_payload for malformed JSON", async () => {
+    const getFieldErrors = vi.fn();
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+      body: "{",
+    });
+
+    await expect(
+      parseJsonRequest(request, schema, { getFieldErrors }),
+    ).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+    expect(getFieldErrors).not.toHaveBeenCalled();
+  });
+
+  it("maps schema errors to stable field errors", async () => {
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+      body: JSON.stringify({ email: "bad-email" }),
+    });
+
+    await expect(
+      parseJsonRequest(request, schema, {
+        getFieldErrors: (error) =>
+          error.issues.some((issue) => issue.path[0] === "email")
+            ? { email: "account.validation.email_invalid" }
+            : {},
+      }),
+    ).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+      fieldErrors: {
+        email: "account.validation.email_invalid",
+      },
+    });
+  });
+});
+
+describe("parseOptionalJsonRequest", () => {
+  const schema = z.object({
+    email: z.string().email(),
+  });
+
+  it("returns null data for an empty request body", async () => {
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+    });
+
+    await expect(parseOptionalJsonRequest(request, schema)).resolves.toEqual({
+      success: true,
+      data: null,
+    });
+  });
+
+  it("validates non-empty optional request bodies", async () => {
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+      body: JSON.stringify({ email: "user@example.com" }),
+    });
+
+    await expect(parseOptionalJsonRequest(request, schema)).resolves.toEqual({
+      success: true,
+      data: {
+        email: "user@example.com",
+      },
+    });
+  });
+
+  it("returns invalid_payload for malformed optional JSON", async () => {
+    const getFieldErrors = vi.fn();
+    const request = new Request("http://localhost/api/test", {
+      method: "POST",
+      body: "{",
+    });
+
+    await expect(
+      parseOptionalJsonRequest(request, schema, { getFieldErrors }),
+    ).resolves.toEqual({
+      success: false,
+      code: "invalid_payload",
+    });
+    expect(getFieldErrors).not.toHaveBeenCalled();
   });
 });

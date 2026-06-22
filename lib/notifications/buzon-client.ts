@@ -1,5 +1,7 @@
+import { createNotificationErrorPayload } from "./errors";
 import type {
   CitizenNotification,
+  NotificationErrorCode,
   NotificationMutationResponse,
   NotificationPreference,
   NotificationPreferencesResponse,
@@ -14,7 +16,65 @@ type BuzonRequestOptions = {
   body: Record<string, unknown>;
 };
 
+type BuzonMutationResponse =
+  | { success: true }
+  | {
+      success: false;
+      unavailable?: boolean;
+      code?: NotificationErrorCode;
+      error?: NotificationErrorCode;
+    };
+
 const cuentaUnicaTopicSet = new Set<string>(CUENTA_UNICA_NOTIFICATION_TOPICS);
+
+function createUnavailableNotificationsResponse(
+  unavailable: boolean,
+): NotificationsResponse {
+  return createNotificationErrorPayload("notifications_unavailable", {
+    notifications: [],
+    unreadCount: 0,
+    unavailable,
+  });
+}
+
+function createUnavailableMutationResponse(
+  unavailable: boolean,
+): NotificationMutationResponse {
+  return createNotificationErrorPayload("notifications_unavailable", {
+    unavailable,
+  });
+}
+
+function normalizeMutationResponse(
+  result: BuzonMutationResponse | null,
+  unavailable: boolean,
+): NotificationMutationResponse {
+  if (!result) {
+    return createUnavailableMutationResponse(unavailable);
+  }
+
+  if (result.success) {
+    return result;
+  }
+
+  const code = result.code ?? "notification_update_failed";
+  const isUnavailable = result.unavailable === true || unavailable;
+
+  return createNotificationErrorPayload(code, {
+    ...result,
+    ...(isUnavailable ? { unavailable: true } : {}),
+  });
+}
+
+function createUnavailablePreferencesResponse(
+  preferences: NotificationPreference[],
+  unavailable: boolean,
+): NotificationPreferencesResponse {
+  return createNotificationErrorPayload("notifications_unavailable", {
+    preferences,
+    unavailable,
+  });
+}
 
 function isCuentaUnicaNotificationTopic(topic: string) {
   return cuentaUnicaTopicSet.has(topic);
@@ -161,13 +221,7 @@ export async function queryCitizenNotifications(input: {
   });
 
   if (!result.data) {
-    return {
-      success: false,
-      notifications: [],
-      unreadCount: 0,
-      unavailable: result.unavailable,
-      code: "notifications_unavailable",
-    };
+    return createUnavailableNotificationsResponse(result.unavailable);
   }
 
   return buildCuentaUnicaNotificationsResponse(result.data);
@@ -185,18 +239,14 @@ export async function updateCitizenNotification(input: {
   });
 
   if (current.unavailable) {
-    return {
-      success: false,
-      unavailable: true,
-      code: "notifications_unavailable",
-    };
+    return createUnavailableMutationResponse(true);
   }
 
   if (current.notifications.length === 0) {
-    return { success: false, code: "not_found", error: "not_found" };
+    return createNotificationErrorPayload("not_found");
   }
 
-  const result = await requestBuzon<NotificationMutationResponse>({
+  const result = await requestBuzon<BuzonMutationResponse>({
     path: `/api/v1/inbox/${input.id}`,
     method: "PATCH",
     body: {
@@ -205,32 +255,20 @@ export async function updateCitizenNotification(input: {
     },
   });
 
-  return (
-    result.data ?? {
-      success: false,
-      unavailable: result.unavailable,
-      code: "notifications_unavailable",
-    }
-  );
+  return normalizeMutationResponse(result.data, result.unavailable);
 }
 
 export async function markAllCitizenNotificationsRead(input: {
   citizenId: string;
 }): Promise<NotificationMutationResponse> {
-  const result = await requestBuzon<NotificationMutationResponse>({
+  const result = await requestBuzon<BuzonMutationResponse>({
     path: "/api/v1/inbox/mark-all-read",
     body: {
       citizenId: input.citizenId,
     },
   });
 
-  return (
-    result.data ?? {
-      success: false,
-      unavailable: result.unavailable,
-      code: "notifications_unavailable",
-    }
-  );
+  return normalizeMutationResponse(result.data, result.unavailable);
 }
 
 export async function queryCitizenNotificationPreferences(input: {
@@ -245,12 +283,10 @@ export async function queryCitizenNotificationPreferences(input: {
   });
 
   if (!result.data) {
-    return {
-      success: false,
-      preferences: input.defaults,
-      unavailable: result.unavailable,
-      code: "notifications_unavailable",
-    };
+    return createUnavailablePreferencesResponse(
+      input.defaults,
+      result.unavailable,
+    );
   }
 
   return {
@@ -274,13 +310,10 @@ export async function updateCitizenNotificationPreferences(input: {
   });
 
   if (!currentResult.data) {
-    return {
-      success: false,
-      preferences:
-        input.preferences.length > 0 ? input.preferences : input.defaults,
-      unavailable: currentResult.unavailable,
-      code: "notifications_unavailable",
-    };
+    return createUnavailablePreferencesResponse(
+      input.preferences.length > 0 ? input.preferences : input.defaults,
+      currentResult.unavailable,
+    );
   }
 
   const preferences = mergeCuentaUnicaPreferenceUpdates(
@@ -302,12 +335,10 @@ export async function updateCitizenNotificationPreferences(input: {
   });
 
   if (!result.data) {
-    return {
-      success: false,
-      preferences: input.preferences,
-      unavailable: result.unavailable,
-      code: "notifications_unavailable",
-    };
+    return createUnavailablePreferencesResponse(
+      input.preferences,
+      result.unavailable,
+    );
   }
 
   return {

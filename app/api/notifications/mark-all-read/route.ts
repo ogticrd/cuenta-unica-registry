@@ -3,6 +3,7 @@ import {
   queryCitizenNotifications,
   updateCitizenNotification,
 } from "@/lib/notifications/buzon-client";
+import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
 import type { NotificationMutationResponse } from "@/lib/notifications/types";
 
@@ -27,12 +28,9 @@ function createMutationFailureResponse(
 
   const code = result.code ?? "notification_update_failed";
 
-  return {
-    success: false,
+  return createNotificationErrorPayload(code, {
     unavailable: result.unavailable,
-    code,
-    error: result.error ?? code,
-  };
+  });
 }
 
 export async function POST() {
@@ -41,11 +39,7 @@ export async function POST() {
 
     if (!citizenId) {
       return NextResponse.json(
-        {
-          success: false,
-          code: "citizen_id_unavailable",
-          error: "citizen_id_unavailable",
-        },
+        createNotificationErrorPayload("citizen_id_unavailable"),
         { status: 409 },
       );
     }
@@ -58,11 +52,9 @@ export async function POST() {
 
     if (unreadNotifications.unavailable) {
       return NextResponse.json(
-        {
-          success: false,
+        createNotificationErrorPayload("notifications_unavailable", {
           unavailable: true,
-          code: "notifications_unavailable",
-        },
+        }),
         { status: 503 },
       );
     }
@@ -87,11 +79,9 @@ export async function POST() {
     return NextResponse.json({ success: true }, { status: 200 });
   } catch {
     return NextResponse.json(
-      {
-        success: false,
+      createNotificationErrorPayload("notifications_unavailable", {
         unavailable: true,
-        code: "notifications_unavailable",
-      },
+      }),
       { status: 503 },
     );
   }

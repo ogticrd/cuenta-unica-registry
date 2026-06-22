@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   applyAccountRegistrationCookies,
   completeRegistrationAccount,
@@ -43,11 +44,13 @@ function setVerifiedSessionCookie(
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json().catch(() => null);
-    const parsedBody = livenessCompleteRequestSchema.safeParse(body);
+    const parsedBody = await parseJsonRequest(
+      request,
+      livenessCompleteRequestSchema,
+    );
 
     if (!parsedBody.success) {
-      return createVerificationErrorResponse("invalid_payload", 400);
+      return createVerificationErrorResponse(parsedBody.code, 400);
     }
 
     const livenessResult = await verifyRegistrationLiveness(

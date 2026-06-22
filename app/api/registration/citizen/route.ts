@@ -3,6 +3,7 @@ import {
   citizenLookupRequestSchema,
   getCitizenLookupFieldErrors,
 } from "@/lib/schemas/registration";
+import { parseJsonRequest } from "@/lib/services/api-response";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
@@ -33,22 +34,19 @@ function createErrorResponse(
 }
 
 export async function POST(request: Request) {
-  let body: unknown = null;
-
-  try {
-    body = await request.json();
-  } catch (error) {
-    console.error("[/api/registration/citizen] Invalid request body:", error);
-    return createErrorResponse("invalid_payload", 400);
-  }
-
-  const parsedRequest = citizenLookupRequestSchema.safeParse(body);
+  const parsedRequest = await parseJsonRequest(
+    request,
+    citizenLookupRequestSchema,
+    {
+      getFieldErrors: getCitizenLookupFieldErrors,
+    },
+  );
 
   if (!parsedRequest.success) {
     return createErrorResponse(
-      "invalid_payload",
+      parsedRequest.code,
       400,
-      getCitizenLookupFieldErrors(parsedRequest.error),
+      parsedRequest.fieldErrors,
     );
   }
 

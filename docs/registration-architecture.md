@@ -107,6 +107,11 @@ Todas las rutas de registro deben responder con contratos tipados:
 { success: false, code: "..." }
 ```
 
+Los cuerpos JSON de rutas de registro, y de cualquier API que exponga errores
+codificados, deben leerse y validarse con los helpers compartidos de
+`lib/services/api-response.ts`, para conservar una sola semantica de
+`invalid_payload`, body opcional y `fieldErrors`.
+
 Cuando el error pertenece a un campo editable del formulario, la API debe
 devolver `fieldErrors` con claves de traduccion estables, no texto renderizado:
 

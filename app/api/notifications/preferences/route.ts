@@ -5,12 +5,14 @@ import {
   updateCitizenNotificationPreferences,
 } from "@/lib/notifications/buzon-client";
 import { buildDefaultNotificationPreferences } from "@/lib/notifications/default-preferences";
+import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
 import type { NotificationPreference } from "@/lib/notifications/types";
 import {
   NOTIFICATION_CHANNELS,
   NOTIFICATION_TOPICS,
 } from "@/lib/notifications/types";
+import { parseJsonRequest } from "@/lib/services/api-response";
 
 const notificationPreferenceUpdateRequestSchema = z.object({
   preferences: z
@@ -29,12 +31,9 @@ const notificationPreferenceUpdateRequestSchema = z.object({
 
 function createInvalidPayloadResponse(defaults: NotificationPreference[]) {
   return NextResponse.json(
-    {
-      success: false,
+    createNotificationErrorPayload("invalid_payload", {
       preferences: defaults,
-      code: "invalid_payload",
-      error: "invalid_payload",
-    },
+    }),
     { status: 400 },
   );
 }
@@ -46,12 +45,9 @@ export async function GET() {
 
     if (!citizenId) {
       return NextResponse.json(
-        {
-          success: false,
+        createNotificationErrorPayload("citizen_id_unavailable", {
           preferences: defaults,
-          code: "citizen_id_unavailable",
-          error: "citizen_id_unavailable",
-        },
+        }),
         { status: 409 },
       );
     }
@@ -64,10 +60,10 @@ export async function GET() {
     return NextResponse.json(result);
   } catch {
     return NextResponse.json({
-      success: false,
-      preferences: buildDefaultNotificationPreferences(),
-      unavailable: true,
-      code: "notifications_unavailable",
+      ...createNotificationErrorPayload("notifications_unavailable", {
+        preferences: buildDefaultNotificationPreferences(),
+        unavailable: true,
+      }),
     });
   }
 }
@@ -75,12 +71,10 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const defaults = buildDefaultNotificationPreferences();
-    const [citizenId, body] = await Promise.all([
+    const [citizenId, parsedBody] = await Promise.all([
       getAuthenticatedCitizenId(),
-      request.json().catch(() => null),
+      parseJsonRequest(request, notificationPreferenceUpdateRequestSchema),
     ]);
-    const parsedBody =
-      notificationPreferenceUpdateRequestSchema.safeParse(body);
 
     if (!parsedBody.success) {
       return createInvalidPayloadResponse(defaults);
@@ -88,12 +82,9 @@ export async function PUT(request: Request) {
 
     if (!citizenId) {
       return NextResponse.json(
-        {
-          success: false,
+        createNotificationErrorPayload("citizen_id_unavailable", {
           preferences: [],
-          code: "citizen_id_unavailable",
-          error: "citizen_id_unavailable",
-        },
+        }),
         { status: 409 },
       );
     }
@@ -114,12 +105,10 @@ export async function PUT(request: Request) {
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
-      {
-        success: false,
+      createNotificationErrorPayload("notifications_unavailable", {
         preferences: buildDefaultNotificationPreferences(),
         unavailable: true,
-        code: "notifications_unavailable",
-      },
+      }),
       { status: 503 },
     );
   }

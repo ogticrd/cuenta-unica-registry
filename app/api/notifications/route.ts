@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { queryCitizenNotifications } from "@/lib/notifications/buzon-client";
+import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
 import type { NotificationStatus } from "@/lib/notifications/types";
 
@@ -20,13 +21,10 @@ export async function GET(request: Request) {
 
     if (!citizenId) {
       return NextResponse.json(
-        {
-          success: false,
+        createNotificationErrorPayload("citizen_id_unavailable", {
           notifications: [],
           unreadCount: 0,
-          code: "citizen_id_unavailable",
-          error: "citizen_id_unavailable",
-        },
+        }),
         { status: 409 },
       );
     }
@@ -40,13 +38,11 @@ export async function GET(request: Request) {
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
-      {
-        success: false,
+      createNotificationErrorPayload("notifications_unavailable", {
         notifications: [],
         unreadCount: 0,
         unavailable: true,
-        code: "notifications_unavailable",
-      },
+      }),
       { status: 200 },
     );
   }

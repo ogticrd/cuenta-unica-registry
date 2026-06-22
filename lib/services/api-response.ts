@@ -1,3 +1,5 @@
+import type { z } from "zod";
+
 export type ApiErrorPayload = {
   code?: string;
   error?: string;
@@ -25,6 +27,110 @@ function createInvalidJsonPayload(): ApiErrorPayload {
     code: "invalid_json",
     error: "invalid_json",
   };
+}
+
+type JsonRequestFailure<TFieldErrors> = {
+  success: false;
+  code: "invalid_payload";
+  fieldErrors?: TFieldErrors;
+};
+
+type JsonRequestOptions<TSchema extends z.ZodType, TFieldErrors> = {
+  getFieldErrors?: (error: z.ZodError<z.input<TSchema>>) => TFieldErrors;
+};
+
+const INVALID_JSON_BODY = Symbol("invalid_json_body");
+
+export type JsonRequestParseResult<TData, TFieldErrors> =
+  | {
+      success: true;
+      data: TData;
+    }
+  | JsonRequestFailure<TFieldErrors>;
+
+export type OptionalJsonRequestParseResult<TData, TFieldErrors> =
+  | {
+      success: true;
+      data: TData | null;
+    }
+  | JsonRequestFailure<TFieldErrors>;
+
+function createInvalidPayloadResult<TFieldErrors>(
+  fieldErrors?: TFieldErrors,
+): JsonRequestFailure<TFieldErrors> {
+  return {
+    success: false,
+    code: "invalid_payload",
+    ...(fieldErrors ? { fieldErrors } : {}),
+  };
+}
+
+function parseSchema<TSchema extends z.ZodType, TFieldErrors>(
+  body: unknown,
+  schema: TSchema,
+  options?: JsonRequestOptions<TSchema, TFieldErrors>,
+): JsonRequestParseResult<z.output<TSchema>, TFieldErrors> {
+  const parsed = schema.safeParse(body);
+
+  if (!parsed.success) {
+    return createInvalidPayloadResult(
+      options?.getFieldErrors?.(parsed.error as z.ZodError<z.input<TSchema>>),
+    );
+  }
+
+  return {
+    success: true,
+    data: parsed.data,
+  };
+}
+
+export async function parseJsonRequest<
+  TSchema extends z.ZodType,
+  TFieldErrors = never,
+>(
+  request: Request,
+  schema: TSchema,
+  options?: JsonRequestOptions<TSchema, TFieldErrors>,
+): Promise<JsonRequestParseResult<z.output<TSchema>, TFieldErrors>> {
+  const body = await request.json().catch(() => INVALID_JSON_BODY);
+
+  if (body === INVALID_JSON_BODY) {
+    return createInvalidPayloadResult();
+  }
+
+  return parseSchema(body, schema, options);
+}
+
+export async function parseOptionalJsonRequest<
+  TSchema extends z.ZodType,
+  TFieldErrors = never,
+>(
+  request: Request,
+  schema: TSchema,
+  options?: JsonRequestOptions<TSchema, TFieldErrors>,
+): Promise<OptionalJsonRequestParseResult<z.output<TSchema>, TFieldErrors>> {
+  const rawBody = await request.text().catch(() => null);
+
+  if (rawBody === null) {
+    return createInvalidPayloadResult();
+  }
+
+  if (!rawBody.trim()) {
+    return {
+      success: true,
+      data: null,
+    };
+  }
+
+  let body: unknown;
+
+  try {
+    body = JSON.parse(rawBody) as unknown;
+  } catch {
+    return createInvalidPayloadResult();
+  }
+
+  return parseSchema(body, schema, options);
 }
 
 export async function parseJsonResponse<T>(response: Response): Promise<T> {

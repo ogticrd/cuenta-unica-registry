@@ -141,6 +141,7 @@ describe("GET /api/notifications", () => {
       unreadCount: 0,
       unavailable: true,
       code: "notifications_unavailable",
+      error: "notifications_unavailable",
     });
   });
 
@@ -224,6 +225,7 @@ describe("GET /api/notifications/preferences", () => {
       success: false,
       unavailable: true,
       code: "notifications_unavailable",
+      error: "notifications_unavailable",
     });
   });
 
@@ -493,6 +495,7 @@ describe("POST /api/notifications/mark-all-read", () => {
       success: false,
       unavailable: true,
       code: "notifications_unavailable",
+      error: "notifications_unavailable",
     });
   });
 

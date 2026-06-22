@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { updateCitizenNotification } from "@/lib/notifications/buzon-client";
+import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
 import type { NotificationMutationResponse } from "@/lib/notifications/types";
 import { NOTIFICATION_STATUSES } from "@/lib/notifications/types";
+import { parseJsonRequest } from "@/lib/services/api-response";
 
 const notificationStatusRequestSchema = z.object({
   status: z.enum(NOTIFICATION_STATUSES),
@@ -28,15 +30,12 @@ export async function PATCH(
   try {
     const [{ id }, bodyResult] = await Promise.all([
       params,
-      request
-        .json()
-        .then((data) => ({ success: true as const, data }))
-        .catch(() => ({ success: false as const })),
+      parseJsonRequest(request, z.unknown()),
     ]);
 
     if (!bodyResult.success) {
       return NextResponse.json(
-        { success: false, code: "invalid_payload", error: "invalid_payload" },
+        createNotificationErrorPayload("invalid_payload"),
         { status: 400 },
       );
     }
@@ -47,7 +46,7 @@ export async function PATCH(
 
     if (!parsedBody.success) {
       return NextResponse.json(
-        { success: false, code: "invalid_status", error: "invalid_status" },
+        createNotificationErrorPayload("invalid_status"),
         { status: 400 },
       );
     }
@@ -56,11 +55,7 @@ export async function PATCH(
 
     if (!citizenId) {
       return NextResponse.json(
-        {
-          success: false,
-          code: "citizen_id_unavailable",
-          error: "citizen_id_unavailable",
-        },
+        createNotificationErrorPayload("citizen_id_unavailable"),
         { status: 409 },
       );
     }
@@ -73,11 +68,9 @@ export async function PATCH(
     return NextResponse.json(result, { status: getMutationStatus(result) });
   } catch {
     return NextResponse.json(
-      {
-        success: false,
+      createNotificationErrorPayload("notifications_unavailable", {
         unavailable: true,
-        code: "notifications_unavailable",
-      },
+      }),
       { status: 503 },
     );
   }

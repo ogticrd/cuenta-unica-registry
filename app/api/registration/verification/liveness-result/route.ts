@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   createVerifyLivenessPayload,
   verifyRegistrationLiveness,
@@ -23,11 +24,13 @@ function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json().catch(() => null);
-    const parsedBody = livenessResultRequestSchema.safeParse(body);
+    const parsedBody = await parseJsonRequest(
+      request,
+      livenessResultRequestSchema,
+    );
 
     if (!parsedBody.success) {
-      return createErrorResponse("invalid_payload", 400);
+      return createErrorResponse(parsedBody.code, 400);
     }
 
     const result = await verifyRegistrationLiveness(parsedBody.data.sessionId);

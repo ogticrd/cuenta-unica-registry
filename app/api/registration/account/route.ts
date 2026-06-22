@@ -2,6 +2,7 @@ import {
   accountRequestSchema,
   getAccountRequestFieldErrors,
 } from "@/lib/schemas/registration";
+import { parseOptionalJsonRequest } from "@/lib/services/api-response";
 import {
   completeRegistrationAccount,
   createAccountRegistrationErrorResult,
@@ -18,86 +19,23 @@ import type { RegistrationSession } from "@/lib/types/registration/session";
 type OptionalAccountBodyResult =
   | {
       success: true;
-      rawBody: string;
-    }
-  | {
-      success: false;
-      code: "invalid_payload";
-      fieldErrors?: RegisterAccountFieldErrors;
-    };
-
-async function readOptionalAccountBody(
-  request: Request,
-): Promise<OptionalAccountBodyResult> {
-  const rawBody = await request.text().catch(() => null);
-
-  if (rawBody === null) {
-    return {
-      success: false,
-      code: "invalid_payload" as const,
-    };
-  }
-
-  return {
-    success: true,
-    rawBody,
-  };
-}
-
-function parseOptionalAccountRequest(rawBody: string):
-  | {
-      success: true;
       data: RegisterAccountRequest | null;
     }
   | {
       success: false;
       code: "invalid_payload";
       fieldErrors?: RegisterAccountFieldErrors;
-    } {
-  if (!rawBody.trim()) {
-    return {
-      success: true,
-      data: null,
     };
-  }
 
-  let body: unknown;
-
-  try {
-    body = JSON.parse(rawBody) as RegisterAccountRequest;
-  } catch (error) {
-    console.error("[/api/registration/account] Invalid request body:", error);
-    return {
-      success: false,
-      code: "invalid_payload" as const,
-    };
-  }
-
-  const parsedRequest = accountRequestSchema.safeParse(body);
-
-  if (!parsedRequest.success) {
-    return {
-      success: false,
-      code: "invalid_payload" as const,
-      fieldErrors: getAccountRequestFieldErrors(parsedRequest.error),
-    };
-  }
-
-  return {
-    success: true,
-    data: parsedRequest.data,
-  };
+function parseOptionalAccountRequest(
+  request: Request,
+): Promise<OptionalAccountBodyResult> {
+  return parseOptionalJsonRequest(request, accountRequestSchema, {
+    getFieldErrors: getAccountRequestFieldErrors,
+  });
 }
 
 export async function POST(request: Request) {
-  const bodyResult = await readOptionalAccountBody(request);
-
-  if (!bodyResult.success) {
-    return createAccountRegistrationResponse(
-      createAccountRegistrationErrorResult(bodyResult.code, 400),
-    );
-  }
-
   let registrationSession: RegistrationSession | null;
 
   try {
@@ -119,7 +57,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsedRequest = parseOptionalAccountRequest(bodyResult.rawBody);
+  const parsedRequest = await parseOptionalAccountRequest(request);
 
   if (!parsedRequest.success) {
     return createAccountRegistrationResponse(
