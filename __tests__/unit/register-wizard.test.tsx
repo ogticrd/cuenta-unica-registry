@@ -117,7 +117,7 @@ function renderAccountStepWizard() {
   render(
     <RegisterWizard
       initialStep={1}
-      initialCedula="40224888319"
+      initialCedula="40214041176"
       initialName="Juan Perez"
       initialSessionStatus="identified"
       hasAccountDraft={false}

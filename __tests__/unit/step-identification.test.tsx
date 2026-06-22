@@ -98,11 +98,11 @@ describe("StepIdentification", () => {
     });
     const { props } = renderStepIdentification();
 
-    await user.type(screen.getByLabelText("Cédula *"), "40224888319");
+    await user.type(screen.getByLabelText("Cédula *"), "40214041176");
     await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(citizenService.identifyCitizen).toHaveBeenCalledWith(
-      "40224888319",
+      "40214041176",
       undefined,
     );
     expect(

@@ -30,7 +30,7 @@ describe("validateRegistrationAccountCredentials", () => {
           password: "GovFlow92817Z!",
         },
         {
-          cedula: "40224888319",
+          cedula: "40214041176",
         },
       ),
     ).resolves.toBeNull();
@@ -42,10 +42,10 @@ describe("validateRegistrationAccountCredentials", () => {
       validateRegistrationAccountCredentials(
         {
           email: "user@example.com",
-          password: "User40224888319!",
+          password: "User40214041176!",
         },
         {
-          cedula: "402-2488831-9",
+          cedula: "402-1404117-6",
         },
       ),
     ).resolves.toEqual({
@@ -65,7 +65,7 @@ describe("validateRegistrationAccountCredentials", () => {
           password: "MARLUAN92817!",
         },
         {
-          cedula: "40224888319",
+          cedula: "40214041176",
         },
       ),
     ).resolves.toEqual({
@@ -85,7 +85,7 @@ describe("validateRegistrationAccountCredentials", () => {
           password: "abcdefghij",
         },
         {
-          cedula: "40224888319",
+          cedula: "40214041176",
         },
       ),
     ).resolves.toEqual({
@@ -107,7 +107,7 @@ describe("validateRegistrationAccountCredentials", () => {
           password: "GovFlow92817Z!",
         },
         {
-          cedula: "40224888319",
+          cedula: "40214041176",
         },
       ),
     ).resolves.toEqual({

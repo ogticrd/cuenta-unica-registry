@@ -21,7 +21,7 @@ function createEncryptedDraftPayload(overrides: Record<string, unknown> = {}) {
 
   return serializeRegistrationAccountDraft({
     sessionId: TEST_REGISTRATION_SESSION_ID,
-    cedula: "40224888319",
+    cedula: "40214041176",
     email: "marluanespiritusanto@gmail.com",
     password: "GovFlow92817Z!",
     issuedAt,
@@ -60,7 +60,7 @@ describe("registration account draft cookie", () => {
     const cookie = createRegistrationAccountDraftCookie({
       sessionId: TEST_REGISTRATION_SESSION_ID,
       sessionExpiresAt: getSessionExpiresAt(),
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -68,13 +68,13 @@ describe("registration account draft cookie", () => {
     expect(cookie.name).toBe("registration_account_draft");
     expect(cookie.httpOnly).toBe(true);
     expect(cookie.sameSite).toBe("strict");
-    expect(cookie.value).not.toContain("40224888319");
+    expect(cookie.value).not.toContain("40214041176");
     expect(cookie.value).not.toContain("marluanespiritusanto@gmail.com");
     expect(cookie.value).not.toContain("GovFlow92817Z!");
 
     expect(parseRegistrationAccountDraftCookie(cookie.value)).toMatchObject({
       sessionId: TEST_REGISTRATION_SESSION_ID,
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -84,7 +84,7 @@ describe("registration account draft cookie", () => {
     const cookie = createRegistrationAccountDraftCookie({
       sessionId: TEST_REGISTRATION_SESSION_ID,
       sessionExpiresAt: getSessionExpiresAt(),
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -100,7 +100,7 @@ describe("registration account draft cookie", () => {
     const cookie = createRegistrationAccountDraftCookie({
       sessionId: TEST_REGISTRATION_SESSION_ID,
       sessionExpiresAt: getSessionExpiresAt(),
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -114,7 +114,7 @@ describe("registration account draft cookie", () => {
     const issuedAt = Date.now();
     const legacyCookieValue = serializeLegacyDraftWithoutContext({
       sessionId: TEST_REGISTRATION_SESSION_ID,
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
       issuedAt,
@@ -132,7 +132,7 @@ describe("registration account draft cookie", () => {
     const cookie = createRegistrationAccountDraftCookie({
       sessionId: TEST_REGISTRATION_SESSION_ID,
       sessionExpiresAt,
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -155,7 +155,7 @@ describe("registration account draft cookie", () => {
     const cookie = createRegistrationAccountDraftCookie({
       sessionId: TEST_REGISTRATION_SESSION_ID,
       sessionExpiresAt: getSessionExpiresAt(),
-      cedula: "40224888319",
+      cedula: "40214041176",
       email: "marluanespiritusanto@gmail.com",
       password: "GovFlow92817Z!",
     });
@@ -168,7 +168,7 @@ describe("registration account draft cookie", () => {
   it("rejects encrypted drafts with a non-normalized cedula", () => {
     expect(
       parseRegistrationAccountDraftCookie(
-        createEncryptedDraftPayload({ cedula: "402-2488831-9" }),
+        createEncryptedDraftPayload({ cedula: "402-1404117-6" }),
       ),
     ).toBeNull();
   });
@@ -236,7 +236,7 @@ describe("registration account draft cookie", () => {
       parseRegistrationAccountDraftCookie(
         serializeRegistrationAccountDraft({
           sessionId: TEST_REGISTRATION_SESSION_ID,
-          cedula: "40224888319",
+          cedula: "40214041176",
           email: "marluanespiritusanto@gmail.com",
           password: "GovFlow92817Z!",
         } as never),

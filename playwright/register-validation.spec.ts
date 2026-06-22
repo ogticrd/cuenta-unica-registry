@@ -1,11 +1,11 @@
 import { expect, type Page, test } from "@playwright/test";
 
-const VALID_CEDULA = "40224888319";
+const VALID_CEDULA = "40214041176";
 const INVALID_CEDULA = "00100000000";
 const INVALID_CEDULA_FORMATTED = "001-0000000-0";
-const VALID_CEDULA_FORMATTED = "402-2488831-9";
-const VALID_EMAIL = "marluanespiritusanto@gmail.com";
-const VALID_PASSWORD = "M4rlu@nSecure#2026";
+const VALID_CEDULA_FORMATTED = "402-1404117-6";
+const VALID_EMAIL = "john_smith@yopmail.com";
+const VALID_PASSWORD = "John4Sm1t5@nSecure#2026";
 
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];

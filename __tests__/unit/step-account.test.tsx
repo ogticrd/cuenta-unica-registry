@@ -78,7 +78,7 @@ function renderStepAccount(
   const props: React.ComponentProps<typeof StepAccount> = {
     onBack: vi.fn(),
     onNext: vi.fn(),
-    cedula: "40224888319",
+    cedula: "40214041176",
     defaultValues: emptyDraft,
     ...overrides,
   };
