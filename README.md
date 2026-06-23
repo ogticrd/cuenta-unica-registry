@@ -1,21 +1,21 @@
-# Cuenta Unica Ciudadana Registry
+# Cuenta Única Ciudadana Registry
 
-Portal de identidad digital para la Republica Dominicana. El objetivo del
+Portal de identidad digital para la República Dominicana. El objetivo del
 repositorio es proveer un registro ciudadano verificable, seguro y mantenible,
 integrado con Ory Network, AWS Rekognition Face Liveness, APIs oficiales de
-ciudadanos y Buzon Ciudadano.
+ciudadanos y Buzón Ciudadano.
 
-## Stack
+## Tecnologías
 
 - Next.js 16, React 19, TypeScript, Tailwind CSS.
-- Ory Network para identidad, sesiones, registro, login y verificacion por
-  codigo.
-- AWS Rekognition Face Liveness para prueba de vida y comparacion facial.
-- `next-intl` para internacionalizacion.
-- Vitest y Testing Library para pruebas unitarias e integracion.
+- Ory Network para identidad, sesiones, registro, login y verificación por
+  código.
+- AWS Rekognition Face Liveness para prueba de vida y comparación facial.
+- `next-intl` para internacionalización.
+- Vitest y Testing Library para pruebas unitarias e integración.
 - Playwright para e2e; las suites viven en `playwright/`.
 
-## Primeros Pasos
+## Primeros pasos
 
 1. Instalar dependencias:
 
@@ -23,13 +23,14 @@ ciudadanos y Buzon Ciudadano.
    bun install
    ```
 
-2. Instalar browsers de Playwright si se ejecutaran pruebas e2e:
+2. Instalar navegadores de Playwright si se ejecutarán pruebas e2e:
 
    ```sh
    bunx playwright install
    ```
 
-3. Crear `.env` desde `.env.example` y completar credenciales locales.
+3. Crear `.env` desde `.env.example`, dejar activo un solo bloque de ambiente
+   Ory y completar credenciales locales por sección.
 
 4. Levantar el tunnel de Ory para desarrollo local:
 
@@ -37,7 +38,7 @@ ciudadanos y Buzon Ciudadano.
    ory tunnel http://localhost:3000 --project focused-gagarin-ywepc2q5bu --dev
    ```
 
-5. Levantar la aplicacion:
+5. Levantar la aplicación:
 
    ```sh
    bun dev
@@ -66,47 +67,47 @@ bun run test
 bun run test:playwright:registration
 ```
 
-## Flujo Critico de Registro
+## Flujo crítico de registro
 
-El registro no es solo UI. Es un protocolo de estado entre browser, Next.js,
+El registro no es solo UI. Es un protocolo de estado entre navegador, Next.js,
 Ory, APIs ciudadanas y Rekognition:
 
-1. Identificacion: valida cedula, confirma que no exista identidad en Ory,
+1. Identificación: valida cédula, confirma que no exista identidad en Ory,
    consulta APIs ciudadanas y crea cookie `registration_session` con estado
    `identified`.
 2. Cuenta: valida email/password, guarda un draft temporal cifrado en cookie
-   `registration_account_draft` y avanza a biometria.
-3. Prueba de vida: crea sesion de Rekognition, valida liveness y compara la
+   `registration_account_draft` y avanza a biometría.
+3. Prueba de vida: crea sesión de Rekognition, valida liveness y compara la
    imagen oficial del ciudadano contra la imagen de referencia.
-4. Finalizacion: solo despues de biometria exitosa se crea la cuenta Ory. Si el
-   email no esta verificado, se debe redirigir a `/register/email-sent?flow=...`.
+4. Finalización: solo después de biometría exitosa se crea la cuenta Ory. Si el
+   email no está verificado, se debe redirigir a `/register/email-sent?flow=...`.
 
 Invariantes:
 
-- Ningun cliente puede crear cuenta sin una `registration_session` verificada.
+- Ningún cliente puede crear cuenta sin una `registration_session` verificada.
 - Una cookie `verified` no sustituye la prueba de vida interactiva salvo que
-  exista draft cifrado pendiente para continuar una finalizacion interrumpida.
-- La cuenta no debe enviarse a login si Ory no prueba que el email ya esta
+  exista draft cifrado pendiente para continuar una finalización interrumpida.
+- La cuenta no debe enviarse a login si Ory no prueba que el email ya está
   verificado.
 - Los errores de API deben devolver `{ success: false, code }` y, si aplica,
   `fieldErrors`.
-- No se deben cambiar umbrales biometricos sin actualizar pruebas y documentar
-  la razon operativa.
+- No se deben cambiar umbrales biométricos sin actualizar pruebas y documentar
+  la razón operativa.
 
 Mas detalle en `docs/registration-architecture.md` y `docs/testing-strategy.md`.
 
-## Estructura Principal
+## Estructura principal
 
-- `app/api/registration/*`: endpoints server-side del protocolo de registro.
+- `app/api/registration/*`: endpoints del lado servidor del protocolo de registro.
 - `components/auth/register/*`: wizard visual y pasos de registro.
 - `lib/services/registration/*`: reglas de negocio, integraciones y cookies del
   registro.
-- `lib/schemas/registration/*`: validacion de formularios y payloads.
-- `lib/types/registration/*`: contratos de respuesta y codigos de error.
+- `lib/schemas/registration/*`: validación de formularios y payloads.
+- `lib/types/registration/*`: contratos de respuesta y códigos de error.
 - `__tests__/unit` y `__tests__/integration`: pruebas automatizadas.
-- `playwright/*`: pruebas e2e de comportamiento visible en browser.
+- `playwright/*`: pruebas e2e de comportamiento visible en navegador.
 
-## Convenciones de Seguridad
+## Convenciones de seguridad
 
 - Secretos solo en `.env`; nunca commitear valores reales.
 - Cookies de registro deben ser `httpOnly`, `sameSite: "strict"` cuando
@@ -114,12 +115,12 @@ Mas detalle en `docs/registration-architecture.md` y `docs/testing-strategy.md`.
 - Passwords temporales solo pueden persistir cifrados y con TTL corto.
 - El backend debe hacer cumplir cada paso critico; la UI solo guia al usuario.
 - No exponer detalles sensibles en errores visibles al usuario.
-- `return_url` de activacion solo puede redirigir al origen actual o a origenes
+- `return_url` de activación solo puede redirigir al origen actual o a orígenes
   definidos en `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
 
-## Estado de Calidad
+## Estado de calidad
 
-El repositorio ya tiene cobertura importante de registro y autenticacion. La
+El repositorio ya tiene cobertura importante de registro y autenticación. La
 suite Playwright inicial cubre validaciones visibles del registro y avance
 asistido hasta Rekognition. Queda deuda e2e pendiente para liveness exitoso,
-activacion de email, login y dashboard autenticado.
+activación de email, login y dashboard autenticado.

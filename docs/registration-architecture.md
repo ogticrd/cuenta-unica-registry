@@ -82,7 +82,7 @@ Reglas:
   verification flow de codigo.
 - Solo se puede redirigir a login o `return_url` cuando Ory reporta el email
   como verificado.
-- `verifyCodeAction` debe reenviar cookies del browser a Ory.
+- `verifyCodeAction` debe reenviar cookies del navegador a Ory.
 
 ### APIs Ciudadanas
 

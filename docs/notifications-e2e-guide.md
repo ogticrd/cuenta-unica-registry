@@ -9,7 +9,8 @@ Esta guia valida el flujo local completo entre Cuenta Unica Ciudadana y Buzon Ci
 - Repositorios locales:
   - `/Users/marluan/work/ogtic/projects/cuenta-unica-registry`
   - `/Users/marluan/work/ogtic/projects/buzon-ciudadano`
-- Credenciales de prueba configuradas en el `.env` de Cuenta Unica bajo la seccion `# Computer Use`.
+- Credenciales de prueba configuradas en el `.env` de Cuenta Unica bajo la
+  seccion `# Credenciales para pruebas asistidas locales`.
 
 ## 1. Levantar Buzon Ciudadano
 
@@ -66,14 +67,14 @@ El runner:
 
 1. Abrir `http://localhost:3000`.
 2. Iniciar sesion con el usuario de staging configurado en `.env`.
-3. Confirmar que el badge de notificaciones del header usa el conteo real de no leidas.
-4. Abrir el drawer de notificaciones.
+3. Confirmar que el indicador de notificaciones del encabezado usa el conteo real de no leidas.
+4. Abrir el panel lateral de notificaciones.
 5. Confirmar que aparecen las notificaciones creadas en Buzon.
-6. Marcar una notificacion como leida y confirmar que baja el badge.
-7. Marcarla como no leida y confirmar que sube el badge.
-8. Archivarla y confirmar que desaparece del drawer y del listado por defecto.
+6. Marcar una notificacion como leida y confirmar que baja el indicador.
+7. Marcarla como no leida y confirmar que sube el indicador.
+8. Archivarla y confirmar que desaparece del panel lateral y del listado por defecto.
 9. Entrar a `/notifications` y probar filtros `Todas`, `No leidas`, `Leidas` y `Archivadas`.
-10. Entrar a `/settings` y confirmar que la seccion de preferencias solo muestra los temas `Seguridad` y `Cuenta`, y permite guardar canales por esos temas. En local puede mostrarse un aviso controlado de Ory Settings si el ambiente de identidad no permite `localhost` como URL de retorno; ese aviso no bloquea las preferencias de notificacion.
+10. Entrar a `/settings` y confirmar que la seccion de preferencias solo muestra los temas `Seguridad` y `Cuenta`, y permite guardar canales por esos temas. En local puede mostrarse un aviso controlado de configuracion Ory si el ambiente de identidad no permite `localhost` como URL de retorno; ese aviso no bloquea las preferencias de notificacion.
 
 ## 5. Validaciones de calidad
 

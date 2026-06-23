@@ -1,68 +1,69 @@
-# Contributor Instructions
+# Instrucciones para contribuyentes
 
-Act as a senior engineer building a public, security-sensitive identity portal.
-Prioritize correctness, explicit contracts, maintainability and testability over
-shortcuts.
+Actúa como un ingeniero senior construyendo un portal público de identidad con
+requisitos altos de seguridad. Prioriza corrección, contratos explícitos,
+mantenibilidad y testabilidad por encima de atajos.
 
-## Project Priorities
+## Prioridades del proyecto
 
-- Preserve the registration security protocol. A user may only get an Ory
-  identity after cedula validation, account draft validation, liveness and face
-  comparison.
-- Keep the visual design consistent unless the task explicitly asks for UI
-  redesign.
-- Prefer small, verifiable changes with focused tests.
-- Use typed response contracts and stable error codes. Do not branch business
-  logic on translated text.
-- Keep secrets out of the repo and out of logs.
+- Preservar el protocolo de seguridad del registro. Un usuario solo puede
+  obtener una identidad Ory después de validar cédula, validar el draft de
+  cuenta, completar liveness y superar comparación facial.
+- Mantener el diseño visual consistente salvo que la tarea pida explícitamente
+  un rediseño de UI.
+- Preferir cambios pequeños, verificables y con pruebas enfocadas.
+- Usar contratos de respuesta tipados y códigos de error estables. No ramificar
+  lógica de negocio usando texto traducido.
+- Mantener secretos fuera del repositorio y fuera de logs.
 
-## Before Changing Registration
+## Antes de cambiar registro
 
-Read:
+Leer:
 
 - `README.md`
 - `docs/registration-architecture.md`
 - `lib/types/registration/*`
-- the affected route or service under `app/api/registration/*` or
+- la ruta o servicio afectado bajo `app/api/registration/*` o
   `lib/services/registration/*`
 
-Do not bypass backend checks because the wizard UI appears to enforce a step.
-The backend must remain authoritative.
+No omitir validaciones backend porque el wizard visual parezca imponer un paso.
+El backend debe seguir siendo la autoridad.
 
-## Coding Rules
+## Reglas de código
 
-- TypeScript only; avoid `any` unless the external SDK shape requires a narrow
-  adapter.
-- Use `safeParse` for untrusted input.
-- Keep route handlers thin. Put business rules in services.
-- Keep client services as transport wrappers; do not duplicate server-side
-  authorization or validation logic in them.
-- Use `FormMessage` and `react-hook-form` state for form validation errors.
-- Add comments only when the code is not self-explanatory.
+- TypeScript solamente; evitar `any` salvo que una forma externa del SDK exija
+  un adaptador estrecho.
+- Usar `safeParse` para input no confiable.
+- Mantener route handlers delgados. Colocar reglas de negocio en servicios.
+- Mantener servicios cliente como wrappers de transporte; no duplicar
+  autorización ni validación del lado servidor en ellos.
+- Usar `FormMessage` y el estado de `react-hook-form` para errores de
+  validación de formularios.
+- Agregar comentarios solo cuando el código no sea autoexplicativo.
 
-## Error Handling
+## Manejo de errores
 
-- API errors must return `{ success: false, code }`.
-- Include `fieldErrors` for account field failures.
-- Include `stage` when a route can fail in multiple phases, such as liveness
-  plus account creation.
-- Log server details with contextual prefixes, but return sanitized error codes
-  to clients.
-- Do not swallow errors silently or replace them with ambiguous messages.
+- Los errores de API deben devolver `{ success: false, code }`.
+- Incluir `fieldErrors` para fallos de campos de cuenta.
+- Incluir `stage` cuando una ruta pueda fallar en múltiples fases, como
+  liveness más creación de cuenta.
+- Registrar detalles del lado servidor con prefijos contextuales, pero devolver
+  códigos sanitizados al cliente.
+- No tragar errores silenciosamente ni reemplazarlos por mensajes ambiguos.
 
-## Security Rules
+## Reglas de seguridad
 
-- Registration cookies containing state must be `httpOnly`.
-- Sensitive registration drafts must be encrypted and short-lived.
-- Never trust client-provided session status.
-- Do not change biometric thresholds without explicit product/security approval
-  and test updates.
-- Validate `return_url` before persisting or redirecting.
-- Forward Ory cookies deliberately when completing browser flows.
+- Las cookies de registro que contengan estado deben ser `httpOnly`.
+- Los drafts sensibles de registro deben estar cifrados y tener vida corta.
+- Nunca confiar en estado de sesión enviado por el cliente.
+- No cambiar umbrales biométricos sin aprobación explícita de producto/seguridad
+  y actualización de pruebas.
+- Validar `return_url` antes de persistirlo o redirigir.
+- Reenviar cookies de Ory de forma deliberada al completar flujos del navegador.
 
-## Tests
+## Pruebas
 
-For normal changes:
+Para cambios normales:
 
 ```sh
 bun run check
@@ -70,9 +71,9 @@ bun run lint
 bun run test
 ```
 
-For registration changes, add or update tests for each affected state transition,
-error code and cookie behavior. Browser validation is expected for user-visible
-registration behavior. Run:
+Para cambios de registro, agregar o actualizar pruebas para cada transición de
+estado, código de error y comportamiento de cookies afectado. Se espera
+validación con navegador para comportamiento visible del registro. Ejecutar:
 
 ```sh
 bun run test:playwright:registration
@@ -80,7 +81,7 @@ bun run test:playwright:registration
 
 ## Git
 
-Use Conventional Commits:
+Usar Conventional Commits:
 
 - `feat: ...`
 - `fix: ...`
@@ -89,4 +90,4 @@ Use Conventional Commits:
 - `refactor: ...`
 - `chore: ...`
 
-Do not mention tools or automation in commit messages.
+No mencionar herramientas ni automatización en mensajes de commit.

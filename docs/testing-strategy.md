@@ -8,7 +8,7 @@ reglas de negocio sin introducir atajos que puedan convertirse en bypasses.
 - Unitarias: componentes, servicios cliente, schemas, mappers y utilidades.
 - Integracion: rutas Next.js, cookies, contratos Ory, Rekognition y APIs
   externas mockeadas en el borde.
-- Playwright: comportamiento visible en browser, hidratacion, validaciones,
+- Playwright: comportamiento visible en navegador, hidratacion, validaciones,
   navegacion entre pasos y montaje de Rekognition.
 - Manual/asistida: prueba de vida real con AWS Rekognition y verificacion OTP
   contra Ory cuando se necesita validar el ambiente completo.
@@ -51,7 +51,7 @@ requiere un e2e de extremo a extremo, debe ser asistido con Rekognition real.
 
 La activacion OTP debe conservar mensajes visibles y codigos de error estables.
 Los errores de `verifyCodeAction` se prueban unitariamente porque dependen del
-contrato server-side con Ory y cookies del browser.
+contrato del lado servidor con Ory y cookies del navegador.
 
 Los errores de formulario deben probarse en dos niveles: las rutas deben
 devolver `fieldErrors` tipados para `cedula`, `email` o `password` cuando el
