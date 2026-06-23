@@ -24,6 +24,7 @@ ARG NEXT_PUBLIC_AWS_REGION
 ARG NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID
 ARG NEXT_PUBLIC_COGNITO_USER_POOL_ID
 ARG NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID
+ARG SOURCE_COMMIT=unknown
 
 ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
 ENV NEXT_PUBLIC_AWS_REGION=${NEXT_PUBLIC_AWS_REGION}
@@ -36,7 +37,8 @@ COPY . .
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
     --mount=type=cache,target=/app/.next/cache \
-    bun run build
+    echo "${SOURCE_COMMIT}" > .build-commit \
+    && bun run build
 
 # ===================== Runner =====================
 FROM base AS runner

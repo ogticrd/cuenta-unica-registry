@@ -4,11 +4,17 @@
 
 # Source code
 !app
+!app/**
 !components
+!components/**
 !hooks
+!hooks/**
 !i18n
+!i18n/**
 !lib
+!lib/**
 !public
+!public/**
 
 # Config files
 !*.mjs
