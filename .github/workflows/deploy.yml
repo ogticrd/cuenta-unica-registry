@@ -174,6 +174,13 @@ jobs:
             FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD }}
             BUZON_API_BASE_URL=${{ vars.BUZON_API_BASE_URL }}
             BUZON_PORTAL_API_KEY=${{ secrets.BUZON_PORTAL_API_KEY }}
+            GEOIP_API_URL=${{ vars.GEOIP_API_URL }}
+            ANALYTICS_CONTEXT_SECRET=${{ secrets.ANALYTICS_CONTEXT_SECRET }}
+            ANALYTICS_INGRESS_URL=${{ vars.ANALYTICS_INGRESS_URL }}
+            ANALYTICS_INGRESS_API_KEY=${{ secrets.ANALYTICS_INGRESS_API_KEY }}
+            ANALYTICS_INGRESS_API_KEY_HEADER=${{ secrets.ANALYTICS_INGRESS_API_KEY_HEADER }}
+            ANALYTICS_PROJECT_ID=${{ secrets.ANALYTICS_PROJECT_ID }}
+            ANALYTICS_ENVIRONMENT=${{ secrets.ANALYTICS_ENVIRONMENT }}
           min-instances: ${{ needs.preflight.outputs.min_instances }}
           max-instances: ${{ needs.preflight.outputs.max_instances }}
           cpu: ${{ needs.preflight.outputs.cpu }}
