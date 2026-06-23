@@ -187,6 +187,18 @@ jobs:
           cpu: ${{ needs.preflight.outputs.cpu }}
           memory: ${{ needs.preflight.outputs.memory }}
 
+      - name: Route traffic to latest revision
+        run: |
+          gcloud run services update-traffic "${SERVICE}" \
+            --region "${REGION}" \
+            --project "${PROJECT_ID}" \
+            --to-latest \
+            --quiet
+        env:
+          SERVICE: ${{ vars.CLOUD_RUN_SERVICE || vars.APP_NAME }}
+          REGION: ${{ vars.GOOGLE_CLOUD_REGION || vars.GCP_REGION }}
+          PROJECT_ID: ${{ vars.GOOGLE_PROJECT_ID }}
+
       - name: Allow public access
         uses: ogticrd/actions/actions/gcp/cloudrun/iam@main
         with:
