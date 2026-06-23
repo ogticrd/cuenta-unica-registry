@@ -21,7 +21,6 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 | `GOOGLE_PROJECT_ID` | `auth-do` | staging GCP project | production GCP project |
 | `GOOGLE_CLOUD_REGION` | `us-east1` | Cloud Run region | Cloud Run region |
 | `ORY_SDK_URL` | `https://focused-gagarin-ywepc2q5bu.projects.oryapis.com` | staging Ory URL | production Ory URL |
-| `NEXT_PUBLIC_ORY_SDK_URL` | `https://cuenta-unica-registry-dev-x6fzoay5ua-ue.a.run.app` | staging app URL | production app URL |
 | `CITIZENS_API_BASE_URL` | `https://api.devs.digital.gob.do` | shared citizens API URL | production citizens API URL |
 | `AWS_REGION` | `us-east-1` | Rekognition region | Rekognition region |
 | `NEXT_PUBLIC_AWS_REGION` | `us-east-1` | Amplify region | Amplify region |
@@ -35,7 +34,7 @@ Set these values under **Settings -> Environments -> <environment> -> Environmen
 
 `CLOUD_RUN_SERVICE` and `IMAGE_NAME` are optional in the workflow, but they should be set for `development` so dev deploys cannot overwrite the staging or production Cloud Run service.
 
-`ORY_SDK_URL` is the server-side Ory endpoint. `NEXT_PUBLIC_ORY_SDK_URL` is build-time only, is baked into the frontend bundle, and must point to the deployed app origin so browser self-service requests use the same-origin proxy instead of calling Ory cross-origin. Do not expose `NEXT_PUBLIC_ORY_SDK_URL` as a runtime variable in the Cloud Run service because the Ory proxy must resolve its upstream from `ORY_SDK_URL`.
+`ORY_SDK_URL` is the server-side Ory endpoint. Browser self-service requests must use the app origin and its same-origin Ory proxy; the app derives that origin from `x-forwarded-host` / `x-forwarded-proto` per request and injects it into Ory Elements as `sdk.url`. Do not bake Cloud Run URLs into the frontend bundle with `NEXT_PUBLIC_ORY_SDK_URL`; development Cloud Run can be reachable through more than one generated host and a static client URL causes cross-origin form submissions.
 
 `REGISTRATION_ALLOWED_RETURN_ORIGINS` should include only trusted relying-party origins that may receive users after account activation. The registration API always allows the current request origin and drops any other `return_url` before it is stored in the signed registration session.
 
@@ -73,11 +72,6 @@ gh variable set ORY_SDK_URL \
   --env development \
   --repo ogticrd/cuenta-unica-registry \
   --body "https://focused-gagarin-ywepc2q5bu.projects.oryapis.com"
-
-gh variable set NEXT_PUBLIC_ORY_SDK_URL \
-  --env development \
-  --repo ogticrd/cuenta-unica-registry \
-  --body "https://cuenta-unica-registry-dev-x6fzoay5ua-ue.a.run.app"
 
 gh variable set ORY_API_URL \
   --env development \

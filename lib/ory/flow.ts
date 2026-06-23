@@ -4,6 +4,7 @@ import { Configuration, FlowType, FrontendApi } from "@ory/client-fetch";
 import type { OryClientConfiguration } from "@ory/elements-react";
 import { getFlowFactory } from "@ory/nextjs/app";
 import { headers } from "next/headers";
+import { getRequestOrigin } from "@/lib/ory/request-origin";
 
 const initOverrides = { cache: "no-cache" as RequestCache };
 
@@ -15,7 +16,7 @@ const initOverrides = { cache: "no-cache" as RequestCache };
  * The proxy middleware then forwards the request to ORY_SDK_URL.
  */
 async function createServerClient() {
-  const publicUrl = await getPublicUrl();
+  const publicUrl = await getRequestOrigin();
 
   return new FrontendApi(
     new Configuration({
@@ -23,17 +24,6 @@ async function createServerClient() {
       basePath: publicUrl,
     }),
   );
-}
-
-/**
- * Returns the public-facing URL of the app from request headers.
- * Cloud Run sets x-forwarded-proto and host correctly.
- */
-async function getPublicUrl() {
-  const h = await headers();
-  const host = h.get("host");
-  const protocol = h.get("x-forwarded-proto") || "https";
-  return `${protocol}://${host}`;
 }
 
 async function getCookieHeader() {
@@ -60,7 +50,7 @@ async function withReturnTo(
   params: Record<string, string | string[] | undefined>,
 ) {
   if (!params.return_to) {
-    return { ...params, return_to: `${await getPublicUrl()}/` };
+    return { ...params, return_to: `${await getRequestOrigin()}/` };
   }
   return params;
 }
@@ -87,7 +77,7 @@ export async function getLoginFlow(
         initOverrides,
       ),
     FlowType.Login,
-    await getPublicUrl(),
+    await getRequestOrigin(),
     config.project.login_ui_url,
   );
 }
@@ -104,7 +94,7 @@ export async function getRegistrationFlow(
         initOverrides,
       ),
     FlowType.Registration,
-    await getPublicUrl(),
+    await getRequestOrigin(),
     config.project.registration_ui_url,
   );
 }
@@ -121,7 +111,7 @@ export async function getRecoveryFlow(
         initOverrides,
       ),
     FlowType.Recovery,
-    await getPublicUrl(),
+    await getRequestOrigin(),
     config.project.recovery_ui_url,
   );
 }
@@ -138,7 +128,7 @@ export async function getVerificationFlow(
         initOverrides,
       ),
     FlowType.Verification,
-    await getPublicUrl(),
+    await getRequestOrigin(),
     config.project.verification_ui_url,
   );
 }
@@ -155,7 +145,7 @@ export async function getSettingsFlow(
         initOverrides,
       ),
     FlowType.Settings,
-    await getPublicUrl(),
+    await getRequestOrigin(),
     config.project.settings_ui_url,
   );
 }

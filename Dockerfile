@@ -17,16 +17,13 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
 # ===================== Build =====================
 FROM base AS build
 
-# NEXT_PUBLIC_* vars must be present at build time (baked into the JS bundle),
-# but must not leak into the runtime environment used by the Ory proxy.
-ARG NEXT_PUBLIC_ORY_SDK_URL
+# NEXT_PUBLIC_* vars must be present at build time (baked into the JS bundle).
 ARG NEXT_PUBLIC_AWS_REGION
 ARG NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID
 ARG NEXT_PUBLIC_COGNITO_USER_POOL_ID
 ARG NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID
 ARG SOURCE_COMMIT=unknown
 
-ENV NEXT_PUBLIC_ORY_SDK_URL=${NEXT_PUBLIC_ORY_SDK_URL}
 ENV NEXT_PUBLIC_AWS_REGION=${NEXT_PUBLIC_AWS_REGION}
 ENV NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID}
 ENV NEXT_PUBLIC_COGNITO_USER_POOL_ID=${NEXT_PUBLIC_COGNITO_USER_POOL_ID}

@@ -128,7 +128,6 @@ jobs:
           target: runner
           environment: ${{ needs.preflight.outputs.deploy_environment }}
           build-args: |
-            NEXT_PUBLIC_ORY_SDK_URL=${{ vars.NEXT_PUBLIC_ORY_SDK_URL || vars.ORY_SDK_URL || vars.ORY_API_URL }}
             NEXT_PUBLIC_AWS_REGION=${{ vars.NEXT_PUBLIC_AWS_REGION || vars.AWS_REGION }}
             NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || vars.AMPLIFY_IDENTITYPOOL_ID }}
             NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_ID || vars.AMPLIFY_USERPOOL_ID }}
@@ -162,7 +161,7 @@ jobs:
           project-id: ${{ vars.GOOGLE_PROJECT_ID }}
           env-vars: |
             NODE_ENV=production
-            ORY_SDK_URL=${{ vars.ORY_SDK_URL || vars.NEXT_PUBLIC_ORY_SDK_URL || vars.ORY_API_URL }}
+            ORY_SDK_URL=${{ vars.ORY_SDK_URL || vars.ORY_API_URL }}
             ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN || secrets.ORY_API_TOKEN }}
             REGISTRATION_SESSION_SECRET=${{ secrets.REGISTRATION_SESSION_SECRET }}
             CITIZENS_API_BASE_URL=${{ vars.CITIZENS_API_BASE_URL }}
