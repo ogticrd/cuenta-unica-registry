@@ -38,7 +38,7 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
 
             <Link href={ROUTES.dashboard}>
               <Image
-                src="/images/cuenta-unica-logo.png"
+                src="/images/cuenta-unica-logo.svg"
                 alt="Cuenta Única"
                 width={210}
                 height={104}

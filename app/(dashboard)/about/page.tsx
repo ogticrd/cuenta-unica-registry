@@ -12,7 +12,6 @@ import {
   Users,
 } from "lucide-react";
 
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { PlatformFeature } from "@/components/dashboard/platform-feature";
 import { YouTubeVideo } from "@/components/dashboard/youtube-video";
 import { useT } from "@/hooks/use-t";
@@ -90,68 +89,66 @@ export default function AboutPage() {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="space-y-16">
-        {/* Minimalist Header */}
-        <div className="space-y-4">
-          <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            {t("subtitle")}
+    <div className="space-y-16">
+      {/* Minimalist Header */}
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-lg text-muted-foreground leading-relaxed">
+          {t("subtitle")}
+        </p>
+      </div>
+
+      {/* Minimalist Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat) => (
+          <div
+            key={stat.id}
+            className="flex flex-col items-center justify-center py-4"
+          >
+            <div className="text-muted-foreground mb-3">{stat.icon}</div>
+            <div className="text-3xl font-bold text-foreground mb-1 tracking-tight">
+              {stat.number}
+            </div>
+            <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider text-center">
+              {stat.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Video Tutorial */}
+      <div className="pt-8 border-t dark:border-border">
+        <div className="text-center mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-3">
+            {t("video_title")}
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            {t("video_desc")}
           </p>
         </div>
-
-        {/* Minimalist Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.id}
-              className="flex flex-col items-center justify-center py-4"
-            >
-              <div className="text-muted-foreground mb-3">{stat.icon}</div>
-              <div className="text-3xl font-bold text-foreground mb-1 tracking-tight">
-                {stat.number}
-              </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider text-center">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Video Tutorial */}
-        <div className="pt-8 border-t dark:border-border">
-          <div className="text-center mb-8">
-            <h2 className="text-xl font-bold text-foreground mb-3">
-              {t("video_title")}
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t("video_desc")}
-            </p>
-          </div>
-          <div className="rounded-2xl overflow-hidden border dark:border-border">
-            <YouTubeVideo title="Cuenta Única Ciudadana - Guía Completa" />
-          </div>
-        </div>
-
-        {/* Clean Features Grid */}
-        <div className="pt-8 border-t dark:border-border">
-          <h2 className="text-xl font-bold text-foreground mb-8 text-center">
-            {t("features_title")}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {features.map((feature) => (
-              <PlatformFeature
-                key={feature.id}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-              />
-            ))}
-          </div>
+        <div className="rounded-2xl overflow-hidden border dark:border-border">
+          <YouTubeVideo title="Cuenta Única Ciudadana - Guía Completa" />
         </div>
       </div>
-    </DashboardLayout>
+
+      {/* Clean Features Grid */}
+      <div className="pt-8 border-t dark:border-border">
+        <h2 className="text-xl font-bold text-foreground mb-8 text-center">
+          {t("features_title")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {features.map((feature) => (
+            <PlatformFeature
+              key={feature.id}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

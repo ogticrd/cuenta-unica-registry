@@ -130,7 +130,7 @@ export function StepAccount({
 
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
-    reValidateMode: "onBlur",
+    mode: "onChange",
     defaultValues,
   });
   const defaultValuesKey = [
@@ -349,59 +349,81 @@ export function StepAccount({
                 </div>
                 <FormMessage />
 
-                {form.watch("password") && (
-                  <div className="mt-3 space-y-2 text-sm w-full">
-                    <p className="font-medium text-slate-700 dark:text-slate-300">
-                      {t("account.password_requirements.title")}
-                    </p>
-                    <ul className="space-y-1.5 pl-1">
-                      {[
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).length,
-                          label: t("account.password_requirements.length"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).uppercase,
-                          label: t("account.password_requirements.uppercase"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).lowercase,
-                          label: t("account.password_requirements.lowercase"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).number,
-                          label: t("account.password_requirements.number"),
-                        },
-                        {
-                          met: getPasswordRequirementStatus(
-                            form.watch("password") || "",
-                          ).symbol,
-                          label: t("account.password_requirements.symbol"),
-                        },
-                      ].map((req) => (
-                        <li
-                          key={req.label}
-                          className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}
-                        >
-                          {req.met ? (
-                            <Check className="w-4 h-4 text-green-600 dark:text-green-500" />
-                          ) : (
-                            <X className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                          )}
-                          <span>{req.label}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div className="mt-3 space-y-2 text-sm w-full">
+                  <p className="font-medium text-slate-700 dark:text-slate-300">
+                    {t("account.password_requirements.title")}
+                  </p>
+                  <ul className="space-y-1.5 pl-1">
+                    {[
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).length,
+                        label: t("account.password_requirements.length"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).uppercase,
+                        label: t("account.password_requirements.uppercase"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).lowercase,
+                        label: t("account.password_requirements.lowercase"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).number,
+                        label: t("account.password_requirements.number"),
+                      },
+                      {
+                        met: getPasswordRequirementStatus(
+                          form.watch("password") || "",
+                        ).symbol,
+                        label: t("account.password_requirements.symbol"),
+                      },
+                    ].map((req) => (
+                      <li
+                        key={req.label}
+                        className={`flex items-center gap-2.5 transition-colors ${req.met ? "text-green-600 dark:text-green-500" : "text-slate-500 dark:text-slate-400"}`}
+                      >
+                        {req.met ? (
+                          <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        ) : (
+                          <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
+                        )}
+                        <span>{req.label}</span>
+                      </li>
+                    ))}
+                    {!form.watch("password") ||
+                    form.formState.errors.password?.message ? (
+                      <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
+                        <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
+                        <span>{t("account.validation.password_secure")}</span>
+                      </li>
+                    ) : (
+                      <li className="flex items-center gap-2.5 transition-colors text-green-600 dark:text-green-500">
+                        <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        <span>{t("account.validation.password_secure")}</span>
+                      </li>
+                    )}
+                    {form.watch("password") !== form.watch("confirmPassword") ||
+                    !form.watch("confirmPassword") ? (
+                      <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
+                        <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
+                        <span>{t("account.validation.password_match")}</span>
+                      </li>
+                    ) : (
+                      <li className="flex items-center gap-2.5 transition-colors text-green-600 dark:text-green-500">
+                        <Check className="w-4 h-4 shrink-0 text-green-600 dark:text-green-500" />
+                        <span>{t("account.validation.password_match")}</span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
               </FormItem>
             )}
           />
@@ -470,7 +492,7 @@ export function StepAccount({
 
             <Button
               type="submit"
-              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={form.formState.isSubmitting}
             >
               {t("account.continue")}

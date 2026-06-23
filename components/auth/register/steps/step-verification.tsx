@@ -1,7 +1,15 @@
 "use client";
 
-import { ArrowLeft, Camera, Check, ShieldAlert, Smile } from "lucide-react";
+import {
+  ArrowLeft,
+  Camera,
+  Check,
+  ExternalLink,
+  ShieldAlert,
+  Smile,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -17,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-t";
+import { ROUTES } from "@/lib/constants/routes";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
 import type {
@@ -34,7 +43,8 @@ type VerificationPhase =
   | "creating_session"
   | "liveness_active"
   | "verifying"
-  | "creating_account";
+  | "creating_account"
+  | "error";
 
 interface StepVerificationProps {
   onBack: () => void;
@@ -54,8 +64,11 @@ export function StepVerification({
   userData,
 }: StepVerificationProps) {
   const t = useT("register");
+  const tError = useT("error");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phase, setPhase] = useState<VerificationPhase>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [livenessSessionId, setLivenessSessionId] = useState<string | null>(
     null,
   );
@@ -103,15 +116,17 @@ export function StepVerification({
   const createSession = useCallback(async () => {
     setPhase("creating_session");
     setLivenessSessionId(null);
+    setErrorMessage(null);
 
     const result = await verificationService.createLivenessSession();
 
     if (!result.success) {
-      setPhase("idle");
-      setIsModalOpen(false);
-
       if (result.code === "registration_session_missing") {
+        setPhase("idle");
+        setIsModalOpen(false);
         onRequireIdentification();
+        toast.error(t("verification.session_creation_failed"));
+        return;
       }
 
       if (result.code === "account_draft_missing") {
@@ -119,13 +134,19 @@ export function StepVerification({
         return;
       }
 
-      toast.error(livenessSessionErrorMessages[result.code]);
+      setPhase("error");
+      setErrorMessage(livenessSessionErrorMessages[result.code]);
       return;
     }
 
     setLivenessSessionId(result.sessionId);
     setPhase("liveness_active");
-  }, [livenessSessionErrorMessages, onRequireAccount, onRequireIdentification]);
+  }, [
+    livenessSessionErrorMessages,
+    onRequireAccount,
+    onRequireIdentification,
+    t,
+  ]);
 
   const handleAccountRegistrationResult = useCallback(
     (
@@ -224,10 +245,10 @@ export function StepVerification({
 
     if (!result.success) {
       isCompletingLiveness.current = false;
-      setPhase("idle");
-      setIsModalOpen(false);
 
       if (result.stage === "account") {
+        setPhase("idle");
+        setIsModalOpen(false);
         onRequireAccount({
           code: result.code,
           fieldErrors: result.fieldErrors,
@@ -236,9 +257,15 @@ export function StepVerification({
       }
 
       if (result.code === "registration_session_missing") {
+        setPhase("idle");
+        setIsModalOpen(false);
         onRequireIdentification();
+        toast.error(verificationErrorMessages[result.code]);
+        return;
       }
-      toast.error(verificationErrorMessages[result.code]);
+
+      setPhase("error");
+      setErrorMessage(verificationErrorMessages[result.code]);
       return;
     }
 
@@ -266,12 +293,11 @@ export function StepVerification({
       if (isHandlingError.current) return;
       isHandlingError.current = true;
 
-      toast.error(t("verification.verification_failed"));
-      setPhase("idle");
-      setLivenessSessionId(null);
-      setIsModalOpen(false);
-      isCompletingLiveness.current = false;
-      isFinalizingAccount.current = false;
+      setPhase("error");
+      const message = t("verification.verification_failed");
+      setErrorMessage(message);
+      toast.error(message);
+      isHandlingError.current = false;
     },
     [t],
   );
@@ -281,6 +307,7 @@ export function StepVerification({
       setIsModalOpen(false);
       setPhase("idle");
       setLivenessSessionId(null);
+      setErrorMessage(null);
       isCompletingLiveness.current = false;
       isFinalizingAccount.current = false;
     }
@@ -333,26 +360,40 @@ export function StepVerification({
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 mt-6">
-        <Checkbox
-          id="terms"
-          className="rounded-sm border-gray-300 data-[state=checked]:bg-red-600 data-[state=checked]:text-white"
-          checked={termsAccepted}
-          onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
-        />
-        <label
-          htmlFor="terms"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-primary dark:text-blue-100 underline decoration-blue-200 dark:decoration-blue-500/40 underline-offset-4 cursor-pointer"
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border-2 border-slate-200 dark:border-slate-800 rounded-xl mt-6 w-full">
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id="terms"
+            className="h-6 w-6 rounded-md border-2 border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-white data-[state=checked]:border-primary shrink-0"
+            checked={termsAccepted}
+            onCheckedChange={(checked) => {
+              setTermsAccepted(checked as boolean);
+            }}
+          />
+          <label
+            htmlFor="terms"
+            className="text-base font-semibold leading-relaxed text-primary dark:text-blue-100 cursor-pointer select-none"
+          >
+            {t("verification.terms_accept_checkbox")}{" "}
+            <span className="text-destructive">*</span>
+          </label>
+        </div>
+
+        <Link
+          href={ROUTES.terms}
+          rel="noopener noreferrer"
+          target="_blank"
+          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline inline-flex items-center gap-1 shrink-0 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 rounded-full transition-colors"
         >
-          {t("verification.terms_label")}{" "}
-          <span className="text-destructive">*</span>
-        </label>
+          {t("verification.terms_read_document")}{" "}
+          <ExternalLink className="w-3.5 h-3.5" />
+        </Link>
       </div>
 
       <Button
         onClick={handleStartVerification}
-        className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4"
         disabled={!termsAccepted}
+        className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white mt-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {t("verification.start_process")}
       </Button>
@@ -367,7 +408,7 @@ export function StepVerification({
       </button>
 
       <Dialog open={isModalOpen} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-black/95 flex flex-col items-center justify-center pt-8 pb-12">
+        <DialogContent className="biometric-modal max-w-full w-screen h-[100dvh] m-0 p-0 rounded-none border-0 bg-[#0f1629] flex flex-col items-center justify-center overflow-hidden">
           <DialogTitle className="sr-only">
             {t("verification.modal.screenreader_title")}
           </DialogTitle>
@@ -375,11 +416,14 @@ export function StepVerification({
             {t("verification.modal.screenreader_description")}
           </DialogDescription>
 
-          <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
+          <div className="relative w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4">
             {phase === "creating_session" && <FaceLivenessLoader />}
 
             {phase === "liveness_active" && livenessSessionId && (
-              <div className="w-full" data-testid="rekognition-liveness">
+              <div
+                className="w-full liveness-detector-wrapper animate-in fade-in zoom-in-95 duration-500"
+                data-testid="rekognition-liveness"
+              >
                 <FaceLiveness
                   sessionId={livenessSessionId}
                   onComplete={handleLivenessComplete}
@@ -389,25 +433,63 @@ export function StepVerification({
             )}
 
             {phase === "verifying" && (
-              <div className="text-white text-center space-y-4">
-                <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-lg font-medium animate-pulse text-blue-400">
-                  {t("verification.verifying_identity")}
-                </p>
+              <div className="text-center space-y-6 animate-in fade-in duration-500">
+                <div className="space-y-2">
+                  <p className="text-lg font-semibold text-white">
+                    {t("verification.verifying_identity")}
+                  </p>
+                </div>
               </div>
             )}
 
             {phase === "creating_account" && (
-              <div className="text-white text-center space-y-4">
-                <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mx-auto">
-                  <Check className="h-12 w-12 text-white" />
+              <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
+                <div className="relative mx-auto">
+                  <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                    <Check className="h-14 w-14 text-white drop-shadow-md" />
+                  </div>
                 </div>
-                <span className="font-bold text-xl text-green-400">
-                  {t("verification.modal.verified")}
-                </span>
-                <p className="text-sm font-medium text-white/80">
-                  {t("verification.continuing_registration")}
-                </p>
+                <div className="space-y-1">
+                  <p className="font-bold text-2xl text-green-400">
+                    {t("verification.modal.verified")}
+                  </p>
+                  <p className="text-sm font-medium text-white/80">
+                    {t("verification.continuing_registration")}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {phase === "error" && (
+              <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500 w-full max-w-md mx-auto p-8">
+                <div className="relative mx-auto w-24 h-24 flex items-center justify-center">
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                    <ShieldAlert className="w-10 h-10 drop-shadow-md" />
+                  </div>
+                </div>
+                <div className="space-y-3 px-2">
+                  <p className="text-2xl font-bold text-red-400">
+                    {tError("title")}
+                  </p>
+                  <p className="text-base text-slate-200 leading-relaxed font-medium">
+                    {errorMessage}
+                  </p>
+                </div>
+                <div className="pt-6 flex flex-col gap-3">
+                  <Button
+                    onClick={createSession}
+                    className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-900/20"
+                  >
+                    {t("verification.retry")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleModalClose(false)}
+                    className="w-full h-12 text-base font-medium text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl"
+                  >
+                    {t("common.cancel")}
+                  </Button>
+                </div>
               </div>
             )}
           </div>

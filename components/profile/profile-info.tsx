@@ -1,9 +1,8 @@
-﻿"use client";
+"use client";
 
 import {
   Book,
   Calendar,
-  CheckCircle,
   Hash,
   Mail,
   MapPin,
@@ -71,6 +70,7 @@ export function ProfileInfo() {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: "UTC",
     });
   };
 
@@ -83,9 +83,6 @@ export function ProfileInfo() {
               {displayName?.trim()?.[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1 border-2 border-background shadow-sm">
-            <CheckCircle className="w-4 h-4" />
-          </div>
         </div>
 
         <div className="text-center md:text-left flex-1 pt-2">

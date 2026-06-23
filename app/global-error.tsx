@@ -30,7 +30,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           <div className="container w-full mx-auto px-4">
             <div className="flex items-center h-16">
               <Image
-                src="/images/cuenta-unica-logo.png"
+                src="/images/cuenta-unica-logo.svg"
                 alt="Cuenta Unica"
                 width={210}
                 height={104}

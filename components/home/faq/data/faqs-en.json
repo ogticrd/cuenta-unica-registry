@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "question": "How can I restore my password?",
+    "answer": "<p>If you forgot your password, you can regain access from the <strong>Cuenta Única Ciudadana</strong> login page.</p><ol><li><strong>Access login:</strong><br />Go to <a href=\"https://mi.cuentaunica.gob.do/ui/login\" target=\"_blank\" rel=\"noopener noreferrer\">https://mi.cuentaunica.gob.do/ui/login</a>.</li><li><strong>Start recovery:</strong><br />Select the <strong>“Forgot your password?”</strong> option.</li><li><strong>Enter your email:</strong><br />Type the email associated with your account and press <strong>“Continue”</strong>. The system will send a recovery code.</li><li><strong>Check the received message:</strong><br />Look for the recovery email in your inbox. If it does not appear, check <strong>Spam</strong> or <strong>Junk</strong>, and confirm that you used the correct email address.</li><li><strong>Validate the code:</strong><br />Enter the code on the recovery screen. If the code expired or did not arrive, use the <strong>“Resend code”</strong> option.</li><li><strong>Update your password:</strong><br />When the system validates the code, set a new password and save changes. Use a unique, secure password that you do not use on other services.</li></ol>",
+    "images": [
+      "/images/faqs/1/1-step-1.png",
+      "/images/faqs/1/1-step-2.png",
+      "/images/faqs/1/1-step-3.png",
+      "/images/faqs/1/1-step-4.png",
+      "/images/faqs/1/1-step-5.png",
+      "/images/faqs/1/1-step-6.png"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "How can I create my account again?",
+    "answer": "<p>The <strong>Cuenta Única Ciudadana</strong> is associated with your identity. Under normal conditions you do not need to create multiple accounts: you must regain access to the existing account or complete registration if you have not finished it yet.</p><ol><li><strong>If you already had an account:</strong><br />Try logging in with your national ID or with the associated email. If you do not remember the password, use the <strong>“Forgot your password?”</strong> option.</li><li><strong>If you did not complete registration:</strong><br />Go to <a href=\"https://registro.cuentaunica.gob.do\" target=\"_blank\" rel=\"noopener noreferrer\">https://registro.cuentaunica.gob.do</a> and follow the identity verification, password creation, and email confirmation steps.</li><li><strong>If the system indicates that an account already exists:</strong><br />Do not start additional registrations. Use the recovery options available on the platform to avoid duplicates or inconsistencies in your data.</li></ol>"
+  },
+  {
+    "id": 3,
+    "question": "What do I do if I don't remember my email address?",
+    "answer": "<p>If you do not remember the email associated with your <strong>Cuenta Única Ciudadana</strong>, try these options before starting a new registration:</p><ol><li><strong>Log in with your national ID:</strong><br />The platform allows access with your national ID or with your email, along with your password.</li><li><strong>Search for previous messages:</strong><br />Check your inboxes, promotions, spam, or archived emails to identify messages sent by Cuenta Única Ciudadana.</li><li><strong>Use password recovery:</strong><br />If you recognize a possible email, try the recovery process. The code will only reach the email associated with the account.</li><li><strong>If the issue continues:</strong><br />Consult the official channels published by OGTIC or use the help options available within the platform. Do not share personal data through unverified channels.</li></ol>"
+  },
+  {
+    "id": 4,
+    "question": "What can I do if I don't receive the verification code?",
+    "answer": "<p>If you do not receive the verification code, perform these checks:</p><ol><li>Check your <strong>Spam</strong>, <strong>Junk</strong>, promotions, or filtered email folders.</li><li>Wait a few minutes before requesting a new code. Requesting multiple codes in a row may cause you to use a previous or expired code.</li><li>Confirm that the indicated email is correct and that you have access to that inbox.</li><li>If you are using an institutional or corporate email, check if your organization blocks automated messages.</li><li>When available, use the <strong>“Resend code”</strong> option from the same process screen.</li></ol>"
+  },
+  {
+    "id": 5,
+    "question": "How can I report an error with my account?",
+    "answer": "<p>If you encounter an error during registration, login, or use of your <strong>Cuenta Única Ciudadana</strong>, report it from the mechanisms available on the platform.</p><ol><li><strong>Use the “Report” button:</strong><br />During the registration process, a floating <strong>“Report”</strong> button may appear. This is the recommended route because it allows logging the issue from the exact point where it occurs.</li><li><strong>Describe the problem clearly:</strong><br />Indicate what you were trying to do, in which step the error occurred, and what message the screen showed.</li><li><strong>Include evidence when the platform allows:</strong><br />A screenshot can help identify the problem. Avoid showing sensitive information if it is not necessary to explain the case.</li><li><strong>If you cannot report from the platform:</strong><br />Consult the official service channels published by OGTIC and avoid sharing personal information in unverified channels.</li></ol>",
+    "images": ["/images/faqs/6/6-step-1.png"]
+  },
+  {
+    "id": 6,
+    "question": "How can I change my password?",
+    "answer": "<p>If you know your current password, you can change it from the settings of your <strong>Cuenta Única Ciudadana</strong>.</p><ol><li><strong>Log in:</strong><br />Access <a href=\"https://mi.cuentaunica.gob.do/ui/login\" target=\"_blank\" rel=\"noopener noreferrer\">https://mi.cuentaunica.gob.do/ui/login</a> with your credentials.</li><li><strong>Open the password section:</strong><br />In the account settings menu, select the option related to <strong>password</strong>.</li><li><strong>Set the new password:</strong><br />Enter a new, secure password that is different from the ones you use on other services.</li><li><strong>Save changes:</strong><br />Press <strong>“Save”</strong> and confirm that the platform shows the update as completed.</li></ol>",
+    "images": ["/images/faqs/7/7-step-1.png"]
+  },
+  {
+    "id": 7,
+    "question": "Can I add additional authentication methods?",
+    "answer": "<p>Yes. <strong>Cuenta Única Ciudadana</strong> allows strengthening access with additional authentication methods when they are available in your account settings.</p><ol><li><strong>Enter your account:</strong><br />Access the platform and open the settings or security section.</li><li><strong>Review available methods:</strong><br />The platform will show the options you can activate for your user. These options may vary depending on the device, browser, or enabled settings.</li><li><strong>Follow the on-screen instructions:</strong><br />Complete the requested validation and confirm that the method is registered before logging out.</li></ol><p>Additional authentication methods help protect your account and reduce the risk of unauthorized access.</p>"
+  }
+]

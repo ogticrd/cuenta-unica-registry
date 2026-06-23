@@ -48,6 +48,12 @@ export function RegisterWizard({
     useState<RegistrationSessionStatus | null>(initialSessionStatus);
   const [canFinalizeFromDraft, setCanFinalizeFromDraft] =
     useState(hasAccountDraft);
+
+  useEffect(() => {
+    if (activeStep !== undefined) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [activeStep]);
   const steps = [
     {
       title: t("steps.identification.title"),
@@ -196,17 +202,17 @@ export function RegisterWizard({
 
   return (
     <Card
-      className="w-full max-w-[520px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card"
+      className="w-full max-w-[448px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:border-slate-800 rounded-[10px] bg-white dark:bg-card"
       data-hydrated={isHydrated}
       data-testid="registration-wizard"
     >
-      <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-border dark:border-slate-800 mx-6">
+      <CardHeader className="space-y-4 pb-2 pt-8 flex flex-col items-center text-center border-b border-form-border-default dark:border-slate-800 mx-6">
         <Image
-          src="/images/cuenta-unica-icon.png"
+          src="/images/cuenta-unica-icon.svg"
           alt={t("logo_alt")}
-          width={98}
-          height={96}
-          className="h-16 w-auto rounded-lg"
+          width={48}
+          height={48}
+          className="w-auto rounded-lg"
         />
 
         <CardTitle className="text-xl font-bold text-primary dark:text-blue-400">
