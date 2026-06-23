@@ -102,7 +102,8 @@
   line-height: 1.5 !important;
 }
 
-[data-testid="ory/form/node/input/label/code"] {
+[data-testid="ory/form/node/input/label/code"],
+[data-testid="ory/form/node/input/label/email"] {
   color: #003876 !important;
   font-weight: 600;
 }

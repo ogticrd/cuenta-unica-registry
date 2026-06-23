@@ -1,0 +1,376 @@
+[
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "1. INTRODUCTION"
+      },
+      {
+        "type": "p",
+        "text": "These terms and conditions (hereinafter, the \"Terms of Use\") regulate the use of the services of the authentication platform of the Government Office of Information and Communication Technologies (OGTIC) for the creation of the Cuenta Única Ciudadana (hereinafter, \"Cuenta Única\"), through the internet portal www.cuentaunica.gob.do (hereinafter, the \"Portal\")."
+      },
+      {
+        "type": "p",
+        "text": "THE GOVERNMENT OFFICE OF INFORMATION AND COMMUNICATION TECHNOLOGIES (hereinafter, \"OGTIC\"), whose registered office is located at Ave. Rómulo Betancourt #311, Vista 311 Corporate Building, in the city of Santo Domingo de Guzmán, National District, capital of the Dominican Republic, in charge of leading the formulation, promotion and implementation of digital policies of the Dominican Republic, bringing citizens, companies and civil society closer to public institutions, in an agile, open and secure manner, seeking continuous improvement, the use of data, the adoption of norms and standards and innovation in the State, through the use and implementation of information and communication technologies (ICT). In the exercise of its functions, OGTIC makes the Cuenta Única available to users of State services through the Portal and the applications of the institutions that integrate this service."
+      },
+      {
+        "type": "p",
+        "text": "The creation and use of the Cuenta Única confers the condition of user (hereinafter, the \"User\") and implies full and unreserved acceptance of each and every one of the provisions included in the Terms of Use in the version published by OGTIC at the very moment the User accesses the Portal and registers. Consequently, the User must carefully read the Terms of Use at the time of registering, as well as on each of the occasions in which they intend to use Cuenta Única, considering that, at any time, the Terms of Use may be modified and/or updated."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "2. PURPOSE"
+      },
+      {
+        "type": "p",
+        "text": "The Terms of Use are intended to establish the conditions, obligations and rights of the User in relation to the services and content (hereinafter, the \"Services\") made available by OGTIC, or by third parties, through Cuenta Única."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "3. CONDITIONS OF ACCESS AND USE OF THE PORTAL"
+      },
+      {
+        "type": "h4",
+        "text": "3.1. Free access and use of the Portal."
+      },
+      {
+        "type": "p",
+        "text": "The provision of the Services by OGTIC is free of charge for the User."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "3.2. User Registration"
+      },
+      {
+        "type": "p",
+        "text": "In general, the provision of the Services does not require the prior subscription or registration of the User, except for services that, by their nature, so warrant. However, OGTIC makes the use of some of the Services conditional upon the prior completion of the corresponding User registration. Likewise, OGTIC makes some Services available to the User the use of which requires the completion of additional records. Said registration will be carried out in the manner expressly indicated in the service itself or in the Particular Conditions that regulate it."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "3.3. Information and personal data"
+      },
+      {
+        "type": "p",
+        "text": "All information, including personal data, provided by the User through Cuenta Única must be truthful, complete, accurate, up-to-date, real and verifiable. For these purposes, the User guarantees the authenticity of all data communicated as a consequence of completing the necessary forms for subscribing to the Services. Similarly, it will be the User's responsibility to keep all the information provided to OGTIC updated, so that it responds, at all times, to the real situation of the User."
+      },
+      {
+        "type": "p",
+        "text": "The User authorizes OGTIC to process the information and personal data provided through Cuenta Única, for operational and statistical purposes, as input for the development of public policy or for any target use that OGTIC deems appropriate that is in accordance with its institutional purpose and Law No. 172-13, which aims at the integral protection of personal data stored in files, public registries, databases or other technical means of data processing intended to provide reports, whether public or private."
+      },
+      {
+        "type": "p",
+        "text": "The rights of the User, as owner of the personal data, are those provided in the Constitution and the law, especially the right to know, update, rectify and delete personal information, as well as the right to revoke the consent granted for the processing of personal data."
+      },
+      {
+        "type": "p",
+        "text": "In any case, the User will be solely and exclusively responsible for any error in the information provided, false or inaccurate statements made and the damages that such actions may generate to OGTIC or third parties and, consequently, OGTIC is exempt from liability towards third parties and judicial and/or administrative authorities for any action or proceeding initiated as a result of such motives."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "3.4. Minors"
+      },
+      {
+        "type": "p",
+        "text": "To use the Services that require the collection of personal data by OGTIC, minors under eighteen (18) years of age (hereinafter, \"Minors\") must obtain prior authorization from their parents, guardians or legal representatives, who will be considered solely responsible for all acts performed by the Minors in their charge."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "3.5. User Obligations"
+      },
+      {
+        "type": "p",
+        "text": "The User is obliged to know the instructions and recommendations for use and security given by OGTIC. The User acknowledges that their level of reliability is satisfactory, and undertakes to strictly comply with these instructions. Cuenta Única has a Second Factor Authentication, a security mechanism that allows the User to increase the security level of access to the digital platform by verifying the User's identity in two (2) different ways. OGTIC has enabled the Second Factor Authentication mechanism free of charge to all users who wish to activate it, understanding that, in any case, the user will always have the right not to use this tool. This security mechanism can be enabled in the Cuenta Única Configuration section, after which the User will be asked to select the additional, available and preferred authentication method. The User is solely and exclusively responsible for any misuse that cannot be attributed to OGTIC in relation to the provision of the Services."
+      },
+      {
+        "type": "p",
+        "text": "The User undertakes to use Cuenta Única and the Services prudently and reasonably, in accordance with the law, these Terms of Use, the particular conditions of certain Services and other notices, usage regulations and instructions brought to their attention, as well as with generally accepted morals and good customs and public order."
+      },
+      {
+        "type": "p",
+        "text": "The User must refrain from obtaining, or even attempting to obtain, the contents of Cuenta Única using means or procedures other than those which, depending on the case, have been made available for this purpose, or have been indicated for this purpose, on the web pages where said contents are found or, in general, those normally used on the Internet for this purpose provided that they do not entail a risk of damage or disablement of the Portal, the Services and/or the contents."
+      },
+      {
+        "type": "p",
+        "text": "The User will be responsible for all consequential damages that may arise from a fraudulent or abusive use of Cuenta Única. Therefore, they release OGTIC from any liability towards third parties and judicial and/or administrative authorities for any action or proceeding initiated as a result of such motives."
+      },
+      {
+        "type": "p",
+        "text": "Users or third parties prejudiced by the reception of unsolicited messages addressed to a plurality of people may communicate this to OGTIC by sending an email to the following address: contacto@cuentaunica.gob.do"
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "3.6. OGTIC Obligations"
+      },
+      {
+        "type": "p",
+        "text": "OGTIC acknowledges that it must make reasonable efforts to ensure the correct functioning of Cuenta Única to guarantee, as far as possible, the provision of the Services."
+      },
+      {
+        "type": "p",
+        "text": "It is OGTIC's responsibility to guarantee that the actions performed through Cuenta Única by the User are faithfully and entirely registered or stored."
+      },
+      {
+        "type": "p",
+        "text": "OGTIC is responsible for the processing of personal data provided through Cuenta Única by the User, in accordance with Law No. 172-13 which aims at the integral protection of personal data stored in files, public registries, databases or other technical means of data processing intended to provide reports, whether public or private. The User acknowledges that said personal data will be processed in order to validate the identity and personal information of the User requesting the Services. In consequence, OGTIC undertakes to protect the confidentiality of the information and acknowledges that it may not be disclosed, except for compliance with a legal obligation or based on an order from the competent administrative or judicial authority, or by the authorization of the User to third-party applications."
+      },
+      {
+        "type": "p",
+        "text": "The access or use of Cuenta Única may be suspended or limited by OGTIC for justified reasons, including but not limited to technological difficulties, or for breach by the user."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "4. NO LICENSE"
+      },
+      {
+        "type": "p",
+        "text": "All brands, commercial names or distinctive signs of any kind that appear in Cuenta Única are the exclusive property of OGTIC, or of third parties with due authorization, without it being understood that the use or access to the Portal, and/or the Services attributes any right to the User over the aforementioned brands, commercial names and/or distinctive signs."
+      },
+      {
+        "type": "p",
+        "text": "Likewise, the contents of Cuenta Única are the exclusive intellectual property of OGTIC, or of third parties with due authorization, without any of the exploitation rights that exist or may exist over said contents being understood as assigned to the User, beyond what is strictly necessary for the correct use of the Portal and the Services, by virtue of what is established in these Terms of Use and the Dominican legal system."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "5. AVAILABILITY, CONTINUITY, UTILITY AND INFALLIBILITY"
+      },
+      {
+        "type": "p",
+        "text": "OGTIC does not guarantee the availability and continuity of the proper functioning of Cuenta Única and the Services. When reasonably possible, OGTIC will give prior notice of interruptions in the functioning of the Portal and/or the Services. OGTIC also does not guarantee the usefulness of the Portal and/or the Services for carrying out any specific activity, nor their infallibility and, in particular, although not exclusively, OGTIC does not guarantee that Users can effectively use the Portal and/or the Services, access the different web pages that form Cuenta Única or those from which the Services are provided."
+      },
+      {
+        "type": "p",
+        "text": "Consequently, OGTIC excludes, to the full extent permitted by the legal system, any liability for damages of any nature that may be due to the lack of availability or continuity in the functioning of Cuenta Única and the Services, the defraudation of the utility that the User could have attributed to Cuenta Única and the Services, the fallibility of Cuenta Única and the Services, as well as failures in accessing the different web pages of Cuenta Única or those from which the Services are provided."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "5.1 Quality"
+      },
+      {
+        "type": "p",
+        "text": "OGTIC does not control or guarantee the absence of viruses or other elements in the contents that may cause alterations in your computer system (software and hardware) or in the electronic documents and files stored in your computer system."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "5.2 Veracity, accuracy, exhaustiveness and currency"
+      },
+      {
+        "type": "p",
+        "text": "OGTIC does not guarantee the veracity, accuracy, exhaustiveness and currency of the contents. Consequently, OGTIC excludes, to the full extent permitted by the legal system, any liability for damages of any nature that may be due to the lack of veracity, accuracy, exhaustiveness and/or currency of the contents."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h4",
+        "text": "5.3 Lawfulness, reliability and usefulness"
+      },
+      {
+        "type": "p",
+        "text": "OGTIC does not guarantee the lawfulness, reliability and usefulness of the services provided by third parties through Cuenta Única. Consequently, OGTIC excludes any liability for damages of any nature that may be due to the services provided by third parties through Cuenta Única."
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "6. PROCEDURE IN CASE OF UNLAWFUL ACTIVITIES"
+      },
+      {
+        "type": "p",
+        "text": "In the event that any User or a third party considers that there are facts or circumstances that reveal the unlawful nature of the use of any content and/or the performance of any activity on the web pages included or accessible through Cuenta Única, and, in particular, the violation of intellectual or industrial property rights (patents, industrial models and drawings, trademarks and trade names, etc.) or other rights, they must send a notification to OGTIC containing the following details:"
+      },
+      {
+        "type": "ul",
+        "listType": "none",
+        "items": [
+          "(a) Personal data of the claimant: name, address, telephone number and email address;",
+          "(b) Specification of the alleged unlawful activity carried out in Cuenta Única and, in particular, in the case of an alleged violation of rights, precise and specific indication of the protected contents, as well as their location on the web pages;",
+          "(c) Facts or circumstances revealing the unlawful nature of said activity;",
+          "(d) In the case of violation of rights, handwritten signature or equivalent, with the personal data of the owner of the rights allegedly infringed or of the person authorized to act on their behalf;",
+          "(e) Express statement, clear and under the responsibility of the claimant that the information provided in the notification is accurate and of the unlawful nature of the use of the contents or the realization of the activities described."
+        ]
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "7. NOTIFICATIONS"
+      },
+      {
+        "type": "p",
+        "text": "All notifications and communications (hereinafter, the \"Notifications\") by the User to OGTIC will be considered effective, for all purposes, when addressed to us in any of the following ways:"
+      },
+      {
+        "type": "ul",
+        "listType": "none",
+        "items": [
+          "(a) Sending by postal mail to the following address: Ave. Rómulo Betancourt #311, Vista 311 Corporate Building, Santo Domingo, Dominican Republic",
+          "(b) Communication through a phone call to the phone number: (809) 286-1009",
+          "(c) Sending by email to the following address: contacto@cuentaunica.gob.do."
+        ]
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "spacing": "3",
+    "items": [
+      {
+        "type": "h3",
+        "text": "8. APPLICABLE LAW"
+      },
+      {
+        "type": "p",
+        "text": "These Terms and Conditions are governed in all points by the legal system in force in the Dominican Republic."
+      },
+      {
+        "type": "p",
+        "text": "OGTIC and the User, expressly waiving any other jurisdiction, submit to the Courts and Tribunals of the Dominican Republic."
+      },
+      {
+        "type": "p",
+        "text": "For any suggestion or collaboration proposal, please write to us by email at contacto@cuentaunica.gob.do, or call us at the following phone number: (809) 286-1009."
+      }
+    ]
+  },
+  {
+    "type": "hr"
+  },
+  {
+    "type": "section",
+    "spacing": "4",
+    "items": [
+      {
+        "type": "h2",
+        "text": "Privacy Policy"
+      },
+      {
+        "type": "p",
+        "text": "The information provided is handled with strict confidentiality and in accordance with the Terms of Use of the Cuenta Única portal. In addition, we have security measures and devices that allow us to safeguard the information you provide us."
+      },
+      {
+        "type": "p",
+        "text": "The Government Office of Information and Communication Technologies will act directly as the entity responsible for processing personal data, and may process personal data in accordance with Law No. 172-13, which aims at the integral protection of personal data settled in files, public registries, databases or other technical means of data processing intended to provide reports, whether public or private."
+      },
+      {
+        "type": "p",
+        "text": "The personal data provided will be processed in order to validate the user's identity and personal information, as well as for operational and statistical purposes, as an input for the development of public policy or for any target use that OGTIC deems appropriate that is in accordance with its institutional purpose."
+      },
+      {
+        "type": "p",
+        "text": "The rights of the user as owner of the data are those provided in the Constitution and the law, especially the right to know, update, rectify and delete their personal information, as well as the right to revoke the consent granted for the processing of personal data."
+      },
+      {
+        "type": "p",
+        "text": "The personal data provided by the user is presumed true, complete, exact, updated, real and verifiable. In that sense, any error in the information provided will be the sole and exclusive responsibility of the user, which exonerates the Government Office of Information and Communication Technologies from liability towards third parties and judicial and/or administrative authorities."
+      },
+      {
+        "type": "p",
+        "text": "Therefore, with their registration on the Cuenta Única portal, the user authorizes the Government Office of Information and Communication Technologies, in a prior, irrevocable, express, voluntary and informed manner, to consult and process personal data found in public or private registries, such as digital, contact, personal and service information, among others, of which they are the owner, as well as their account usage history and any information necessary for purposes related to the requests that are presented before this platform and, in general, that the information is administered, processed, verified, transmitted or used in accordance with the legal provisions governing the matter."
+      },
+      {
+        "type": "p",
+        "text": "Likewise, with their registration on the Cuenta Única portal, the user expressly authorizes that the information provided may be used by third parties that the user authorizes, through their Cuenta Única, in accordance with current legislation."
+      },
+      {
+        "type": "p",
+        "text": "On the other hand, we inform you that we have tools, policies and procedures in the field of Information Technology management, which allow us to guarantee the security of the services used through Cuenta Única. However, it is essential to minimize the impact of security risks when accessing the portal, so we recommend the following:",
+        "className": "mt-6"
+      },
+      {
+        "type": "ul",
+        "listType": "disc",
+        "items": [
+          "Access from a personal device (personal computer, mobile phone, tablet, etc.) and be the only one using said device.",
+          "Do not leave an active session in Cuenta Única open if you are not using your device, otherwise, when you are not in front of your device, take the precaution of locking it and prevent third parties from making improper use of it.",
+          "Do not reveal your Cuenta Única password or access key, if you presume it has been compromised, change it as soon as possible.",
+          "Change your password or access key periodically.",
+          "Obtain and keep security programs such as anti-virus, firewalls, anti-spyware, etc. updated on your PC."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Finally, the information contained on this site, in a general manner, is offered merely for informational purposes and free of charge, leaving express evidence that the Government Office of Information and Communication Technologies assumes no responsibility for it, nor grants any guarantee of any kind for its use or application, especially regarding its exactness, validity or completeness. In that sense, the user of this site expressly acknowledges that the Government Office of Information and Communication Technologies has made its best effort to ensure the accuracy and reliability of the information and instructions that make up this site. However, because their content has been published transitorily and may present discrepancies with the definitive information, the Government Office of Information and Communication Technologies is not responsible for any deficiencies or inaccuracies in the content of this site, whatever their cause or origin.",
+        "className": "mt-6"
+      }
+    ]
+  }
+]

@@ -2,9 +2,7 @@ import { Login } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
-import { WelcomeSection } from "@/components/auth/welcome-section";
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
+
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getLoginFlow } from "@/lib/ory/flow";
@@ -35,35 +33,14 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
-      <Header />
-
-      <main className="flex-1">
-        <div className="container mx-auto py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full mx-auto">
-            {/* Welcome Section - Hidden on mobile, shown on desktop */}
-            <div className="hidden lg:block">
-              <WelcomeSection />
-            </div>
-
-            {/* Login Form - Ory Elements with CUC Customization */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="ory-auth-scope w-full max-w-md">
-                <Suspense fallback={<LoadingFallback />}>
-                  <LoginFlow searchParams={props.searchParams} />
-                </Suspense>
-              </div>
-            </div>
-
-            {/* Welcome Section - Shown on mobile below the form */}
-            <div className="lg:hidden order-last">
-              <WelcomeSection />
-            </div>
-          </div>
+    <main className="flex-1">
+      <div className="container mx-auto py-12 flex justify-center">
+        <div className="ory-auth-scope w-full max-w-md">
+          <Suspense fallback={<LoadingFallback />}>
+            <LoginFlow searchParams={props.searchParams} />
+          </Suspense>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </main>
   );
 }

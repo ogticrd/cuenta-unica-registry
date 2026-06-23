@@ -17,7 +17,7 @@ export function Footer() {
             {/* Government Logo Section */}
             <div className="flex flex-col space-y-3">
               <Image
-                src="/images/government-seal.png"
+                src="/images/gobierno-rd.svg"
                 alt="Escudo República Dominicana"
                 width={481}
                 height={196}
@@ -58,9 +58,6 @@ export function Footer() {
                 <Link href="/terms" className="block hover:underline">
                   {t("terms")}
                 </Link>
-                <Link href="/privacy" className="block hover:underline">
-                  {t("privacy")}
-                </Link>
                 <Link href="/faq" className="block hover:underline">
                   {t("faq")}
                 </Link>
@@ -73,16 +70,23 @@ export function Footer() {
         <div className="container mx-auto p-4 bg-white dark:bg-background">
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <p className="text-xs text-primary dark:text-muted-foreground font-semibold">
                 {t("copyright", { year: currentYear })}
               </p>
               <Image
-                src="/images/ogtic-logo.png"
+                src="/images/ogtic-logo.svg"
                 alt="OGTIC"
                 width={151}
                 height={82}
-                className="w-[60px] h-auto"
+                className="w-[60px] h-auto dark:hidden"
+              />
+              <Image
+                src="/images/ogtic-logo-dark-v.svg"
+                alt="OGTIC"
+                width={151}
+                height={82}
+                className="w-[60px] h-auto hidden dark:block"
               />
             </div>
 
@@ -92,25 +96,33 @@ export function Footer() {
               </span>
               <div className="flex space-x-2">
                 <Link
-                  href="#"
+                  href="https://www.facebook.com/Ogticrd"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
                 >
                   <Facebook size={16} />
                 </Link>
                 <Link
-                  href="#"
+                  href="https://www.youtube.com/OGTICRD"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
                 >
                   <Youtube size={16} />
                 </Link>
                 <Link
-                  href="#"
+                  href="https://x.com/OGTICRDO"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
                 >
                   <Twitter size={16} />
                 </Link>
                 <Link
-                  href="#"
+                  href="https://www.instagram.com/ogticrd"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors"
                 >
                   <Instagram size={16} />

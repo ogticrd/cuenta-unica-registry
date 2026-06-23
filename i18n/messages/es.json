@@ -23,7 +23,8 @@
     "recovery_subtitle": "Para restablecer la contraseña, ingrese su correo electrónico registrado",
     "recovery_remember": "¿Recuerdas tus credenciales?",
     "recovery_login_cta": "Inicia sesión",
-    "verify_account": "Verificar cuenta"
+    "verify_account": "Verificar cuenta",
+    "need_verification_prompt": "¿Necesitas verificar tu cuenta?"
   },
   "register": {
     "title": "Registro Cuenta Única",
@@ -82,7 +83,11 @@
         "face": "Permitir que tomemos capturas de <strong>tu rostro</strong>.",
         "photosensitive": "Esta verificación muestra <strong>luces de colores</strong>. Ten cuidado si eres fotosensible."
       },
-      "terms_label": "Aceptar términos y políticas de privacidad",
+      "terms_label": "Acepto los <terms>términos de uso</terms> y la <privacy>política de privacidad</privacy>",
+      "terms_label_link": "Acepto los términos de uso y la política de privacidad",
+      "terms_accept_checkbox": "Aceptar términos y políticas de privacidad",
+      "terms_read_document": "Ver términos",
+      "terms_required": "Debes aceptar los términos de uso y la política de privacidad para continuar.",
       "start_process": "INICIAR PROCESO",
       "modal": {
         "screenreader_title": "Verificación biométrica a pantalla completa",
@@ -92,7 +97,8 @@
         "verified": "¡Verificado!",
         "face_position": "Posiciona tu rostro aquí",
         "allow_camera": "Permitir cámara y escanear",
-        "analyzing": "Analizando rasgos faciales..."
+        "analyzing": "Analizando rasgos faciales...",
+        "success_redirect_description": "Te redirigiremos para verificar tu cuenta..."
       },
       "liveness": {
         "instructions_header": "Instrucciones",
@@ -147,15 +153,17 @@
         "password_min": "La contraseña debe tener al menos 10 caracteres",
         "password_weak": "La contraseña es muy débil. Usa mayúsculas, minúsculas, números o caracteres especiales.",
         "password_max": "La contraseña excede la longitud permitida",
-        "password_compromised": "La contraseña no es segura, elige una diferente",
+        "password_secure": "No se encontraron indicios de que esta contraseña haya sido expuesta públicamente",
+        "password_compromised": "Muchas personas ya han utilizado esta contraseña y ha sido expuesta en incidentes de seguridad. Escriba una contraseña más exclusiva",
         "password_policy": "La contraseña no cumple con la política de seguridad",
         "password_cedula_similarity": "La contraseña no puede contener la cédula",
         "password_email_similarity": "La contraseña no puede contener el correo electrónico",
         "email_mismatch": "Los correos electrónicos no coinciden",
-        "password_mismatch": "Las contraseñas no coinciden"
+        "password_mismatch": "Las contraseñas no coinciden",
+        "password_match": "Las contraseñas coinciden"
       },
       "password_requirements": {
-        "title": "Tu contraseña debe contener:",
+        "title": "Su contraseña debe cumplir los siguientes requisitos:",
         "length": "Al menos 10 caracteres",
         "uppercase": "Una letra mayúscula",
         "lowercase": "Una letra minúscula",
@@ -171,7 +179,7 @@
     "find_us": "BÚSCANOS",
     "find_us_address": "Av. Rómulo Betancourt #311, Edificio Corporativo Vista 311, Santo Domingo, República Dominicana.",
     "info": "INFÓRMATE",
-    "terms": "Términos de Uso",
+    "terms": "Términos de Uso y Política de Privacidad",
     "privacy": "Política de Privacidad",
     "faq": "Preguntas Frecuentes",
     "copyright": "© {year} Todos los Derechos Reservados. Desarrollado por",
@@ -280,8 +288,11 @@
       "security": {
         "title": "Nivel de Seguridad",
         "level_high": "Alto",
+        "alert_low_title": "Mejora la seguridad de tu cuenta",
+        "alert_low_desc": "Agrega un método de autenticación adicional para proteger mejor tu cuenta.",
+        "improve_security": "Mejorar seguridad",
         "level_standard": "Estándar",
-        "desc_2fa": "2FA activado",
+        "desc_2fa": "Reforzado",
         "desc_password": "Contraseña"
       }
     },
@@ -315,10 +326,21 @@
     "no_devices": "No se han detectado dispositivos activos.",
     "institutional_portals": "Portales institucionales",
     "unlink": "Desvincular",
+    "close_session": "Cerrar sesión",
     "session_active": "SESIÓN ACTIVA",
     "active": "ACTIVO",
     "session_current_badge": "Sesión actual",
     "device_unknown": "Dispositivo desconocido",
+    "browser_unknown": "Navegador desconocido",
+    "os_unknown": "SO desconocido",
+    "device_connector": " en ",
+    "device_in_browser": " en navegador ",
+    "device_detail_separator": " · ",
+    "device_computer": "Computadora",
+    "device_android": "Android",
+    "device_iphone": "iPhone",
+    "device_tablet": "Tablet",
+    "device_mobile": "Móvil",
     "ip_unknown": "IP desconocida",
     "location_unknown": "Ubicación desconocida",
     "recent": "Reciente",
@@ -329,16 +351,20 @@
     "expires_on": "Expira el",
     "last_access_prefix": "Último acceso",
     "cancel": "Cancelar",
-    "unlinking_device": "Desvinculando dispositivo...",
-    "device_unlinked_success": "Dispositivo desvinculado correctamente",
-    "device_unlink_error": "Ocurrió un error al desvincular el dispositivo",
-    "unlink_device_title": "¿Deseas desvincular \"{deviceName}\"?",
+    "unlinking_device": "Cerrando sesión...",
+    "device_unlinked_success": "Sesión cerrada correctamente",
+    "device_unlink_error": "Ocurrió un error al cerrar sesión en el dispositivo",
+    "unlink_device_title": "¿Deseas cerrar sesión en \"{deviceName}\"?",
     "unlink_device_description": "Se cerrará la sesión activa en este dispositivo.",
     "unlink_portal_title": "¿Deseas desvincular el portal \"{portalName}\"?",
     "unlink_portal_description": "Si desvinculas este portal:",
     "unlink_portal_consequence_1": "Perderás acceso directo a este portal desde tu cuenta.",
     "unlink_portal_consequence_2": "Deberás autenticarte nuevamente para acceder al portal.",
     "unlink_portal_consequence_3": "Podrás volver a vincular el portal cuando lo necesites.",
+    "see_more": "Ver más",
+    "see_less": "Ver menos",
+    "raw_device_name": "Nombre original del dispositivo",
+    "loading_map": "Cargando mapa...",
     "portals": {
       "single_investment_window": "Ventanilla Única de Inversión",
       "scholarship_portal": "Portal de Becas",
@@ -519,7 +545,7 @@
     "contact_information": "Información de contacto",
     "email": "Correo electrónico",
     "phone": "Teléfono",
-    "official_records_note": "La información mostrada proviene de registros oficiales (JCE, TSS, DGII) y está sincronizada con el sistema. Para modificar tus datos, debes dirigirte a las oficinas correspondientes de la Junta Central Electoral.",
+    "official_records_note": "La información mostrada proviene de registros oficiales (JCE) y está sincronizada con el sistema. Para modificar tus datos, debes dirigirte a las oficinas correspondientes de la Junta Central Electoral.",
     "not_registered": "No registrado",
     "verified": "Verificado",
     "gender_male": "Masculino",
@@ -572,5 +598,74 @@
     "error_code_length": "El código debe tener 6 dígitos.",
     "error_invalid_code": "El código ingresado no es válido. Intenta de nuevo.",
     "error_expired_code": "El código ingresado no es válido o ha expirado."
+  },
+  "landing": {
+    "hero": {
+      "welcome_title": "¡Bienvenid@ al servicio de <highlight>Cuenta Única Ciudadana!</highlight>",
+      "citizen": "Ciudadana",
+      "welcome_subtitle": "Accede o regístrate con un único usuario y contraseña, para consultar todos los servicios gubernamentales disponibles.",
+      "welcome_body": "Una manera fácil y cómoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.",
+      "register_btn": "Crear mi cuenta",
+      "login_btn": "Iniciar sesión"
+    },
+    "what_is_cuc": {
+      "title": "¿Qué es <highlight>Cuenta Única Ciudadana?</highlight>",
+      "body": "Este es el nuevo mecanismo con el que te podrás identificar ante los portales y aplicaciones del estado dominicano. Tu número cédula de identidad y electoral será tu identificador siempre. Además, el proceso de registro te acompañará en la creación de una contraseña super segura, que no haya sido comprometida en internet y difícil de adivinar por personas malintencionadas o robots. Con esto ya no será necesario crear múltiples cuentas o recordar viejos correos electrónicos. Para autenticarte de forma digital y remota ante alguna entidad gubernamental en la República Dominicana solo necesitarás tu Cuenta Única Ciudadana. ¡Regístra la tuya ahora!"
+    },
+    "steps": {
+      "title": "Pasos para <highlight>registrarte</highlight>",
+      "step1_title": "Identificación",
+      "step1_item1": "Ingresa tu número de cédula",
+      "step2_title": "Creación de cuenta",
+      "step2_item1": "Proporciona un correo electrónico personal",
+      "step2_item2": "Crea una contraseña segura y única",
+      "step3_title": "Verificación biométrica",
+      "step3_item1": "Realiza la prueba de vida y verificación facial",
+      "step4_title": "Confirmación",
+      "step4_item1": "Ingresa el código que llegó a tu correo electrónico",
+      "step5_title": "¡Registro completo!",
+      "step5_item1": "¡Felicidades! Tu Cuenta Única Ciudadana está lista para ser usada en los portales y aplicaciones gubernamentales"
+    },
+    "benefits": {
+      "title": "Beneficios",
+      "subtitle": "Descubre las ventajas de tener tu identidad digital unificada para todos los servicios del Estado.",
+      "items": {
+        "item1": {
+          "title": "Acceso sencillo",
+          "description": "Usarás tu número de cédula para acceder a los servicios digitales del Estado, sin necesidad de recordar múltiples correos electrónicos o contraseñas."
+        },
+        "item2": {
+          "title": "Ahorro de tiempo",
+          "description": "Ya no necesitarás crear cuentas para acceder a un nuevo servicio digital. Con tu Cuenta Única Ciudadana, podrás acceder a todos los servicios digitales del Estado que se integren a la misma."
+        },
+        "item3": {
+          "title": "Mayor Seguridad",
+          "description": "Nadie podrá suplantar tu identidad con el uso de Cuenta Única Ciudadana. Además, podrás habilitar la autenticación de multiples factores para mayor seguridad."
+        },
+        "item4": {
+          "title": "Verificación sencilla",
+          "description": "Para verificar tu identidad solo tendrás que mostrar tu cara a tu cámara en el proceso de registro. El sistema se encargará de comparar tus rasgos faciales con la foto de tu cédula de identidad y electoral."
+        }
+      }
+    },
+    "government": {
+      "title": "Entidad Gubernamental",
+      "subtitle": "¿Quieres activar la Cuenta Única Ciudadana para tu portal web o aplicación?",
+      "description": "La integración de Cuenta Única Ciudadana ofrecerá un inicio de sesión simple y seguro al ciudadano dominicano, reducirá al mínimo los vectores de ataques (como creación de multicuentas, suplantación de identidad, etc) y muchos otros beneficios. El proceso de integración será rápido y completamente indoloro gracias a que disponemos de herramientas que hemos diseñado para apoyarte, todas están basadas en los estándares de autenticación y autorización de la industria (OAuth y OpenID Connect). ¡Contáctanos para más información!",
+      "contact_msg": "Para solicitar más información, escríbenos a"
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "subtitle": "Encuentra soluciones a los problemas técnicos más comunes de tu Cuenta Única Ciudadana.",
+      "search_placeholder": "Buscar por palabra clave...",
+      "no_results": "No se encontraron resultados para tu búsqueda.",
+      "help_images": "Imágenes de ayuda (Clic para ampliar):"
+    }
+  },
+  "not_found": {
+    "title": "Error 404",
+    "page_not_found": "Página no encontrada",
+    "message": "Lo sentimos, la página que buscas no existe o ha sido movida. Verifica la URL e intenta nuevamente.",
+    "back_to_home": "Ir al Inicio"
   }
 }

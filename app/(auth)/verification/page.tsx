@@ -5,8 +5,7 @@ import {
   CucVerificationFooter,
   CucVerificationHeader,
 } from "@/components/auth/ory-components";
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
+
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
 import { getVerificationFlow } from "@/lib/ory/flow";
@@ -37,20 +36,14 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
 
 export default async function VerificationPage(props: OryPageParams) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#eff7ff] dark:bg-background">
-      <Header />
-
-      <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container mx-auto px-4">
-          <div className="w-full max-w-md mx-auto">
-            <Suspense fallback={<LoadingFallback />}>
-              <VerificationFlow searchParams={props.searchParams} />
-            </Suspense>
-          </div>
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4">
+        <div className="w-full max-w-md mx-auto">
+          <Suspense fallback={<LoadingFallback />}>
+            <VerificationFlow searchParams={props.searchParams} />
+          </Suspense>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </main>
   );
 }

@@ -36,7 +36,7 @@ async function sha1(value: string) {
     .toUpperCase();
 }
 
-export async function isBreachedPassword(password: string) {
+export async function isBreachedPassword(password: string): Promise<boolean> {
   if (!password || !isPasswordStrongEnough(password)) {
     return false;
   }

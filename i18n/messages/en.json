@@ -23,7 +23,8 @@
     "recovery_subtitle": "To reset your password, enter your registered email address",
     "recovery_remember": "Remember your credentials?",
     "recovery_login_cta": "Log in",
-    "verify_account": "Verify account"
+    "verify_account": "Verify account",
+    "need_verification_prompt": "Need to verify your account?"
   },
   "register": {
     "title": "Cuenta Única Registration",
@@ -82,7 +83,11 @@
         "face": "Allow us to capture images of <strong>your face</strong>.",
         "photosensitive": "This verification displays <strong>colored lights</strong>. Be careful if you are photosensitive."
       },
-      "terms_label": "Accept terms and privacy policies",
+      "terms_label": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>",
+      "terms_label_link": "I accept the terms of use and privacy policy",
+      "terms_accept_checkbox": "Accept terms and privacy policy",
+      "terms_read_document": "View terms",
+      "terms_required": "You must accept the terms of use and privacy policy to continue.",
       "start_process": "START PROCESS",
       "modal": {
         "screenreader_title": "Full-screen biometric verification",
@@ -92,7 +97,8 @@
         "verified": "Verified!",
         "face_position": "Position your face here",
         "allow_camera": "Allow camera and scan",
-        "analyzing": "Analyzing facial features..."
+        "analyzing": "Analyzing facial features...",
+        "success_redirect_description": "We will redirect you to verify your account..."
       },
       "liveness": {
         "instructions_header": "Instructions",
@@ -147,15 +153,17 @@
         "password_min": "The password must be at least 10 characters long",
         "password_weak": "The password is too weak. Use uppercase, lowercase, numbers, or special characters.",
         "password_max": "The password exceeds the allowed length",
-        "password_compromised": "The password is not secure, choose a different one",
+        "password_secure": "No evidence was found that this password has been publicly exposed",
+        "password_compromised": "Many people have already used this password, and it has been exposed in security incidents. Please create a more unique password",
         "password_policy": "The password does not meet the security policy",
         "password_cedula_similarity": "The password cannot contain the national ID",
         "password_email_similarity": "The password cannot contain the email address",
         "email_mismatch": "The email addresses do not match",
-        "password_mismatch": "The passwords do not match"
+        "password_mismatch": "The passwords do not match",
+        "password_match": "The passwords match"
       },
       "password_requirements": {
-        "title": "Your password must contain:",
+        "title": "Your password must meet the following requirements:",
         "length": "At least 10 characters",
         "uppercase": "One uppercase letter",
         "lowercase": "One lowercase letter",
@@ -171,7 +179,7 @@
     "find_us": "FIND US",
     "find_us_address": "Av. Rómulo Betancourt #311, Vista 311 Corporate Building, Santo Domingo, Dominican Republic.",
     "info": "INFORMATION",
-    "terms": "Terms of Use",
+    "terms": "Terms of Use and Privacy Policy",
     "privacy": "Privacy Policy",
     "faq": "Frequently Asked Questions",
     "copyright": "© {year} All Rights Reserved. Developed by",
@@ -280,8 +288,11 @@
       "security": {
         "title": "Security Level",
         "level_high": "High",
+        "alert_low_title": "Improve your account security",
+        "alert_low_desc": "Add an additional authentication method to better protect your account.",
+        "improve_security": "Improve security",
         "level_standard": "Standard",
-        "desc_2fa": "2FA activated",
+        "desc_2fa": "Enhanced",
         "desc_password": "Password"
       }
     },
@@ -315,10 +326,21 @@
     "no_devices": "No active devices detected.",
     "institutional_portals": "Institutional portals",
     "unlink": "Unlink",
+    "close_session": "Close session",
     "session_active": "ACTIVE SESSION",
     "active": "ACTIVE",
     "session_current_badge": "Current session",
     "device_unknown": "Unknown device",
+    "browser_unknown": "Unknown browser",
+    "os_unknown": "Unknown OS",
+    "device_connector": " on ",
+    "device_in_browser": " in browser ",
+    "device_detail_separator": " · ",
+    "device_computer": "Computer",
+    "device_android": "Android",
+    "device_iphone": "iPhone",
+    "device_tablet": "Tablet",
+    "device_mobile": "Mobile",
     "ip_unknown": "Unknown IP",
     "location_unknown": "Unknown location",
     "recent": "Recent",
@@ -329,16 +351,20 @@
     "expires_on": "Expires on",
     "last_access_prefix": "Last access",
     "cancel": "Cancel",
-    "unlinking_device": "Unlinking device...",
-    "device_unlinked_success": "Device unlinked successfully",
-    "device_unlink_error": "An error occurred while unlinking the device",
-    "unlink_device_title": "Do you want to unlink \"{deviceName}\"?",
+    "unlinking_device": "Closing session...",
+    "device_unlinked_success": "Session closed successfully",
+    "device_unlink_error": "An error occurred while closing session on the device",
+    "unlink_device_title": "Do you want to close session on \"{deviceName}\"?",
     "unlink_device_description": "The active session on this device will be closed.",
     "unlink_portal_title": "Do you want to unlink the \"{portalName}\" portal?",
     "unlink_portal_description": "If you unlink this portal:",
     "unlink_portal_consequence_1": "You will lose direct access to this portal from your account.",
     "unlink_portal_consequence_2": "You will need to authenticate again to access the portal.",
     "unlink_portal_consequence_3": "You will be able to link the portal again whenever you need.",
+    "see_more": "See more",
+    "see_less": "See less",
+    "raw_device_name": "Raw device name",
+    "loading_map": "Loading map...",
     "portals": {
       "single_investment_window": "Single Investment Window",
       "scholarship_portal": "Scholarship Portal",
@@ -519,7 +545,7 @@
     "contact_information": "Contact Information",
     "email": "Email",
     "phone": "Phone",
-    "official_records_note": "The information shown comes from official records (JCE, TSS, DGII) and is synchronized with the system. To modify your data, you must go to the corresponding offices of the Central Electoral Board.",
+    "official_records_note": "The information shown comes from official records (JCE) and is synchronized with the system. To modify your data, you must go to the corresponding offices of the Central Electoral Board.",
     "not_registered": "Not registered",
     "verified": "Verified",
     "gender_male": "Male",
@@ -572,5 +598,74 @@
     "error_code_length": "The code must be 6 digits.",
     "error_invalid_code": "The code entered is not valid. Please try again.",
     "error_expired_code": "The code entered is not valid or has expired."
+  },
+  "landing": {
+    "hero": {
+      "welcome_title": "Welcome to the <highlight>Cuenta Única Ciudadana</highlight> service!",
+      "citizen": "Citizen",
+      "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
+      "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
+      "register_btn": "Create my account",
+      "login_btn": "Log In"
+    },
+    "what_is_cuc": {
+      "title": "What is <highlight>Cuenta Única Ciudadana?</highlight>",
+      "body": "This is the new mechanism with which you can identify yourself before the portals and applications of the Dominican state. Your identity card number will always be your identifier. In addition, the registration process will accompany you in creating a super secure password that has not been compromised on the internet and is difficult for malicious people or robots to guess. With this, it will no longer be necessary to create multiple accounts or remember old emails. To authenticate yourself digitally and remotely before any government entity in the Dominican Republic, you will only need your Cuenta Única Ciudadana. Register yours now!"
+    },
+    "steps": {
+      "title": "Steps to <highlight>register</highlight>",
+      "step1_title": "Identification",
+      "step1_item1": "Enter your national ID number",
+      "step2_title": "Account creation",
+      "step2_item1": "Provide a personal email",
+      "step2_item2": "Create a secure and unique password",
+      "step3_title": "Biometric verification",
+      "step3_item1": "Perform a liveness check and facial verification",
+      "step4_title": "Confirmation",
+      "step4_item1": "Enter the code sent to your email",
+      "step5_title": "Registration complete!",
+      "step5_item1": "Congratulations! Your Cuenta Única Ciudadana is ready to be used in government portals and applications"
+    },
+    "benefits": {
+      "title": "Benefits",
+      "subtitle": "Discover the advantages of having your digital identity unified for all State services.",
+      "items": {
+        "item1": {
+          "title": "Easy access",
+          "description": "You will use your national ID number to access State digital services, without the need to remember multiple emails or passwords."
+        },
+        "item2": {
+          "title": "Time saving",
+          "description": "You will no longer need to create accounts to access a new digital service. With your Cuenta Única Ciudadana, you can access all integrated State digital services."
+        },
+        "item3": {
+          "title": "Greater Security",
+          "description": "No one will be able to impersonate your identity using the Cuenta Única Ciudadana. Furthermore, you can enable multi-factor authentication for greater security."
+        },
+        "item4": {
+          "title": "Simple verification",
+          "description": "To verify your identity you will only have to show your face to your camera during the registration process. The system will compare your facial features with the photo on your national ID."
+        }
+      }
+    },
+    "government": {
+      "title": "Government Entity",
+      "subtitle": "Do you want to activate Cuenta Única Ciudadana for your web portal or application?",
+      "description": "The integration of Cuenta Única Ciudadana will offer a simple and secure login to the Dominican citizen, will minimize attack vectors (such as creating multiple accounts, identity theft, etc.) and many other benefits. The integration process will be fast and completely painless because we have tools designed to support you, all based on industry authentication and authorization standards (OAuth and OpenID Connect). Contact us for more information!",
+      "contact_msg": "To request more information, write to us at"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find solutions to the most common technical problems with your Cuenta Única Ciudadana.",
+      "search_placeholder": "Search by keyword...",
+      "no_results": "No results found for your search.",
+      "help_images": "Help images (Click to expand):"
+    }
+  },
+  "not_found": {
+    "title": "Error 404",
+    "page_not_found": "Page not found",
+    "message": "Sorry, the page you are looking for does not exist or has been moved. Check the URL and try again.",
+    "back_to_home": "Back to Home"
   }
 }

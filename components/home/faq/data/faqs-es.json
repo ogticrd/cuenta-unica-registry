@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "question": "¿Cómo puedo restaurar mi contraseña?",
+    "answer": "<p>Si olvidó su contraseña, puede recuperar el acceso desde la página de inicio de sesión de <strong>Cuenta Única Ciudadana</strong>.</p><ol><li><strong>Acceda al inicio de sesión:</strong><br />Entre a <a href=\"https://mi.cuentaunica.gob.do/ui/login\" target=\"_blank\" rel=\"noopener noreferrer\">https://mi.cuentaunica.gob.do/ui/login</a>.</li><li><strong>Inicie la recuperación:</strong><br />Seleccione la opción <strong>“¿Olvidó su contraseña?”</strong>.</li><li><strong>Indique su correo electrónico:</strong><br />Escriba el correo electrónico asociado a su cuenta y presione <strong>“Continuar”</strong>. El sistema enviará un código de recuperación.</li><li><strong>Revise el mensaje recibido:</strong><br />Busque el correo de recuperación en su bandeja de entrada. Si no aparece, revise <strong>Spam</strong> o <strong>Correo no deseado</strong>, y confirme que usó el correo electrónico correcto.</li><li><strong>Valide el código:</strong><br />Introduzca el código en la pantalla de recuperación. Si el código expiró o no llegó, utilice la opción <strong>“Reenviar código”</strong>.</li><li><strong>Actualice su contraseña:</strong><br />Cuando el sistema valide el código, defina una contraseña nueva y guarde los cambios. Use una contraseña única, segura y que no utilice en otros servicios.</li></ol>",
+    "images": [
+      "/images/faqs/1/1-step-1.png",
+      "/images/faqs/1/1-step-2.png",
+      "/images/faqs/1/1-step-3.png",
+      "/images/faqs/1/1-step-4.png",
+      "/images/faqs/1/1-step-5.png",
+      "/images/faqs/1/1-step-6.png"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "¿Cómo puedo crear mi cuenta nuevamente?",
+    "answer": "<p>La <strong>Cuenta Única Ciudadana</strong> está asociada a su identidad. En condiciones normales no necesita crear varias cuentas: debe recuperar el acceso a la cuenta existente o completar el registro si todavía no lo ha finalizado.</p><ol><li><strong>Si ya tenía una cuenta:</strong><br />Intente iniciar sesión con su cédula de identidad y electoral o con el correo electrónico asociado. Si no recuerda la contraseña, use la opción <strong>“¿Olvidó su contraseña?”</strong>.</li><li><strong>Si no completó el registro:</strong><br />Entre a <a href=\"https://registro.cuentaunica.gob.do\" target=\"_blank\" rel=\"noopener noreferrer\">https://registro.cuentaunica.gob.do</a> y siga los pasos de verificación de identidad, creación de contraseña y confirmación del correo electrónico.</li><li><strong>Si el sistema indica que ya existe una cuenta:</strong><br />No inicie registros adicionales. Utilice las opciones de recuperación disponibles en la plataforma para evitar duplicidad o inconsistencias en sus datos.</li></ol>"
+  },
+  {
+    "id": 3,
+    "question": "¿Qué hago si no recuerdo mi correo electrónico?",
+    "answer": "<p>Si no recuerda el correo electrónico asociado a su <strong>Cuenta Única Ciudadana</strong>, pruebe estas opciones antes de iniciar un nuevo registro:</p><ol><li><strong>Inicie sesión con su cédula:</strong><br />La plataforma permite acceder con su cédula de identidad y electoral o con su correo electrónico, junto con su contraseña.</li><li><strong>Busque mensajes previos:</strong><br />Revise sus bandejas de entrada, promociones, spam o correos archivados para identificar mensajes enviados por Cuenta Única Ciudadana.</li><li><strong>Use la recuperación de contraseña:</strong><br />Si reconoce un correo posible, intente el proceso de recuperación. El código solo llegará al correo asociado a la cuenta.</li><li><strong>Si el inconveniente continúa:</strong><br />Consulte los canales oficiales publicados por OGTIC o utilice las opciones de ayuda disponibles dentro de la plataforma. No comparta datos personales por canales no verificados.</li></ol>"
+  },
+  {
+    "id": 4,
+    "question": "¿Qué puedo hacer si no me llega el código de verificación?",
+    "answer": "<p>Si no recibe el código de verificación, realice estas validaciones:</p><ol><li>Revise las carpetas de <strong>Spam</strong>, <strong>Correo no deseado</strong>, promociones o correos filtrados.</li><li>Espere unos minutos antes de solicitar un código nuevo. Pedir varios códigos seguidos puede hacer que use un código anterior o ya vencido.</li><li>Confirme que el correo electrónico indicado sea el correcto y que tenga acceso a esa bandeja.</li><li>Si está usando un correo institucional o corporativo, verifique si su organización bloquea mensajes automáticos.</li><li>Cuando esté disponible, utilice la opción <strong>“Reenviar código”</strong> desde la misma pantalla del proceso.</li></ol>"
+  },
+  {
+    "id": 5,
+    "question": "¿Cómo puedo reportar un error con mi cuenta?",
+    "answer": "<p>Si encuentra un error durante el registro, inicio de sesión o uso de su <strong>Cuenta Única Ciudadana</strong>, repórtelo desde los mecanismos disponibles en la plataforma.</p><ol><li><strong>Use el botón “Reportar”:</strong><br />Durante el proceso de registro puede aparecer un botón flotante <strong>“Reportar”</strong>. Esta es la vía recomendada porque permite registrar el inconveniente desde el punto exacto donde ocurre.</li><li><strong>Describa el problema con claridad:</strong><br />Indique qué estaba intentando hacer, en cuál paso ocurrió el error y qué mensaje mostró la pantalla.</li><li><strong>Incluya evidencia cuando la plataforma lo permita:</strong><br />Una captura de pantalla puede ayudar a identificar el problema. Evite mostrar información sensible si no es necesaria para explicar el caso.</li><li><strong>Si no puede reportar desde la plataforma:</strong><br />Consulte los canales oficiales de atención publicados por OGTIC y evite compartir información personal en canales no verificados.</li></ol>",
+    "images": ["/images/faqs/6/6-step-1.png"]
+  },
+  {
+    "id": 6,
+    "question": "¿Cómo puedo cambiar mi contraseña?",
+    "answer": "<p>Si conoce su contraseña actual, puede cambiarla desde la configuración de su <strong>Cuenta Única Ciudadana</strong>.</p><ol><li><strong>Inicie sesión:</strong><br />Acceda a <a href=\"https://mi.cuentaunica.gob.do/ui/login\" target=\"_blank\" rel=\"noopener noreferrer\">https://mi.cuentaunica.gob.do/ui/login</a> con sus credenciales.</li><li><strong>Abra la sección de contraseña:</strong><br />En el menú de configuración de la cuenta, seleccione la opción relacionada con <strong>contraseña</strong>.</li><li><strong>Defina la nueva contraseña:</strong><br />Ingrese una contraseña nueva, segura y diferente a las que use en otros servicios.</li><li><strong>Guarde los cambios:</strong><br />Presione <strong>“Guardar”</strong> y confirme que la plataforma muestre la actualización como completada.</li></ol>",
+    "images": ["/images/faqs/7/7-step-1.png"]
+  },
+  {
+    "id": 7,
+    "question": "¿Puedo agregar métodos adicionales de autenticación?",
+    "answer": "<p>Sí. <strong>Cuenta Única Ciudadana</strong> permite fortalecer el acceso con métodos adicionales de autenticación cuando estén disponibles en la configuración de su cuenta.</p><ol><li><strong>Ingrese a su cuenta:</strong><br />Acceda a la plataforma y abra la sección de configuración o seguridad.</li><li><strong>Revise los métodos disponibles:</strong><br />La plataforma mostrará las opciones que puede activar para su usuario. Estas opciones pueden variar según el dispositivo, navegador o configuración habilitada.</li><li><strong>Siga las instrucciones en pantalla:</strong><br />Complete la validación solicitada y confirme que el método quede registrado antes de cerrar la sesión.</li></ol><p>Los métodos adicionales de autenticación ayudan a proteger su cuenta y reducen el riesgo de acceso no autorizado.</p>"
+  }
+]

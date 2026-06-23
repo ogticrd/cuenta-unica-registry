@@ -3,6 +3,7 @@
  * Use these instead of hardcoding strings to make future route changes easy.
  */
 export const ROUTES = {
+  landing: "/",
   // Auth
   login: "/self-service/login/browser",
   // register: "/self-service/registration/browser",
@@ -14,11 +15,13 @@ export const ROUTES = {
   emailSent: "/register/email-sent",
 
   // Dashboard
-  dashboard: "/",
+  dashboard: "/dashboard",
   profile: "/profile",
   // settings: "/self-service/settings/browser",
   settings: "/settings",
   history: "/history",
+
+  terms: "/terms",
   notifications: "/notifications",
   support: "/support",
   about: "/about",
