@@ -8,6 +8,12 @@ const { mockCreateOryClient, mockGetServerCookies, mockGetT, mockUpdateFlow } =
     mockUpdateFlow: vi.fn(),
   }));
 
+vi.mock("server-only", () => ({}));
+
+vi.mock("@/lib/analytics/transient-payload", () => ({
+  withAnalyticsTransientPayload: vi.fn(async (payload) => payload),
+}));
+
 vi.mock("@/lib/i18n/server", () => ({
   getT: mockGetT,
 }));

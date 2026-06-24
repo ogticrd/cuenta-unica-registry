@@ -12,6 +12,8 @@ const { mockFormAction, mockPush, mockToastSuccess } = vi.hoisted(() => ({
 const originalLocation = window.location;
 const mockAssign = vi.fn();
 
+vi.mock("server-only", () => ({}));
+
 vi.mock("react", async () => {
   const actual = await vi.importActual<typeof import("react")>("react");
 

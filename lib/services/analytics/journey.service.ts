@@ -14,7 +14,7 @@ export async function trackJourneyEvent(input: JourneyEventRequest) {
       body: JSON.stringify(input),
       keepalive: true,
     });
-  } catch (error) {
-    console.error("[trackJourneyEvent] Failed to send journey event:", error);
+  } catch {
+    // Journey tracking must never interrupt or pollute registration UX.
   }
 }

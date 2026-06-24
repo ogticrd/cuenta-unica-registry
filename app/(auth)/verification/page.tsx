@@ -47,13 +47,13 @@ export default async function VerificationPage(props: OryPageParams) {
         oryFlowType="verification"
       />
       <main className="flex-1 flex items-center justify-center py-12">
-      <div className="container mx-auto px-4">
-        <div className="w-full max-w-md mx-auto">
-          <Suspense fallback={<LoadingFallback />}>
-            <VerificationFlow searchParams={props.searchParams} />
-          </Suspense>
+        <div className="container mx-auto px-4">
+          <div className="w-full max-w-md mx-auto">
+            <Suspense fallback={<LoadingFallback />}>
+              <VerificationFlow searchParams={props.searchParams} />
+            </Suspense>
+          </div>
         </div>
-      </div>
       </main>
     </>
   );

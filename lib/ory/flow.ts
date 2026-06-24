@@ -81,7 +81,7 @@ function withAnalyticsTransientPayloadResponse<T extends object>(
 export async function getLoginFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-): Promise<LoginFlow | null | void> {
+): Promise<LoginFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
   return getFlowFactory<LoginFlow>(
@@ -103,7 +103,7 @@ export async function getLoginFlow(
 export async function getRegistrationFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-): Promise<RegistrationFlow | null | void> {
+): Promise<RegistrationFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
   return getFlowFactory<RegistrationFlow>(
@@ -125,7 +125,7 @@ export async function getRegistrationFlow(
 export async function getRecoveryFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-): Promise<RecoveryFlow | null | void> {
+): Promise<RecoveryFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
   return getFlowFactory<RecoveryFlow>(
@@ -147,7 +147,7 @@ export async function getRecoveryFlow(
 export async function getVerificationFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-): Promise<VerificationFlow | null | void> {
+): Promise<VerificationFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
   return getFlowFactory<VerificationFlow>(
@@ -169,7 +169,7 @@ export async function getVerificationFlow(
 export async function getSettingsFlow(
   config: OryClientConfiguration,
   params: Promise<Record<string, string | string[] | undefined>>,
-): Promise<SettingsFlow | null | void> {
+): Promise<SettingsFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
   return getFlowFactory<SettingsFlow>(

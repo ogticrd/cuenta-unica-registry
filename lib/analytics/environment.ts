@@ -1,8 +1,4 @@
-export const ANALYTICS_ENVIRONMENTS = [
-  "production",
-  "staging",
-  "dev",
-] as const;
+export const ANALYTICS_ENVIRONMENTS = ["production", "staging", "dev"] as const;
 
 export type AnalyticsEnvironment = (typeof ANALYTICS_ENVIRONMENTS)[number];
 

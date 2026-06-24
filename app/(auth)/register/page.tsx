@@ -23,16 +23,16 @@ export default async function RegistrationPage({
         returnUrl={params.return_url}
       />
       <main className="flex-1 flex items-center justify-center py-12">
-      <div className="container mx-auto px-4 max-w-3xl">
-        <RegisterWizard
-          initialStep={registrationWizardState.initialStep}
-          initialCedula={registrationWizardState.initialCedula}
-          initialName={registrationWizardState.initialName}
-          initialSessionStatus={registrationWizardState.initialSessionStatus}
-          hasAccountDraft={registrationWizardState.hasAccountDraft}
-          returnUrl={params.return_url}
-        />
-      </div>
+        <div className="container mx-auto px-4 max-w-3xl">
+          <RegisterWizard
+            initialStep={registrationWizardState.initialStep}
+            initialCedula={registrationWizardState.initialCedula}
+            initialName={registrationWizardState.initialName}
+            initialSessionStatus={registrationWizardState.initialSessionStatus}
+            hasAccountDraft={registrationWizardState.hasAccountDraft}
+            returnUrl={params.return_url}
+          />
+        </div>
       </main>
     </>
   );

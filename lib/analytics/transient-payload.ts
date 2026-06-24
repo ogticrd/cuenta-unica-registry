@@ -2,13 +2,13 @@ import "server-only";
 
 import { getAnalyticsContext } from "./context";
 import {
-  type AnalyticsTransientPayload,
-  buildAnalyticsTransientPayload,
-} from "./transient-payload-core";
-import {
   resolveAnalyticsEnvironment,
   resolveAnalyticsProjectId,
 } from "./environment";
+import {
+  type AnalyticsTransientPayload,
+  buildAnalyticsTransientPayload,
+} from "./transient-payload-core";
 
 export async function getAnalyticsTransientPayload(): Promise<
   AnalyticsTransientPayload | undefined

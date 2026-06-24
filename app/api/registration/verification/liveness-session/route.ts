@@ -108,7 +108,9 @@ export async function POST() {
       metadata: {
         cedula: session.cedula,
         stage: "created",
-        evidence: { liveness: { provider: "aws_rekognition", status: "started" } },
+        evidence: {
+          liveness: { provider: "aws_rekognition", status: "started" },
+        },
         links: { livenessSessionId: sessionId },
       },
     });
