@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   createVerifyLivenessPayload,
@@ -22,6 +23,28 @@ function createErrorResponse(code: VerifyLivenessErrorCode, status: number) {
   return NextResponse.json(payload, { status });
 }
 
+async function emitLivenessOutcome(options: {
+  success: boolean;
+  sessionId?: string;
+  errorCode?: string;
+  metadata?: Record<string, unknown>;
+}) {
+  await emitAnalyticsEvent(
+    {
+      eventName: options.success
+        ? "registration.liveness.succeeded"
+        : "registration.liveness.failed",
+      source: "registry-app",
+      step: "liveness",
+      outcome: options.success ? "succeeded" : "failed",
+      ...(options.sessionId ? { sessionId: options.sessionId } : {}),
+      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+      ...(options.metadata ? { metadata: options.metadata } : {}),
+    },
+    { entryPath: "/api/registration/verification/liveness-result" },
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const parsedBody = await parseJsonRequest(
@@ -30,12 +53,24 @@ export async function POST(request: Request) {
     );
 
     if (!parsedBody.success) {
+      await emitLivenessOutcome({
+        success: false,
+        errorCode: "invalid_payload",
+        metadata: { stage: "request_body" },
+      });
       return createErrorResponse(parsedBody.code, 400);
     }
 
-    const result = await verifyRegistrationLiveness(parsedBody.data.sessionId);
+    const sessionId = parsedBody.data.sessionId;
+    const result = await verifyRegistrationLiveness(sessionId);
 
     if (!result.success) {
+      await emitLivenessOutcome({
+        success: false,
+        sessionId,
+        errorCode: result.code,
+        metadata: { stage: result.code },
+      });
       const response = createErrorResponse(result.code, result.status);
 
       if (result.code === "account_draft_missing") {
@@ -44,6 +79,25 @@ export async function POST(request: Request) {
 
       return response;
     }
+
+    await emitLivenessOutcome({
+      success: true,
+      sessionId,
+      metadata: {
+        cedula: result.session.cedula,
+        stage: "verified",
+        confidence: result.confidence,
+        similarity: result.similarity,
+        evidence: {
+          liveness: {
+            provider: "aws_rekognition",
+            status: "succeeded",
+            confidence: result.confidence,
+            similarity: result.similarity,
+          },
+        },
+      },
+    });
 
     const response = NextResponse.json(createVerifyLivenessPayload(result), {
       status: 200,
@@ -59,6 +113,11 @@ export async function POST(request: Request) {
       "[/api/registration/verification/liveness-result] Failed:",
       error,
     );
+    await emitLivenessOutcome({
+      success: false,
+      errorCode: "unexpected_error",
+      metadata: { stage: "exception" },
+    });
     return createErrorResponse("unexpected_error", 500);
   }
 }

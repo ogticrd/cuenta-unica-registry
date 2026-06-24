@@ -1,6 +1,14 @@
 import { createOryMiddleware } from "@ory/nextjs/middleware";
 import { type NextRequest, NextResponse } from "next/server";
-
+import { normalizeClientId } from "@/lib/analytics/catalog";
+import {
+  ANALYTICS_CONTEXT_COOKIE,
+  ANALYTICS_CONTEXT_LAUNCH_COOKIE,
+  buildAnalyticsContextFromUrl,
+  parseAnalyticsContext,
+  serializeAnalyticsContext,
+  shouldRefreshAnalyticsContext,
+} from "@/lib/analytics/context-core";
 import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
 
@@ -20,6 +28,95 @@ const AUTH_ROUTES = [
   "/recovery",
   "/verification",
 ];
+
+const AUTH_ENTRY_PATHS = new Set([
+  "/login",
+  "/register",
+  "/recovery",
+  "/verification",
+  "/settings",
+]);
+
+function getAnalyticsSecret() {
+  return (
+    process.env.ANALYTICS_CONTEXT_SECRET ||
+    process.env.REGISTRATION_SESSION_SECRET
+  );
+}
+
+function allowDirectAnalyticsClientId() {
+  return process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID === "true";
+}
+
+async function readAnalyticsContextFromRequest(request: NextRequest) {
+  const rawValue = request.cookies.get(ANALYTICS_CONTEXT_COOKIE)?.value;
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const secret = getAnalyticsSecret();
+  if (!secret) {
+    return null;
+  }
+
+  const parsed = await parseAnalyticsContext(rawValue, secret);
+  if (!parsed || parsed.expiresAt < Date.now()) {
+    return null;
+  }
+
+  return parsed;
+}
+
+async function maybeRefreshAnalyticsContext(request: NextRequest) {
+  if (!AUTH_ENTRY_PATHS.has(request.nextUrl.pathname)) {
+    return null;
+  }
+
+  const currentContext = await readAnalyticsContextFromRequest(request);
+  const launchPath = request.cookies.get(
+    ANALYTICS_CONTEXT_LAUNCH_COOKIE,
+  )?.value;
+
+  if (currentContext && launchPath === request.nextUrl.pathname) {
+    const response = NextResponse.next();
+    response.cookies.delete(ANALYTICS_CONTEXT_LAUNCH_COOKIE);
+    return response;
+  }
+
+  const allowDirectClientId = allowDirectAnalyticsClientId();
+  const nextContext = allowDirectClientId
+    ? buildAnalyticsContextFromUrl(request.nextUrl, {
+        client: {
+          clientId: normalizeClientId(
+            request.nextUrl.searchParams.get("client_id"),
+          ),
+        },
+      })
+    : buildAnalyticsContextFromUrl(request.nextUrl);
+
+  if (!shouldRefreshAnalyticsContext(currentContext, nextContext)) {
+    return null;
+  }
+
+  const secret = getAnalyticsSecret();
+  if (!secret) {
+    return null;
+  }
+
+  const response = NextResponse.next();
+  response.cookies.set({
+    name: ANALYTICS_CONTEXT_COOKIE,
+    value: await serializeAnalyticsContext(nextContext, secret),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 60 * 60,
+  });
+
+  return response;
+}
 
 function getOrySessionUrl() {
   const baseUrl = process.env.ORY_SDK_URL?.replace(/\/$/, "");
@@ -74,7 +171,6 @@ async function hasOrySession(request: NextRequest) {
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  // Let Ory handle its own internal proxy routes
   if (
     path.startsWith("/.ory") ||
     path.startsWith("/self-service") ||
@@ -83,6 +179,11 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/.well-known/ory")
   ) {
     return oryMiddleware(request);
+  }
+
+  const analyticsResponse = await maybeRefreshAnalyticsContext(request);
+  if (analyticsResponse) {
+    return analyticsResponse;
   }
 
   const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
@@ -118,14 +219,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
