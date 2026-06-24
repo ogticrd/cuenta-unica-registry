@@ -36,6 +36,8 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
 }
 
 export default async function ForgotPasswordPage(props: OryPageParams) {
+  const params = await props.searchParams;
+
   return (
     <>
       <JourneyEvent

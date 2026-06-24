@@ -36,6 +36,8 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
 }
 
 export default async function VerificationPage(props: OryPageParams) {
+  const params = await props.searchParams;
+
   return (
     <>
       <JourneyEvent
