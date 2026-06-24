@@ -35,8 +35,6 @@ async function LoginFlow({ searchParams }: OryPageParams) {
         flowId={flow.id}
         oryFlowType="login"
         clientId={analytics?.clientId}
-        clientName={analytics?.clientName}
-        institutionName={analytics?.institutionName}
         linkageStatus={analytics?.linkageStatus}
         returnUrl={analytics?.returnUrl}
       />

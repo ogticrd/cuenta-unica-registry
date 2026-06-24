@@ -1,11 +1,19 @@
-import {
-  type AnalyticsLinkageStatus,
-  normalizeClientId,
-  resolveLinkageStatus,
-} from "./catalog";
+import { type AnalyticsLinkageStatus, resolveLinkageStatus } from "./catalog";
+import { getAnalyticsLaunchReturnUrl } from "./client-launch-core";
 
 export const ANALYTICS_CONTEXT_COOKIE = "analytics_context";
+export const ANALYTICS_CONTEXT_LAUNCH_COOKIE = "analytics_context_launch";
 export const ANALYTICS_CONTEXT_DURATION_MS = 60 * 60 * 1000;
+
+export interface AnalyticsContextClient {
+  clientId: string;
+}
+
+export interface AnalyticsContextInput {
+  entryPath: string;
+  returnUrl?: string;
+  client?: AnalyticsContextClient;
+}
 
 export interface AnalyticsContext {
   journeyId: string;
@@ -118,23 +126,32 @@ export async function parseAnalyticsContext(
   }
 }
 
-export function buildAnalyticsContextFromUrl(url: URL) {
+export function buildAnalyticsContext(input: AnalyticsContextInput) {
   const now = Date.now();
-  const clientId = normalizeClientId(url.searchParams.get("client_id"));
-  const returnUrl =
-    url.searchParams.get("return_url") ??
-    url.searchParams.get("return_to") ??
-    undefined;
+  const clientId = input.client?.clientId ?? "__unlinked__";
 
   return {
     journeyId: globalThis.crypto.randomUUID(),
     clientId,
     linkageStatus: resolveLinkageStatus(clientId),
-    entryPath: url.pathname,
+    entryPath: input.entryPath,
     issuedAt: now,
     expiresAt: now + ANALYTICS_CONTEXT_DURATION_MS,
-    ...(returnUrl ? { returnUrl } : {}),
+    ...(input.returnUrl ? { returnUrl: input.returnUrl } : {}),
   } satisfies AnalyticsContext;
+}
+
+export function buildAnalyticsContextFromUrl(
+  url: URL,
+  options: {
+    client?: AnalyticsContextClient;
+  } = {},
+) {
+  return buildAnalyticsContext({
+    entryPath: url.pathname,
+    returnUrl: getAnalyticsLaunchReturnUrl(url),
+    ...(options.client ? { client: options.client } : {}),
+  });
 }
 
 export function shouldRefreshAnalyticsContext(

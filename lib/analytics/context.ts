@@ -3,7 +3,7 @@ import "server-only";
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
-
+import { normalizeClientId } from "./catalog";
 import {
   ANALYTICS_CONTEXT_COOKIE,
   ANALYTICS_CONTEXT_DURATION_MS,
@@ -18,6 +18,10 @@ function getAnalyticsSecret() {
     process.env.ANALYTICS_CONTEXT_SECRET ||
     process.env.REGISTRATION_SESSION_SECRET
   );
+}
+
+function allowDirectAnalyticsClientId() {
+  return process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID === "true";
 }
 
 export async function readAnalyticsContextFromRequest(
@@ -67,7 +71,17 @@ export async function createAnalyticsContextCookie(
 }
 
 export function createAnalyticsContextFromRequest(request: NextRequest) {
-  return buildAnalyticsContextFromUrl(request.nextUrl);
+  if (!allowDirectAnalyticsClientId()) {
+    return buildAnalyticsContextFromUrl(request.nextUrl);
+  }
+
+  return buildAnalyticsContextFromUrl(request.nextUrl, {
+    client: {
+      clientId: normalizeClientId(
+        request.nextUrl.searchParams.get("client_id"),
+      ),
+    },
+  });
 }
 
 export function shouldRefreshAnalyticsContext(

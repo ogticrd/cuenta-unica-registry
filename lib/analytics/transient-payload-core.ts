@@ -3,8 +3,6 @@ import type { AnalyticsContext } from "./context-core";
 export interface AnalyticsTransientPayload {
   analytics: {
     clientId: string;
-    clientName?: string;
-    institutionName?: string;
     linkageStatus: AnalyticsContext["linkageStatus"];
     journeyId: string;
     entryPath: string;
@@ -22,8 +20,6 @@ export type OryFlowLike = {
     challenge?: unknown;
     client?: {
       client_id?: unknown;
-      client_name?: unknown;
-      metadata?: unknown;
     };
     request_url?: unknown;
   };
@@ -56,24 +52,12 @@ function getString(value: unknown) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
-function getMetadataString(metadata: unknown, key: string) {
-  if (!metadata || typeof metadata !== "object") {
-    return undefined;
-  }
-
-  return getString((metadata as Record<string, unknown>)[key]);
-}
-
 export function resolveAnalyticsTransientPayloadForFlow(
   flow: OryFlowLike,
   payload: AnalyticsTransientPayload | null | undefined,
 ): AnalyticsTransientPayload | undefined {
   const oauthClient = flow.oauth2_login_request?.client;
   const clientId = getString(oauthClient?.client_id);
-  const clientName = getString(oauthClient?.client_name);
-  const institutionName =
-    getMetadataString(oauthClient?.metadata, "institutionName") ??
-    getMetadataString(oauthClient?.metadata, "institution_name");
 
   if (!clientId && !payload) {
     return undefined;
@@ -101,8 +85,6 @@ export function resolveAnalyticsTransientPayloadForFlow(
             linkageStatus: "linked" as const,
           }
         : {}),
-      ...(clientName ? { clientName } : {}),
-      ...(institutionName ? { institutionName } : {}),
     },
   };
 }

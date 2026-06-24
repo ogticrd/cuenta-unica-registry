@@ -6,6 +6,11 @@ import {
   resolveLinkageStatus,
 } from "@/lib/analytics/catalog";
 import {
+  getAnalyticsLaunchClientId,
+  getAnalyticsLaunchReturnUrl,
+  isAllowedAnalyticsReturnUrl,
+} from "@/lib/analytics/client-launch-core";
+import {
   type AnalyticsContext,
   buildAnalyticsContextFromUrl,
   parseAnalyticsContext,
@@ -100,17 +105,41 @@ describe("analytics context", () => {
     expect(parsed?.linkageStatus).toBe("linked");
   });
 
-  test("builds a fresh context from an auth entry request", () => {
+  test("builds a fresh context from a server-validated client", () => {
     const context = buildAnalyticsContextFromUrl(
       new URL(
-        "https://app.example.com/register?client_id=ministerio-salud&return_url=https%3A%2F%2Fbackoffice.example.com",
+        "https://app.example.com/register?client_id=ministerio-salud&return_url=https%3A%2F%2Fbackoffice.example.com%2F",
       ),
+      {
+        client: {
+          clientId: "ministerio-salud",
+        },
+      },
     );
 
     expect(context.entryPath).toBe("/register");
     expect(context.clientId).toBe("ministerio-salud");
     expect(context.linkageStatus).toBe("linked");
-    expect(context.returnUrl).toBe("https://backoffice.example.com");
+    expect(context.returnUrl).toBe("https://backoffice.example.com/");
+  });
+
+  test("does not trust direct client_id without a validated client", () => {
+    const url = new URL(
+      "https://app.example.com/register?client_id=spoofed-client",
+    );
+
+    expect(buildAnalyticsContextFromUrl(url)).toMatchObject({
+      clientId: "__unlinked__",
+      linkageStatus: "unlinked",
+    });
+    expect(
+      buildAnalyticsContextFromUrl(url, {
+        client: { clientId: "trusted-client" },
+      }),
+    ).toMatchObject({
+      clientId: "trusted-client",
+      linkageStatus: "linked",
+    });
   });
 
   test("refreshes when the entry path, client, or return URL changes", () => {
@@ -288,23 +317,40 @@ describe("analytics server context", () => {
     ).rejects.toThrow("Missing ANALYTICS_CONTEXT_SECRET");
   });
 
-  test("creates request context from the request URL", async () => {
+  test("does not create linked request context from raw client_id by default", async () => {
+    const originalAllowDirectClientId =
+      process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID;
     const { createAnalyticsContextFromRequest } = await import(
       "@/lib/analytics/context"
     );
+    const request = {
+      nextUrl: new URL(
+        "https://cuenta.example/register?client_id=registry-web&return_to=https%3A%2F%2Fclient.example%2F",
+      ),
+    } as never;
 
-    expect(
-      createAnalyticsContextFromRequest({
-        nextUrl: new URL(
-          "https://cuenta.example/register?client_id=registry-web&return_to=https%3A%2F%2Fclient.example",
-        ),
-      } as never),
-    ).toMatchObject({
-      clientId: "registry-web",
-      linkageStatus: "linked",
-      entryPath: "/register",
-      returnUrl: "https://client.example",
-    });
+    try {
+      delete process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID;
+      expect(createAnalyticsContextFromRequest(request)).toMatchObject({
+        clientId: "__unlinked__",
+        linkageStatus: "unlinked",
+        entryPath: "/register",
+        returnUrl: "https://client.example/",
+      });
+
+      process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID = "true";
+      expect(createAnalyticsContextFromRequest(request)).toMatchObject({
+        clientId: "registry-web",
+        linkageStatus: "linked",
+        entryPath: "/register",
+        returnUrl: "https://client.example/",
+      });
+    } finally {
+      restoreEnvValue(
+        "ANALYTICS_ALLOW_DIRECT_CLIENT_ID",
+        originalAllowDirectClientId,
+      );
+    }
   });
 
   test("refreshes server context by the same cookie identity rules", async () => {
@@ -347,6 +393,29 @@ describe("analytics catalog", () => {
     expect(resolveLinkageStatus("__unlinked__")).toBe("unlinked");
     expect(isJourneyEventName("journey.login.entered")).toBe(true);
     expect(isJourneyEventName("identity.registration.succeeded")).toBe(false);
+  });
+});
+
+describe("analytics client launch", () => {
+  test("reads client launch params and validates return URLs", () => {
+    const url = new URL(
+      "https://cuenta.example/api/analytics/start?client_id=ory-client-dgii&return_url=https%3A%2F%2Fdgii.gob.do%2Fcallback",
+    );
+
+    expect(getAnalyticsLaunchClientId(url)).toBe("ory-client-dgii");
+    expect(getAnalyticsLaunchReturnUrl(url)).toBe(
+      "https://dgii.gob.do/callback",
+    );
+    expect(
+      isAllowedAnalyticsReturnUrl("https://dgii.gob.do/callback", [
+        "https://dgii.gob.do/callback",
+      ]),
+    ).toBe(true);
+    expect(
+      isAllowedAnalyticsReturnUrl("https://evil.example", [
+        "https://dgii.gob.do/callback",
+      ]),
+    ).toBe(false);
   });
 });
 
@@ -510,10 +579,6 @@ describe("analytics transient payload", () => {
         oauth2_login_request: {
           client: {
             client_id: "backoffice-client",
-            client_name: "Backoffice",
-            metadata: {
-              institutionName: "OGTIC",
-            },
           },
         },
         ui: { nodes: [] },
@@ -522,8 +587,6 @@ describe("analytics transient payload", () => {
     );
 
     expect(resolved?.analytics.clientId).toBe("backoffice-client");
-    expect(resolved?.analytics.clientName).toBe("Backoffice");
-    expect(resolved?.analytics.institutionName).toBe("OGTIC");
     expect(resolved?.analytics.linkageStatus).toBe("linked");
     expect(resolved?.analytics.journeyId).toBe("journey-123");
   });
@@ -538,10 +601,6 @@ describe("analytics transient payload", () => {
           challenge: "login-challenge-123",
           client: {
             client_id: "backoffice-client",
-            client_name: "Backoffice",
-            metadata: {
-              institution_name: "OGTIC",
-            },
           },
         },
         ui: { nodes: [] },
@@ -550,8 +609,6 @@ describe("analytics transient payload", () => {
     );
 
     expect(resolved?.analytics.clientId).toBe("backoffice-client");
-    expect(resolved?.analytics.clientName).toBe("Backoffice");
-    expect(resolved?.analytics.institutionName).toBe("OGTIC");
     expect(resolved?.analytics.journeyId).toBe("login-challenge-123");
     expect(resolved?.analytics.entryPath).toBe(
       "https://cuenta.example.com/self-service/login/browser",
@@ -656,8 +713,6 @@ describe("analytics emitter", () => {
         source: "registry-app",
         occurredAt: "2026-06-24T12:00:00.000Z",
         clientId: "registry-web",
-        clientName: "Registry Web",
-        institutionName: "OGTIC",
         identityId: "identity-123",
         sessionId: "session-123",
         flowId: "flow-123",
@@ -671,7 +726,7 @@ describe("analytics emitter", () => {
     );
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, options] = fetchMock.mock.calls[0] as [
+    const [url, options] = fetchMock.mock.calls[0] as unknown as [
       string,
       { headers: Record<string, string>; body: string },
     ];
@@ -685,8 +740,6 @@ describe("analytics emitter", () => {
       environment: "dev",
       projectId: "registry-dev",
       clientId: "registry-web",
-      clientName: "Registry Web",
-      institutionName: "OGTIC",
       linkageStatus: "linked",
       returnUrl: "https://client.example",
       identityId: "identity-123",
@@ -760,8 +813,6 @@ describe("analytics journey route contract", () => {
       {
         eventName: "journey.login.entered",
         clientId: "spoofed-client",
-        clientName: "Spoofed Client",
-        institutionName: "Spoofed Institution",
         linkageStatus: "unlinked",
         returnUrl: "https://attacker.example",
         identityId: "spoofed-identity",
@@ -783,8 +834,6 @@ describe("analytics journey route contract", () => {
     expect(event.linkageStatus).toBe("linked");
     expect(event.journeyId).toBe("journey-123");
     expect(event.returnUrl).toBe("https://trusted.example");
-    expect(event.clientName).toBeUndefined();
-    expect(event.institutionName).toBeUndefined();
     expect(event.identityId).toBeUndefined();
     expect(event.sessionId).toBeUndefined();
     expect(event.metadata).toBeUndefined();

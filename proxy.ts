@@ -1,8 +1,9 @@
 import { createOryMiddleware } from "@ory/nextjs/middleware";
 import { type NextRequest, NextResponse } from "next/server";
-
+import { normalizeClientId } from "@/lib/analytics/catalog";
 import {
   ANALYTICS_CONTEXT_COOKIE,
+  ANALYTICS_CONTEXT_LAUNCH_COOKIE,
   buildAnalyticsContextFromUrl,
   parseAnalyticsContext,
   serializeAnalyticsContext,
@@ -43,6 +44,10 @@ function getAnalyticsSecret() {
   );
 }
 
+function allowDirectAnalyticsClientId() {
+  return process.env.ANALYTICS_ALLOW_DIRECT_CLIENT_ID === "true";
+}
+
 async function readAnalyticsContextFromRequest(request: NextRequest) {
   const rawValue = request.cookies.get(ANALYTICS_CONTEXT_COOKIE)?.value;
 
@@ -68,8 +73,27 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
     return null;
   }
 
-  const nextContext = buildAnalyticsContextFromUrl(request.nextUrl);
   const currentContext = await readAnalyticsContextFromRequest(request);
+  const launchPath = request.cookies.get(
+    ANALYTICS_CONTEXT_LAUNCH_COOKIE,
+  )?.value;
+
+  if (currentContext && launchPath === request.nextUrl.pathname) {
+    const response = NextResponse.next();
+    response.cookies.delete(ANALYTICS_CONTEXT_LAUNCH_COOKIE);
+    return response;
+  }
+
+  const allowDirectClientId = allowDirectAnalyticsClientId();
+  const nextContext = allowDirectClientId
+    ? buildAnalyticsContextFromUrl(request.nextUrl, {
+        client: {
+          clientId: normalizeClientId(
+            request.nextUrl.searchParams.get("client_id"),
+          ),
+        },
+      })
+    : buildAnalyticsContextFromUrl(request.nextUrl);
 
   if (!shouldRefreshAnalyticsContext(currentContext, nextContext)) {
     return null;
