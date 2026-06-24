@@ -5,6 +5,8 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/lib/protected-route";
+import { useAuth } from "@/lib/auth-context";
+import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 import { AIChatModal } from "./ai-chat-modal";
 import { DashboardHeader } from "./dashboard-header";
 import { DashboardSidebar } from "./dashboard-sidebar";
@@ -14,11 +16,28 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user, session } = useAuth();
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleHelpOpen = () => {
+    setIsAIChatOpen(true);
+    void trackJourneyEvent({
+      eventName: "support.help.opened",
+      step: "support",
+      outcome: "started",
+      identityId: user?.id,
+      sessionId: session?.id,
+      metadata: {
+        channel: "ai_chat",
+        ...(user?.cedula ? { cedula: user.cedula } : {}),
+        links: { path: "floating_help" },
+      },
+    });
   };
 
   return (
@@ -39,7 +58,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <Button
           className={`fixed bottom-6 right-6 rounded-2xl w-14 h-14 bg-background border border-border shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 z-40 group ${isAIChatOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           size="icon"
-          onClick={() => setIsAIChatOpen(true)}
+          onClick={handleHelpOpen}
         >
           <div className="absolute inset-0 rounded-2xl bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <Bot
@@ -52,6 +71,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <AIChatModal
           isOpen={isAIChatOpen}
           onClose={() => setIsAIChatOpen(false)}
+          identityId={user?.id}
+          sessionId={session?.id}
+          cedula={user?.cedula}
         />
       </div>
     </ProtectedRoute>

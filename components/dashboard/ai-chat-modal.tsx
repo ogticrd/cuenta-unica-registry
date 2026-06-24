@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocale, useT } from "@/hooks/use-t";
 import { DEFAULT_LOCALE } from "@/lib/constants/locales";
+import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 
 interface ChatMessage {
   id: string;
@@ -18,9 +19,54 @@ interface ChatMessage {
 interface AIChatModalProps {
   isOpen: boolean;
   onClose: () => void;
+  identityId?: string;
+  sessionId?: string;
+  cedula?: string;
 }
 
-export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
+function classifySupportIntent(message: string) {
+  const lowerMessage = message.toLowerCase();
+
+  if (
+    lowerMessage.includes("contraseña") ||
+    lowerMessage.includes("contrasena") ||
+    lowerMessage.includes("password")
+  ) {
+    return "password";
+  }
+  if (
+    lowerMessage.includes("autenticación") ||
+    lowerMessage.includes("autenticacion") ||
+    lowerMessage.includes("dos factores") ||
+    lowerMessage.includes("2fa")
+  ) {
+    return "authentication";
+  }
+  if (
+    lowerMessage.includes("cédula") ||
+    lowerMessage.includes("cedula") ||
+    lowerMessage.includes("identidad")
+  ) {
+    return "identity";
+  }
+  if (
+    lowerMessage.includes("ayuda") ||
+    lowerMessage.includes("soporte") ||
+    lowerMessage.includes("contacto")
+  ) {
+    return "support";
+  }
+
+  return "general";
+}
+
+export function AIChatModal({
+  isOpen,
+  onClose,
+  identityId,
+  sessionId,
+  cedula,
+}: AIChatModalProps) {
   const t = useT("assistant");
   const locale = useLocale();
   const timeLocale = locale === DEFAULT_LOCALE ? "es-DO" : "en-US";
@@ -157,16 +203,31 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
+    const trimmedMessage = inputMessage.trim();
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: "user",
-      content: inputMessage.trim(),
+      content: trimmedMessage,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
+    void trackJourneyEvent({
+      eventName: "support.help.message_sent",
+      step: "support",
+      outcome: "succeeded",
+      identityId,
+      sessionId,
+      metadata: {
+        channel: "ai_chat",
+        messageLength: trimmedMessage.length,
+        intent: classifySupportIntent(trimmedMessage),
+        ...(cedula ? { cedula } : {}),
+        links: { path: "ai_chat_modal" },
+      },
+    });
 
     try {
       const aiResponse = await getAIResponse(userMessage.content);

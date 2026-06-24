@@ -7,6 +7,9 @@ export const JOURNEY_EVENT_NAMES = [
   "journey.recovery.entered",
   "journey.verification.entered",
   "journey.settings.entered",
+  "support.help.opened",
+  "support.help.message_sent",
+  "support.requested",
 ] as const;
 
 export const REGISTRY_OUTCOME_EVENT_NAMES = [
