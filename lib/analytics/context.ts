@@ -99,7 +99,7 @@ export function shouldRefreshAnalyticsContext(
 
 export async function getAnalyticsContext(): Promise<AnalyticsContext | null> {
   const cookieStore = await cookies();
-  const rawValue = cookieStore.get(ANALYTICS_CONTEXT_COOKIE)?.value;
+  const rawValue = cookieStore?.get(ANALYTICS_CONTEXT_COOKIE)?.value;
 
   if (!rawValue) {
     return null;
