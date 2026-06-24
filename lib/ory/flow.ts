@@ -84,19 +84,21 @@ export async function getLoginFlow(
 ): Promise<LoginFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
-  return getFlowFactory<LoginFlow>(
-    await withReturnTo(await params),
-    async () =>
-      withAnalyticsTransientPayloadResponse(
-        await (await createServerClient()).getLoginFlowRaw(
-          await toFlowParams(params),
-          initOverrides,
+  return (
+    (await getFlowFactory<LoginFlow>(
+      await withReturnTo(await params),
+      async () =>
+        withAnalyticsTransientPayloadResponse(
+          await (await createServerClient()).getLoginFlowRaw(
+            await toFlowParams(params),
+            initOverrides,
+          ),
+          transientPayload,
         ),
-        transientPayload,
-      ),
-    FlowType.Login,
-    await getRequestOrigin(),
-    config.project.login_ui_url,
+      FlowType.Login,
+      await getRequestOrigin(),
+      config.project.login_ui_url,
+    )) ?? undefined
   );
 }
 
@@ -106,19 +108,21 @@ export async function getRegistrationFlow(
 ): Promise<RegistrationFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
-  return getFlowFactory<RegistrationFlow>(
-    await withReturnTo(await params),
-    async () =>
-      withAnalyticsTransientPayloadResponse(
-        await (await createServerClient()).getRegistrationFlowRaw(
-          await toFlowParams(params),
-          initOverrides,
+  return (
+    (await getFlowFactory<RegistrationFlow>(
+      await withReturnTo(await params),
+      async () =>
+        withAnalyticsTransientPayloadResponse(
+          await (await createServerClient()).getRegistrationFlowRaw(
+            await toFlowParams(params),
+            initOverrides,
+          ),
+          transientPayload,
         ),
-        transientPayload,
-      ),
-    FlowType.Registration,
-    await getRequestOrigin(),
-    config.project.registration_ui_url,
+      FlowType.Registration,
+      await getRequestOrigin(),
+      config.project.registration_ui_url,
+    )) ?? undefined
   );
 }
 
@@ -128,19 +132,21 @@ export async function getRecoveryFlow(
 ): Promise<RecoveryFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
-  return getFlowFactory<RecoveryFlow>(
-    await withReturnTo(await params),
-    async () =>
-      withAnalyticsTransientPayloadResponse(
-        await (await createServerClient()).getRecoveryFlowRaw(
-          await toFlowParams(params),
-          initOverrides,
+  return (
+    (await getFlowFactory<RecoveryFlow>(
+      await withReturnTo(await params),
+      async () =>
+        withAnalyticsTransientPayloadResponse(
+          await (await createServerClient()).getRecoveryFlowRaw(
+            await toFlowParams(params),
+            initOverrides,
+          ),
+          transientPayload,
         ),
-        transientPayload,
-      ),
-    FlowType.Recovery,
-    await getRequestOrigin(),
-    config.project.recovery_ui_url,
+      FlowType.Recovery,
+      await getRequestOrigin(),
+      config.project.recovery_ui_url,
+    )) ?? undefined
   );
 }
 
@@ -150,19 +156,21 @@ export async function getVerificationFlow(
 ): Promise<VerificationFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
-  return getFlowFactory<VerificationFlow>(
-    await withReturnTo(await params),
-    async () =>
-      withAnalyticsTransientPayloadResponse(
-        await (await createServerClient()).getVerificationFlowRaw(
-          await toFlowParams(params),
-          initOverrides,
+  return (
+    (await getFlowFactory<VerificationFlow>(
+      await withReturnTo(await params),
+      async () =>
+        withAnalyticsTransientPayloadResponse(
+          await (await createServerClient()).getVerificationFlowRaw(
+            await toFlowParams(params),
+            initOverrides,
+          ),
+          transientPayload,
         ),
-        transientPayload,
-      ),
-    FlowType.Verification,
-    await getRequestOrigin(),
-    config.project.verification_ui_url,
+      FlowType.Verification,
+      await getRequestOrigin(),
+      config.project.verification_ui_url,
+    )) ?? undefined
   );
 }
 
@@ -172,18 +180,20 @@ export async function getSettingsFlow(
 ): Promise<SettingsFlow | null | undefined> {
   const transientPayload = await getAnalyticsTransientPayload();
 
-  return getFlowFactory<SettingsFlow>(
-    await withReturnTo(await params),
-    async () =>
-      withAnalyticsTransientPayloadResponse(
-        await (await createServerClient()).getSettingsFlowRaw(
-          await toFlowParams(params),
-          initOverrides,
+  return (
+    (await getFlowFactory<SettingsFlow>(
+      await withReturnTo(await params),
+      async () =>
+        withAnalyticsTransientPayloadResponse(
+          await (await createServerClient()).getSettingsFlowRaw(
+            await toFlowParams(params),
+            initOverrides,
+          ),
+          transientPayload,
         ),
-        transientPayload,
-      ),
-    FlowType.Settings,
-    await getRequestOrigin(),
-    config.project.settings_ui_url,
+      FlowType.Settings,
+      await getRequestOrigin(),
+      config.project.settings_ui_url,
+    )) ?? undefined
   );
 }
