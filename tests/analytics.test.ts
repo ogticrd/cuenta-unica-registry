@@ -1,5 +1,5 @@
 import { randomUUID, webcrypto } from "node:crypto";
-import { describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   isJourneyEventName,
   normalizeClientId,
@@ -26,6 +26,16 @@ import {
 const TEST_SECRET =
   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
+const nextHeadersMocks = vi.hoisted(() => ({
+  cookies: vi.fn(),
+}));
+
+vi.mock("server-only", () => ({}));
+
+vi.mock("next/headers", () => ({
+  cookies: nextHeadersMocks.cookies,
+}));
+
 const currentCrypto = globalThis.crypto;
 if (!currentCrypto?.subtle || typeof currentCrypto.randomUUID !== "function") {
   Object.defineProperty(globalThis, "crypto", {
@@ -46,6 +56,28 @@ function setNodeEnv(value: string | undefined) {
   } else {
     env.NODE_ENV = value;
   }
+}
+
+function restoreEnvValue(key: string, value: string | undefined) {
+  if (value === undefined) {
+    delete process.env[key];
+  } else {
+    process.env[key] = value;
+  }
+}
+
+function buildTestContext(
+  overrides: Partial<AnalyticsContext> = {},
+): AnalyticsContext {
+  return {
+    journeyId: "journey-123",
+    clientId: "ministerio-salud",
+    linkageStatus: "linked",
+    entryPath: "/register",
+    issuedAt: 1,
+    expiresAt: Date.now() + 1000,
+    ...overrides,
+  };
 }
 
 describe("analytics context", () => {
@@ -108,6 +140,205 @@ describe("analytics context", () => {
     expect(shouldRefreshAnalyticsContext(current, nextDifferent)).toBe(true);
     expect(shouldRefreshAnalyticsContext(current, nextReturnUrl)).toBe(true);
   });
+
+  test("refreshes for missing, expired, or client-changed context", () => {
+    const current = buildTestContext();
+
+    expect(shouldRefreshAnalyticsContext(null, current)).toBe(true);
+    expect(
+      shouldRefreshAnalyticsContext(
+        buildTestContext({ expiresAt: Date.now() - 1 }),
+        current,
+      ),
+    ).toBe(true);
+    expect(
+      shouldRefreshAnalyticsContext(current, {
+        ...current,
+        clientId: "another-client",
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("analytics server context", () => {
+  const originalAnalyticsContextSecret = process.env.ANALYTICS_CONTEXT_SECRET;
+  const originalRegistrationSessionSecret =
+    process.env.REGISTRATION_SESSION_SECRET;
+  const originalNodeEnv = process.env.NODE_ENV;
+
+  beforeEach(() => {
+    process.env.ANALYTICS_CONTEXT_SECRET = TEST_SECRET;
+    delete process.env.REGISTRATION_SESSION_SECRET;
+    setNodeEnv("test");
+    nextHeadersMocks.cookies.mockReset();
+  });
+
+  afterEach(() => {
+    restoreEnvValue("ANALYTICS_CONTEXT_SECRET", originalAnalyticsContextSecret);
+    restoreEnvValue(
+      "REGISTRATION_SESSION_SECRET",
+      originalRegistrationSessionSecret,
+    );
+    setNodeEnv(originalNodeEnv);
+    vi.restoreAllMocks();
+  });
+
+  test("reads a valid analytics context from the request cookie", async () => {
+    const { ANALYTICS_CONTEXT_COOKIE } = await import(
+      "@/lib/analytics/context-core"
+    );
+    const { createAnalyticsContextCookie, readAnalyticsContextFromRequest } =
+      await import("@/lib/analytics/context");
+    const cookie = await createAnalyticsContextCookie(buildTestContext());
+
+    const parsed = await readAnalyticsContextFromRequest({
+      cookies: {
+        get: (name: string) =>
+          name === ANALYTICS_CONTEXT_COOKIE ? { value: cookie.value } : null,
+      },
+    } as never);
+
+    expect(cookie.name).toBe(ANALYTICS_CONTEXT_COOKIE);
+    expect(cookie.httpOnly).toBe(true);
+    expect(cookie.secure).toBe(false);
+    expect(cookie.sameSite).toBe("strict");
+    expect(parsed?.journeyId).toBe("journey-123");
+    expect(parsed?.clientId).toBe("ministerio-salud");
+  });
+
+  test("rejects missing, expired, unsigned, and secretless request cookies", async () => {
+    const { createAnalyticsContextCookie, readAnalyticsContextFromRequest } =
+      await import("@/lib/analytics/context");
+    const expiredCookie = await createAnalyticsContextCookie(
+      buildTestContext({ expiresAt: Date.now() - 1 }),
+    );
+
+    const requestWithCookie = (value?: string) =>
+      ({
+        cookies: {
+          get: () => (value ? { value } : undefined),
+        },
+      }) as never;
+
+    await expect(
+      readAnalyticsContextFromRequest(requestWithCookie()),
+    ).resolves.toBeNull();
+    await expect(
+      readAnalyticsContextFromRequest(requestWithCookie("not.signed")),
+    ).resolves.toBeNull();
+    await expect(
+      readAnalyticsContextFromRequest(requestWithCookie(expiredCookie.value)),
+    ).resolves.toBeNull();
+
+    delete process.env.ANALYTICS_CONTEXT_SECRET;
+
+    await expect(
+      readAnalyticsContextFromRequest(requestWithCookie(expiredCookie.value)),
+    ).resolves.toBeNull();
+  });
+
+  test("reads analytics context from next cookies and falls back to an unlinked shell", async () => {
+    const { createAnalyticsContextCookie, getAnalyticsContext } = await import(
+      "@/lib/analytics/context"
+    );
+    const cookie = await createAnalyticsContextCookie(
+      buildTestContext({ returnUrl: "https://client.example/callback" }),
+    );
+
+    nextHeadersMocks.cookies.mockResolvedValue({
+      get: () => ({ value: cookie.value }),
+    });
+
+    await expect(getAnalyticsContext()).resolves.toMatchObject({
+      journeyId: "journey-123",
+      returnUrl: "https://client.example/callback",
+    });
+
+    const { resolveAnalyticsContext } = await import("@/lib/analytics/context");
+    await expect(resolveAnalyticsContext()).resolves.toMatchObject({
+      journeyId: "journey-123",
+      clientId: "ministerio-salud",
+    });
+
+    nextHeadersMocks.cookies.mockResolvedValue(undefined);
+
+    await expect(
+      resolveAnalyticsContext({
+        entryPath: "/support",
+        returnUrl: "https://client.example/help",
+      }),
+    ).resolves.toMatchObject({
+      clientId: "__unlinked__",
+      linkageStatus: "unlinked",
+      entryPath: "/support",
+      returnUrl: "https://client.example/help",
+    });
+  });
+
+  test("throws when creating a context cookie without a signing secret", async () => {
+    delete process.env.ANALYTICS_CONTEXT_SECRET;
+    delete process.env.REGISTRATION_SESSION_SECRET;
+
+    const { createAnalyticsContextCookie } = await import(
+      "@/lib/analytics/context"
+    );
+
+    await expect(
+      createAnalyticsContextCookie(buildTestContext()),
+    ).rejects.toThrow("Missing ANALYTICS_CONTEXT_SECRET");
+  });
+
+  test("creates request context from the request URL", async () => {
+    const { createAnalyticsContextFromRequest } = await import(
+      "@/lib/analytics/context"
+    );
+
+    expect(
+      createAnalyticsContextFromRequest({
+        nextUrl: new URL(
+          "https://cuenta.example/register?client_id=registry-web&return_to=https%3A%2F%2Fclient.example",
+        ),
+      } as never),
+    ).toMatchObject({
+      clientId: "registry-web",
+      linkageStatus: "linked",
+      entryPath: "/register",
+      returnUrl: "https://client.example",
+    });
+  });
+
+  test("refreshes server context by the same cookie identity rules", async () => {
+    const { shouldRefreshAnalyticsContext: shouldRefreshServerContext } =
+      await import("@/lib/analytics/context");
+    const current = buildTestContext();
+
+    expect(shouldRefreshServerContext(null, current)).toBe(true);
+    expect(
+      shouldRefreshServerContext(
+        buildTestContext({ expiresAt: Date.now() - 1 }),
+        current,
+      ),
+    ).toBe(true);
+    expect(
+      shouldRefreshServerContext(current, {
+        ...current,
+        entryPath: "/login",
+      }),
+    ).toBe(true);
+    expect(
+      shouldRefreshServerContext(current, {
+        ...current,
+        clientId: "other-client",
+      }),
+    ).toBe(true);
+    expect(
+      shouldRefreshServerContext(current, {
+        ...current,
+        returnUrl: "https://other.example",
+      }),
+    ).toBe(true);
+    expect(shouldRefreshServerContext(current, { ...current })).toBe(false);
+  });
 });
 
 describe("analytics catalog", () => {
@@ -122,6 +353,38 @@ describe("analytics catalog", () => {
 describe("analytics runtime environment", () => {
   test("normalizes development analytics environment to dev", () => {
     expect(resolveAnalyticsEnvironment("development")).toBe("dev");
+    expect(resolveAnalyticsEnvironment(" staging ")).toBe("staging");
+  });
+
+  test("uses configured environment and project identifiers", () => {
+    const originalAnalyticsEnvironment = process.env.ANALYTICS_ENVIRONMENT;
+    const originalAnalyticsProjectId = process.env.ANALYTICS_PROJECT_ID;
+    const originalOryProjectId = process.env.ORY_PROJECT_ID;
+
+    process.env.ANALYTICS_ENVIRONMENT = "dev";
+    process.env.ANALYTICS_PROJECT_ID = "analytics-project";
+    process.env.ORY_PROJECT_ID = "ory-project";
+
+    try {
+      expect(resolveAnalyticsEnvironment()).toBe("dev");
+      expect(resolveAnalyticsProjectId()).toBe("analytics-project");
+
+      delete process.env.ANALYTICS_PROJECT_ID;
+      expect(resolveAnalyticsProjectId()).toBe("ory-project");
+      expect(resolveAnalyticsProjectId(" explicit-project ")).toBe(
+        "explicit-project",
+      );
+    } finally {
+      restoreEnvValue("ANALYTICS_ENVIRONMENT", originalAnalyticsEnvironment);
+      restoreEnvValue("ANALYTICS_PROJECT_ID", originalAnalyticsProjectId);
+      restoreEnvValue("ORY_PROJECT_ID", originalOryProjectId);
+    }
+  });
+
+  test("rejects unsupported analytics environments", () => {
+    expect(() => resolveAnalyticsEnvironment("qa")).toThrow(
+      "Unsupported ANALYTICS_ENVIRONMENT: qa",
+    );
   });
 
   test("does not classify production runtime as production without explicit analytics environment", () => {
@@ -263,6 +526,231 @@ describe("analytics transient payload", () => {
     expect(resolved?.analytics.institutionName).toBe("OGTIC");
     expect(resolved?.analytics.linkageStatus).toBe("linked");
     expect(resolved?.analytics.journeyId).toBe("journey-123");
+  });
+
+  test("builds payload from Ory flow when cookie payload is absent", () => {
+    const resolved = resolveAnalyticsTransientPayloadForFlow(
+      {
+        id: "",
+        request_url: "https://cuenta.example.com/self-service/login/browser",
+        return_to: "https://client.example/callback",
+        oauth2_login_request: {
+          challenge: "login-challenge-123",
+          client: {
+            client_id: "backoffice-client",
+            client_name: "Backoffice",
+            metadata: {
+              institution_name: "OGTIC",
+            },
+          },
+        },
+        ui: { nodes: [] },
+      },
+      undefined,
+    );
+
+    expect(resolved?.analytics.clientId).toBe("backoffice-client");
+    expect(resolved?.analytics.clientName).toBe("Backoffice");
+    expect(resolved?.analytics.institutionName).toBe("OGTIC");
+    expect(resolved?.analytics.journeyId).toBe("login-challenge-123");
+    expect(resolved?.analytics.entryPath).toBe(
+      "https://cuenta.example.com/self-service/login/browser",
+    );
+    expect(resolved?.analytics.returnUrl).toBe(
+      "https://client.example/callback",
+    );
+  });
+
+  test("skips flow payloads and duplicate hidden nodes when there is nothing to append", () => {
+    expect(
+      resolveAnalyticsTransientPayloadForFlow({ ui: { nodes: [] } }, null),
+    ).toBeUndefined();
+
+    const payload = buildAnalyticsTransientPayload(buildTestContext());
+    const flowWithoutUi = { id: "flow-123" };
+    expect(addAnalyticsTransientPayloadNode(flowWithoutUi, payload)).toBe(
+      flowWithoutUi,
+    );
+
+    const flowWithExistingNode = {
+      id: "flow-123",
+      ui: {
+        nodes: [
+          {
+            attributes: {
+              name: "transient_payload",
+            },
+          },
+        ],
+      },
+    };
+
+    expect(
+      addAnalyticsTransientPayloadNode(flowWithExistingNode, payload),
+    ).toBe(flowWithExistingNode);
+  });
+});
+
+describe("analytics emitter", () => {
+  const originalAnalyticsIngressUrl = process.env.ANALYTICS_INGRESS_URL;
+  const originalAnalyticsApiBaseUrl = process.env.ANALYTICS_API_BASE_URL;
+  const originalAnalyticsIngressApiKey = process.env.ANALYTICS_INGRESS_API_KEY;
+  const originalAnalyticsIngressApiKeyHeader =
+    process.env.ANALYTICS_INGRESS_API_KEY_HEADER;
+  const originalAnalyticsEnvironment = process.env.ANALYTICS_ENVIRONMENT;
+  const originalAnalyticsProjectId = process.env.ANALYTICS_PROJECT_ID;
+
+  beforeEach(() => {
+    delete process.env.ANALYTICS_INGRESS_URL;
+    delete process.env.ANALYTICS_API_BASE_URL;
+    delete process.env.ANALYTICS_INGRESS_API_KEY;
+    delete process.env.ANALYTICS_INGRESS_API_KEY_HEADER;
+    process.env.ANALYTICS_ENVIRONMENT = "dev";
+    process.env.ANALYTICS_PROJECT_ID = "registry-dev";
+    nextHeadersMocks.cookies.mockReset();
+    nextHeadersMocks.cookies.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    restoreEnvValue("ANALYTICS_INGRESS_URL", originalAnalyticsIngressUrl);
+    restoreEnvValue("ANALYTICS_API_BASE_URL", originalAnalyticsApiBaseUrl);
+    restoreEnvValue(
+      "ANALYTICS_INGRESS_API_KEY",
+      originalAnalyticsIngressApiKey,
+    );
+    restoreEnvValue(
+      "ANALYTICS_INGRESS_API_KEY_HEADER",
+      originalAnalyticsIngressApiKeyHeader,
+    );
+    restoreEnvValue("ANALYTICS_ENVIRONMENT", originalAnalyticsEnvironment);
+    restoreEnvValue("ANALYTICS_PROJECT_ID", originalAnalyticsProjectId);
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  test("does not emit when no ingress URL is configured", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
+    await emitAnalyticsEvent({
+      eventName: "journey.registration.entered",
+      source: "registry-journey",
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  test("posts canonical analytics payloads with configured ingress headers", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example";
+    process.env.ANALYTICS_INGRESS_API_KEY = "secret-key";
+    process.env.ANALYTICS_INGRESS_API_KEY_HEADER = "x-api-key";
+
+    const fetchMock = vi.fn(async () => new Response("ok", { status: 202 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
+    await emitAnalyticsEvent(
+      {
+        eventName: "registration.identification.succeeded",
+        source: "registry-app",
+        occurredAt: "2026-06-24T12:00:00.000Z",
+        clientId: "registry-web",
+        clientName: "Registry Web",
+        institutionName: "OGTIC",
+        identityId: "identity-123",
+        sessionId: "session-123",
+        flowId: "flow-123",
+        oryFlowType: "registration",
+        outcome: "succeeded",
+        errorCode: "none",
+        step: "identification",
+        metadata: { cedulaValid: true },
+      },
+      { entryPath: "/register", returnUrl: "https://client.example" },
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, options] = fetchMock.mock.calls[0] as [
+      string,
+      { headers: Record<string, string>; body: string },
+    ];
+    const body = JSON.parse(options.body);
+
+    expect(url).toBe("https://analytics.example/events");
+    expect(options.headers["x-api-key"]).toBe("secret-key");
+    expect(body).toMatchObject({
+      schemaVersion: 1,
+      eventName: "registration.identification.succeeded",
+      environment: "dev",
+      projectId: "registry-dev",
+      clientId: "registry-web",
+      clientName: "Registry Web",
+      institutionName: "OGTIC",
+      linkageStatus: "linked",
+      returnUrl: "https://client.example",
+      identityId: "identity-123",
+      sessionId: "session-123",
+      flowId: "flow-123",
+      oryFlowType: "registration",
+      outcome: "succeeded",
+      errorCode: "none",
+      step: "identification",
+      metadata: { cedulaValid: true },
+    });
+  });
+
+  test("rejects unsupported event names before resolving context", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
+
+    const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
+
+    await expect(
+      emitAnalyticsEvent({
+        eventName: "journey.unsupported",
+        source: "registry-journey",
+      }),
+    ).rejects.toThrow("Unsupported analytics event");
+    expect(nextHeadersMocks.cookies).not.toHaveBeenCalled();
+  });
+
+  test("logs rejected and failed ingress delivery without throwing", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response("bad request", {
+          status: 400,
+        }),
+      )
+      .mockRejectedValueOnce(new Error("network down"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
+
+    await expect(
+      emitAnalyticsEvent({
+        eventName: "support.help.opened",
+        source: "registry-journey",
+      }),
+    ).resolves.toBeUndefined();
+    await expect(
+      emitAnalyticsEvent({
+        eventName: "support.help.message_sent",
+        source: "registry-journey",
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[analytics] Ingress rejected event",
+      400,
+      "bad request",
+    );
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[analytics] Failed to emit event:",
+      expect.any(Error),
+    );
   });
 });
 
