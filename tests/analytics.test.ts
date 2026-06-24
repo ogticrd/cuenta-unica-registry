@@ -120,6 +120,10 @@ describe("analytics catalog", () => {
 });
 
 describe("analytics runtime environment", () => {
+  test("normalizes development analytics environment to dev", () => {
+    expect(resolveAnalyticsEnvironment("development")).toBe("dev");
+  });
+
   test("does not classify production runtime as production without explicit analytics environment", () => {
     const originalNodeEnv = process.env.NODE_ENV;
     const originalAnalyticsEnvironment = process.env.ANALYTICS_ENVIRONMENT;

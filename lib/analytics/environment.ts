@@ -9,6 +9,10 @@ export type AnalyticsEnvironment = (typeof ANALYTICS_ENVIRONMENTS)[number];
 function normalizeAnalyticsEnvironment(value: string): AnalyticsEnvironment {
   const environment = value.trim();
 
+  if (environment === "development") {
+    return "dev";
+  }
+
   if ((ANALYTICS_ENVIRONMENTS as readonly string[]).includes(environment)) {
     return environment as AnalyticsEnvironment;
   }
