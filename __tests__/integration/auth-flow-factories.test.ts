@@ -7,6 +7,7 @@ const {
   mockGetRecoveryFlowRaw,
   mockGetVerificationFlowRaw,
   mockGetSettingsFlowRaw,
+  mockConfigurationOptions,
 } = vi.hoisted(() => ({
   mockHeaders: vi.fn(),
   mockGetFlowFactory: vi.fn(),
@@ -14,6 +15,7 @@ const {
   mockGetRecoveryFlowRaw: vi.fn(),
   mockGetVerificationFlowRaw: vi.fn(),
   mockGetSettingsFlowRaw: vi.fn(),
+  mockConfigurationOptions: [] as unknown[],
 }));
 
 vi.mock("next/headers", () => ({
@@ -24,7 +26,11 @@ vi.mock("next/headers", () => ({
 vi.mock("server-only", () => ({}));
 
 vi.mock("@ory/client-fetch", () => ({
-  Configuration: class Configuration {},
+  Configuration: class Configuration {
+    constructor(options: unknown) {
+      mockConfigurationOptions.push(options);
+    }
+  },
   FlowType: {
     Login: "login",
     Registration: "registration",
@@ -68,6 +74,8 @@ const config = getOryConfig();
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockConfigurationOptions.length = 0;
+  process.env.ORY_SDK_URL = "https://ory.example.test/";
   mockHeaders.mockResolvedValue(
     new Headers({
       host: "cuentaunica.gob.do",
@@ -101,6 +109,11 @@ describe("auth flow factories", () => {
 
     await createFlowFn();
 
+    expect(mockConfigurationOptions).toContainEqual(
+      expect.objectContaining({
+        basePath: "https://ory.example.test",
+      }),
+    );
     expect(mockGetRegistrationFlowRaw).toHaveBeenCalledWith(
       {
         id: "registration-flow-123",

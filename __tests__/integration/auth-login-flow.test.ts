@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockHeaders, mockGetLoginFlowRaw, mockGetFlowFactory } = vi.hoisted(
-  () => ({
+const {
+  mockHeaders,
+  mockGetLoginFlowRaw,
+  mockGetFlowFactory,
+  mockConfigurationOptions,
+} = vi.hoisted(() => ({
     mockHeaders: vi.fn(),
     mockGetLoginFlowRaw: vi.fn(),
     mockGetFlowFactory: vi.fn(),
-  }),
-);
+    mockConfigurationOptions: [] as unknown[],
+  }));
 
 vi.mock("next/headers", () => ({
   cookies: vi.fn(),
@@ -16,7 +20,11 @@ vi.mock("next/headers", () => ({
 vi.mock("server-only", () => ({}));
 
 vi.mock("@ory/client-fetch", () => ({
-  Configuration: class Configuration {},
+  Configuration: class Configuration {
+    constructor(options: unknown) {
+      mockConfigurationOptions.push(options);
+    }
+  },
   FlowType: {
     Login: "login",
     Registration: "registration",
@@ -43,6 +51,8 @@ const config = getOryConfig();
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockConfigurationOptions.length = 0;
+  process.env.ORY_SDK_URL = "https://ory.example.test/";
 
   mockHeaders.mockResolvedValue(
     new Headers({
@@ -152,6 +162,11 @@ describe("getLoginFlow", () => {
 
     await createFlowFn();
 
+    expect(mockConfigurationOptions).toContainEqual(
+      expect.objectContaining({
+        basePath: "https://ory.example.test",
+      }),
+    );
     expect(mockGetLoginFlowRaw).toHaveBeenCalledWith(
       expect.objectContaining({
         cookie: "ory_session=test-session; csrf_token=csrf-123",

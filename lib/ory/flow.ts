@@ -25,13 +25,21 @@ import { getRequestOrigin } from "@/lib/ory/request-origin";
 
 const initOverrides = { cache: "no-cache" as RequestCache };
 
-async function createServerClient() {
-  const publicUrl = await getRequestOrigin();
+function getOrySdkUrl() {
+  const baseUrl = process.env.ORY_SDK_URL?.replace(/\/$/, "");
 
+  if (!baseUrl) {
+    throw new Error("Missing ORY_SDK_URL environment variable");
+  }
+
+  return baseUrl;
+}
+
+async function createServerClient() {
   return new FrontendApi(
     new Configuration({
       headers: { Accept: "application/json" },
-      basePath: publicUrl,
+      basePath: getOrySdkUrl(),
     }),
   );
 }
