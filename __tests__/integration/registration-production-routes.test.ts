@@ -152,6 +152,9 @@ beforeEach(() => {
   process.env.CITIZENS_PHOTO_API_KEY = "citizens-photo-key";
   process.env.ORY_SDK_URL = "https://ory.example.test";
   process.env.ORY_SDK_TOKEN = "ory-token";
+  delete process.env.ANALYTICS_INGRESS_URL;
+  delete process.env.ANALYTICS_ENVIRONMENT;
+  delete process.env.ANALYTICS_PROJECT_ID;
   delete process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS;
   delete process.env.LIVENESS_CONFIDENCE_THRESHOLD;
   delete process.env.FACE_SIMILARITY_THRESHOLD;
@@ -598,6 +601,10 @@ describe("registration production routes", () => {
   });
 
   it("completes liveness and creates the account from the encrypted draft without client credentials", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example";
+    process.env.ANALYTICS_ENVIRONMENT = "dev";
+    process.env.ANALYTICS_PROJECT_ID = "registry-dev";
+
     const registrationSessionId = "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d";
     const registrationSessionCookie = createRegistrationSessionCookie(
       "40200612345",
@@ -636,6 +643,7 @@ describe("registration production routes", () => {
 
     vi.spyOn(global, "fetch")
       .mockResolvedValueOnce(buildBinaryResponse([4, 5, 6]))
+      .mockResolvedValueOnce(new Response("ok", { status: 202 }))
       .mockResolvedValueOnce(
         buildJsonResponse({
           valid: true,
@@ -723,6 +731,35 @@ describe("registration production routes", () => {
     );
 
     expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
+    expect(global.fetch).toHaveBeenCalledTimes(4);
+    const analyticsRequest = vi.mocked(global.fetch).mock.calls[1] as [
+      string,
+      { body: string },
+    ];
+    expect(analyticsRequest[0]).toBe("https://analytics.example/events");
+    expect(JSON.parse(analyticsRequest[1].body)).toMatchObject({
+      eventName: "registration.liveness.succeeded",
+      source: "registry-app",
+      environment: "dev",
+      projectId: "registry-dev",
+      sessionId: "session-123",
+      step: "liveness",
+      outcome: "succeeded",
+      metadata: {
+        cedula: "40200612345",
+        stage: "verified",
+        confidence: 99,
+        similarity: 96,
+        evidence: {
+          liveness: {
+            provider: "aws_rekognition",
+            status: "succeeded",
+            confidence: 99,
+            similarity: 96,
+          },
+        },
+      },
+    });
     expect(mockUpdateRegistrationFlow).toHaveBeenCalledWith(
       expect.objectContaining({
         flow: "ory-registration-flow",
@@ -821,6 +858,51 @@ describe("registration production routes", () => {
 
     const verifiedCookie = response.cookies.get("registration_session");
     expect(verifiedCookie).toBeUndefined();
+  });
+
+  it("emits failed liveness analytics from the completion route for invalid payloads", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example";
+    process.env.ANALYTICS_ENVIRONMENT = "dev";
+    process.env.ANALYTICS_PROJECT_ID = "registry-dev";
+
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response("ok", { status: 202 }),
+    );
+
+    const response = await postLivenessComplete(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-complete",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+
+    expect(mockRekognitionSend).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      stage: "verification",
+      code: "invalid_payload",
+    });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    const [url, options] = vi.mocked(global.fetch).mock.calls[0] as [
+      string,
+      { body: string },
+    ];
+    expect(url).toBe("https://analytics.example/events");
+    expect(JSON.parse(options.body)).toMatchObject({
+      eventName: "registration.liveness.failed",
+      source: "registry-app",
+      environment: "dev",
+      projectId: "registry-dev",
+      step: "liveness",
+      outcome: "failed",
+      errorCode: "invalid_payload",
+      metadata: { stage: "request_body" },
+    });
   });
 
   it("maps Ory registration success into email verification while clearing the registration session", async () => {

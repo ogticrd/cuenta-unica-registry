@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   applyAccountRegistrationCookies,
@@ -18,6 +19,28 @@ import type {
 const livenessCompleteRequestSchema = z.object({
   sessionId: z.string().min(1),
 });
+
+async function emitLivenessOutcome(options: {
+  success: boolean;
+  sessionId?: string;
+  errorCode?: string;
+  metadata?: Record<string, unknown>;
+}) {
+  await emitAnalyticsEvent(
+    {
+      eventName: options.success
+        ? "registration.liveness.succeeded"
+        : "registration.liveness.failed",
+      source: "registry-app",
+      step: "liveness",
+      outcome: options.success ? "succeeded" : "failed",
+      ...(options.sessionId ? { sessionId: options.sessionId } : {}),
+      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+      ...(options.metadata ? { metadata: options.metadata } : {}),
+    },
+    { entryPath: "/api/registration/verification/liveness-complete" },
+  );
+}
 
 function createVerificationErrorResponse(
   code: VerifyLivenessErrorCode,
@@ -43,6 +66,8 @@ function setVerifiedSessionCookie(
 }
 
 export async function POST(request: Request) {
+  let livenessOutcomeEmitted = false;
+
   try {
     const parsedBody = await parseJsonRequest(
       request,
@@ -50,14 +75,27 @@ export async function POST(request: Request) {
     );
 
     if (!parsedBody.success) {
+      await emitLivenessOutcome({
+        success: false,
+        errorCode: "invalid_payload",
+        metadata: { stage: "request_body" },
+      });
+      livenessOutcomeEmitted = true;
       return createVerificationErrorResponse(parsedBody.code, 400);
     }
 
-    const livenessResult = await verifyRegistrationLiveness(
-      parsedBody.data.sessionId,
-    );
+    const sessionId = parsedBody.data.sessionId;
+    const livenessResult = await verifyRegistrationLiveness(sessionId);
 
     if (!livenessResult.success) {
+      await emitLivenessOutcome({
+        success: false,
+        sessionId,
+        errorCode: livenessResult.code,
+        metadata: { stage: livenessResult.code },
+      });
+      livenessOutcomeEmitted = true;
+
       if (livenessResult.code === "account_draft_missing") {
         const response = NextResponse.json(
           {
@@ -77,6 +115,26 @@ export async function POST(request: Request) {
         livenessResult.status,
       );
     }
+
+    await emitLivenessOutcome({
+      success: true,
+      sessionId,
+      metadata: {
+        cedula: livenessResult.session.cedula,
+        stage: "verified",
+        confidence: livenessResult.confidence,
+        similarity: livenessResult.similarity,
+        evidence: {
+          liveness: {
+            provider: "aws_rekognition",
+            status: "succeeded",
+            confidence: livenessResult.confidence,
+            similarity: livenessResult.similarity,
+          },
+        },
+      },
+    });
+    livenessOutcomeEmitted = true;
 
     const accountResult = await completeRegistrationAccount(
       {
@@ -124,6 +182,13 @@ export async function POST(request: Request) {
       "[/api/registration/verification/liveness-complete] Failed:",
       error,
     );
+    if (!livenessOutcomeEmitted) {
+      await emitLivenessOutcome({
+        success: false,
+        errorCode: "unexpected_error",
+        metadata: { stage: "exception" },
+      });
+    }
     return createVerificationErrorResponse("unexpected_error", 500);
   }
 }
