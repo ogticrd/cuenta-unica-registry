@@ -62,10 +62,11 @@ async function toFlowParams(
 async function withReturnTo(
   params: Record<string, string | string[] | undefined>,
 ) {
-  if (!params.return_to) {
-    return { ...params, return_to: `${await getRequestOrigin()}/` };
+  if (params.return_to || params.login_challenge) {
+    return params;
   }
-  return params;
+
+  return { ...params, return_to: `${await getRequestOrigin()}/` };
 }
 
 function withAnalyticsTransientPayloadResponse<T extends object>(

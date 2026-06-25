@@ -106,6 +106,25 @@ describe("getLoginFlow", () => {
     );
   });
 
+  it("does not inject registry return_to for OAuth login challenges", async () => {
+    const params = Promise.resolve({
+      login_challenge: "oauth-login-challenge",
+    });
+
+    await getLoginFlow(config, params);
+
+    expect(mockGetFlowFactory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        login_challenge: "oauth-login-challenge",
+      }),
+      expect.any(Function),
+      "login",
+      "https://cuentaunica.gob.do",
+      "/login",
+    );
+    expect(mockGetFlowFactory.mock.calls[0][0].return_to).toBeUndefined();
+  });
+
   it("injects return_to when it is missing from params", async () => {
     const params = Promise.resolve({ flow: "login-flow-789" });
 
