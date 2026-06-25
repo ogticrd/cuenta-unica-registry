@@ -21,6 +21,10 @@ export default async function RegistrationPage({
       <JourneyEvent
         eventName="journey.registration.entered"
         step="register"
+        clientId={analyticsContext?.clientId}
+        clientName={analyticsContext?.clientName}
+        institutionName={analyticsContext?.institutionName}
+        linkageStatus={analyticsContext?.linkageStatus}
         returnUrl={returnUrl}
       />
       <main className="flex-1 flex items-center justify-center py-12">

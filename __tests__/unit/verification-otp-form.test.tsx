@@ -140,7 +140,7 @@ describe("VerificationOTPForm", () => {
     });
 
     await vi.advanceTimersByTimeAsync(2000);
-    expect(mockPush).toHaveBeenCalledWith("/self-service/login/browser");
+    expect(mockPush).toHaveBeenCalledWith("/login");
   });
 
   it("uses the sanitized returnUrl after a successful verification", async () => {
