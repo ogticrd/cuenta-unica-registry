@@ -11,7 +11,6 @@ export const getOryConfig = (
   },
   project: {
     name: "Cuenta Única Ciudadana",
-    default_locale: "es",
     default_redirect_url: "/",
     error_ui_url: "/error",
     registration_ui_url: "/register",
@@ -22,7 +21,6 @@ export const getOryConfig = (
     recovery_enabled: true,
     registration_enabled: true,
     verification_enabled: true,
-    locale_behavior: "respect_accept_language",
   },
 });
 
