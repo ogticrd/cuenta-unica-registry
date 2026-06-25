@@ -24,6 +24,41 @@ const REGISTRATION_SESSION_STATUSES = new Set<RegistrationSessionStatus>([
 ]);
 const REGISTRATION_SESSION_KEY_CONTEXT = "registration-session-cookie:v1";
 
+function isValidSessionAnalytics(
+  analytics: RegistrationSession["analytics"],
+): analytics is NonNullable<RegistrationSession["analytics"]> {
+  if (!analytics || typeof analytics !== "object") {
+    return false;
+  }
+
+  if (
+    typeof analytics.journeyId !== "string" ||
+    typeof analytics.clientId !== "string" ||
+    typeof analytics.entryPath !== "string" ||
+    typeof analytics.linkageStatus !== "string" ||
+    typeof analytics.issuedAt !== "number" ||
+    typeof analytics.expiresAt !== "number"
+  ) {
+    return false;
+  }
+
+  if (
+    analytics.linkageStatus !== "linked" &&
+    analytics.linkageStatus !== "unlinked"
+  ) {
+    return false;
+  }
+
+  return (
+    (analytics.returnUrl === undefined ||
+      typeof analytics.returnUrl === "string") &&
+    (analytics.clientName === undefined ||
+      typeof analytics.clientName === "string") &&
+    (analytics.institutionName === undefined ||
+      typeof analytics.institutionName === "string")
+  );
+}
+
 function getRegistrationSessionSecret() {
   const secret = process.env.REGISTRATION_SESSION_SECRET;
 
@@ -89,6 +124,13 @@ function isValidSessionPayload(
   if (
     session.returnUrl !== undefined &&
     typeof session.returnUrl !== "string"
+  ) {
+    return false;
+  }
+
+  if (
+    session.analytics !== undefined &&
+    !isValidSessionAnalytics(session.analytics)
   ) {
     return false;
   }
@@ -176,6 +218,7 @@ export function createRegistrationSessionCookie(
   status: RegistrationSessionStatus = "identified",
   returnUrl?: string,
   sessionId: string = randomUUID(),
+  analytics?: RegistrationSession["analytics"],
 ): ResponseCookie {
   const issuedAt = Date.now();
   const session: RegistrationSession = {
@@ -183,6 +226,7 @@ export function createRegistrationSessionCookie(
     cedula: normalizeCedula(cedula),
     status,
     ...(returnUrl ? { returnUrl } : {}),
+    ...(analytics ? { analytics } : {}),
     issuedAt,
     expiresAt: issuedAt + REGISTRATION_SESSION_DURATION_MS,
   };

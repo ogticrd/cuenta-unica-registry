@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
 import {
   clearRegistrationAccountDraftCookie,
   getRegistrationAccountDraft,
@@ -32,21 +33,25 @@ function createErrorResponse(
 async function emitLivenessSessionOutcome(options: {
   success: boolean;
   errorCode?: string;
+  registrationSession?: Awaited<ReturnType<typeof getRegistrationSession>>;
   sessionId?: string;
   metadata?: Record<string, unknown>;
 }) {
   await emitAnalyticsEvent(
-    {
-      eventName: options.success
-        ? "registration.liveness.session_created"
-        : "registration.liveness.session_failed",
-      source: "registry-app",
-      step: "liveness",
-      outcome: options.success ? "started" : "failed",
-      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
-      ...(options.sessionId ? { sessionId: options.sessionId } : {}),
-      ...(options.metadata ? { metadata: options.metadata } : {}),
-    },
+    withRegistrationSessionAnalyticsContext(
+      {
+        eventName: options.success
+          ? "registration.liveness.session_created"
+          : "registration.liveness.session_failed",
+        source: "registry-app",
+        step: "liveness",
+        outcome: options.success ? "started" : "failed",
+        ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+        ...(options.sessionId ? { sessionId: options.sessionId } : {}),
+        ...(options.metadata ? { metadata: options.metadata } : {}),
+      },
+      options.registrationSession,
+    ),
     { entryPath: "/api/registration/verification/liveness-session" },
   );
 }
@@ -70,6 +75,7 @@ export async function POST() {
       await emitLivenessSessionOutcome({
         success: false,
         errorCode: "verification_already_completed",
+        registrationSession: session,
         metadata: { cedula: session.cedula, stage: "session_state" },
       });
       return createErrorResponse("verification_already_completed", 409);
@@ -81,6 +87,7 @@ export async function POST() {
       await emitLivenessSessionOutcome({
         success: false,
         errorCode: "account_draft_missing",
+        registrationSession: session,
         metadata: { cedula: session.cedula, stage: "account_draft" },
       });
       return createErrorResponse("account_draft_missing", 400, {
@@ -104,6 +111,7 @@ export async function POST() {
     const sessionId = await createLivenessSession();
     await emitLivenessSessionOutcome({
       success: true,
+      registrationSession: session,
       sessionId,
       metadata: {
         cedula: session.cedula,
@@ -134,6 +142,7 @@ export async function POST() {
     await emitLivenessSessionOutcome({
       success: false,
       errorCode: "rekognition_error",
+      registrationSession: session,
       metadata: { cedula: session?.cedula, stage: "exception" },
     });
     return createErrorResponse("rekognition_error", 502);

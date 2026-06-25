@@ -35,6 +35,5 @@ export function buildTrustedJourneyEventInput(
         : (body.linkageStatus ?? context?.linkageStatus),
     journeyId: context?.journeyId,
     returnUrl: pickContextValue(context?.returnUrl, body.returnUrl),
-    metadata: body.metadata,
   };
 }
