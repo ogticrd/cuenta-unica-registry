@@ -6,11 +6,11 @@ const {
   mockGetFlowFactory,
   mockConfigurationOptions,
 } = vi.hoisted(() => ({
-    mockHeaders: vi.fn(),
-    mockGetLoginFlowRaw: vi.fn(),
-    mockGetFlowFactory: vi.fn(),
-    mockConfigurationOptions: [] as unknown[],
-  }));
+  mockHeaders: vi.fn(),
+  mockGetLoginFlowRaw: vi.fn(),
+  mockGetFlowFactory: vi.fn(),
+  mockConfigurationOptions: [] as unknown[],
+}));
 
 vi.mock("next/headers", () => ({
   cookies: vi.fn(),
