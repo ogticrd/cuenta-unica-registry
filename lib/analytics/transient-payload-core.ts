@@ -7,6 +7,8 @@ export interface AnalyticsTransientPayload {
     journeyId: string;
     entryPath: string;
     returnUrl?: string;
+    clientName?: string;
+    institutionName?: string;
     projectId?: string;
     environment?: string;
   };
@@ -42,6 +44,10 @@ export function buildAnalyticsTransientPayload(
       journeyId: context.journeyId,
       entryPath: context.entryPath,
       ...(context.returnUrl ? { returnUrl: context.returnUrl } : {}),
+      ...(context.clientName ? { clientName: context.clientName } : {}),
+      ...(context.institutionName
+        ? { institutionName: context.institutionName }
+        : {}),
       ...(options?.projectId ? { projectId: options.projectId } : {}),
       ...(options?.environment ? { environment: options.environment } : {}),
     },

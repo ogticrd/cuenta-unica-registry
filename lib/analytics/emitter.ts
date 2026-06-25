@@ -21,6 +21,8 @@ export interface AnalyticsEventInput {
   projectId?: string;
   journeyId?: string;
   clientId?: string;
+  clientName?: string;
+  institutionName?: string;
   linkageStatus?: "linked" | "unlinked";
   returnUrl?: string;
   identityId?: string;
@@ -42,6 +44,8 @@ type AnalyticsPayload = {
   projectId: string;
   journeyId: string;
   clientId: string;
+  clientName?: string;
+  institutionName?: string;
   linkageStatus: "linked" | "unlinked";
   returnUrl?: string;
   identityId?: string;
@@ -98,6 +102,12 @@ function buildPayload(
     projectId: resolveAnalyticsProjectId(input.projectId),
     journeyId: input.journeyId ?? context.journeyId,
     clientId,
+    ...((input.clientName ?? context.clientName)
+      ? { clientName: input.clientName ?? context.clientName }
+      : {}),
+    ...((input.institutionName ?? context.institutionName)
+      ? { institutionName: input.institutionName ?? context.institutionName }
+      : {}),
     linkageStatus,
     ...(resolvedReturnUrl ? { returnUrl: resolvedReturnUrl } : {}),
     ...(input.identityId ? { identityId: input.identityId } : {}),

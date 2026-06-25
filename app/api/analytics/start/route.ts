@@ -13,6 +13,8 @@ import { getOAuth2Client } from "@/lib/ory/oauth-client";
 
 const REGISTRATION_ENTRY_PATH = "/register";
 
+type OryOAuth2Client = NonNullable<Awaited<ReturnType<typeof getOAuth2Client>>>;
+
 function getRequestOrigin(request: NextRequest) {
   const forwardedHost = request.headers.get("x-forwarded-host");
   const forwardedProto = request.headers.get("x-forwarded-proto") ?? "https";
@@ -22,6 +24,49 @@ function getRequestOrigin(request: NextRequest) {
   }
 
   return request.nextUrl.origin;
+}
+
+function getString(value: unknown) {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function getMetadataString(
+  metadata: OryOAuth2Client["metadata"],
+  keys: string[],
+) {
+  if (!metadata || typeof metadata !== "object") {
+    return undefined;
+  }
+
+  const metadataRecord = metadata as Record<string, unknown>;
+
+  for (const key of keys) {
+    const value = getString(metadataRecord[key]);
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
+function getClientAnalyticsLabels(client: OryOAuth2Client) {
+  const clientName = getString(client.client_name);
+  const owner = getString(client.owner);
+  const institutionName =
+    getMetadataString(client.metadata, [
+      "institutionName",
+      "institution_name",
+      "institution",
+    ]) ??
+    owner ??
+    clientName;
+
+  return {
+    ...(clientName ? { clientName } : {}),
+    ...(institutionName ? { institutionName } : {}),
+  };
 }
 
 export async function GET(request: NextRequest) {
@@ -68,6 +113,7 @@ export async function GET(request: NextRequest) {
   const context = buildAnalyticsContextFromUrl(contextUrl, {
     client: {
       clientId,
+      ...getClientAnalyticsLabels(client),
     },
   });
   const cookie = await createAnalyticsContextCookie(context);

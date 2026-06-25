@@ -175,11 +175,11 @@ export async function createOryEmailVerificationCodeFlow(
       {
         flow: createFlowResponse.data.id,
         cookie: csrfCookieHeader || input.cookie,
-        updateVerificationFlowBody: {
+        updateVerificationFlowBody: await withAnalyticsTransientPayload({
           csrf_token: csrfToken,
           method: "code",
           email: input.email,
-        },
+        }),
       },
       {
         headers: {

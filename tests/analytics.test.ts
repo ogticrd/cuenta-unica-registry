@@ -90,6 +90,8 @@ describe("analytics context", () => {
     const context: AnalyticsContext = {
       journeyId: "journey-123",
       clientId: "ministerio-salud",
+      clientName: "Supertest",
+      institutionName: "Ministerio de Salud",
       linkageStatus: "linked",
       entryPath: "/register",
       issuedAt: 1,
@@ -102,6 +104,8 @@ describe("analytics context", () => {
 
     expect(parsed?.journeyId).toBe("journey-123");
     expect(parsed?.clientId).toBe("ministerio-salud");
+    expect(parsed?.clientName).toBe("Supertest");
+    expect(parsed?.institutionName).toBe("Ministerio de Salud");
     expect(parsed?.linkageStatus).toBe("linked");
   });
 
@@ -113,12 +117,16 @@ describe("analytics context", () => {
       {
         client: {
           clientId: "ministerio-salud",
+          clientName: "Supertest",
+          institutionName: "Ministerio de Salud",
         },
       },
     );
 
     expect(context.entryPath).toBe("/register");
     expect(context.clientId).toBe("ministerio-salud");
+    expect(context.clientName).toBe("Supertest");
+    expect(context.institutionName).toBe("Ministerio de Salud");
     expect(context.linkageStatus).toBe("linked");
     expect(context.returnUrl).toBe("https://backoffice.example.com/");
   });
@@ -146,6 +154,8 @@ describe("analytics context", () => {
     const current: AnalyticsContext = {
       journeyId: "journey-123",
       clientId: "ministerio-salud",
+      clientName: "Supertest",
+      institutionName: "Ministerio de Salud",
       linkageStatus: "linked",
       entryPath: "/register",
       issuedAt: 1,
@@ -512,6 +522,8 @@ describe("analytics transient payload", () => {
       {
         journeyId: "journey-123",
         clientId: "ministerio-salud",
+        clientName: "Supertest",
+        institutionName: "Ministerio de Salud",
         linkageStatus: "linked",
         entryPath: "/login",
         issuedAt: 1,
@@ -525,6 +537,8 @@ describe("analytics transient payload", () => {
     );
 
     expect(payload.analytics.clientId).toBe("ministerio-salud");
+    expect(payload.analytics.clientName).toBe("Supertest");
+    expect(payload.analytics.institutionName).toBe("Ministerio de Salud");
     expect(payload.analytics.journeyId).toBe("journey-123");
     expect(payload.analytics.returnUrl).toBe("https://example.com");
     expect(payload.analytics.projectId).toBe("registry");
@@ -822,6 +836,8 @@ describe("analytics journey route contract", () => {
       {
         journeyId: "journey-123",
         clientId: "trusted-client",
+        clientName: "Supertest",
+        institutionName: "Ministerio de Salud",
         linkageStatus: "linked",
         entryPath: "/login",
         issuedAt: 1,
@@ -831,6 +847,8 @@ describe("analytics journey route contract", () => {
     );
 
     expect(event.clientId).toBe("trusted-client");
+    expect(event.clientName).toBe("Supertest");
+    expect(event.institutionName).toBe("Ministerio de Salud");
     expect(event.linkageStatus).toBe("linked");
     expect(event.journeyId).toBe("journey-123");
     expect(event.returnUrl).toBe("https://trusted.example");

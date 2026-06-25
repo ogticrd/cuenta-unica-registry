@@ -15,6 +15,8 @@ export function buildTrustedJourneyEventInput(
     flowId: body.flowId,
     oryFlowType: body.oryFlowType,
     clientId: context?.clientId,
+    clientName: context?.clientName,
+    institutionName: context?.institutionName,
     linkageStatus: context?.linkageStatus,
     journeyId: context?.journeyId,
     returnUrl: context?.returnUrl,

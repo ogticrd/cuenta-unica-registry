@@ -7,6 +7,8 @@ export const ANALYTICS_CONTEXT_DURATION_MS = 60 * 60 * 1000;
 
 export interface AnalyticsContextClient {
   clientId: string;
+  clientName?: string;
+  institutionName?: string;
 }
 
 export interface AnalyticsContextInput {
@@ -23,6 +25,8 @@ export interface AnalyticsContext {
   issuedAt: number;
   expiresAt: number;
   returnUrl?: string;
+  clientName?: string;
+  institutionName?: string;
 }
 
 const textEncoder = new TextEncoder();
@@ -120,6 +124,15 @@ export async function parseAnalyticsContext(
       return null;
     }
 
+    if (
+      (parsed.clientName !== undefined &&
+        typeof parsed.clientName !== "string") ||
+      (parsed.institutionName !== undefined &&
+        typeof parsed.institutionName !== "string")
+    ) {
+      return null;
+    }
+
     return parsed;
   } catch {
     return null;
@@ -138,6 +151,12 @@ export function buildAnalyticsContext(input: AnalyticsContextInput) {
     issuedAt: now,
     expiresAt: now + ANALYTICS_CONTEXT_DURATION_MS,
     ...(input.returnUrl ? { returnUrl: input.returnUrl } : {}),
+    ...(input.client?.clientName
+      ? { clientName: input.client.clientName }
+      : {}),
+    ...(input.client?.institutionName
+      ? { institutionName: input.client.institutionName }
+      : {}),
   } satisfies AnalyticsContext;
 }
 
@@ -171,6 +190,14 @@ export function shouldRefreshAnalyticsContext(
   }
 
   if (current.clientId !== nextContext.clientId) {
+    return true;
+  }
+
+  if ((current.clientName ?? "") !== (nextContext.clientName ?? "")) {
+    return true;
+  }
+
+  if ((current.institutionName ?? "") !== (nextContext.institutionName ?? "")) {
     return true;
   }
 
