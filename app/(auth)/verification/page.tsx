@@ -1,11 +1,7 @@
-import { Verification } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import {
-  CucVerificationFooter,
-  CucVerificationHeader,
-} from "@/components/auth/ory-components";
+import { OryVerificationCard } from "@/components/auth/ory-flow-cards";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
@@ -49,17 +45,10 @@ async function VerificationFlow({ searchParams }: OryPageParams) {
         linkageStatus={analytics?.linkageStatus}
         returnUrl={analytics?.returnUrl}
       />
-      <Verification
+      <OryVerificationCard
         flow={flow}
-        config={dynamicConfig}
-        components={{
-          Card: {
-            Header: CucVerificationHeader,
-            Footer: (props) => (
-              <CucVerificationFooter {...props} loginHref={loginHref} />
-            ),
-          },
-        }}
+        dynamicConfig={dynamicConfig}
+        loginHref={loginHref}
       />
     </>
   );

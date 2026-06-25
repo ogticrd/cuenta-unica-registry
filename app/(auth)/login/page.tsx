@@ -1,8 +1,7 @@
-import { Login } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
+import { OryLoginCard } from "@/components/auth/ory-flow-cards";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
@@ -56,22 +55,12 @@ async function LoginFlow({ searchParams }: OryPageParams) {
         linkageStatus={analytics?.linkageStatus}
         returnUrl={analytics?.returnUrl}
       />
-      <Login
+      <OryLoginCard
         flow={flow}
-        config={dynamicConfig}
-        components={{
-          Card: {
-            Header: CucCardHeader,
-            Footer: (props) => (
-              <CucCardFooter
-                {...props}
-                recoveryHref={recoveryHref}
-                registerHref={registerHref}
-                verificationHref={verificationHref}
-              />
-            ),
-          },
-        }}
+        dynamicConfig={dynamicConfig}
+        recoveryHref={recoveryHref}
+        registerHref={registerHref}
+        verificationHref={verificationHref}
       />
     </>
   );

@@ -1,11 +1,7 @@
-import { Recovery } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import {
-  CucRecoveryFooter,
-  CucRecoveryHeader,
-} from "@/components/auth/ory-components";
+import { OryRecoveryCard } from "@/components/auth/ory-flow-cards";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
@@ -49,17 +45,10 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
         linkageStatus={analytics?.linkageStatus}
         returnUrl={analytics?.returnUrl}
       />
-      <Recovery
+      <OryRecoveryCard
         flow={flow}
-        config={dynamicConfig}
-        components={{
-          Card: {
-            Header: CucRecoveryHeader,
-            Footer: (props) => (
-              <CucRecoveryFooter {...props} loginHref={loginHref} />
-            ),
-          },
-        }}
+        dynamicConfig={dynamicConfig}
+        loginHref={loginHref}
       />
     </>
   );
