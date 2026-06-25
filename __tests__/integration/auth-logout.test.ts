@@ -68,9 +68,17 @@ describe("POST /api/ory/logout", () => {
 
     // Verify Set-Cookie headers are forwarded
     const setCookieHeaders = response.headers.getSetCookie?.() ?? [];
-    expect(setCookieHeaders).toHaveLength(1);
-    expect(setCookieHeaders[0]).toContain("ory_session=");
-    expect(setCookieHeaders[0]).toContain("Max-Age=0");
+    expect(setCookieHeaders).toHaveLength(3);
+    expect(setCookieHeaders).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("ory_session="),
+        expect.stringContaining("analytics_context="),
+        expect.stringContaining("analytics_context_launch="),
+      ]),
+    );
+    expect(
+      setCookieHeaders.find((header) => header.startsWith("ory_session=")),
+    ).toContain("Max-Age=0");
 
     // Verify cookie forwarding to Ory
     expect(mockCreateBrowserLogoutFlow).toHaveBeenCalledWith({
@@ -108,7 +116,15 @@ describe("POST /api/ory/logout", () => {
 
     expect(response.status).toBe(200);
     const setCookieHeaders = response.headers.getSetCookie?.() ?? [];
-    expect(setCookieHeaders).toHaveLength(2);
+    expect(setCookieHeaders).toHaveLength(4);
+    expect(setCookieHeaders).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("ory_session="),
+        expect.stringContaining("csrf_token="),
+        expect.stringContaining("analytics_context="),
+        expect.stringContaining("analytics_context_launch="),
+      ]),
+    );
   });
 
   it("returns success when session is already expired (401)", async () => {
@@ -214,7 +230,14 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body.success).toBe(true);
     const setCookieHeaders = response.headers.getSetCookie?.() ?? [];
-    expect(setCookieHeaders).toHaveLength(0);
+    expect(setCookieHeaders).toHaveLength(3);
+    expect(setCookieHeaders).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("ory_session="),
+        expect.stringContaining("analytics_context="),
+        expect.stringContaining("analytics_context_launch="),
+      ]),
+    );
   });
 
   it("forwards the full browser cookie string to both Ory calls", async () => {

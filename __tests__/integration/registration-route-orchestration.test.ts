@@ -1535,12 +1535,28 @@ describe("registration route orchestration - session reset", () => {
   });
 
   it("returns success and clears temporary registration cookies", async () => {
+    mockGetServerCookies.mockResolvedValueOnce(
+      "ory_session_focused=value; csrf_token_123=value; analytics_context=value",
+    );
+
     const response = await postSessionReset();
 
     expect(mockClearRegistrationSessionCookie).toHaveBeenCalledTimes(1);
     expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalledTimes(1);
     expect(mockClearRegistrationLivenessChallengeCookie).toHaveBeenCalledTimes(
       1,
+    );
+    const setCookieHeaders = response.headers.getSetCookie?.() ?? [];
+    expect(setCookieHeaders).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("registration_session="),
+        expect.stringContaining("registration_account_draft="),
+        expect.stringContaining("registration_liveness_challenge="),
+        expect.stringContaining("ory_session_focused="),
+        expect.stringContaining("csrf_token_123="),
+        expect.stringContaining("analytics_context="),
+        expect.stringContaining("analytics_context_launch="),
+      ]),
     );
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ success: true });

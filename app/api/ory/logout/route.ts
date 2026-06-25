@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
+import {
+  clearStaleBrowserFlowCookies,
+  serializeClearCookie,
+} from "@/lib/ory/browser-cookie-reset";
 import { getOryClient } from "@/lib/ory/client";
 import { extractSetCookieHeaders, getServerCookies } from "@/lib/ory/cookies";
+
+function getSetCookieName(setCookie: string) {
+  return setCookie.split(";")[0]?.split("=")[0]?.trim();
+}
 
 /**
  * POST /api/ory/logout
@@ -46,8 +54,19 @@ export async function POST() {
     });
 
     const setCookies = extractSetCookieHeaders(logoutResponse);
+    const clearedByOry = new Set<string>();
     for (const setCookie of setCookies) {
+      const name = getSetCookieName(setCookie);
+      if (name) {
+        clearedByOry.add(name);
+      }
       response.headers.append("Set-Cookie", setCookie);
+    }
+    for (const staleCookie of clearStaleBrowserFlowCookies(cookie)) {
+      if (clearedByOry.has(staleCookie.name)) {
+        continue;
+      }
+      response.headers.append("Set-Cookie", serializeClearCookie(staleCookie));
     }
 
     return response;
@@ -61,10 +80,15 @@ export async function POST() {
         : undefined;
 
     if (status === 401 || status === 403) {
-      return NextResponse.json({
+      const response = NextResponse.json({
         success: true,
         redirect_to: ROUTES.login,
       });
+      const cookie = await getServerCookies();
+      for (const staleCookie of clearStaleBrowserFlowCookies(cookie)) {
+        response.cookies.set(staleCookie);
+      }
+      return response;
     }
 
     return NextResponse.json(
