@@ -77,6 +77,12 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
   const launchPath = request.cookies.get(
     ANALYTICS_CONTEXT_LAUNCH_COOKIE,
   )?.value;
+  const requestedClientId = request.nextUrl.searchParams
+    .get("client_id")
+    ?.trim();
+  const allowDirectClientId = allowDirectAnalyticsClientId();
+  const hasExplicitClientContext =
+    allowDirectClientId && Boolean(requestedClientId);
 
   if (currentContext && launchPath === request.nextUrl.pathname) {
     const response = NextResponse.next();
@@ -84,7 +90,10 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
     return response;
   }
 
-  const allowDirectClientId = allowDirectAnalyticsClientId();
+  if (currentContext?.linkageStatus === "linked" && !hasExplicitClientContext) {
+    return null;
+  }
+
   const nextContext = allowDirectClientId
     ? buildAnalyticsContextFromUrl(request.nextUrl, {
         client: {
@@ -116,6 +125,14 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
   });
 
   return response;
+}
+
+function isOryFlowRequest(request: NextRequest) {
+  return (
+    request.nextUrl.searchParams.has("flow") ||
+    request.nextUrl.searchParams.has("login_challenge") ||
+    request.nextUrl.searchParams.has("return_to")
+  );
 }
 
 function getOrySessionUrl() {
@@ -206,7 +223,7 @@ export async function proxy(request: NextRequest) {
       return redirectTo(request, ROUTES.login);
     }
 
-    if (isAuthRoute && isAuthenticated) {
+    if (isAuthRoute && isAuthenticated && !isOryFlowRequest(request)) {
       return redirectTo(request, ROUTES.dashboard);
     }
 

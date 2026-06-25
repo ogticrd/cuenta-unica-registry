@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getAnalyticsContext } from "@/lib/analytics/context";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import {
   citizenLookupRequestSchema,
@@ -77,12 +78,15 @@ export async function POST(request: Request) {
   }
 
   const cedula = normalizeCedula(parsedRequest.data.cedula);
-  const returnUrl = getSafeReturnUrl(parsedRequest.data.returnUrl, {
-    currentOrigin: getRequestOrigin(request.headers, request.url),
-    allowedOrigins: parseAllowedReturnOrigins(
-      process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,
-    ),
-  });
+  const analyticsContext = await getAnalyticsContext();
+  const returnUrl =
+    analyticsContext?.returnUrl ??
+    getSafeReturnUrl(parsedRequest.data.returnUrl, {
+      currentOrigin: getRequestOrigin(request.headers, request.url),
+      allowedOrigins: parseAllowedReturnOrigins(
+        process.env.REGISTRATION_ALLOWED_RETURN_ORIGINS,
+      ),
+    });
 
   if (!(await isValidCedula(cedula))) {
     await emitIdentificationOutcome({

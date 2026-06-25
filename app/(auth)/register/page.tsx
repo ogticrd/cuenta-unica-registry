@@ -1,6 +1,7 @@
 import { JourneyEvent } from "@/components/analytics/journey-event";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
 
+import { getAnalyticsContext } from "@/lib/analytics/context";
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
 
 interface RegistrationPageProps {
@@ -10,17 +11,17 @@ interface RegistrationPageProps {
 export default async function RegistrationPage({
   searchParams,
 }: RegistrationPageProps) {
-  const [registrationWizardState, params] = await Promise.all([
-    getRegistrationWizardState(),
-    searchParams,
-  ]);
+  const [registrationWizardState, params, analyticsContext] = await Promise.all(
+    [getRegistrationWizardState(), searchParams, getAnalyticsContext()],
+  );
+  const returnUrl = params.return_url ?? analyticsContext?.returnUrl;
 
   return (
     <>
       <JourneyEvent
         eventName="journey.registration.entered"
         step="register"
-        returnUrl={params.return_url}
+        returnUrl={returnUrl}
       />
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="container mx-auto px-4 max-w-3xl">
@@ -30,7 +31,7 @@ export default async function RegistrationPage({
             initialName={registrationWizardState.initialName}
             initialSessionStatus={registrationWizardState.initialSessionStatus}
             hasAccountDraft={registrationWizardState.hasAccountDraft}
-            returnUrl={params.return_url}
+            returnUrl={returnUrl}
           />
         </div>
       </main>

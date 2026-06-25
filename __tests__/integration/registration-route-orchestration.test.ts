@@ -24,6 +24,7 @@ const {
   mockGetRequestOrigin,
   mockGetSafeReturnUrl,
   mockParseAllowedReturnOrigins,
+  mockGetAnalyticsContext,
   mockCreateLivenessSession,
   mockGetLivenessResults,
   mockCompareFaces,
@@ -54,6 +55,7 @@ const {
   mockGetRequestOrigin: vi.fn(),
   mockGetSafeReturnUrl: vi.fn(),
   mockParseAllowedReturnOrigins: vi.fn(),
+  mockGetAnalyticsContext: vi.fn(),
   mockCreateLivenessSession: vi.fn(),
   mockGetLivenessResults: vi.fn(),
   mockCompareFaces: vi.fn(),
@@ -140,6 +142,16 @@ vi.mock("@/lib/utils/return-url", () => ({
   getSafeReturnUrl: mockGetSafeReturnUrl,
   parseAllowedReturnOrigins: mockParseAllowedReturnOrigins,
 }));
+
+vi.mock("@/lib/analytics/context", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/lib/analytics/context")>();
+
+  return {
+    ...actual,
+    getAnalyticsContext: mockGetAnalyticsContext,
+  };
+});
 
 vi.mock("@/lib/services/registration/rekognition.service", () => ({
   createLivenessSession: mockCreateLivenessSession,
@@ -1173,6 +1185,7 @@ describe("registration route orchestration - citizen", () => {
     mockGetRequestOrigin.mockReturnValue("http://localhost");
     mockGetSafeReturnUrl.mockImplementation((url?: string) => url);
     mockParseAllowedReturnOrigins.mockReturnValue([]);
+    mockGetAnalyticsContext.mockResolvedValue(null);
     mockCreateRegistrationSessionCookie.mockReturnValue({
       name: "registration_session",
       value: "signed-session",
@@ -1324,6 +1337,44 @@ describe("registration route orchestration - citizen", () => {
         firstName: "Juan",
       },
     });
+  });
+
+  it("keeps the signed analytics return url for linked client launches", async () => {
+    mockIsValidCedula.mockResolvedValueOnce(true);
+    mockCheckCitizenIdentity.mockResolvedValueOnce({ exists: false });
+    mockGetSafeReturnUrl.mockReturnValueOnce(undefined);
+    mockGetAnalyticsContext.mockResolvedValueOnce({
+      journeyId: "journey-123",
+      clientId: "4c2d8cc9-1740-47a5-8a32-e94c7049edff",
+      linkageStatus: "linked",
+      entryPath: "/register",
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 60_000,
+      returnUrl: "http://localhost:5173/callback",
+    });
+    mockFindCitizenSummaryByCedula.mockResolvedValueOnce({
+      id: "402-0061234-5",
+      firstName: "Juan",
+    });
+
+    const response = await postCitizen(
+      new Request("http://localhost/api/registration/citizen", {
+        method: "POST",
+        body: JSON.stringify({
+          cedula: "40200612345",
+          returnUrl: "http://localhost:5173/callback",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    expect(mockCreateRegistrationSessionCookie).toHaveBeenCalledWith(
+      "40200612345",
+      "identified",
+      "http://localhost:5173/callback",
+    );
+    expect(mockGetSafeReturnUrl).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
   });
 });
 
