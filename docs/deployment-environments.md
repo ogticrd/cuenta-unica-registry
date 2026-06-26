@@ -27,6 +27,9 @@ Environment variables** de GitHub.
 | `ORY_SDK_URL` | `https://focused-gagarin-ywepc2q5bu.projects.oryapis.com` | URL Ory de staging | URL Ory de producción |
 | `CITIZENS_API_BASE_URL` | `https://api.devs.digital.gob.do` | URL compartida de APIs ciudadanas | URL productiva de APIs ciudadanas |
 | `AWS_REGION` | `us-east-1` | región de Rekognition | región de Rekognition |
+| `AWS_ROLE_ARN` | rol IAM federado para Rekognition | rol IAM federado para Rekognition | rol IAM federado para Rekognition |
+| `AWS_WEB_IDENTITY_TOKEN_AUDIENCE` | `sts.amazonaws.com` | `sts.amazonaws.com` | `sts.amazonaws.com` |
+| `AWS_ROLE_SESSION_NAME` | `cuenta-unica-registry` | `cuenta-unica-registry` | `cuenta-unica-registry` |
 | `NEXT_PUBLIC_AWS_REGION` | `us-east-1` | región de Amplify | región de Amplify |
 | `NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID` | `us-east-1:b1b2e698-23f3-4b5e-945c-ce2a5bc92fc2` | identity pool de Cognito | identity pool de Cognito |
 | `NEXT_PUBLIC_COGNITO_USER_POOL_ID` | `us-east-1_4R9AQlkpf` | user pool de Cognito | user pool de Cognito |
@@ -81,12 +84,38 @@ cargarse desde la fuente aprobada de secretos.
 - `REGISTRATION_SESSION_SECRET`
 - `CITIZENS_INFO_API_KEY`
 - `CITIZENS_PHOTO_API_KEY`
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
 - `BUZON_PORTAL_API_KEY`
 - `ANALYTICS_CONTEXT_SECRET`
 - `ANALYTICS_INGRESS_API_KEY`
 - `ANALYTICS_PROJECT_ID`
+
+Rekognition en Cloud Run debe usar federación OIDC con `AWS_ROLE_ARN`. En
+desarrollo local, usar la cadena de credenciales por defecto del AWS SDK
+(`aws configure sso`, `aws sso login`, `AWS_PROFILE` o credenciales locales
+temporales aprobadas). Ver `docs/local-aws-credentials.md` para el flujo local
+con IAM users.
+
+El trust policy del rol AWS debe confiar en Google como proveedor federado y
+restringir el acceso al `uniqueId` de la service account de Cloud Run. Para
+tokens de Google, AWS usa `accounts.google.com:oaud` para comparar el audience
+original solicitado por la aplicación:
+
+```json
+{
+  "Effect": "Allow",
+  "Principal": {
+    "Federated": "accounts.google.com"
+  },
+  "Action": "sts:AssumeRoleWithWebIdentity",
+  "Condition": {
+    "StringEquals": {
+      "accounts.google.com:sub": "116627675441303459366",
+      "accounts.google.com:aud": "116627675441303459366",
+      "accounts.google.com:oaud": "sts.amazonaws.com"
+    }
+  }
+}
+```
 
 ## Comandos de configuración con CLI
 
@@ -113,8 +142,6 @@ gh secret set ORY_SDK_TOKEN --env development --repo ogticrd/cuenta-unica-regist
 gh secret set REGISTRATION_SESSION_SECRET --env development --repo ogticrd/cuenta-unica-registry
 gh secret set CITIZENS_INFO_API_KEY --env development --repo ogticrd/cuenta-unica-registry
 gh secret set CITIZENS_PHOTO_API_KEY --env development --repo ogticrd/cuenta-unica-registry
-gh secret set AWS_ACCESS_KEY_ID --env development --repo ogticrd/cuenta-unica-registry
-gh secret set AWS_SECRET_ACCESS_KEY --env development --repo ogticrd/cuenta-unica-registry
 gh secret set BUZON_PORTAL_API_KEY --env development --repo ogticrd/cuenta-unica-registry
 gh secret set ANALYTICS_CONTEXT_SECRET --env development --repo ogticrd/cuenta-unica-registry
 gh secret set ANALYTICS_INGRESS_API_KEY --env development --repo ogticrd/cuenta-unica-registry

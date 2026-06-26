@@ -168,8 +168,9 @@ jobs:
             CITIZENS_INFO_API_KEY=${{ secrets.CITIZENS_INFO_API_KEY }}
             CITIZENS_PHOTO_API_KEY=${{ secrets.CITIZENS_PHOTO_API_KEY }}
             AWS_REGION=${{ vars.AWS_REGION }}
-            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_ROLE_ARN=${{ vars.AWS_ROLE_ARN }}
+            AWS_WEB_IDENTITY_TOKEN_AUDIENCE=${{ vars.AWS_WEB_IDENTITY_TOKEN_AUDIENCE || 'sts.amazonaws.com' }}
+            AWS_ROLE_SESSION_NAME=${{ vars.AWS_ROLE_SESSION_NAME || 'cuenta-unica-registry' }}
             LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD }}
             FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD }}
             BUZON_API_BASE_URL=${{ vars.BUZON_API_BASE_URL }}
