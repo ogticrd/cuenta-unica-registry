@@ -93,7 +93,8 @@ Rekognition en Cloud Run debe usar federación OIDC con `AWS_ROLE_ARN`. En
 desarrollo local, usar la cadena de credenciales por defecto del AWS SDK
 (`aws configure sso`, `aws sso login`, `AWS_PROFILE` o credenciales locales
 temporales aprobadas). Ver `docs/local-aws-credentials.md` para el flujo local
-con IAM users.
+con IAM users y `docs/cloud-run-aws-oidc-credentials.md` para el flujo de
+credenciales temporales en Cloud Run.
 
 El trust policy del rol AWS debe confiar en Google como proveedor federado y
 restringir el acceso al `uniqueId` de la service account de Cloud Run. Para
