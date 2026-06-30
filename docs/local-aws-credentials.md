@@ -2,6 +2,8 @@
 
 Esta guia explica como configurar acceso local a AWS Rekognition usando un
 IAM user personal y un rol temporal asumido desde la computadora del developer.
+Para una guia paso a paso dirigida solo a developers, ver
+`docs/developer-local-aws-setup.md`.
 
 El objetivo es que desarrollo local no dependa de credenciales compartidas de
 larga vida en `.env`. Cada developer autentica con su propio IAM user y la app
