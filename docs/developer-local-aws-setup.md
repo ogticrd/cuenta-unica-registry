@@ -8,6 +8,8 @@ It assumes:
 - An AWS admin has already granted your IAM user permission to assume the local
   development role.
 - You do not need to create AWS roles, policies, or trust policies.
+- You already have, or can configure, one local AWS CLI profile that authenticates
+  as your IAM user.
 
 The app does not need AWS keys in `.env`. Your computer stores your personal IAM
 user credentials in the AWS CLI profile, and the app uses that profile to assume
@@ -17,7 +19,7 @@ a temporary role for Rekognition.
 
 ```text
 Your PC
-  -> AWS CLI profile cuenta-unica-user
+  -> AWS CLI profile for your IAM user
   -> your personal IAM user
   -> assume CuentaUnicaRegistryLocalDeveloperRole
   -> temporary AWS credentials
@@ -72,23 +74,37 @@ Follow the AWS CLI v2 installation guide for your distribution, then verify:
 aws --version
 ```
 
-## 2. Get credentials for your IAM user
+## 2. Confirm your IAM user profile
 
-You need an access key for your own IAM user.
+AWS CLI needs one local source profile that can authenticate as your own IAM
+user. Some developers may already have this configured.
 
-If you already have:
+List your local AWS profiles:
 
-- Access key ID
-- Secret access key
+```powershell
+aws configure list-profiles
+```
 
-continue to the next step.
+If you already see a personal profile for your IAM user, you can reuse it. In
+that case, write down its profile name and continue to step 4.
 
-If you do not have them, ask the AWS administrator to create or rotate an access
-key for your IAM user. Do not use another developer's credentials.
+You can also inspect the current default profile:
 
-## 3. Configure your personal AWS profile
+```powershell
+aws sts get-caller-identity --profile default
+```
 
-Open PowerShell and run:
+If it returns your IAM user in account `280686762883`, you can use `default` as
+the source profile.
+
+If you do not have a working IAM user profile yet, configure one in the next
+step.
+
+## 3. Configure your personal AWS profile only if needed
+
+Skip this step if step 2 already showed a working source profile.
+
+If you need to create the source profile, open PowerShell and run:
 
 ```powershell
 aws configure --profile cuenta-unica-user
@@ -111,6 +127,10 @@ C:\Users\<your-user>\.aws\
 
 Do not commit anything from `.aws` to the repository.
 
+If you do not have an access key for your IAM user, ask the AWS administrator
+whether your IAM user is allowed to create its own access key. If not, the admin
+must create or rotate one for you through a secure channel.
+
 ## 4. Configure the app AWS profile
 
 Now configure a second profile named `cuenta-unica-dev`. This profile does not
@@ -129,6 +149,15 @@ Add this block:
 [profile cuenta-unica-dev]
 role_arn = arn:aws:iam::280686762883:role/CuentaUnicaRegistryLocalDeveloperRole
 source_profile = cuenta-unica-user
+region = us-east-1
+```
+
+If your working IAM user profile is named `default`, use this instead:
+
+```ini
+[profile cuenta-unica-dev]
+role_arn = arn:aws:iam::280686762883:role/CuentaUnicaRegistryLocalDeveloperRole
+source_profile = default
 region = us-east-1
 ```
 
@@ -259,6 +288,13 @@ Fix:
 
 ```powershell
 aws configure --profile cuenta-unica-user
+```
+
+Or edit `source_profile` in `C:\Users\<your-user>\.aws\config` so it matches a
+profile that exists in:
+
+```powershell
+aws configure list-profiles
 ```
 
 ### Access denied when assuming the role
