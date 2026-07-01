@@ -134,6 +134,13 @@
     0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* ===== Button Border Radius (67px rounded) ===== */
+.ory-elements button,
+.ory-elements [role="button"],
+.ory-elements input[type="submit"] {
+  border-radius: 67px !important;
+}
+
 /* Fix WebAuthn Layout (Force stacking of input and button, override Tailwind sm:flex-row) */
 .ory-elements
 .sm\:flex-row:has(
@@ -292,13 +299,6 @@ button.text-button-link-brand-brand {
   font-family:
     "Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-}
-
-/* ===== Button Border Radius (67px rounded) ===== */
-.ory-elements button,
-.ory-elements [role="button"],
-.ory-elements input[type="submit"] {
-  border-radius: 67px !important;
 }
 
 /* ===== Input Border Radius ===== */

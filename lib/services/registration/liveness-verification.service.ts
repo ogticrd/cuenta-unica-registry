@@ -34,12 +34,12 @@ export type RegistrationLivenessVerificationResult =
       confidence: number;
       similarity: number;
     }
-	  | {
-	      success: false;
-	      status: number;
-	      code: VerifyLivenessErrorCode;
-	      session?: RegistrationSession;
-	    };
+  | {
+      success: false;
+      status: number;
+      code: VerifyLivenessErrorCode;
+      session?: RegistrationSession;
+    };
 
 export function createVerifyLivenessPayload(
   result: RegistrationLivenessVerificationResult,
@@ -112,12 +112,12 @@ export async function verifyRegistrationLiveness(
       "[liveness-verification] Failed to read account draft:",
       error,
     );
-      return {
-        success: false,
-        status: 500,
-        code: "unexpected_error",
-        session,
-      };
+    return {
+      success: false,
+      status: 500,
+      code: "unexpected_error",
+      session,
+    };
   }
 
   if (!isRegistrationAccountDraftForSession(accountDraft, session)) {
