@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-t";
 import { useAuth } from "@/lib/auth-context";
 import { ROUTES } from "@/lib/constants/routes";
+import { formatCedula } from "@/lib/utils/cedula";
 import type { DashboardSidebarProps } from "./dashboard-sidebar-props";
 
 export function DashboardSidebar({
@@ -91,7 +92,7 @@ export function DashboardSidebar({
                 {user?.name}
               </h3>
               <p className="text-[11px] font-medium text-muted-foreground mt-0.5">
-                {user?.cedula}
+                {user?.cedula ? formatCedula(user.cedula) : ""}
               </p>
             </div>
           </div>
@@ -102,7 +103,9 @@ export function DashboardSidebar({
           <ul className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive =
+                pathname === item.href ||
+                (item.href === ROUTES.settings && pathname.startsWith("/settings"));
 
               return (
                 <li key={item.href}>

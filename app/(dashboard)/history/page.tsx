@@ -73,11 +73,11 @@ export default function HistoryPage() {
 
   const allSessions: OrySession[] = session
     ? [
-        session,
-        ...(Array.isArray(session.other_sessions)
-          ? session.other_sessions
-          : []),
-      ]
+      session,
+      ...(Array.isArray(session.other_sessions)
+        ? session.other_sessions
+        : []),
+    ]
     : [];
 
   const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
@@ -237,7 +237,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="space-y-12 pb-12">
+    <div className="space-y-8">
       <div className="space-y-4 pb-8 border-b dark:border-border">
         <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
           {t("title")}
@@ -268,7 +268,7 @@ export default function HistoryPage() {
                     device.isCurrentSession
                       ? undefined
                       : () =>
-                          handleOpenUnlinkDeviceModal(device.id, device.device)
+                        handleOpenUnlinkDeviceModal(device.id, device.device)
                   }
                 />
               ))
