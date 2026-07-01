@@ -80,7 +80,7 @@
       "retry": "Reintentar verificación",
       "requirements": {
         "device": "Utilizar un dispositivo que posea <strong>cámara frontal</strong> integrada.",
-        "face": "Permitir que tomemos capturas de <strong>tu rostro</strong>.",
+        "face": "Permitir una validación biométrica de <strong>tu rostro</strong> para confirmar tu identidad.",
         "photosensitive": "Esta verificación muestra <strong>luces de colores</strong>. Ten cuidado si eres fotosensible."
       },
       "terms_label": "Acepto los <terms>términos de uso</terms> y la <privacy>política de privacidad</privacy>",
@@ -94,7 +94,7 @@
         "screenreader_description": "Proceso de validación facial",
         "title": "Verificación biométrica",
         "description": "Por favor, mira fijamente a la cámara y mantén tu rostro dentro del óvalo.",
-        "verified": "¡Verificado!",
+        "verified": "¡Rostro validado!",
         "face_position": "Posiciona tu rostro aquí",
         "allow_camera": "Permitir cámara y escanear",
         "analyzing": "Analizando rasgos faciales...",
@@ -187,7 +187,7 @@
   },
   "settings": {
     "title": "Privacidad y seguridad",
-    "subtitle": "Administra tu contraseña, autenticación de dos factores, preferencias de notificación y otros factores de seguridad.",
+    "subtitle": "Administra tu contraseña, autenticación de dos factores, claves de acceso y otros factores de seguridad.",
     "loading": "Cargando configuración de seguridad...",
     "flow_unavailable_title": "Configuración de seguridad no disponible en local",
     "flow_unavailable_desc": "El flujo de Ory Settings depende de una URL de retorno permitida por el ambiente de identidad. Las preferencias de notificación siguen disponibles en esta página."
@@ -417,28 +417,6 @@
     "channels_title": "Canales de Atención",
     "faqs_title": "Preguntas Frecuentes",
     "video_tutorials": "Ver tutoriales en video",
-    "faqs_list": {
-      "q1": {
-        "q": "¿Cómo inicio sesión en mi Cuenta Única Ciudadana?",
-        "a": "Para iniciar sesión en tu Cuenta Única Ciudadana, dirígete a la página de inicio de sesión e ingresa tu cédula de identidad o correo electrónico registrado junto con tu contraseña. Si es tu primera vez, deberás crear una cuenta primero."
-      },
-      "q2": {
-        "q": "Olvidé mi contraseña, ¿cómo la recupero?",
-        "a": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      },
-      "q3": {
-        "q": "¿Qué servicios puedo acceder con mi Cuenta Única?",
-        "a": "Con tu Cuenta Unica Ciudadana puedes acceder a todos los servicios digitales del gobierno dominicano, incluyendo consultas de estado, verificacion de identidad, y acceso a los portales de las instituciones gubernamentales."
-      },
-      "q4": {
-        "q": "¿Cómo actualizo mis datos personales?",
-        "a": "Puedes actualizar tus datos personales accediendo a la sección 'Datos personales' en tu panel de usuario. Allí podrás modificar tu información de contacto, dirección y otros datos relevantes."
-      },
-      "q5": {
-        "q": "¿Es segura mi información en la plataforma?",
-        "a": "Sí, tu información está protegida con los más altos estándares de seguridad. Utilizamos encriptación de datos y medidas de protección avanzadas para garantizar la privacidad y seguridad de tu información personal."
-      }
-    },
     "contact": {
       "phone_label": "Teléfono principal",
       "email_label": "Correo electrónico",
@@ -468,6 +446,10 @@
   "notifications_page": {
     "title": "Notificaciones",
     "subtitle": "Consulta las notificaciones entregadas por el Buzón Ciudadano al canal de Cuenta Única Ciudadana.",
+    "tabs": {
+      "inbox": "Bandeja de entrada",
+      "preferences": "Preferencias"
+    },
     "mark_all_read": "Marcar todas como leídas",
     "mark_read": "Marcar como leída",
     "mark_unread": "Marcar como no leída",
@@ -667,5 +649,20 @@
     "page_not_found": "Página no encontrada",
     "message": "Lo sentimos, la página que buscas no existe o ha sido movida. Verifica la URL e intenta nuevamente.",
     "back_to_home": "Ir al Inicio"
+  },
+  "feedback": {
+    "title": "¡Envíanos tus sugerencias!",
+    "cedula_label": "Número de cédula",
+    "name_label": "Nombre",
+    "email_label": "Correo electrónico",
+    "comments_label": "Comentarios",
+    "report": "Reportar",
+    "sent": "Enviado. ¡Gracias por tu ayuda!",
+    "send_error": "No se pudo enviar el reporte. Intente nuevamente.",
+    "cedula_placeholder": "000-0000000-0",
+    "comments_placeholder": "Describe tu problema o sugerencia...",
+    "validation_cedula_required": "La cédula debe tener 11 dígitos",
+    "validation_email_invalid": "El correo electrónico no es válido",
+    "validation_comments_required": "Los comentarios son requeridos (mínimo 4 caracteres)"
   }
 }

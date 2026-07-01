@@ -1,5 +1,6 @@
 import { JourneyEvent } from "@/components/analytics/journey-event";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
+import { UserFeedbackButton } from "@/components/feedback/user-feedback-button";
 
 import { getAnalyticsContext } from "@/lib/analytics/context";
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
@@ -35,6 +36,7 @@ export default async function RegistrationPage({
           />
         </div>
       </main>
+      <UserFeedbackButton />
     </>
   );
 }
