@@ -1,37 +1,17 @@
 import { Clock, ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { ContactItem } from "@/components/dashboard/contact-item";
-import { FAQItem } from "@/components/dashboard/faq-item";
-import { getT } from "@/lib/i18n/server";
+import { getCurrentLocale, getT } from "@/lib/i18n/server";
+import faqsEn from "@/components/home/faq/data/faqs-en.json";
+import faqsEs from "@/components/home/faq/data/faqs-es.json";
+import { SupportFAQ } from "./support-faq";
+import { type FAQData } from "@/components/home/faq/faq-accordion";
 
 export default async function SupportPage() {
   const t = await getT("support");
-  const faqs = [
-    {
-      question: t("faqs_list.q1.q"),
-      answer: t("faqs_list.q1.a"),
-      defaultOpen: true,
-    },
-    {
-      question: t("faqs_list.q2.q"),
-      answer: t("faqs_list.q2.a"),
-      defaultOpen: false,
-    },
-    {
-      question: t("faqs_list.q3.q"),
-      answer: t("faqs_list.q3.a"),
-      defaultOpen: false,
-    },
-    {
-      question: t("faqs_list.q4.q"),
-      answer: t("faqs_list.q4.a"),
-      defaultOpen: false,
-    },
-    {
-      question: t("faqs_list.q5.q"),
-      answer: t("faqs_list.q5.a"),
-      defaultOpen: false,
-    },
-  ];
+  const tLanding = await getT("landing.faq");
+  const locale = await getCurrentLocale();
+  const rawFaqs = locale === "es" ? faqsEs : faqsEn;
+  const faqs = rawFaqs as FAQData[];
 
   return (
     <div className="space-y-8">
@@ -61,8 +41,8 @@ export default async function SupportPage() {
                 <span className="text-sm text-muted-foreground mb-1">
                   {t("contact.phone_label")}
                 </span>
-                <span className="font-bold text-foreground text-lg tracking-tight">
-                  809-123-4567
+                <span className="text-foreground text-lg tracking-tight">
+                  809-286-1009
                 </span>
               </div>
             </ContactItem>
@@ -127,15 +107,13 @@ export default async function SupportPage() {
               FAQ
             </span>
           </div>
-          <div className="space-y-1">
-            {faqs.map((faq) => (
-              <FAQItem
-                key={faq.question}
-                question={faq.question}
-                answer={faq.answer}
-                defaultOpen={faq.defaultOpen}
-              />
-            ))}
+          <div className="mt-6">
+            <SupportFAQ
+              questions={faqs}
+              helpImagesText={tLanding("help_images")}
+              searchPlaceholder={tLanding("search_placeholder")}
+              noResultsText={tLanding("no_results")}
+            />
           </div>
 
           {/* Quick Link Optional */}
