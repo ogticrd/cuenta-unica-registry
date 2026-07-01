@@ -42,8 +42,11 @@ function clearCookie(name: string): ResponseCookie {
 
 export function clearStaleBrowserFlowCookies(
   cookieHeader: string,
+  options: { includeAnalyticsContext?: boolean } = {},
 ): ResponseCookie[] {
-  const names = new Set<string>(STATIC_RESET_COOKIE_NAMES);
+  const names = new Set<string>(
+    options.includeAnalyticsContext ? STATIC_RESET_COOKIE_NAMES : [],
+  );
 
   for (const name of parseCookieNames(cookieHeader)) {
     if (shouldClearBrowserCookie(name)) {

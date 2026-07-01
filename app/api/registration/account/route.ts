@@ -1,4 +1,5 @@
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
 import {
   accountRequestSchema,
   getAccountRequestFieldErrors,
@@ -41,20 +42,24 @@ async function emitRegistrationOutcome(options: {
   success: boolean;
   flowId?: string;
   errorCode?: string;
+  registrationSession?: RegistrationSession | null;
   metadata?: Record<string, unknown>;
 }) {
   await emitAnalyticsEvent(
-    {
-      eventName: options.success
-        ? "identity.registration.succeeded"
-        : "identity.registration.failed",
-      source: "registry-app",
-      step: "account",
-      outcome: options.success ? "succeeded" : "failed",
-      ...(options.flowId ? { flowId: options.flowId } : {}),
-      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
-      ...(options.metadata ? { metadata: options.metadata } : {}),
-    },
+    withRegistrationSessionAnalyticsContext(
+      {
+        eventName: options.success
+          ? "identity.registration.succeeded"
+          : "identity.registration.failed",
+        source: "registry-app",
+        step: "account",
+        outcome: options.success ? "succeeded" : "failed",
+        ...(options.flowId ? { flowId: options.flowId } : {}),
+        ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+        ...(options.metadata ? { metadata: options.metadata } : {}),
+      },
+      options.registrationSession,
+    ),
     { entryPath: "/api/registration/account" },
   );
 }
@@ -117,6 +122,7 @@ async function emitAccountResult(params: {
     await emitRegistrationOutcome({
       success: false,
       errorCode: payload.code,
+      registrationSession,
       metadata: accountMetadata({
         registrationSession,
         input,
@@ -130,6 +136,7 @@ async function emitAccountResult(params: {
   await emitRegistrationOutcome({
     success: true,
     flowId,
+    registrationSession,
     metadata: accountMetadata({
       registrationSession,
       input,
@@ -178,6 +185,7 @@ export async function POST(request: Request) {
     await emitRegistrationOutcome({
       success: false,
       errorCode: parsedRequest.code,
+      registrationSession,
       metadata: accountMetadata({
         registrationSession,
         stage: "request_body",
@@ -194,6 +202,7 @@ export async function POST(request: Request) {
     await emitRegistrationOutcome({
       success: false,
       errorCode: "verification_required",
+      registrationSession,
       metadata: accountMetadata({
         registrationSession,
         input: parsedRequest.data ?? undefined,
@@ -218,6 +227,7 @@ export async function POST(request: Request) {
       await emitRegistrationOutcome({
         success: false,
         errorCode: "unexpected_error",
+        registrationSession,
         metadata: accountMetadata({
           registrationSession,
           input: parsedRequest.data,
@@ -234,6 +244,7 @@ export async function POST(request: Request) {
       await emitRegistrationOutcome({
         success: false,
         errorCode: "account_draft_missing",
+        registrationSession,
         metadata: accountMetadata({
           registrationSession,
           input: parsedRequest.data,
@@ -272,6 +283,7 @@ export async function POST(request: Request) {
     await emitRegistrationOutcome({
       success: false,
       errorCode: "unexpected_error",
+      registrationSession,
       metadata: accountMetadata({ registrationSession, stage: "draft_read" }),
     });
 
@@ -284,6 +296,7 @@ export async function POST(request: Request) {
     await emitRegistrationOutcome({
       success: false,
       errorCode: "account_draft_missing",
+      registrationSession,
       metadata: accountMetadata({
         registrationSession,
         stage: "account_draft",

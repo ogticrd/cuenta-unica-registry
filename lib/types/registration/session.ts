@@ -1,3 +1,5 @@
+import type { AnalyticsContext } from "@/lib/analytics/context-core";
+
 export type RegistrationSessionStatus = "identified" | "verified";
 
 export interface RegistrationSession {
@@ -5,6 +7,7 @@ export interface RegistrationSession {
   cedula: string;
   status: RegistrationSessionStatus;
   returnUrl?: string;
+  analytics?: AnalyticsContext;
   issuedAt: number;
   expiresAt: number;
 }

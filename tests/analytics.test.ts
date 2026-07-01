@@ -22,11 +22,13 @@ import {
   resolveAnalyticsProjectId,
 } from "@/lib/analytics/environment";
 import { buildTrustedJourneyEventInput } from "@/lib/analytics/journey-event";
+import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
 import {
   addAnalyticsTransientPayloadNode,
   buildAnalyticsTransientPayload,
   resolveAnalyticsTransientPayloadForFlow,
 } from "@/lib/analytics/transient-payload-core";
+import { clearStaleBrowserFlowCookies } from "@/lib/ory/browser-cookie-reset";
 
 const TEST_SECRET =
   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -659,6 +661,69 @@ describe("analytics transient payload", () => {
     expect(
       addAnalyticsTransientPayloadNode(flowWithExistingNode, payload),
     ).toBe(flowWithExistingNode);
+  });
+});
+
+describe("analytics browser cookie reset", () => {
+  test("preserves analytics context unless explicitly requested", () => {
+    const cookieHeader =
+      "analytics_context=context; analytics_context_launch=/register; ory_session_dev=session; csrf_token_dev=csrf; unrelated=value";
+
+    expect(
+      clearStaleBrowserFlowCookies(cookieHeader).map((cookie) => cookie.name),
+    ).toEqual(["ory_session_dev", "csrf_token_dev"]);
+
+    expect(
+      clearStaleBrowserFlowCookies(cookieHeader, {
+        includeAnalyticsContext: true,
+      }).map((cookie) => cookie.name),
+    ).toEqual([
+      "analytics_context",
+      "analytics_context_launch",
+      "ory_session_dev",
+      "csrf_token_dev",
+    ]);
+  });
+});
+
+describe("registration session analytics context", () => {
+  test("adds signed session client context to server-side registration events", () => {
+    const event = withRegistrationSessionAnalyticsContext(
+      {
+        eventName: "registration.liveness.succeeded",
+        source: "registry-app",
+        step: "liveness",
+        outcome: "succeeded",
+      },
+      {
+        sessionId: "123e4567-e89b-42d3-a456-426614174000",
+        cedula: "40225926423",
+        status: "identified",
+        returnUrl: "https://client.example/callback",
+        analytics: {
+          journeyId: "journey-123",
+          clientId: "trusted-client",
+          clientName: "Supertest",
+          institutionName: "Ministerio de Salud",
+          linkageStatus: "linked",
+          entryPath: "/register",
+          issuedAt: 1,
+          expiresAt: Date.now() + 1000,
+          returnUrl: "https://client.example/callback",
+        },
+        issuedAt: 1,
+        expiresAt: Date.now() + 1000,
+      },
+    );
+
+    expect(event).toMatchObject({
+      journeyId: "journey-123",
+      clientId: "trusted-client",
+      clientName: "Supertest",
+      institutionName: "Ministerio de Salud",
+      linkageStatus: "linked",
+      returnUrl: "https://client.example/callback",
+    });
   });
 });
 

@@ -34,11 +34,12 @@ export type RegistrationLivenessVerificationResult =
       confidence: number;
       similarity: number;
     }
-  | {
-      success: false;
-      status: number;
-      code: VerifyLivenessErrorCode;
-    };
+	  | {
+	      success: false;
+	      status: number;
+	      code: VerifyLivenessErrorCode;
+	      session?: RegistrationSession;
+	    };
 
 export function createVerifyLivenessPayload(
   result: RegistrationLivenessVerificationResult,
@@ -75,6 +76,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 409,
       code: "verification_already_completed",
+      session,
     };
   }
 
@@ -83,6 +85,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "invalid_session_id",
+      session,
     };
   }
 
@@ -97,6 +100,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "invalid_session_id",
+      session,
     };
   }
 
@@ -108,11 +112,12 @@ export async function verifyRegistrationLiveness(
       "[liveness-verification] Failed to read account draft:",
       error,
     );
-    return {
-      success: false,
-      status: 500,
-      code: "unexpected_error",
-    };
+      return {
+        success: false,
+        status: 500,
+        code: "unexpected_error",
+        session,
+      };
   }
 
   if (!isRegistrationAccountDraftForSession(accountDraft, session)) {
@@ -120,6 +125,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "account_draft_missing",
+      session,
     };
   }
 
@@ -132,6 +138,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "rekognition_error",
+      session,
     };
   }
 
@@ -143,6 +150,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "liveness_check_failed",
+      session,
     };
   }
 
@@ -155,6 +163,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "citizen_photo_unavailable",
+      session,
     };
   }
 
@@ -171,6 +180,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "rekognition_error",
+      session,
     };
   }
 
@@ -179,6 +189,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "face_mismatch",
+      session,
     };
   }
 

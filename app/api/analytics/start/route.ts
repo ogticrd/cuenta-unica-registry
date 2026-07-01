@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import {
   getAnalyticsLaunchClientId,
+  getAnalyticsLaunchEntryPath,
   getAnalyticsLaunchReturnUrl,
   isAllowedAnalyticsReturnUrl,
 } from "@/lib/analytics/client-launch-core";
@@ -10,8 +11,6 @@ import {
   buildAnalyticsContextFromUrl,
 } from "@/lib/analytics/context-core";
 import { getOAuth2Client } from "@/lib/ory/oauth-client";
-
-const REGISTRATION_ENTRY_PATH = "/register";
 
 type OryOAuth2Client = NonNullable<Awaited<ReturnType<typeof getOAuth2Client>>>;
 
@@ -92,6 +91,7 @@ export async function GET(request: NextRequest) {
   }
 
   const returnUrl = getAnalyticsLaunchReturnUrl(request.nextUrl);
+  const entryPath = getAnalyticsLaunchEntryPath(request.nextUrl);
 
   if (
     !client ||
@@ -103,10 +103,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const redirectUrl = new URL(
-    REGISTRATION_ENTRY_PATH,
-    getRequestOrigin(request),
-  );
+  const redirectUrl = new URL(entryPath, getRequestOrigin(request));
   const response = NextResponse.redirect(redirectUrl);
   const contextUrl = new URL(request.nextUrl);
   contextUrl.pathname = redirectUrl.pathname;
@@ -121,7 +118,7 @@ export async function GET(request: NextRequest) {
   response.cookies.set({ ...cookie, sameSite: "lax" });
   response.cookies.set({
     name: ANALYTICS_CONTEXT_LAUNCH_COOKIE,
-    value: REGISTRATION_ENTRY_PATH,
+    value: entryPath,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

@@ -62,7 +62,9 @@ export async function POST() {
       }
       response.headers.append("Set-Cookie", setCookie);
     }
-    for (const staleCookie of clearStaleBrowserFlowCookies(cookie)) {
+    for (const staleCookie of clearStaleBrowserFlowCookies(cookie, {
+      includeAnalyticsContext: true,
+    })) {
       if (clearedByOry.has(staleCookie.name)) {
         continue;
       }
@@ -85,7 +87,9 @@ export async function POST() {
         redirect_to: ROUTES.login,
       });
       const cookie = await getServerCookies();
-      for (const staleCookie of clearStaleBrowserFlowCookies(cookie)) {
+      for (const staleCookie of clearStaleBrowserFlowCookies(cookie, {
+        includeAnalyticsContext: true,
+      })) {
         response.cookies.set(staleCookie);
       }
       return response;
