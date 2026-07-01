@@ -92,8 +92,8 @@ describe("StepAccount", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     mockToastError.mockReset();
-    vi.spyOn(global, "fetch").mockResolvedValue(
-      new Response("", { status: 200 }),
+    vi.spyOn(global, "fetch").mockImplementation(() =>
+      Promise.resolve(new Response("", { status: 200 })),
     );
   });
 
@@ -111,7 +111,7 @@ describe("StepAccount", () => {
   });
 
   it("does not clear typed account values on equivalent parent rerenders", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const { props, rerender } = renderStepAccount();
 
     await user.type(
@@ -139,7 +139,7 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible email format error and does not continue", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
@@ -153,7 +153,7 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible confirm email mismatch error and does not continue", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
@@ -179,7 +179,7 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible weak password error and does not continue", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
@@ -274,7 +274,7 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible confirm password mismatch error and does not continue", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 

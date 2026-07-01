@@ -133,13 +133,13 @@ describe("RegisterWizard", () => {
     vi.mocked(registrationSessionApiService.reset).mockResolvedValue({
       success: true,
     });
-    vi.spyOn(global, "fetch").mockResolvedValue(
-      new Response("", { status: 200 }),
+    vi.spyOn(global, "fetch").mockImplementation(() =>
+      Promise.resolve(new Response("", { status: 200 })),
     );
   });
 
   it("keeps account draft field errors visible in the account form", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     vi.mocked(accountService.saveAccountDraft).mockResolvedValueOnce({
       success: false,
       code: "password_compromised",
@@ -180,7 +180,7 @@ describe("RegisterWizard", () => {
   });
 
   it("resets temporary registration state when returning from account to identification", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
 
     renderAccountStepWizard();
 
