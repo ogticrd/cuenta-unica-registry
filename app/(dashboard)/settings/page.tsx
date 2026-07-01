@@ -2,7 +2,6 @@ import type { OryPageParams } from "@ory/nextjs/app";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import { NotificationPreferences } from "@/components/notifications/notification-preferences";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { getT } from "@/lib/i18n/server";
@@ -68,7 +67,6 @@ export default async function SettingsPage(props: OryPageParams) {
       <Suspense fallback={<LoadingFallback />}>
         <SettingsFlowComponent searchParams={props.searchParams} />
       </Suspense>
-      <NotificationPreferences />
     </div>
   );
 }
