@@ -36,11 +36,17 @@ export default function NotificationsPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="inbox" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+        <TabsContent
+          value="inbox"
+          className="m-0 focus-visible:outline-none focus-visible:ring-0"
+        >
           <NotificationCenter />
         </TabsContent>
 
-        <TabsContent value="preferences" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+        <TabsContent
+          value="preferences"
+          className="m-0 focus-visible:outline-none focus-visible:ring-0"
+        >
           <NotificationPreferences />
         </TabsContent>
       </Tabs>

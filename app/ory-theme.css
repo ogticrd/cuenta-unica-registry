@@ -129,11 +129,16 @@
   border-radius: 12px !important;
   margin-bottom: 24px !important;
   background-color: #ffffff !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Fix WebAuthn Layout (Force stacking of input and button, override Tailwind sm:flex-row) */
-.ory-elements .sm\:flex-row:has([data-testid="ory/form/node/input/webauthn_register_displayname"]),
+.ory-elements
+.sm\:flex-row:has(
+  [data-testid="ory/form/node/input/webauthn_register_displayname"]
+),
 .ory-elements .sm\:flex-row:has([name="webauthn_register_trigger"]) {
   display: flex !important;
   flex-direction: column !important;
@@ -143,15 +148,21 @@
   width: 100% !important;
 }
 
-.ory-elements .sm\:flex-row:has([data-testid="ory/form/node/input/webauthn_register_displayname"]) > button {
+.ory-elements
+  .sm\:flex-row:has(
+    [data-testid="ory/form/node/input/webauthn_register_displayname"]
+  )
+  > button {
   align-self: flex-start !important;
 }
 
-.ory-elements [data-testid="ory/form/node/input/webauthn_register_displayname"] {
+.ory-elements
+  [data-testid="ory/form/node/input/webauthn_register_displayname"] {
   width: 100% !important;
 }
 
-.ory-elements div:has(> [data-testid="ory/form/node/input/webauthn_register_displayname"]) {
+.ory-elements
+  div:has(> [data-testid="ory/form/node/input/webauthn_register_displayname"]) {
   max-width: 100% !important;
   width: 100% !important;
 }
@@ -171,7 +182,7 @@
 }
 
 .ory-elements > div > form > div:first-of-type {
-padding: 0 !important;
+  padding: 0 !important;
 }
 
 .ory-elements fieldset {
@@ -387,7 +398,8 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
 }
 
 /* Style the bottom footer box (description text) */
-.ory-elements form[data-testid="ory/screen/settings/group/totp"] > div:last-of-type {
+.ory-elements form[data-testid="ory/screen/settings/group/totp"]
+  > div:last-of-type {
   padding-top: 16px !important;
   display: flex !important;
   flex-direction: column !important;
@@ -509,9 +521,9 @@ button.text-button-link-brand-brand {
 } */
 
 .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
-    [data-input-otp="true"]
-  ) {
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+  [data-input-otp="true"]
+) {
   min-height: 48px !important;
   border-color: #cbd5e1 !important;
   border-radius: 8px !important;
@@ -678,15 +690,22 @@ button.bg-button-primary-background-default {
   margin-bottom: 0.5rem !important;
 }
 
-.ory-elements [data-testid="ory/screen/settings/group/totp"] .grid > div:nth-child(2) {
+.ory-elements
+  [data-testid="ory/screen/settings/group/totp"]
+  .grid
+  > div:nth-child(2) {
   border: 1px solid #e2e8f0 !important;
   background-color: #ffffff !important;
   border-radius: 12px !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
   padding: 1.5rem !important;
 }
 
-.dark .ory-elements [data-testid="ory/screen/settings/group/totp"] .grid > div:nth-child(2) {
+.dark
+  .ory-elements
+  [data-testid="ory/screen/settings/group/totp"]
+  .grid
+  > div:nth-child(2) {
   background-color: #0f172a !important; /* slate-900 */
   border-color: #1e293b !important;
 }

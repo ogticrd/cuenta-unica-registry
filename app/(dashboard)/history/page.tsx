@@ -73,11 +73,11 @@ export default function HistoryPage() {
 
   const allSessions: OrySession[] = session
     ? [
-      session,
-      ...(Array.isArray(session.other_sessions)
-        ? session.other_sessions
-        : []),
-    ]
+        session,
+        ...(Array.isArray(session.other_sessions)
+          ? session.other_sessions
+          : []),
+      ]
     : [];
 
   const devices: DeviceRow[] = allSessions.map((currentSession, index) => {
@@ -268,7 +268,7 @@ export default function HistoryPage() {
                     device.isCurrentSession
                       ? undefined
                       : () =>
-                        handleOpenUnlinkDeviceModal(device.id, device.device)
+                          handleOpenUnlinkDeviceModal(device.id, device.device)
                   }
                 />
               ))

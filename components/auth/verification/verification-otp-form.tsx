@@ -91,7 +91,10 @@ export function VerificationOTPForm({
       <input type="hidden" name="code" value={otpValue} />
 
       <div className="flex flex-col items-start gap-2 w-full">
-        <label className="text-sm font-semibold text-primary dark:text-blue-400 px-1" htmlFor="verification-code">
+        <label
+          className="text-sm font-semibold text-primary dark:text-blue-400 px-1"
+          htmlFor="verification-code"
+        >
           {t("code_label")}
         </label>
         <InputOTP

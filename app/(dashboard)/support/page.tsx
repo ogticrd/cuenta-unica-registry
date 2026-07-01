@@ -1,10 +1,10 @@
 import { Clock, ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { ContactItem } from "@/components/dashboard/contact-item";
-import { getCurrentLocale, getT } from "@/lib/i18n/server";
 import faqsEn from "@/components/home/faq/data/faqs-en.json";
 import faqsEs from "@/components/home/faq/data/faqs-es.json";
+import type { FAQData } from "@/components/home/faq/faq-accordion";
+import { getCurrentLocale, getT } from "@/lib/i18n/server";
 import { SupportFAQ } from "./support-faq";
-import { type FAQData } from "@/components/home/faq/faq-accordion";
 
 export default async function SupportPage() {
   const t = await getT("support");

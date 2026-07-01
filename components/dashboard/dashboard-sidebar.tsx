@@ -105,7 +105,8 @@ export function DashboardSidebar({
               const Icon = item.icon;
               const isActive =
                 pathname === item.href ||
-                (item.href === ROUTES.settings && pathname.startsWith("/settings"));
+                (item.href === ROUTES.settings &&
+                  pathname.startsWith("/settings"));
 
               return (
                 <li key={item.href}>

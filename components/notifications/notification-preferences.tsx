@@ -79,15 +79,22 @@ export function NotificationPreferences() {
   return (
     <div className="flex flex-col space-y-8">
       <div>
-        <h2 className="text-xl font-semibold mb-2 text-primary dark:text-blue-400">{t("title")}</h2>
+        <h2 className="text-xl font-semibold mb-2 text-primary dark:text-blue-400">
+          {t("title")}
+        </h2>
         <p className="text-muted-foreground">{t("description")}</p>
       </div>
 
       <div className="flex flex-col gap-6">
         {TOPICS.map((topic) => (
-          <div key={topic} className="pb-6 border-b dark:border-border last:border-0 last:pb-0">
+          <div
+            key={topic}
+            className="pb-6 border-b dark:border-border last:border-0 last:pb-0"
+          >
             <div className="mb-5">
-              <h3 className="text-lg font-semibold text-primary dark:text-blue-400">{t(`topics.${topic}.title`)}</h3>
+              <h3 className="text-lg font-semibold text-primary dark:text-blue-400">
+                {t(`topics.${topic}.title`)}
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
                 {t(`topics.${topic}.desc`)}
               </p>
@@ -110,7 +117,12 @@ export function NotificationPreferences() {
                       <span className="font-medium text-sm text-foreground">
                         {t(`channels.${channel}`)}
                         {preference?.required && (
-                          <span className="text-destructive ml-1" title={t("required")}>*</span>
+                          <span
+                            className="text-destructive ml-1"
+                            title={t("required")}
+                          >
+                            *
+                          </span>
                         )}
                       </span>
                       <Switch
@@ -130,10 +142,7 @@ export function NotificationPreferences() {
         ))}
 
         <div className="flex justify-end pt-4">
-          <Button
-            disabled={isLoading || isSaving}
-            onClick={savePreferences}
-          >
+          <Button disabled={isLoading || isSaving} onClick={savePreferences}>
             <Save className="w-4 h-4 mr-2" />
             {isSaving ? t("saving") : t("save")}
           </Button>

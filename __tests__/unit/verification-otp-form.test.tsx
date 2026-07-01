@@ -40,10 +40,12 @@ vi.mock("@/components/ui/input-otp", () => ({
     children,
     onChange,
     value,
+    containerClassName,
     ...props
   }: React.InputHTMLAttributes<HTMLInputElement> & {
     children: React.ReactNode;
     onChange?: (value: string) => void;
+    containerClassName?: string;
   }) => (
     <div>
       <input
@@ -139,7 +141,7 @@ describe("VerificationOTPForm", () => {
       description: "Tu cuenta ha sido activada.",
     });
 
-    await vi.advanceTimersByTimeAsync(2000);
+    await vi.advanceTimersByTimeAsync(4000);
     expect(mockPush).toHaveBeenCalledWith("/self-service/login/browser");
   });
 
@@ -160,7 +162,7 @@ describe("VerificationOTPForm", () => {
       />,
     );
 
-    await vi.advanceTimersByTimeAsync(2000);
+    await vi.advanceTimersByTimeAsync(4000);
     expect(mockAssign).toHaveBeenCalledWith(
       "https://services.gob.do/dashboard",
     );

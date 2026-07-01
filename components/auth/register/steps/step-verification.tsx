@@ -5,8 +5,8 @@ import {
   Camera,
   Check,
   ExternalLink,
-  ShieldAlert,
   ScanFace,
+  ShieldAlert,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

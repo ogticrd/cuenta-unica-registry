@@ -193,7 +193,7 @@ export function StepAccount({
     if (
       initialPasswordErrorMessage &&
       form.getFieldState("password").error?.message !==
-      initialPasswordErrorMessage
+        initialPasswordErrorMessage
     ) {
       form.setError("password", {
         message: initialPasswordErrorMessage,
@@ -326,7 +326,14 @@ export function StepAccount({
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
                       autoComplete="one-time-code"
-                      style={!showPassword ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
+                      style={
+                        !showPassword
+                          ? ({
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
+                          : undefined
+                      }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
                   </FormControl>
@@ -400,7 +407,7 @@ export function StepAccount({
                       </li>
                     ))}
                     {!form.watch("password") ||
-                      form.formState.errors.password?.message ? (
+                    form.formState.errors.password?.message ? (
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         <span>{t("account.validation.password_secure")}</span>
@@ -412,7 +419,7 @@ export function StepAccount({
                       </li>
                     )}
                     {form.watch("password") !== form.watch("confirmPassword") ||
-                      !form.watch("confirmPassword") ? (
+                    !form.watch("confirmPassword") ? (
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         <span>{t("account.validation.password_match")}</span>
@@ -454,7 +461,14 @@ export function StepAccount({
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
                       autoComplete="one-time-code"
-                      style={!showConfirmPassword ? { WebkitTextSecurity: 'disc', textSecurity: 'disc' } as React.CSSProperties : undefined}
+                      style={
+                        !showConfirmPassword
+                          ? ({
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
+                          : undefined
+                      }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
                   </FormControl>

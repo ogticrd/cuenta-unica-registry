@@ -2,7 +2,10 @@
 
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
-import { FAQAccordion, type FAQData } from "@/components/home/faq/faq-accordion";
+import {
+  FAQAccordion,
+  type FAQData,
+} from "@/components/home/faq/faq-accordion";
 import { FAQSearch } from "@/components/home/faq/faq-search";
 
 interface SupportFAQProps {
@@ -18,7 +21,8 @@ export function SupportFAQ({
   searchPlaceholder,
   noResultsText,
 }: SupportFAQProps) {
-  const [filteredQuestions, setFilteredQuestions] = useState<FAQData[]>(questions);
+  const [filteredQuestions, setFilteredQuestions] =
+    useState<FAQData[]>(questions);
 
   const fuse = useMemo(
     () =>
@@ -44,7 +48,7 @@ export function SupportFAQ({
   return (
     <div className="flex flex-col space-y-6">
       <FAQSearch onSearch={handleSearch} placeholder={searchPlaceholder} />
-      
+
       {filteredQuestions.length > 0 ? (
         <FAQAccordion
           questions={filteredQuestions}

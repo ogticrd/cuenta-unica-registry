@@ -429,7 +429,7 @@ export default function DashboardPage() {
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background">
                   {notification.priority === "critical" ||
-                    notification.priority === "high" ? (
+                  notification.priority === "high" ? (
                     <AlertTriangle size={20} className="text-destructive" />
                   ) : (
                     <Info size={20} className="text-secondary" />
