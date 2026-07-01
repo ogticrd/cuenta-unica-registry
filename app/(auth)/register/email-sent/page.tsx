@@ -47,14 +47,14 @@ export default async function EmailSentPage({
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="w-full mx-auto ory-auth-scope">
-            <Card className="w-full max-w-[420px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border dark:border-slate-800 rounded bg-white dark:bg-card">
+            <Card className="w-full max-w-[448px] mx-auto border border-slate-200 dark:border-slate-800 rounded-[10px] bg-white dark:bg-card">
               <CardHeader className="space-y-4 pb-4 pt-8 flex flex-col items-center text-center border-b border-border dark:border-slate-800 mx-6">
                 <Image
                   src="/images/cuenta-unica-icon.svg"
                   alt={t("logo_alt")}
-                  width={98}
-                  height={96}
-                  className="h-16 w-auto rounded-lg"
+                  width={48}
+                  height={48}
+                  className="w-auto rounded-lg"
                 />
 
                 <CardTitle className="text-xl font-bold tracking-tight text-primary dark:text-blue-400">

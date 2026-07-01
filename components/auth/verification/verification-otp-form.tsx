@@ -51,7 +51,7 @@ export function VerificationOTPForm({
         } else {
           router.push(ROUTES.login);
         }
-      }, 2000);
+      }, 4000);
       return () => clearTimeout(timeout);
     }
   }, [state.success, router, t, returnUrl]);
@@ -90,8 +90,8 @@ export function VerificationOTPForm({
       <input type="hidden" name="flow" value={flowId} />
       <input type="hidden" name="code" value={otpValue} />
 
-      <div className="flex flex-col items-center gap-3 w-full">
-        <label className="sr-only" htmlFor="verification-code">
+      <div className="flex flex-col items-start gap-2 w-full">
+        <label className="text-sm font-semibold text-primary dark:text-blue-400 px-1" htmlFor="verification-code">
           {t("code_label")}
         </label>
         <InputOTP
@@ -106,12 +106,12 @@ export function VerificationOTPForm({
           aria-label={t("code_label")}
         >
           <InputOTPGroup className="w-full flex">
-            <InputOTPSlot index={0} className="h-12 sm:h-14 flex-1 text-lg" />
-            <InputOTPSlot index={1} className="h-12 sm:h-14 flex-1 text-lg" />
-            <InputOTPSlot index={2} className="h-12 sm:h-14 flex-1 text-lg" />
-            <InputOTPSlot index={3} className="h-12 sm:h-14 flex-1 text-lg" />
-            <InputOTPSlot index={4} className="h-12 sm:h-14 flex-1 text-lg" />
-            <InputOTPSlot index={5} className="h-12 sm:h-14 flex-1 text-lg" />
+            <InputOTPSlot index={0} className="sm:h-12 flex-1 text-lg" />
+            <InputOTPSlot index={1} className="sm:h-12 flex-1 text-lg" />
+            <InputOTPSlot index={2} className="sm:h-12 flex-1 text-lg" />
+            <InputOTPSlot index={3} className="sm:h-12 flex-1 text-lg" />
+            <InputOTPSlot index={4} className="sm:h-12 flex-1 text-lg" />
+            <InputOTPSlot index={5} className="sm:h-12 flex-1 text-lg" />
           </InputOTPGroup>
         </InputOTP>
 

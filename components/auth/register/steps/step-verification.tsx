@@ -6,7 +6,7 @@ import {
   Check,
   ExternalLink,
   ShieldAlert,
-  Smile,
+  ScanFace,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -348,7 +348,7 @@ export function StepVerification({
         </div>
 
         <div className="bg-[#eff7ff] dark:bg-slate-900/80 dark:border dark:border-slate-800 p-4 rounded flex items-center gap-4 text-sm text-primary dark:text-slate-100">
-          <Smile className="w-8 h-8 opacity-70 shrink-0 text-primary dark:text-blue-300" />
+          <ScanFace className="w-8 h-8 opacity-70 shrink-0 text-primary dark:text-blue-300" />
           <p>
             {t.rich("verification.requirements.face", {
               strong: (chunks) => <strong>{chunks}</strong>,

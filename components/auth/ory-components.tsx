@@ -52,7 +52,7 @@ export function CucCardFooter(_props: OryCardFooterProps) {
   return (
     <div>
       <p
-        className="text-sm font-semibold text-secondary text-right dark:text-blue-400"
+        className="text-sm text-secondary text-right dark:text-blue-400"
         style={{ marginBottom: "20px" }}
       >
         <Link href={ROUTES.recovery}>{t("forgot_password")}</Link>
@@ -60,7 +60,7 @@ export function CucCardFooter(_props: OryCardFooterProps) {
       <hr className="my-4 border-gray-200 dark:border-gray-700" />
       <div className="text-center">
         <p
-          className="text-sm font-medium text-gray-500 dark:text-gray-400"
+          className="text-sm text-gray-500 dark:text-gray-400"
           style={{ marginBottom: "20px" }}
         >
           <span className="font-semibold text-secondary dark:text-blue-400">
@@ -72,7 +72,7 @@ export function CucCardFooter(_props: OryCardFooterProps) {
           {t("create_account")}
         </Link>
         <div className="mt-6 rounded-md bg-gray-200/25 p-2 text-sm ring-1 ring-inset ring-gray-900/5 dark:bg-gray-800/50 dark:ring-white/10">
-          <p className="font-medium text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400">
             {t("need_verification_prompt")}{" "}
             <Link
               href={ROUTES.verification}
