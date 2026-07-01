@@ -731,7 +731,7 @@ describe("registration production routes", () => {
     );
 
     expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
-    expect(global.fetch).toHaveBeenCalledTimes(4);
+    expect(global.fetch).toHaveBeenCalledTimes(5);
     const analyticsRequest = vi.mocked(global.fetch).mock.calls[1] as [
       string,
       { body: string },
