@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type React from "react";
 import { createElement } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -139,7 +138,6 @@ describe("RegisterWizard", () => {
   });
 
   it("keeps account draft field errors visible in the account form", async () => {
-    const user = userEvent.setup({ delay: null });
     vi.mocked(accountService.saveAccountDraft).mockResolvedValueOnce({
       success: false,
       code: "password_compromised",
@@ -150,20 +148,19 @@ describe("RegisterWizard", () => {
 
     renderAccountStepWizard();
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "secure@example.com",
-    );
-    await user.type(
-      screen.getByLabelText("Confirmar correo *"),
-      "secure@example.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
-    await user.type(
-      screen.getByLabelText("Confirmar contraseña *"),
-      "GovFlow92817Z!",
-    );
-    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "secure@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "secure@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findByText(
@@ -180,25 +177,22 @@ describe("RegisterWizard", () => {
   });
 
   it("resets temporary registration state when returning from account to identification", async () => {
-    const user = userEvent.setup({ delay: null });
-
     renderAccountStepWizard();
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "secure@example.com",
-    );
-    await user.type(
-      screen.getByLabelText("Confirmar correo *"),
-      "secure@example.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
-    await user.type(
-      screen.getByLabelText("Confirmar contraseña *"),
-      "GovFlow92817Z!",
-    );
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "secure@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "secure@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
 
-    await user.click(
+    fireEvent.click(
       screen.getByRole("button", { name: "Volver al paso anterior" }),
     );
 

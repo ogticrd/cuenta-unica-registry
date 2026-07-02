@@ -6,7 +6,7 @@ import "@aws-amplify/ui-react/styles.css";
 
 import { useT } from "@/hooks/use-t";
 
-const AWS_REGION = process.env.NEXT_PUBLIC_AWS_REGION ?? "us-east-1";
+const AWS_REGION = process.env.NEXT_PUBLIC_AWS_REGION || "us-east-1";
 
 interface FaceLivenessProps {
   sessionId: string;
