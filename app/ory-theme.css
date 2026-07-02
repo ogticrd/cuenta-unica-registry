@@ -68,14 +68,17 @@
 
 .text-interface-foreground-default-primary {
   color: #003876 !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
+  font-size: 1.125rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .text-interface-foreground-default-secondary {
-  color: #0087ff !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  padding: 10px !important;
+  color: #64748b !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  padding: 0 !important;
+  margin-bottom: 1.25rem !important;
 }
 
 .ory-elements div div .text-interface-foreground-validation-success {
@@ -121,19 +124,85 @@
 .ory-elements > div > form {
   width: 100% !important;
   max-width: 100% !important;
+  padding: 32px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  margin-bottom: 24px !important;
+  background-color: #ffffff !important;
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== Button Border Radius (67px rounded) ===== */
+.ory-elements button,
+.ory-elements [role="button"],
+.ory-elements input[type="submit"] {
+  border-radius: 67px !important;
+}
+
+/* Fix WebAuthn Layout (Force stacking of input and button, override Tailwind sm:flex-row) */
+.ory-elements
+.sm\:flex-row:has(
+  [data-testid="ory/form/node/input/webauthn_register_displayname"]
+),
+.ory-elements .sm\:flex-row:has([name="webauthn_register_trigger"]) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.25rem !important;
+  align-items: stretch !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.ory-elements
+  .sm\:flex-row:has(
+    [data-testid="ory/form/node/input/webauthn_register_displayname"]
+  )
+  > button {
+  align-self: flex-start !important;
+}
+
+.ory-elements
+  [data-testid="ory/form/node/input/webauthn_register_displayname"] {
+  width: 100% !important;
+}
+
+.ory-elements
+  div:has(> [data-testid="ory/form/node/input/webauthn_register_displayname"]) {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.ory-elements > div > form:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Remove inner card styling so it blends into the outer card */
+.ory-elements > div > form > div {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ory-elements > div > form > div:first-of-type {
   padding: 0 !important;
 }
 
-.ory-elements > div > form > div {
-  background-color: #fff !important;
-  border: 1px solid #dadada !important;
+.ory-elements fieldset {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .ory-elements > div > div {
   padding: 32px 32px !important;
   margin: 0 auto !important;
   border-radius: 10px !important;
-  border: 1px solid #dadada !important;
+  border: 1px solid #e2e8f0 !important;
   /* border: none !important; */
   /* box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25); */
 }
@@ -141,6 +210,15 @@
 .text-input-foreground-primary span {
   color: #003876 !important;
   font-weight: 600 !important;
+  font-size: 0.875rem !important;
+}
+
+.ory-elements label {
+  color: #003876 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  display: block;
+  margin-bottom: 0.5rem !important;
 }
 
 .text-interface-foreground-validation-danger {
@@ -152,6 +230,7 @@
   display: block;
   font-size: 14px !important;
   font-weight: 500 !important;
+  margin-bottom: 0.5rem !important;
 }
 
 [data-testid="ory/message/4000002"],
@@ -183,11 +262,17 @@
 
 button.bg-button-primary-background-default {
   background-color: #003876 !important;
-  padding: 8px 12px !important;
-  text-transform: uppercase !important;
+  color: #ffffff !important;
+  height: 48px !important;
   font-size: 14px !important;
-  height: 41px !important;
+  font-weight: 600 !important;
+  border-radius: 9999px !important;
+  text-transform: none !important;
+  display: flex !important;
+  justify-content: center !important;
   align-items: center !important;
+  padding: 8px 12px !important;
+  transition: all 0.2s ease !important;
 }
 
 button.text-button-primary-foreground-default {
@@ -199,7 +284,7 @@ button.ring-button-primary-border-default {
 }
 
 button.hover\:bg-button-primary-background-hover:hover {
-  background-color: #00285a !important;
+  background-color: #002f5c !important;
 }
 
 /* a.text-button-link-brand-brand,
@@ -212,15 +297,8 @@ button.text-button-link-brand-brand {
 .ory-elements,
 [data-testid] {
   font-family:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-}
-
-/* ===== Button Border Radius (67px rounded) ===== */
-.ory-elements button,
-.ory-elements [role="button"],
-.ory-elements input[type="submit"] {
-  border-radius: 67px !important;
 }
 
 /* ===== Input Border Radius ===== */
@@ -306,17 +384,27 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
 }
 
 .dark .text-interface-foreground-default-primary {
-  color: #60a5fa !important;
+  color: #f8fafc !important;
 }
 
 .dark .text-interface-foreground-default-secondary {
-  color: #93c5fd !important;
+  color: #94a3b8 !important;
 }
 
 .dark .ory-elements > div > form {
   background-color: hsl(var(--card)) !important;
   /* border: 1px solid #485468 !important; */
   box-shadow: none !important;
+}
+
+/* Style the bottom footer box (description text) */
+.ory-elements form[data-testid="ory/screen/settings/group/totp"]
+  > div:last-of-type {
+  padding-top: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 1rem !important;
 }
 
 .dark .ory-elements > div > form > div {
@@ -326,7 +414,9 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
 
 .dark
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ) {
   background-color: rgba(2, 6, 23, 0.6) !important;
   color: #f8fafc !important;
   border-color: #334155 !important;
@@ -354,14 +444,28 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
 }
 
 a.text-button-link-brand-brand,
-svg.text-button-link-default-secondary,
-button.text-button-link-brand-brand {
+svg.text-button-link-default-secondary {
   color: #3b82f6 !important;
   display: none !important;
 }
 
+button.text-button-link-brand-brand {
+  color: #3b82f6 !important;
+}
+
 .bg-interface-background-default-secondary {
+  background-color: #f0f4f8 !important;
+  border-radius: 8px !important;
+}
+
+.dark .bg-interface-background-default-secondary {
   background-color: #1e293b !important;
+}
+
+.dark .ory-elements img[src*="data:image"] {
+  background-color: #ffffff !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
 }
 
 .dark .cuc-register-button {
@@ -374,14 +478,14 @@ button.text-button-link-brand-brand {
   color: #ffffff !important;
 }
 
-/* ===== OTP Input Dark Mode Overrides ===== */
+/* ===== OTP Input Overrides (Light & Dark) ===== */
 
-.dark input[data-input-otp="true"] {
+.ory-elements input[data-input-otp="true"] {
   opacity: 0 !important;
-}
-
-.dark .ory-elements input[data-input-otp="true"] {
-  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+  border: none !important;
+  color: transparent !important;
+  box-shadow: none !important;
 }
 
 .dark .ory-elements div.bg-input-background-default {
@@ -417,17 +521,29 @@ button.text-button-link-brand-brand {
 } */
 
 .ory-elements
-input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+  [data-input-otp="true"]
+) {
   min-height: 48px !important;
-  border-color: #b8cbe0 !important;
+  border-color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  padding: 0 16px !important;
+  font-size: 0.9375rem !important;
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.2s ease !important;
 }
 
 .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
-  box-shadow: 0 0 0 3px rgba(0, 135, 255, 0.15) !important;
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ):focus {
+  border-color: #003876 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 56, 118, 0.1) !important;
 }
 
 button.bg-button-primary-background-default {
@@ -443,31 +559,43 @@ button.bg-button-primary-background-default {
 .dark .ory-elements > div > div {
   background: hsl(var(--card)) !important;
   border-color: #1e293b !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .ory-elements > div > form {
+  background-color: hsl(var(--card)) !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark .ory-elements > div > form > div {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-  border-color: #1e293b !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .dark
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ) {
   background-color: rgba(2, 6, 23, 0.6) !important;
   border-color: #334155 !important;
 }
 
 .dark
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not(
-    [type="submit"]
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
   )::placeholder {
   color: #64748b !important;
 }
 
 .dark
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ):focus {
   border-color: #3b82f6 !important;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
 }
@@ -483,7 +611,9 @@ button.bg-button-primary-background-default {
 
 .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ) {
   min-height: 48px !important;
   height: 48px !important;
   border-radius: 8px !important;
@@ -501,15 +631,17 @@ button.bg-button-primary-background-default {
 
 .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not(
-    [type="submit"]
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
   )::placeholder {
   color: #64748b !important;
 }
 
 .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ):focus {
   border-color: #003876 !important;
   box-shadow: 0 0 0 3px rgba(0, 59, 115, 0.12) !important;
 }
@@ -522,7 +654,9 @@ button.bg-button-primary-background-default {
 .dark
   .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ) {
   background-color: rgba(2, 6, 23, 0.6) !important;
   color: #f8fafc !important;
   border-color: #334155 !important;
@@ -531,8 +665,8 @@ button.bg-button-primary-background-default {
 .dark
   .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not(
-    [type="submit"]
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
   )::placeholder {
   color: #64748b !important;
 }
@@ -540,7 +674,49 @@ button.bg-button-primary-background-default {
 .dark
   .ory-auth-scope
   .ory-elements
-  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not(
+    [data-input-otp="true"]
+  ):focus {
   border-color: #3b82f6 !important;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
+}
+
+/* TOTP Specific Improvements */
+.ory-elements [data-testid="ory/form/node/input/label/undefined"] {
+  color: #64748b !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.ory-elements
+  [data-testid="ory/screen/settings/group/totp"]
+  .grid
+  > div:nth-child(2) {
+  border: 1px solid #e2e8f0 !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  padding: 1.5rem !important;
+}
+
+.dark
+  .ory-elements
+  [data-testid="ory/screen/settings/group/totp"]
+  .grid
+  > div:nth-child(2) {
+  background-color: #0f172a !important; /* slate-900 */
+  border-color: #1e293b !important;
+}
+
+.ory-elements input[data-testid="ory/form/node/input/totp_secret_key"] {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  cursor: copy !important;
+}
+
+.dark .ory-elements input[data-testid="ory/form/node/input/totp_secret_key"] {
+  background-color: rgba(2, 6, 23, 0.8) !important;
+  color: #94a3b8 !important;
 }

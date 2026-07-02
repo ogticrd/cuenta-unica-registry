@@ -68,9 +68,9 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <main className="flex-1">
-      <div className="container mx-auto py-12 flex justify-center">
-        <div className="ory-auth-scope w-full max-w-md">
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4">
+        <div className="ory-auth-scope w-full max-w-md mx-auto">
           <Suspense fallback={<LoadingFallback />}>
             <LoginFlow searchParams={props.searchParams} />
           </Suspense>

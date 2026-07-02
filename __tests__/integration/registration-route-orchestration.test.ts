@@ -1379,6 +1379,7 @@ describe("registration route orchestration - citizen", () => {
         clientId: "4c2d8cc9-1740-47a5-8a32-e94c7049edff",
         journeyId: "journey-123",
         linkageStatus: "linked",
+        entryPath: "/register",
         returnUrl: "http://localhost:5173/callback",
       }),
     );

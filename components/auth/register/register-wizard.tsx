@@ -202,7 +202,7 @@ export function RegisterWizard({
 
   return (
     <Card
-      className="w-full max-w-[448px] mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:border-slate-800 rounded-[10px] bg-white dark:bg-card"
+      className="w-full max-w-[448px] mx-auto border border-slate-200 dark:border-slate-800 rounded-[10px] bg-white dark:bg-card"
       data-hydrated={isHydrated}
       data-testid="registration-wizard"
     >

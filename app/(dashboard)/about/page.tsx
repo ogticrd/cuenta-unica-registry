@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { PlatformFeature } from "@/components/dashboard/platform-feature";
-import { YouTubeVideo } from "@/components/dashboard/youtube-video";
 import { useT } from "@/hooks/use-t";
 
 export default function AboutPage() {
@@ -128,8 +127,15 @@ export default function AboutPage() {
             {t("video_desc")}
           </p>
         </div>
-        <div className="rounded-2xl overflow-hidden border dark:border-border">
-          <YouTubeVideo title="Cuenta Única Ciudadana - Guía Completa" />
+        <div className="rounded-2xl overflow-hidden border dark:border-border aspect-video relative">
+          <iframe
+            className="w-full h-full absolute inset-0"
+            src="https://www.youtube.com/embed/b22bZZOSDjg?si=nCjvc4Z5TTddv91a"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
         </div>
       </div>
 

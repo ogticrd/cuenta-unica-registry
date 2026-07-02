@@ -17,7 +17,9 @@ export async function POST() {
     response.cookies.set(clearRegistrationSessionCookie());
     response.cookies.set(clearRegistrationAccountDraftCookie());
     response.cookies.set(clearRegistrationLivenessChallengeCookie());
-    for (const cookie of clearStaleBrowserFlowCookies(cookieHeader)) {
+    for (const cookie of clearStaleBrowserFlowCookies(cookieHeader, {
+      includeAnalyticsContext: true,
+    })) {
       response.cookies.set(cookie);
     }
 

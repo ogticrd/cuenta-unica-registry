@@ -260,7 +260,7 @@ export function StepAccount({
                     }}
                     onPaste={preventClipboardAction}
                     onCopy={preventClipboardAction}
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                   />
                 </FormControl>
@@ -292,7 +292,7 @@ export function StepAccount({
                     }}
                     onPaste={preventClipboardAction}
                     onCopy={preventClipboardAction}
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     className="h-12 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                   />
                 </FormControl>
@@ -313,7 +313,7 @@ export function StepAccount({
                 <div className="relative">
                   <FormControl>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type="text"
                       placeholder="********"
                       {...field}
                       onChange={(event) => {
@@ -325,7 +325,15 @@ export function StepAccount({
                       }}
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
-                      autoComplete="off"
+                      autoComplete="one-time-code"
+                      style={
+                        !showPassword
+                          ? ({
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
+                          : undefined
+                      }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
                   </FormControl>
@@ -333,7 +341,7 @@ export function StepAccount({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:text-primary hover:bg-transparent dark:hover:text-blue-300"
                     onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1}
                   >
@@ -440,7 +448,7 @@ export function StepAccount({
                 <div className="relative">
                   <FormControl>
                     <Input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type="text"
                       placeholder="********"
                       {...field}
                       onChange={(event) => {
@@ -452,7 +460,15 @@ export function StepAccount({
                       }}
                       onPaste={preventClipboardAction}
                       onCopy={preventClipboardAction}
-                      autoComplete="off"
+                      autoComplete="one-time-code"
+                      style={
+                        !showConfirmPassword
+                          ? ({
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
+                          : undefined
+                      }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
                     />
                   </FormControl>
@@ -460,7 +476,7 @@ export function StepAccount({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground dark:text-slate-400 hover:text-primary hover:bg-transparent dark:hover:text-blue-300"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     tabIndex={-1}
                   >

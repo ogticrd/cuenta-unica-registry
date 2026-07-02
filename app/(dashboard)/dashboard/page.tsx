@@ -184,7 +184,7 @@ export default function DashboardPage() {
               ),
             })}
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-6">
+          <p className="text-muted-foreground text-lg leading-relaxed mb-6">
             {t("subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-sm text-muted-foreground">

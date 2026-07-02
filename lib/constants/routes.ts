@@ -17,8 +17,8 @@ export const ROUTES = {
   // Dashboard
   dashboard: "/dashboard",
   profile: "/profile",
-  // settings: "/self-service/settings/browser",
-  settings: "/settings",
+  settings: "/self-service/settings/browser",
+  // settings: "/settings",
   history: "/history",
 
   terms: "/terms",

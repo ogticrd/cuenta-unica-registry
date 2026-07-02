@@ -237,7 +237,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="space-y-12 pb-12">
+    <div className="space-y-8">
       <div className="space-y-4 pb-8 border-b dark:border-border">
         <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
           {t("title")}

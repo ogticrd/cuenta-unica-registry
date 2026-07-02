@@ -4,13 +4,6 @@ import { Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useT } from "@/hooks/use-t";
 import type {
@@ -84,44 +77,53 @@ export function NotificationPreferences() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-5">
-          {TOPICS.map((topic) => (
-            <div key={topic} className="rounded-lg border p-4">
-              <div className="mb-4">
-                <h3 className="font-semibold">{t(`topics.${topic}.title`)}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {t(`topics.${topic}.desc`)}
-                </p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {CHANNELS.map((channel) => {
-                  const preference = preferenceMap.get(
-                    getPreferenceKey(topic, channel),
-                  );
-                  const checked = preference?.enabled === true;
-                  const disabled =
-                    isLoading || isSaving || preference?.required === true;
+    <div className="flex flex-col space-y-8">
+      <div>
+        <h2 className="text-xl font-semibold mb-2 text-primary dark:text-blue-400">
+          {t("title")}
+        </h2>
+        <p className="text-muted-foreground">{t("description")}</p>
+      </div>
 
-                  return (
-                    <div
-                      key={channel}
-                      className="flex items-center justify-between gap-3 rounded-md border bg-background p-3 text-sm"
-                    >
-                      <span>
-                        <span className="font-medium">
-                          {t(`channels.${channel}`)}
-                        </span>
-                        {preference?.required ? (
-                          <span className="block text-xs text-muted-foreground">
-                            {t("required")}
+      <div className="flex flex-col gap-6">
+        {TOPICS.map((topic) => (
+          <div
+            key={topic}
+            className="pb-6 border-b dark:border-border last:border-0 last:pb-0"
+          >
+            <div className="mb-5">
+              <h3 className="text-lg font-semibold text-primary dark:text-blue-400">
+                {t(`topics.${topic}.title`)}
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t(`topics.${topic}.desc`)}
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {CHANNELS.map((channel) => {
+                const preference = preferenceMap.get(
+                  getPreferenceKey(topic, channel),
+                );
+                const checked = preference?.enabled === true;
+                const disabled =
+                  isLoading || isSaving || preference?.required === true;
+
+                return (
+                  <div
+                    key={channel}
+                    className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:shadow-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm text-foreground">
+                        {t(`channels.${channel}`)}
+                        {preference?.required && (
+                          <span
+                            className="text-destructive ml-1"
+                            title={t("required")}
+                          >
+                            *
                           </span>
-                        ) : null}
+                        )}
                       </span>
                       <Switch
                         aria-label={`${t(`topics.${topic}.title`)} - ${t(`channels.${channel}`)}`}
@@ -132,20 +134,20 @@ export function NotificationPreferences() {
                         }
                       />
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-
-          <div className="flex justify-end">
-            <Button disabled={isLoading || isSaving} onClick={savePreferences}>
-              <Save data-icon="inline-start" />
-              {isSaving ? t("saving") : t("save")}
-            </Button>
           </div>
+        ))}
+
+        <div className="flex justify-end pt-4">
+          <Button disabled={isLoading || isSaving} onClick={savePreferences}>
+            <Save className="w-4 h-4 mr-2" />
+            {isSaving ? t("saving") : t("save")}
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

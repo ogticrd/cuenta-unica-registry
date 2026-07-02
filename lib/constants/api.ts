@@ -20,4 +20,5 @@ export const API = {
   registrationLivenessResult: "/api/registration/verification/liveness-result",
   registrationLivenessComplete:
     "/api/registration/verification/liveness-complete",
+  feedback: "/api/feedback",
 } as const;
