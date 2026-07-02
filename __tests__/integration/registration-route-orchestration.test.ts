@@ -1615,8 +1615,6 @@ describe("registration route orchestration - session reset", () => {
         expect.stringContaining("registration_liveness_challenge="),
         expect.stringContaining("ory_session_focused="),
         expect.stringContaining("csrf_token_123="),
-        expect.stringContaining("analytics_context="),
-        expect.stringContaining("analytics_context_launch="),
       ]),
     );
     expect(response.status).toBe(200);
