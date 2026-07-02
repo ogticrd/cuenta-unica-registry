@@ -666,7 +666,8 @@ describe("registration production routes", () => {
             nationality: "DO",
           },
         }),
-      );
+      )
+      .mockResolvedValueOnce(new Response("ok", { status: 202 }));
 
     mockRekognitionSend.mockImplementation(
       async (command: { input?: Record<string, unknown> }) => {
