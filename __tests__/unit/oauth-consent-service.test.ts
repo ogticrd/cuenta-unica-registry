@@ -3,11 +3,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const {
   mockAcceptOAuth2ConsentRequest,
   mockGetOAuth2ConsentRequest,
+  mockGetServerCookies,
   mockRejectOAuth2ConsentRequest,
+  mockToSession,
 } = vi.hoisted(() => ({
   mockAcceptOAuth2ConsentRequest: vi.fn(),
   mockGetOAuth2ConsentRequest: vi.fn(),
+  mockGetServerCookies: vi.fn(),
   mockRejectOAuth2ConsentRequest: vi.fn(),
+  mockToSession: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -18,6 +22,16 @@ vi.mock("@/lib/ory/oauth-client", () => ({
     getOAuth2ConsentRequest: mockGetOAuth2ConsentRequest,
     rejectOAuth2ConsentRequest: mockRejectOAuth2ConsentRequest,
   }),
+}));
+
+vi.mock("@/lib/ory/client", () => ({
+  getOryClient: () => ({
+    toSession: mockToSession,
+  }),
+}));
+
+vi.mock("@/lib/ory/cookies", () => ({
+  getServerCookies: mockGetServerCookies,
 }));
 
 import {
@@ -40,6 +54,30 @@ describe("OAuth consent service", () => {
         requested_access_token_audience: ["accounts-api"],
         requested_scope: ["openid", "profile", "email"],
         subject: "identity-123",
+      },
+    });
+
+    mockGetServerCookies.mockResolvedValue("ory_session=session-123");
+    mockToSession.mockResolvedValue({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {
+            email: "citizen@example.test",
+            name: {
+              first: "Ada",
+              last: "Lovelace",
+            },
+            username: "00112345678",
+          },
+          verifiable_addresses: [
+            {
+              value: "citizen@example.test",
+              verified: true,
+              via: "email",
+            },
+          ],
+        },
       },
     });
 
@@ -69,6 +107,16 @@ describe("OAuth consent service", () => {
         grant_scope: ["openid", "profile", "email"],
         remember: true,
         remember_for: 3600,
+        session: {
+          id_token: {
+            email: "citizen@example.test",
+            email_verified: true,
+            family_name: "Lovelace",
+            given_name: "Ada",
+            name: "Ada Lovelace",
+            preferred_username: "00112345678",
+          },
+        },
       },
     });
   });
@@ -84,9 +132,34 @@ describe("OAuth consent service", () => {
         acceptOAuth2ConsentRequest: expect.objectContaining({
           grant_access_token_audience: [],
           grant_scope: ["openid", "email"],
+          session: {
+            id_token: {
+              email: "citizen@example.test",
+              email_verified: true,
+            },
+          },
         }),
       }),
     );
+  });
+
+  it("rejects consent when the browser session identity does not match the consent subject", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "different-identity",
+          traits: {
+            email: "citizen@example.test",
+          },
+        },
+      },
+    });
+
+    await expect(acceptOAuthConsentRequest("consent-123")).rejects.toThrow(
+      "Authenticated Ory session does not match consent subject.",
+    );
+
+    expect(mockAcceptOAuth2ConsentRequest).not.toHaveBeenCalled();
   });
 
   it("rejects scope not requested by Ory", async () => {
