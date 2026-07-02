@@ -143,6 +143,134 @@ describe("OAuth consent service", () => {
     );
   });
 
+  it("maps profile claims from string names and preferred usernames", async () => {
+    mockGetOAuth2ConsentRequest.mockResolvedValueOnce({
+      data: {
+        challenge: "consent-123",
+        client: {
+          client_id: "client-123",
+        },
+        requested_scope: ["openid", "profile", "email"],
+      },
+    });
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {
+            email: "citizen@example.test",
+            name: "Ada Lovelace",
+            preferred_username: "ada",
+            username: "00112345678",
+          },
+          verifiable_addresses: [
+            {
+              value: "citizen@example.test",
+              verified: true,
+              via: "sms",
+            },
+          ],
+        },
+      },
+    });
+
+    await acceptOAuthConsentRequest("consent-123");
+
+    expect(mockAcceptOAuth2ConsentRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acceptOAuth2ConsentRequest: expect.objectContaining({
+          session: {
+            id_token: {
+              email: "citizen@example.test",
+              email_verified: false,
+              given_name: "Ada Lovelace",
+              name: "Ada Lovelace",
+              preferred_username: "ada",
+            },
+          },
+        }),
+      }),
+    );
+  });
+
+  it("maps alternate Ory profile trait names into standard OIDC claims", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: {
+          id: "identity-123",
+          traits: {
+            email: "citizen@example.test",
+            name: {
+              family_name: "Hopper",
+              given_name: "Grace",
+            },
+          },
+          verifiable_addresses: [
+            {
+              value: "CITIZEN@example.test",
+              verified: true,
+            },
+          ],
+        },
+      },
+    });
+
+    await acceptOAuthConsentRequest("consent-123");
+
+    expect(mockAcceptOAuth2ConsentRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acceptOAuth2ConsentRequest: expect.objectContaining({
+          session: {
+            id_token: {
+              email: "citizen@example.test",
+              email_verified: true,
+              family_name: "Hopper",
+              given_name: "Grace",
+              name: "Grace Hopper",
+            },
+          },
+        }),
+      }),
+    );
+  });
+
+  it("omits optional claims when the requested scopes do not grant them", async () => {
+    mockGetOAuth2ConsentRequest.mockResolvedValueOnce({
+      data: {
+        challenge: "consent-123",
+        requested_scope: ["openid"],
+        subject: "identity-123",
+      },
+    });
+
+    await acceptOAuthConsentRequest("consent-123");
+
+    expect(mockAcceptOAuth2ConsentRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acceptOAuth2ConsentRequest: expect.objectContaining({
+          grant_scope: ["openid"],
+          session: {
+            id_token: {},
+          },
+        }),
+      }),
+    );
+  });
+
+  it("rejects consent when the browser session has no identity", async () => {
+    mockToSession.mockResolvedValueOnce({
+      data: {
+        identity: undefined,
+      },
+    });
+
+    await expect(acceptOAuthConsentRequest("consent-123")).rejects.toThrow(
+      "Authenticated Ory session is missing an identity.",
+    );
+
+    expect(mockAcceptOAuth2ConsentRequest).not.toHaveBeenCalled();
+  });
+
   it("rejects consent when the browser session identity does not match the consent subject", async () => {
     mockToSession.mockResolvedValueOnce({
       data: {
