@@ -6,6 +6,8 @@ export interface JourneyEventRequest {
   flowId?: string;
   oryFlowType?: string;
   clientId?: string;
+  clientName?: string;
+  institutionName?: string;
   linkageStatus?: "linked" | "unlinked";
   identityId?: string;
   sessionId?: string;

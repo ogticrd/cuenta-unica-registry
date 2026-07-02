@@ -1,5 +1,6 @@
 import { JourneyEvent } from "@/components/analytics/journey-event";
 import { RegisterWizard } from "@/components/auth/register/register-wizard";
+import { UserFeedbackButton } from "@/components/feedback/user-feedback-button";
 
 import { getAnalyticsContext } from "@/lib/analytics/context";
 import { getRegistrationWizardState } from "@/lib/services/registration/registration-flow.service";
@@ -21,6 +22,10 @@ export default async function RegistrationPage({
       <JourneyEvent
         eventName="journey.registration.entered"
         step="register"
+        clientId={analyticsContext?.clientId}
+        clientName={analyticsContext?.clientName}
+        institutionName={analyticsContext?.institutionName}
+        linkageStatus={analyticsContext?.linkageStatus}
         returnUrl={returnUrl}
       />
       <main className="flex-1 flex items-center justify-center py-12">
@@ -35,6 +40,7 @@ export default async function RegistrationPage({
           />
         </div>
       </main>
+      <UserFeedbackButton />
     </>
   );
 }

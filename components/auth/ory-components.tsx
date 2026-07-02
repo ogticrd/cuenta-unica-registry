@@ -1,11 +1,14 @@
 "use client";
 
-import type { OryCardFooterProps } from "@ory/elements-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { useT } from "@/hooks/use-t";
-import { ROUTES } from "@/lib/constants/routes";
+
+const LOGIN_PATH = "/login";
+const RECOVERY_PATH = "/recovery";
+const REGISTER_PATH = "/register";
+const VERIFICATION_PATH = "/verification";
 
 /**
  * Custom CUC Card Header — includes CUC logo + "Acceso Cuenta Única" title + subtitle
@@ -47,35 +50,45 @@ export function CucCardHeader(_props: PropsWithChildren) {
  * Custom CUC Card Footer — "¿No tienes cuenta?" section with descriptive text
  * and outline button to create account
  */
-export function CucCardFooter(_props: OryCardFooterProps) {
+interface CucCardFooterProps {
+  recoveryHref?: string;
+  registerHref?: string;
+  verificationHref?: string;
+}
+
+export function CucCardFooter({
+  recoveryHref = RECOVERY_PATH,
+  registerHref = REGISTER_PATH,
+  verificationHref = VERIFICATION_PATH,
+}: CucCardFooterProps) {
   const t = useT("login");
   return (
     <div>
       <p
-        className="text-sm font-semibold text-secondary text-right dark:text-blue-400"
+        className="text-sm text-secondary text-right dark:text-blue-400"
         style={{ marginBottom: "20px" }}
       >
-        <Link href={ROUTES.recovery}>{t("forgot_password")}</Link>
+        <Link href={recoveryHref}>{t("forgot_password")}</Link>
       </p>
       <hr className="my-4 border-gray-200 dark:border-gray-700" />
       <div className="text-center">
         <p
-          className="text-sm font-medium text-gray-500 dark:text-gray-400"
+          className="text-sm text-gray-500 dark:text-gray-400"
           style={{ marginBottom: "20px" }}
         >
           <span className="font-semibold text-secondary dark:text-blue-400">
-            <Link href={ROUTES.register}>{t("no_account")}</Link>
+            <Link href={registerHref}>{t("no_account")}</Link>
           </span>{" "}
           {t("register_cta")}
         </p>
-        <Link href={ROUTES.register} className="cuc-register-button">
+        <Link href={registerHref} className="cuc-register-button">
           {t("create_account")}
         </Link>
         <div className="mt-6 rounded-md bg-gray-200/25 p-2 text-sm ring-1 ring-inset ring-gray-900/5 dark:bg-gray-800/50 dark:ring-white/10">
-          <p className="font-medium text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400">
             {t("need_verification_prompt")}{" "}
             <Link
-              href={ROUTES.verification}
+              href={verificationHref}
               className="font-semibold !text-secondary transition-colors dark:text-blue-400"
             >
               {t("verify_account")}
@@ -122,14 +135,20 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
 /**
  * Custom CUC Recovery Footer
  */
-export function CucRecoveryFooter(_props: OryCardFooterProps) {
+interface CucRecoveryFooterProps {
+  loginHref?: string;
+}
+
+export function CucRecoveryFooter({
+  loginHref = LOGIN_PATH,
+}: CucRecoveryFooterProps) {
   const t = useT("login");
   return (
     <div className="text-center">
       <p className="text-sm text-gray-600 dark:text-gray-400">
         {t("recovery_remember")}{" "}
         <Link
-          href={ROUTES.login}
+          href={loginHref}
           className="font-medium !text-secondary dark:!text-blue-400"
         >
           {t("recovery_login_cta")}
@@ -174,14 +193,20 @@ export function CucVerificationHeader(_props: PropsWithChildren) {
 /**
  * Custom CUC Verification Footer
  */
-export function CucVerificationFooter(_props: OryCardFooterProps) {
+interface CucVerificationFooterProps {
+  loginHref?: string;
+}
+
+export function CucVerificationFooter({
+  loginHref = LOGIN_PATH,
+}: CucVerificationFooterProps) {
   const t = useT("login");
   return (
     <div className="text-center">
       <p className="text-sm text-gray-600 dark:text-gray-400">
         {t("verification_footer_text")}{" "}
         <Link
-          href={ROUTES.login}
+          href={loginHref}
           className="font-medium !text-secondary dark:!text-blue-400"
         >
           {t("verification_login_cta")}

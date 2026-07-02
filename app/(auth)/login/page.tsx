@@ -1,10 +1,10 @@
-import { Login } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import { CucCardFooter, CucCardHeader } from "@/components/auth/ory-components";
+import { OryLoginCard } from "@/components/auth/ory-flow-cards";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
 import {
   type OryFlowLike,
   resolveAnalyticsTransientPayloadForFlow,
@@ -26,6 +26,21 @@ async function LoginFlow({ searchParams }: OryPageParams) {
     flow as unknown as OryFlowLike,
     undefined,
   )?.analytics;
+  const registerHref = buildAnalyticsContextStartPath({
+    clientId: analytics?.clientId,
+    entryPath: "/register",
+    returnUrl: analytics?.returnUrl,
+  });
+  const recoveryHref = buildAnalyticsContextStartPath({
+    clientId: analytics?.clientId,
+    entryPath: "/recovery",
+    returnUrl: analytics?.returnUrl,
+  });
+  const verificationHref = buildAnalyticsContextStartPath({
+    clientId: analytics?.clientId,
+    entryPath: "/verification",
+    returnUrl: analytics?.returnUrl,
+  });
 
   return (
     <>
@@ -35,18 +50,17 @@ async function LoginFlow({ searchParams }: OryPageParams) {
         flowId={flow.id}
         oryFlowType="login"
         clientId={analytics?.clientId}
+        clientName={analytics?.clientName}
+        institutionName={analytics?.institutionName}
         linkageStatus={analytics?.linkageStatus}
         returnUrl={analytics?.returnUrl}
       />
-      <Login
+      <OryLoginCard
         flow={flow}
-        config={dynamicConfig}
-        components={{
-          Card: {
-            Header: CucCardHeader,
-            Footer: CucCardFooter,
-          },
-        }}
+        dynamicConfig={dynamicConfig}
+        recoveryHref={recoveryHref}
+        registerHref={registerHref}
+        verificationHref={verificationHref}
       />
     </>
   );
@@ -54,9 +68,9 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <main className="flex-1">
-      <div className="container mx-auto py-12 flex justify-center">
-        <div className="ory-auth-scope w-full max-w-md">
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4">
+        <div className="ory-auth-scope w-full max-w-md mx-auto">
           <Suspense fallback={<LoadingFallback />}>
             <LoginFlow searchParams={props.searchParams} />
           </Suspense>

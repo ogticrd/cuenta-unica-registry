@@ -111,7 +111,7 @@ describe("StepAccount", () => {
   });
 
   it("does not clear typed account values on equivalent parent rerenders", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const { props, rerender } = renderStepAccount();
 
     await user.type(

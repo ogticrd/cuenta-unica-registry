@@ -133,6 +133,8 @@ export async function POST(request: Request) {
         normalizeCedula(citizen.id),
         "identified",
         returnUrl,
+        undefined,
+        analyticsContext ?? undefined,
       ),
     );
     await emitIdentificationOutcome({

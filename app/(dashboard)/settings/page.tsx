@@ -2,9 +2,12 @@ import type { OryPageParams } from "@ory/nextjs/app";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import { NotificationPreferences } from "@/components/notifications/notification-preferences";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingFallback } from "@/components/ui/loading-fallback";
+import {
+  type OryFlowLike,
+  resolveAnalyticsTransientPayloadForFlow,
+} from "@/lib/analytics/transient-payload-core";
 import { getT } from "@/lib/i18n/server";
 import { getSettingsFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
@@ -43,20 +46,33 @@ async function SettingsFlowComponent({ searchParams }: OryPageParams) {
     return <LoadingFallback message={t("loading")} />;
   }
 
-  return <OrySettings flow={flow} dynamicConfig={dynamicConfig} />;
-}
+  const analytics = resolveAnalyticsTransientPayloadForFlow(
+    flow as unknown as OryFlowLike,
+    undefined,
+  )?.analytics;
 
-export default async function SettingsPage(props: OryPageParams) {
-  const params = await props.searchParams;
-  const t = await getT("settings");
   return (
-    <div className="space-y-8">
+    <>
       <JourneyEvent
         eventName="journey.settings.entered"
         step="settings"
-        flowId={params.flow?.toString()}
+        flowId={flow.id}
         oryFlowType="settings"
+        clientId={analytics?.clientId}
+        clientName={analytics?.clientName}
+        institutionName={analytics?.institutionName}
+        linkageStatus={analytics?.linkageStatus}
+        returnUrl={analytics?.returnUrl}
       />
+      <OrySettings flow={flow} dynamicConfig={dynamicConfig} />
+    </>
+  );
+}
+
+export default async function SettingsPage(props: OryPageParams) {
+  const t = await getT("settings");
+  return (
+    <div className="space-y-8">
       <div className="space-y-4 pb-8 border-b dark:border-border">
         <h1 className="text-3xl font-bold text-primary dark:text-blue-400 tracking-tight">
           {t("title")}
@@ -68,7 +84,6 @@ export default async function SettingsPage(props: OryPageParams) {
       <Suspense fallback={<LoadingFallback />}>
         <SettingsFlowComponent searchParams={props.searchParams} />
       </Suspense>
-      <NotificationPreferences />
     </div>
   );
 }

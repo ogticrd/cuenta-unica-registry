@@ -38,6 +38,7 @@ export type RegistrationLivenessVerificationResult =
       success: false;
       status: number;
       code: VerifyLivenessErrorCode;
+      session?: RegistrationSession;
     };
 
 export function createVerifyLivenessPayload(
@@ -75,6 +76,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 409,
       code: "verification_already_completed",
+      session,
     };
   }
 
@@ -83,6 +85,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "invalid_session_id",
+      session,
     };
   }
 
@@ -97,6 +100,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "invalid_session_id",
+      session,
     };
   }
 
@@ -112,6 +116,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 500,
       code: "unexpected_error",
+      session,
     };
   }
 
@@ -120,6 +125,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "account_draft_missing",
+      session,
     };
   }
 
@@ -132,6 +138,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "rekognition_error",
+      session,
     };
   }
 
@@ -143,6 +150,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "liveness_check_failed",
+      session,
     };
   }
 
@@ -155,6 +163,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "citizen_photo_unavailable",
+      session,
     };
   }
 
@@ -171,6 +180,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 502,
       code: "rekognition_error",
+      session,
     };
   }
 
@@ -179,6 +189,7 @@ export async function verifyRegistrationLiveness(
       success: false,
       status: 400,
       code: "face_mismatch",
+      session,
     };
   }
 

@@ -65,9 +65,7 @@ describe("proxy", () => {
   it("redirects protected routes to the public forwarded origin", async () => {
     const response = await proxy(createCloudRunRequest("/dashboard"));
 
-    expect(response.headers.get("location")).toBe(
-      `${PUBLIC_ORIGIN}/self-service/login/browser`,
-    );
+    expect(response.headers.get("location")).toBe(`${PUBLIC_ORIGIN}/login`);
     expect(fetch).not.toHaveBeenCalled();
   });
 

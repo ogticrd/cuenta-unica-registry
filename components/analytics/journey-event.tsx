@@ -4,30 +4,91 @@ import { useEffect, useMemo, useRef } from "react";
 import type { JourneyEventRequest } from "@/lib/analytics/types";
 import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 
-interface JourneyEventProps extends JourneyEventRequest {
+export interface JourneyEventProps extends JourneyEventRequest {
   enabled?: boolean;
 }
 
+export function buildJourneyEventPayload({
+  clientId,
+  clientName,
+  errorCode,
+  eventName,
+  flowId,
+  institutionName,
+  linkageStatus,
+  metadata,
+  oryFlowType,
+  outcome,
+  returnUrl,
+  sessionId,
+  step,
+}: JourneyEventRequest): JourneyEventRequest {
+  return {
+    clientId,
+    clientName,
+    errorCode,
+    eventName,
+    flowId,
+    institutionName,
+    linkageStatus,
+    metadata,
+    oryFlowType,
+    outcome,
+    returnUrl,
+    sessionId,
+    step,
+  };
+}
+
 export function JourneyEvent({
+  clientId,
+  clientName,
   enabled = true,
   errorCode,
   eventName,
   flowId,
+  institutionName,
+  linkageStatus,
+  metadata,
   oryFlowType,
   outcome,
+  returnUrl,
+  sessionId,
   step,
 }: JourneyEventProps) {
   const sent = useRef(false);
   const event = useMemo(
-    () => ({
+    () =>
+      buildJourneyEventPayload({
+        clientId,
+        clientName,
+        errorCode,
+        eventName,
+        flowId,
+        institutionName,
+        linkageStatus,
+        metadata,
+        oryFlowType,
+        outcome,
+        returnUrl,
+        sessionId,
+        step,
+      }),
+    [
+      clientId,
+      clientName,
       errorCode,
       eventName,
       flowId,
+      institutionName,
+      linkageStatus,
+      metadata,
       oryFlowType,
       outcome,
+      returnUrl,
+      sessionId,
       step,
-    }),
-    [errorCode, eventName, flowId, oryFlowType, outcome, step],
+    ],
   );
 
   useEffect(() => {

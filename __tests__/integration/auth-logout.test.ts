@@ -63,7 +63,7 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body).toEqual({
       success: true,
-      redirect_to: "/self-service/login/browser",
+      redirect_to: "/login",
     });
 
     // Verify Set-Cookie headers are forwarded
@@ -138,7 +138,7 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body).toEqual({
       success: true,
-      redirect_to: "/self-service/login/browser",
+      redirect_to: "/login",
     });
     expect(mockUpdateLogoutFlow).not.toHaveBeenCalled();
   });
@@ -154,7 +154,7 @@ describe("POST /api/ory/logout", () => {
     const body = await response.json();
     expect(body).toEqual({
       success: true,
-      redirect_to: "/self-service/login/browser",
+      redirect_to: "/login",
     });
   });
 

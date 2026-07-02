@@ -5,20 +5,20 @@
 export const ROUTES = {
   landing: "/",
   // Auth
-  login: "/self-service/login/browser",
+  login: "/login",
   // register: "/self-service/registration/browser",
   register: "/register",
   verification: "/verification",
   // verification: "/self-service/verification/browser",
-  recovery: "/self-service/recovery/browser",
+  recovery: "/recovery",
   error: "/error",
   emailSent: "/register/email-sent",
 
   // Dashboard
   dashboard: "/dashboard",
   profile: "/profile",
-  // settings: "/self-service/settings/browser",
-  settings: "/settings",
+  settings: "/self-service/settings/browser",
+  // settings: "/settings",
   history: "/history",
 
   terms: "/terms",

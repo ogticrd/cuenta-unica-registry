@@ -666,7 +666,8 @@ describe("registration production routes", () => {
             nationality: "DO",
           },
         }),
-      );
+      )
+      .mockResolvedValueOnce(new Response("ok", { status: 202 }));
 
     mockRekognitionSend.mockImplementation(
       async (command: { input?: Record<string, unknown> }) => {
@@ -731,7 +732,7 @@ describe("registration production routes", () => {
     );
 
     expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
-    expect(global.fetch).toHaveBeenCalledTimes(4);
+    expect(global.fetch).toHaveBeenCalledTimes(5);
     const analyticsRequest = vi.mocked(global.fetch).mock.calls[1] as [
       string,
       { body: string },

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   applyAccountRegistrationCookies,
@@ -24,20 +25,24 @@ async function emitLivenessOutcome(options: {
   success: boolean;
   sessionId?: string;
   errorCode?: string;
+  registrationSession?: RegistrationSession | null;
   metadata?: Record<string, unknown>;
 }) {
   await emitAnalyticsEvent(
-    {
-      eventName: options.success
-        ? "registration.liveness.succeeded"
-        : "registration.liveness.failed",
-      source: "registry-app",
-      step: "liveness",
-      outcome: options.success ? "succeeded" : "failed",
-      ...(options.sessionId ? { sessionId: options.sessionId } : {}),
-      ...(options.errorCode ? { errorCode: options.errorCode } : {}),
-      ...(options.metadata ? { metadata: options.metadata } : {}),
-    },
+    withRegistrationSessionAnalyticsContext(
+      {
+        eventName: options.success
+          ? "registration.liveness.succeeded"
+          : "registration.liveness.failed",
+        source: "registry-app",
+        step: "liveness",
+        outcome: options.success ? "succeeded" : "failed",
+        ...(options.sessionId ? { sessionId: options.sessionId } : {}),
+        ...(options.errorCode ? { errorCode: options.errorCode } : {}),
+        ...(options.metadata ? { metadata: options.metadata } : {}),
+      },
+      options.registrationSession,
+    ),
     { entryPath: "/api/registration/verification/liveness-complete" },
   );
 }
@@ -62,6 +67,83 @@ function setVerifiedSessionCookie(
 ) {
   response.cookies.set(
     createRegistrationSessionCookieFromSession(session, "verified"),
+  );
+}
+
+function emailVerificationFlowId(redirectTo: string | undefined) {
+  if (!redirectTo) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(redirectTo, "https://registry.local");
+    return url.searchParams.get("flow") || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function emitAccountOutcomeFromLiveness(params: {
+  accountResult: Awaited<ReturnType<typeof completeRegistrationAccount>>;
+  email: string;
+  registrationSession: RegistrationSession;
+}) {
+  const { accountResult, email, registrationSession } = params;
+  const payload = accountResult.payload;
+
+  if (!payload.success) {
+    await emitAnalyticsEvent(
+      withRegistrationSessionAnalyticsContext(
+        {
+          eventName: "identity.registration.failed",
+          source: "registry-app",
+          step: "account",
+          outcome: "failed",
+          errorCode: payload.code,
+          metadata: {
+            cedula: registrationSession.cedula,
+            stage: payload.code,
+            traits: {
+              username: registrationSession.cedula,
+              email,
+            },
+          },
+        },
+        registrationSession,
+      ),
+      { entryPath: "/api/registration/verification/liveness-complete" },
+    );
+    return;
+  }
+
+  const flowId = emailVerificationFlowId(payload.redirectTo);
+  await emitAnalyticsEvent(
+    withRegistrationSessionAnalyticsContext(
+      {
+        eventName: "identity.registration.succeeded",
+        source: "registry-app",
+        step: "account",
+        outcome: "succeeded",
+        ...(flowId ? { flowId } : {}),
+        metadata: {
+          cedula: registrationSession.cedula,
+          stage: "registration_created",
+          traits: {
+            username: registrationSession.cedula,
+            email,
+          },
+          links: {
+            destination: payload.destination,
+            ...(registrationSession.returnUrl
+              ? { returnUrl: registrationSession.returnUrl }
+              : {}),
+            ...(flowId ? { emailVerificationFlowId: flowId } : {}),
+          },
+        },
+      },
+      registrationSession,
+    ),
+    { entryPath: "/api/registration/verification/liveness-complete" },
   );
 }
 
@@ -92,6 +174,7 @@ export async function POST(request: Request) {
         success: false,
         sessionId,
         errorCode: livenessResult.code,
+        registrationSession: livenessResult.session,
         metadata: { stage: livenessResult.code },
       });
       livenessOutcomeEmitted = true;
@@ -119,6 +202,7 @@ export async function POST(request: Request) {
     await emitLivenessOutcome({
       success: true,
       sessionId,
+      registrationSession: livenessResult.session,
       metadata: {
         cedula: livenessResult.session.cedula,
         stage: "verified",
@@ -149,6 +233,11 @@ export async function POST(request: Request) {
         },
       },
     );
+    await emitAccountOutcomeFromLiveness({
+      accountResult,
+      email: livenessResult.accountDraft.email,
+      registrationSession: livenessResult.session,
+    });
 
     const payload: CompleteLivenessRegistrationResponse = accountResult.payload
       .success

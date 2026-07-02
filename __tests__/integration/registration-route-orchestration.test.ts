@@ -1324,6 +1324,8 @@ describe("registration route orchestration - citizen", () => {
       "40200612345",
       "identified",
       undefined,
+      undefined,
+      undefined,
     );
     expect(mockGetSafeReturnUrl).toHaveBeenCalledWith("javascript:alert(1)", {
       currentOrigin: "http://localhost",
@@ -1372,6 +1374,14 @@ describe("registration route orchestration - citizen", () => {
       "40200612345",
       "identified",
       "http://localhost:5173/callback",
+      undefined,
+      expect.objectContaining({
+        clientId: "4c2d8cc9-1740-47a5-8a32-e94c7049edff",
+        journeyId: "journey-123",
+        linkageStatus: "linked",
+        entryPath: "/register",
+        returnUrl: "http://localhost:5173/callback",
+      }),
     );
     expect(mockGetSafeReturnUrl).not.toHaveBeenCalled();
     expect(response.status).toBe(200);
@@ -1605,8 +1615,6 @@ describe("registration route orchestration - session reset", () => {
         expect.stringContaining("registration_liveness_challenge="),
         expect.stringContaining("ory_session_focused="),
         expect.stringContaining("csrf_token_123="),
-        expect.stringContaining("analytics_context="),
-        expect.stringContaining("analytics_context_launch="),
       ]),
     );
     expect(response.status).toBe(200);

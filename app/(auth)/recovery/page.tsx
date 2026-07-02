@@ -1,13 +1,14 @@
-import { Recovery } from "@ory/elements-react/theme";
 import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
-import {
-  CucRecoveryFooter,
-  CucRecoveryHeader,
-} from "@/components/auth/ory-components";
+import { OryRecoveryCard } from "@/components/auth/ory-flow-cards";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
+import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
+import {
+  type OryFlowLike,
+  resolveAnalyticsTransientPayloadForFlow,
+} from "@/lib/analytics/transient-payload-core";
 import { getT } from "@/lib/i18n/server";
 import { getRecoveryFlow } from "@/lib/ory/flow";
 import { getServerOryConfig } from "@/lib/ory/server-config";
@@ -21,40 +22,48 @@ async function RecoveryFlow({ searchParams }: OryPageParams) {
     return <LoadingFallback message={t("loading_recovery")} />;
   }
 
-  return (
-    <Recovery
-      flow={flow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucRecoveryHeader,
-          Footer: CucRecoveryFooter,
-        },
-      }}
-    />
-  );
-}
-
-export default async function ForgotPasswordPage(props: OryPageParams) {
-  const params = await props.searchParams;
+  const analytics = resolveAnalyticsTransientPayloadForFlow(
+    flow as unknown as OryFlowLike,
+    undefined,
+  )?.analytics;
+  const loginHref = buildAnalyticsContextStartPath({
+    clientId: analytics?.clientId,
+    entryPath: "/login",
+    returnUrl: analytics?.returnUrl,
+  });
 
   return (
     <>
       <JourneyEvent
         eventName="journey.recovery.entered"
         step="recovery"
-        flowId={params.flow?.toString()}
+        flowId={flow.id}
         oryFlowType="recovery"
+        clientId={analytics?.clientId}
+        clientName={analytics?.clientName}
+        institutionName={analytics?.institutionName}
+        linkageStatus={analytics?.linkageStatus}
+        returnUrl={analytics?.returnUrl}
       />
-      <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container mx-auto px-4">
-          <div className="ory-auth-scope w-full max-w-md mx-auto">
-            <Suspense fallback={<LoadingFallback />}>
-              <RecoveryFlow searchParams={props.searchParams} />
-            </Suspense>
-          </div>
-        </div>
-      </main>
+      <OryRecoveryCard
+        flow={flow}
+        dynamicConfig={dynamicConfig}
+        loginHref={loginHref}
+      />
     </>
+  );
+}
+
+export default async function ForgotPasswordPage(props: OryPageParams) {
+  return (
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4">
+        <div className="ory-auth-scope w-full max-w-md mx-auto">
+          <Suspense fallback={<LoadingFallback />}>
+            <RecoveryFlow searchParams={props.searchParams} />
+          </Suspense>
+        </div>
+      </div>
+    </main>
   );
 }
