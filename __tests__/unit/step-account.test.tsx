@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -92,8 +92,8 @@ describe("StepAccount", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     mockToastError.mockReset();
-    vi.spyOn(global, "fetch").mockResolvedValue(
-      new Response("", { status: 200 }),
+    vi.spyOn(global, "fetch").mockImplementation(() =>
+      Promise.resolve(new Response("", { status: 200 })),
     );
   });
 
@@ -139,12 +139,13 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible email format error and does not continue", async () => {
-    const user = userEvent.setup();
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
-    await user.type(screen.getByLabelText("Correo electrónico *"), "correo");
-    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "correo" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findAllByText("Ingresa un correo electrónico válido"),
@@ -153,24 +154,22 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible confirm email mismatch error and does not continue", async () => {
-    const user = userEvent.setup();
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(
-      screen.getByLabelText("Confirmar correo *"),
-      "otro@example.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
-    await user.type(
-      screen.getByLabelText("Confirmar contraseña *"),
-      "GovFlow92817Z!",
-    );
-    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "otro@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findByText("Los correos electrónicos no coinciden"),
@@ -179,24 +178,22 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible weak password error and does not continue", async () => {
-    const user = userEvent.setup();
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(
-      screen.getByLabelText("Confirmar correo *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "abcdefghij");
-    await user.type(
-      screen.getByLabelText("Confirmar contraseña *"),
-      "abcdefghij",
-    );
-    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "abcdefghij" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "abcdefghij" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findByText(
@@ -274,24 +271,22 @@ describe("StepAccount", () => {
   });
 
   it("shows a visible confirm password mismatch error and does not continue", async () => {
-    const user = userEvent.setup();
     const onNext = vi.fn();
     renderStepAccount({ onNext });
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(
-      screen.getByLabelText("Confirmar correo *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
-    await user.type(
-      screen.getByLabelText("Confirmar contraseña *"),
-      "GovFlow92818Z!",
-    );
-    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92818Z!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findByText("Las contraseñas no coinciden"),

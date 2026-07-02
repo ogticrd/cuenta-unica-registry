@@ -70,6 +70,11 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
+Object.defineProperty(window, "scrollTo", {
+  writable: true,
+  value: vi.fn(),
+});
+
 // Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(),
