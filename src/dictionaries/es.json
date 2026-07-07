@@ -119,7 +119,11 @@
     "unknown": "Ha ocurrido un error inesperado, por favor inténtelo más tarde.",
     "liveness": {
       "noMatch": "No se ha podido validar su identidad con la JCE. Intente nuevamente o actualice su foto en la JCE.",
-      "lowConfidence": "No pudimos completar la verificación facial. Intenta nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable."
+      "lowConfidence": "No pudimos completar la verificación facial. Intente nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable.",
+      "cooldown": "Ha agotado los intentos disponibles por el momento. Espere {time} antes de intentar nuevamente.",
+      "invalidSession": "La sesión de verificación expiró o no es válida. Inicie el proceso nuevamente.",
+      "service": "No pudimos iniciar la verificación facial en este momento. Intente nuevamente más tarde.",
+      "verificationRequired": "Debe completar la verificación facial antes de crear la cuenta."
     },
     "recaptcha": {
       "issues": "Al parecer el reCaptcha no ha validado correctamente su solicitud, refresque e intente nuevamente",
@@ -131,7 +135,13 @@
     },
     "createIdentity": "Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.",
     "decryption": "Error al desencriptar:",
-    "noEnv": "Variable de entorno inválida o no definida"
+    "noEnv": "Variable de entorno inválida o no definida",
+    "vid": {
+      "invalidParameters": "No pudimos iniciar la validación de identidad. Verifique el enlace e intente nuevamente.",
+      "invalidToken": "La sesión de validación no es válida o expiró. Inicie el proceso nuevamente.",
+      "invalidClient": "La aplicación solicitante no está autorizada para esta validación.",
+      "invalidRedirectUri": "La dirección de retorno no está autorizada para esta validación."
+    }
   },
   "terms": {
     "accept": "Aceptar términos y políticas de privacidad",

@@ -20,6 +20,13 @@ const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
 };
 
 export async function validateRecaptcha(token: string) {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    process.env.RECAPTCHA_BYPASS_LOCAL === 'true'
+  ) {
+    return { isHuman: true };
+  }
+
   const variable = 'NEXT_PUBLIC_RECAPTCHA_SITE_KEY';
   const siteKey = process.env[variable];
 

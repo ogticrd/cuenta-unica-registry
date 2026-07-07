@@ -2,6 +2,7 @@
 
 import type { RegistrationFlow, VerificationFlow } from '@ory/client';
 import { redirect } from 'next/navigation';
+import * as Sentry from '@sentry/nextjs';
 
 import {
   findCitizen,
@@ -10,9 +11,17 @@ import {
   clearRecoverySession,
   deleteIdentityByCedula,
 } from '@/actions';
-import { createSearchParams } from '@/common/helpers';
+import { createSearchParams } from '@/common/helpers/create-search-params';
+import {
+  createBiometricSubject,
+  hasCompletedBiometricVerification,
+} from '@/common/helpers/biometric-state';
 import { ory } from '@/common/lib/ory';
 import { State } from '@/types';
+
+function getSafeErrorName(error: unknown) {
+  return error instanceof Error ? error.name : typeof error;
+}
 
 async function verify(email: string): Promise<VerificationFlow> {
   const flow = await ory
@@ -71,6 +80,17 @@ export async function registerAccount(
     return { message: 'errors.recovery.sessionExpired', meta };
   }
 
+  const hasBiometricVerification = await hasCompletedBiometricVerification(
+    createBiometricSubject({
+      source: 'registration',
+      cedula,
+    }),
+  );
+
+  if (!hasBiometricVerification) {
+    return { message: 'errors.liveness.verificationRequired', meta };
+  }
+
   if (isRecoveryMode) {
     try {
       const deleted = await deleteIdentityByCedula(cedula);
@@ -79,7 +99,11 @@ export async function registerAccount(
         return { message: 'errors.recovery.deleteFailed', meta };
       }
     } catch (error) {
-      console.error('Failed to delete identity during recovery:', error);
+      Sentry.captureMessage('registration_recovery_identity_delete_failed', {
+        level: 'error',
+        tags: { code: 'recovery_delete_failed' },
+        extra: { errorName: getSafeErrorName(error) },
+      });
       await clearRecoverySession();
       return { message: 'errors.recovery.deleteFailed', meta };
     }
@@ -119,7 +143,14 @@ export async function registerAccount(
     })
     .then((res) => res.data)
     .catch<RegistrationFlow>((err) => {
-      console.error('[Registration] Error:', err?.response?.data);
+      Sentry.captureMessage('registration_flow_update_failed', {
+        level: 'error',
+        tags: { code: 'registration_flow_update_failed' },
+        extra: {
+          errorName: getSafeErrorName(err),
+          status: err?.response?.status,
+        },
+      });
       return err.response?.data;
     });
 

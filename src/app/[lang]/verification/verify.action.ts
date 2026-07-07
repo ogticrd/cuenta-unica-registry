@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 
-import { createSearchParams } from '@/common/helpers';
+import { createSearchParams } from '@/common/helpers/create-search-params';
 import { ory } from '@/common/lib/ory';
 import { setCookie } from '@/actions';
 

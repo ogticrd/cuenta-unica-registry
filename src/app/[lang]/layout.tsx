@@ -1,12 +1,7 @@
-import { GoogleTagManager } from '@next/third-parties/google';
 import { ReCaptchaProvider } from 'next-recaptcha-v3';
-import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 
 import LandingChica from '@public/assets/landingChica.svg';
-import '@aws-amplify/ui-react/styles.css';
-import '@public/fonts/poppins_wght.css';
-import '@/styles/globals.css';
 
 import BoxContentCenter from '@/components/elements/boxContentCenter';
 import ThemeRegistry from '@/components/themes/ThemeRegistry';
@@ -20,64 +15,45 @@ import { Locale } from '@/i18n-config';
 import Footer from '@/components/layout/footer';
 import NavBar from '@/components/layout/navBar';
 
-export const metadata: Metadata = {
-  title: 'Cuenta Única - Registro',
-  description: 'Plataforma de Registro para creación de tu Cuenta Única',
-  keywords:
-    'Cuenta Única, Registro, Plataforma de Autenticación, Gobierno Dominicano, República Dominicana',
-};
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-};
-
 type Props = { children: React.ReactNode; params: Promise<{ lang: string }> };
 
-export default async function RootLayout({ children, params }: Props) {
+export default async function LanguageLayout({ children, params }: Props) {
   const { lang } = await params;
   const intl = await getDictionary(lang as Locale);
 
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? '';
-
-  // Get the current pathname to check if it's the vid route
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') ?? '';
   const isVidRoute = pathname.includes('/vid');
 
   return (
-    <html lang={lang}>
-      <GoogleTagManager gtmId={gtmId} />
+    <>
+      <OfficialHeader />
 
-      <body suppressHydrationWarning={true}>
-        <OfficialHeader />
+      <ThemeRegistry>
+        <LanguageProvider intl={intl}>
+          {!isVidRoute && <NavBar intl={intl} />}
 
-        <ThemeRegistry>
-          <LanguageProvider intl={intl}>
-            {!isVidRoute && <NavBar intl={intl} />}
+          <div style={{ padding: '50px 0px' }}>
+            <ReCaptchaProvider language={lang} useEnterprise>
+              <SnackAlert>
+                <BoxContentCenter>
+                  <CardAuth
+                    title={intl.common.title}
+                    landing={LandingChica}
+                    landingWidth={312}
+                    landingHeight={267}
+                  >
+                    {children}
+                  </CardAuth>
+                </BoxContentCenter>
+              </SnackAlert>
+            </ReCaptchaProvider>
+          </div>
 
-            <div style={{ padding: '50px 0px' }}>
-              <ReCaptchaProvider language={lang} useEnterprise>
-                <SnackAlert>
-                  <BoxContentCenter>
-                    <CardAuth
-                      title={intl.common.title}
-                      landing={LandingChica}
-                      landingWidth={312}
-                      landingHeight={267}
-                    >
-                      {children}
-                    </CardAuth>
-                  </BoxContentCenter>
-                </SnackAlert>
-              </ReCaptchaProvider>
-            </div>
-
-            <UserFeedback />
-            {!isVidRoute && <Footer intl={intl} />}
-          </LanguageProvider>
-        </ThemeRegistry>
-      </body>
-    </html>
+          <UserFeedback />
+          {!isVidRoute && <Footer intl={intl} />}
+        </LanguageProvider>
+      </ThemeRegistry>
+    </>
   );
 }

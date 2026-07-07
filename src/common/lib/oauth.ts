@@ -1,7 +1,7 @@
 'use server';
 
 import { Configuration, OAuth2Api } from '@ory/client';
-import { unwrap } from '@/common/helpers';
+import { unwrap } from '@/common/helpers/unwrap';
 
 const adminBackend = new OAuth2Api(
   new Configuration({
