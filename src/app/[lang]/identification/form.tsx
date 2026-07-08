@@ -67,8 +67,8 @@ export function Form() {
       const message = localizeString(intl, state.message) || state.message;
 
       Sentry.captureMessage(message, {
-        user: { id: watch('cedula') },
-        extra: { state, error: state?.message },
+        tags: { form: 'identification' },
+        extra: { error: state?.message },
         level: 'error',
       });
 

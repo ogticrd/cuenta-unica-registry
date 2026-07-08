@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-import { createSearchParams } from '@/common/helpers';
+import { createSearchParams } from '@/common/helpers/create-search-params';
 import { ory } from '@/common/lib/ory';
 import { Form } from './form';
 

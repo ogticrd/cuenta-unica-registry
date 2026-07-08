@@ -66,8 +66,8 @@ export function Form({ cedula, flow, returnTo, isRecoveryMode }: FormProps) {
       const message = localizeString(intl, state.message) || state.message;
 
       Sentry.captureMessage(message, {
-        user: { id: state?.meta?.cedula, email: watch('email') },
-        extra: { state, error: state?.message },
+        tags: { form: 'register' },
+        extra: { error: state?.message },
         level: 'error',
       });
 

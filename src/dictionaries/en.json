@@ -119,7 +119,11 @@
     "unknown": "An unexpected error has occurred, please try again later.",
     "liveness": {
       "noMatch": "We could not validate your identity with the JCE. Try again or update your photo at the JCE.",
-      "lowConfidence": "We couldn't complete the facial verification. Try again in a well-lit place, with your face centered and a stable connection."
+      "lowConfidence": "We couldn't complete the facial verification. Try again in a well-lit place, with your face centered and a stable connection.",
+      "cooldown": "You have used the available attempts for now. Wait {time} before trying again.",
+      "invalidSession": "The verification session expired or is not valid. Start the process again.",
+      "service": "We could not start the facial verification right now. Please try again later.",
+      "verificationRequired": "You must complete facial verification before creating the account."
     },
     "recaptcha": {
       "issues": "It seems the reCaptcha has not correctly validated your request, refresh and try again",
@@ -127,15 +131,17 @@
     },
     "code": {
       "badUrl": "The code link is incorrect or has expired.",
-      "wrong": "The code is incorrect or has expired."
+      "wrong": "The code is incorrect or has expired.",
+      "invalidOrUsed": "The verification code is invalid or has already been used. Please try again."
     },
     "createIdentity": "An error occurred trying to create the citizen account. Please, try again later.",
     "decryption": "Error decrypting:",
     "noEnv": "Invalid or undefined environment variable",
     "vid": {
-      "invalidParameters": "Invalid parameters",
-      "invalidClient": "Invalid OAuth2 client",
-      "invalidRedirectUri": "Invalid redirect_uri"
+      "invalidParameters": "We could not start identity validation. Check the link and try again.",
+      "invalidToken": "The validation session is invalid or expired. Start the process again.",
+      "invalidClient": "The requesting application is not authorized for this validation.",
+      "invalidRedirectUri": "The return address is not authorized for this validation."
     }
   },
   "terms": {

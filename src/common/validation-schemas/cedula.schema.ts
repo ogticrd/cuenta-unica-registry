@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
-import { validLuhn } from '../helpers';
+import { validLuhn } from '@/common/helpers/validations';
 
 export const createCedulaSchema = ({ validations, errors }: Context['intl']) =>
   z.object({

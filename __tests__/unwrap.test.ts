@@ -18,7 +18,7 @@ describe('unwrap', () => {
       'errors.liveness.lowConfidence',
     );
     expect(localizeString(es, 'errors.liveness.lowConfidence')).toBe(
-      'No pudimos completar la verificación facial. Intenta nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable.',
+      'No pudimos completar la verificación facial. Intente nuevamente en un lugar bien iluminado, con el rostro centrado y una conexión estable.',
     );
   });
 

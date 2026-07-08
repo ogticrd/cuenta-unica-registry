@@ -6,7 +6,6 @@ import AppBar from '@mui/material/AppBar';
 import Dialog from '@mui/material/Dialog';
 import { Box } from '@mui/material';
 import Image from 'next/image';
-import React from 'react';
 
 import LogoWhite from '@public/assets/logo-white.svg';
 import styles from './styles.module.css';
@@ -14,27 +13,28 @@ import styles from './styles.module.css';
 import { LivenessQuickStart } from '@/components/LivenessQuickStart';
 import { ButtonApp } from '@/components/elements/button';
 import { useLanguage } from '@/app/[lang]/provider';
-import { LIVENESS_TIMEOUT_SECONDS } from '@/common';
 import theme from '@/components/themes/theme';
 import { Transition } from './Transition';
 
 type Props = {
   cedula: string;
+  source: 'registration' | 'vid';
+  flowId?: string;
   setOpen: (isOpen: boolean) => void;
   redirectUri?: string;
   state?: string;
 };
 
-export function LivenessModal({ cedula, setOpen, redirectUri, state }: Props) {
+export function LivenessModal({
+  cedula,
+  source,
+  flowId,
+  setOpen,
+  redirectUri,
+  state,
+}: Props) {
   const closeModal = () => setOpen(false);
   const { intl } = useLanguage();
-
-  React.useEffect(() => {
-    const ms = LIVENESS_TIMEOUT_SECONDS * 1000;
-    const timeout = setTimeout(() => window.location.reload(), ms);
-
-    return () => clearTimeout(timeout);
-  });
 
   return (
     <div>
@@ -73,7 +73,13 @@ export function LivenessModal({ cedula, setOpen, redirectUri, state }: Props) {
           </div>
         </AppBar>
         <div className={styles.liveness_container}>
-          <LivenessQuickStart cedula={cedula} redirectUri={redirectUri} state={state} />
+          <LivenessQuickStart
+            cedula={cedula}
+            source={source}
+            flowId={flowId}
+            redirectUri={redirectUri}
+            state={state}
+          />
         </div>
       </Dialog>
     </div>

@@ -122,6 +122,9 @@ jobs:
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},
             BACKOFFICE_API_URL=${{ vars.BACKOFFICE_API_URL }},
             BACKOFFICE_API_KEY=${{ secrets.BACKOFFICE_API_KEY }},
+            BIOMETRIC_MAX_ATTEMPTS=${{ vars.BIOMETRIC_MAX_ATTEMPTS }},
+            BIOMETRIC_COOLDOWN_SECONDS=${{ vars.BIOMETRIC_COOLDOWN_SECONDS }},
+            BIOMETRIC_STATE_TTL_SECONDS=${{ vars.BIOMETRIC_STATE_TTL_SECONDS }}
           flags: |
             --min-instances=${{ inputs.min_instances }}
             --max-instances=${{ inputs.max_instances }}
