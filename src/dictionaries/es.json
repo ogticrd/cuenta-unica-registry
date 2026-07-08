@@ -131,7 +131,8 @@
     },
     "code": {
       "badUrl": "Enlace del código es incorrecto o ha expirado.",
-      "wrong": "El código es incorrecto o ha expirado."
+      "wrong": "El código es incorrecto o ha expirado.",
+      "invalidOrUsed": "El código de verificación no es válido o ya ha sido utilizado. Por favor, inténtelo de nuevo."
     },
     "createIdentity": "Ha ocurrido un error intentando crear la cuenta ciudadana. Por favor, inténtelo más tarde.",
     "decryption": "Error al desencriptar:",

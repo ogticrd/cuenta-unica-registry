@@ -23,6 +23,9 @@ export async function verifyAccount(prev: State, form: FormData) {
   if ('ui' in verification) {
     for (const { type, text } of verification.ui.messages ?? []) {
       if (type === 'error') {
+        if (text === 'The verification code is invalid or has already been used. Please try again.') {
+          return { message: 'errors.code.invalidOrUsed' };
+        }
         return { message: text };
       }
     }
