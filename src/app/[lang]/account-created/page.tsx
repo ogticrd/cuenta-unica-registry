@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,17 +12,19 @@ import styles from './page.module.css';
 import { GridContainer, GridItem } from '@/components/elements/grid';
 import { TextBody } from '@/components/elements/typography';
 import { getDictionary } from '@/dictionaries';
-import { CitizenCookie } from '@/types';
 import { Locale } from '@/i18n-config';
 import { getCookie } from '@/actions';
 
+type AccountCreatedData = { name: string; id: string };
 type Props = { params: Promise<{ lang: Locale }> };
 
 export default async function ConfirmationPage({ params }: Props) {
-  const [intl, citizen] = await Promise.all([
+  const [intl, accountData] = await Promise.all([
     getDictionary((await params).lang),
-    getCookie<CitizenCookie>('citizen'),
+    getCookie<AccountCreatedData>('account_created'),
   ]);
+
+  if (!accountData) return redirect('/identification');
 
   const sites = [
     {
@@ -68,12 +71,12 @@ export default async function ConfirmationPage({ params }: Props) {
           }}
           gutterBottom
         >
-          {intl.registered.header.replace('{name}', citizen?.name || '')}
+          {intl.registered.header.replace('{name}', accountData.name || '')}
         </Typography>
         <TextBody textCenter gutterBottom>
           <span
             dangerouslySetInnerHTML={{
-              __html: intl.registered.body.replace('{id}', citizen?.id || ''),
+              __html: intl.registered.body.replace('{id}', accountData.id || ''),
             }}
           />
         </TextBody>

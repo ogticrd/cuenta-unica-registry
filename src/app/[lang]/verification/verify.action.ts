@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation';
 
 import { createSearchParams } from '@/common/helpers/create-search-params';
 import { ory } from '@/common/lib/ory';
-import { setCookie } from '@/actions';
+import { setCookie, getCookie, removeCookie } from '@/actions';
+import { CitizenCookie } from '@/types';
 
 type State = { message: string };
 
@@ -38,6 +39,15 @@ export async function verifyAccount(prev: State, form: FormData) {
 
     redirect(`/verification?${search}`);
   }
+
+  // Save citizen data for the account-created page before clearing registration cookies
+  const citizen = await getCookie<CitizenCookie>('citizen');
+  if (citizen) {
+    await setCookie('account_created', { name: citizen.name, id: citizen.id });
+  }
+
+  // Clear registration flow cookies to prevent back-navigation into the flow
+  await removeCookie('citizen');
 
   setCookie('_sid', 0);
   redirect('/account-created');
