@@ -3,7 +3,7 @@
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
 import { ThemeProvider } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 
@@ -80,7 +80,7 @@ export function LivenessQuickStart({
 
     const messageKey =
       data.message?.startsWith('errors.') ||
-      data.message?.startsWith('liveness.')
+        data.message?.startsWith('liveness.')
         ? data.message
         : BIOMETRIC_ERROR_MESSAGE_KEY_BY_CODE[data.code];
 
@@ -379,18 +379,29 @@ export function LivenessQuickStart({
         />
       ) : (
         <div className={styles.liveness_container}>
-          <ButtonApp
+          <Button
             onClick={() => fetchCreateLiveness()}
             disabled={!canRetry || retryAfterSeconds > 0}
-            notFullWidth
+            variant="contained"
+            color="info"
+            size="large"
+            sx={{
+              color: "#fff",
+              borderRadius: "999px",
+              "&.Mui-disabled": {
+                backgroundColor: "#2962ff",
+                color: "#fff",
+                opacity: 0.7,
+              },
+            }}
           >
             {retryAfterSeconds > 0
               ? `${intl.liveness.error.tryAgain} (${formatRetryAfterSeconds(
-                  retryAfterSeconds,
-                  displayLocale,
-                )})`
+                retryAfterSeconds,
+                displayLocale,
+              )})`
               : intl.liveness.error.tryAgain}
-          </ButtonApp>
+          </Button>
         </div>
       )}
     </ThemeProvider>
