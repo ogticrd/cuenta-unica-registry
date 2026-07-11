@@ -636,6 +636,29 @@
       "description": "The integration of Cuenta Única Ciudadana will offer a simple and secure login to the Dominican citizen, will minimize attack vectors (such as creating multiple accounts, identity theft, etc.) and many other benefits. The integration process will be fast and completely painless because we have tools designed to support you, all based on industry authentication and authorization standards (OAuth and OpenID Connect). Contact us for more information!",
       "contact_msg": "To request more information, write to us at"
     },
+    "government_partners": {
+      "title": "Available services with <highlight>Cuenta Única Ciudadana</highlight>",
+      "subtitle": "Explore the institutions and platforms you can access using your unique profile.",
+      "visit_portal": "Visit portal",
+      "partners": {
+        "gob_do": {
+          "name": "gob.do",
+          "description": "Official portal of the Dominican State. Find information about government services, procedures, news, and central government transparency in one place."
+        },
+        "soy_yo_rd": {
+          "name": "Soy Yo RD",
+          "description": "National Digital Identity Platform. Allows citizens to securely and efficiently validate and share their identity with public and private institutions."
+        },
+        "mejora_regulatoria": {
+          "name": "Mejora Regulatoria",
+          "description": "Initiative to optimize and simplify State procedures. Consult the regulatory framework, provide opinions on new regulations, and promote administrative transparency."
+        },
+        "becas": {
+          "name": "Beca tu Futuro",
+          "description": "National Scholarship System. Discover educational opportunities, apply for national and international scholarships, and take the next step in your academic training."
+        }
+      }
+    },
     "faq": {
       "title": "Frequently Asked Questions",
       "subtitle": "Find solutions to the most common technical problems with your Cuenta Única Ciudadana.",

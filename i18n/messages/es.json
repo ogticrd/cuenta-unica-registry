@@ -592,7 +592,7 @@
     },
     "what_is_cuc": {
       "title": "¿Qué es <highlight>Cuenta Única Ciudadana?</highlight>",
-      "body": "Este es el nuevo mecanismo con el que te podrás identificar ante los portales y aplicaciones del estado dominicano. Tu número cédula de identidad y electoral será tu identificador siempre. Además, el proceso de registro te acompañará en la creación de una contraseña super segura, que no haya sido comprometida en internet y difícil de adivinar por personas malintencionadas o robots. Con esto ya no será necesario crear múltiples cuentas o recordar viejos correos electrónicos. Para autenticarte de forma digital y remota ante alguna entidad gubernamental en la República Dominicana solo necesitarás tu Cuenta Única Ciudadana. ¡Regístra la tuya ahora!"
+      "body": "Este es el nuevo mecanismo con el que te podrás identificar ante los portales y aplicaciones del estado Dominicano. Tu número cédula de identidad y electoral será tu identificador siempre. Además, el proceso de registro te acompañará en la creación de una contraseña super segura, que no haya sido comprometida en internet y difícil de adivinar por personas malintencionadas o robots. Con esto ya no será necesario crear múltiples cuentas o recordar viejos correos electrónicos. Para autenticarte de forma digital y remota ante alguna entidad gubernamental en la República Dominicana solo necesitarás tu Cuenta Única Ciudadana. ¡Regístra la tuya ahora!"
     },
     "steps": {
       "title": "Pasos para <highlight>registrarte</highlight>",
@@ -633,8 +633,31 @@
     "government": {
       "title": "Entidad Gubernamental",
       "subtitle": "¿Quieres activar la Cuenta Única Ciudadana para tu portal web o aplicación?",
-      "description": "La integración de Cuenta Única Ciudadana ofrecerá un inicio de sesión simple y seguro al ciudadano dominicano, reducirá al mínimo los vectores de ataques (como creación de multicuentas, suplantación de identidad, etc) y muchos otros beneficios. El proceso de integración será rápido y completamente indoloro gracias a que disponemos de herramientas que hemos diseñado para apoyarte, todas están basadas en los estándares de autenticación y autorización de la industria (OAuth y OpenID Connect). ¡Contáctanos para más información!",
+      "description": "La integración de Cuenta Única Ciudadana ofrecerá un inicio de sesión simple y seguro al ciudadano Dominicano, reducirá al mínimo los vectores de ataques (como creación de multicuentas, suplantación de identidad, etc) y muchos otros beneficios. El proceso de integración será rápido y completamente indoloro gracias a que disponemos de herramientas que hemos diseñado para apoyarte, todas están basadas en los estándares de autenticación y autorización de la industria (OAuth y OpenID Connect). ¡Contáctanos para más información!",
       "contact_msg": "Para solicitar más información, escríbenos a"
+    },
+    "government_partners": {
+      "title": "Servicios disponibles con <highlight>Cuenta Única Ciudadana</highlight>",
+      "subtitle": "Explora las instituciones y plataformas a las que puedes acceder utilizando tu perfil único.",
+      "visit_portal": "Visitar portal",
+      "partners": {
+        "gob_do": {
+          "name": "gob.do",
+          "description": "Portal oficial del Estado Dominicano. Encuentra información sobre servicios gubernamentales, trámites, noticias y transparencia del gobierno central en un solo lugar."
+        },
+        "soy_yo_rd": {
+          "name": "Soy Yo RD",
+          "description": "Plataforma Nacional de Identidad Digital. Permite a los ciudadanos validar y compartir su identidad de forma segura y eficiente con instituciones públicas y privadas."
+        },
+        "mejora_regulatoria": {
+          "name": "Mejora Regulatoria",
+          "description": "Iniciativa para optimizar y simplificar los trámites del Estado. Consulta el marco normativo, opina sobre nuevas regulaciones y promueve la transparencia administrativa."
+        },
+        "becas": {
+          "name": "Beca tu Futuro",
+          "description": "Sistema Nacional de Becas. Descubre oportunidades educativas, aplica a becas nacionales e internacionales, y da el siguiente paso en tu formación académica."
+        }
+      }
     },
     "faq": {
       "title": "Preguntas Frecuentes",
