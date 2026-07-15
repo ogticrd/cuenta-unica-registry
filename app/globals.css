@@ -85,12 +85,6 @@
   }
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
 /* ===================================================================
    AWS Amplify FaceLiveness — CUC Dark Modal Theme Overrides
    =================================================================== */
