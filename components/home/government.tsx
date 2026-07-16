@@ -11,7 +11,7 @@ export function GovernmentEntities() {
         <div className="relative bg-[#6db0e2] dark:bg-[#112240] dark:border dark:border-slate-800 rounded-xl overflow-hidden">
           {/* Background Dot Pattern (Top Left) */}
           <div
-            className="absolute top-0 left-0 w-[400px] h-[400px] opacity-15 pointer-events-none"
+            className="absolute top-0 left-0 w-[400px] h-[400px] opacity-25 pointer-events-none"
             style={{
               backgroundImage: "radial-gradient(#0A3366 2px, transparent 2px)",
               backgroundSize: "24px 24px",
