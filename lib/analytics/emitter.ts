@@ -12,6 +12,11 @@ import {
   resolveAnalyticsEnvironment,
   resolveAnalyticsProjectId,
 } from "./environment";
+import {
+  getAnalyticsIngressEventsUrl,
+  getAnalyticsIngressHeaderName,
+  getAnalyticsIngressHeaderValue,
+} from "./ingress-config";
 
 export interface AnalyticsEventInput {
   eventName: string;
@@ -19,6 +24,7 @@ export interface AnalyticsEventInput {
   occurredAt?: string;
   environment?: string;
   projectId?: string;
+  accountId?: string;
   journeyId?: string;
   clientId?: string;
   clientName?: string;
@@ -42,6 +48,7 @@ type AnalyticsPayload = {
   occurredAt: string;
   environment: string;
   projectId: string;
+  accountId?: string;
   journeyId: string;
   clientId: string;
   clientName?: string;
@@ -59,27 +66,6 @@ type AnalyticsPayload = {
 };
 
 const DEFAULT_TIMEOUT_MS = 1200;
-
-function getIngressUrl() {
-  const baseUrl =
-    process.env.ANALYTICS_INGRESS_URL ||
-    process.env.ANALYTICS_API_BASE_URL ||
-    "";
-
-  if (!baseUrl) {
-    return "";
-  }
-
-  return baseUrl.endsWith("/events") ? baseUrl : `${baseUrl}/events`;
-}
-
-function getIngressHeaderName() {
-  return process.env.ANALYTICS_INGRESS_API_KEY_HEADER || "Authorization";
-}
-
-function getIngressHeaderValue() {
-  return process.env.ANALYTICS_INGRESS_API_KEY || "";
-}
 
 function buildPayload(
   input: AnalyticsEventInput,
@@ -100,6 +86,7 @@ function buildPayload(
     occurredAt: input.occurredAt ?? new Date().toISOString(),
     environment: resolveAnalyticsEnvironment(input.environment),
     projectId: resolveAnalyticsProjectId(input.projectId),
+    ...(input.accountId ? { accountId: input.accountId } : {}),
     journeyId: input.journeyId ?? context.journeyId,
     clientId,
     ...((input.clientName ?? context.clientName)
@@ -125,10 +112,10 @@ export async function emitAnalyticsEvent(
   input: AnalyticsEventInput,
   fallback?: Partial<Pick<AnalyticsContext, "entryPath" | "returnUrl">>,
 ) {
-  const ingressUrl = getIngressUrl();
+  const ingressUrl = getAnalyticsIngressEventsUrl();
 
   if (!ingressUrl) {
-    return;
+    return false;
   }
   if (!isCanonicalEventName(input.eventName)) {
     throw new Error(`Unsupported analytics event: ${input.eventName}`);
@@ -140,14 +127,15 @@ export async function emitAnalyticsEvent(
   try {
     const payload = buildPayload(input, context);
     const controller = new AbortController();
+    const ingressHeaderValue = getAnalyticsIngressHeaderValue();
     timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
     const response = await fetch(ingressUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(getIngressHeaderValue()
-          ? { [getIngressHeaderName()]: getIngressHeaderValue() }
+        ...(ingressHeaderValue
+          ? { [getAnalyticsIngressHeaderName()]: ingressHeaderValue }
           : {}),
       },
       body: JSON.stringify(payload),
@@ -161,14 +149,18 @@ export async function emitAnalyticsEvent(
         response.status,
         body,
       );
+      return false;
     }
+
+    return true;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       console.error("[analytics] Ingress request timed out");
-      return;
+      return false;
     }
 
     console.error("[analytics] Failed to emit event:", error);
+    return false;
   } finally {
     if (timeout) {
       clearTimeout(timeout);

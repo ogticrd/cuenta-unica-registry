@@ -729,7 +729,6 @@ describe("registration session analytics context", () => {
 
 describe("analytics emitter", () => {
   const originalAnalyticsIngressUrl = process.env.ANALYTICS_INGRESS_URL;
-  const originalAnalyticsApiBaseUrl = process.env.ANALYTICS_API_BASE_URL;
   const originalAnalyticsIngressApiKey = process.env.ANALYTICS_INGRESS_API_KEY;
   const originalAnalyticsIngressApiKeyHeader =
     process.env.ANALYTICS_INGRESS_API_KEY_HEADER;
@@ -738,7 +737,6 @@ describe("analytics emitter", () => {
 
   beforeEach(() => {
     delete process.env.ANALYTICS_INGRESS_URL;
-    delete process.env.ANALYTICS_API_BASE_URL;
     delete process.env.ANALYTICS_INGRESS_API_KEY;
     delete process.env.ANALYTICS_INGRESS_API_KEY_HEADER;
     process.env.ANALYTICS_ENVIRONMENT = "dev";
@@ -749,7 +747,6 @@ describe("analytics emitter", () => {
 
   afterEach(() => {
     restoreEnvValue("ANALYTICS_INGRESS_URL", originalAnalyticsIngressUrl);
-    restoreEnvValue("ANALYTICS_API_BASE_URL", originalAnalyticsApiBaseUrl);
     restoreEnvValue(
       "ANALYTICS_INGRESS_API_KEY",
       originalAnalyticsIngressApiKey,
@@ -769,10 +766,12 @@ describe("analytics emitter", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
-    await emitAnalyticsEvent({
-      eventName: "journey.registration.entered",
-      source: "registry-journey",
-    });
+    await expect(
+      emitAnalyticsEvent({
+        eventName: "journey.registration.entered",
+        source: "registry-journey",
+      }),
+    ).resolves.toBe(false);
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -786,23 +785,26 @@ describe("analytics emitter", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { emitAnalyticsEvent } = await import("@/lib/analytics/emitter");
-    await emitAnalyticsEvent(
-      {
-        eventName: "registration.identification.succeeded",
-        source: "registry-app",
-        occurredAt: "2026-06-24T12:00:00.000Z",
-        clientId: "registry-web",
-        identityId: "identity-123",
-        sessionId: "session-123",
-        flowId: "flow-123",
-        oryFlowType: "registration",
-        outcome: "succeeded",
-        errorCode: "none",
-        step: "identification",
-        metadata: { cedulaValid: true },
-      },
-      { entryPath: "/register", returnUrl: "https://client.example" },
-    );
+    await expect(
+      emitAnalyticsEvent(
+        {
+          eventName: "registration.identification.succeeded",
+          source: "registry-app",
+          occurredAt: "2026-06-24T12:00:00.000Z",
+          accountId: "acct_test",
+          clientId: "registry-web",
+          identityId: "identity-123",
+          sessionId: "session-123",
+          flowId: "flow-123",
+          oryFlowType: "registration",
+          outcome: "succeeded",
+          errorCode: "none",
+          step: "identification",
+          metadata: { cedulaValid: true },
+        },
+        { entryPath: "/register", returnUrl: "https://client.example" },
+      ),
+    ).resolves.toBe(true);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, options] = fetchMock.mock.calls[0] as unknown as [
@@ -818,6 +820,7 @@ describe("analytics emitter", () => {
       eventName: "registration.identification.succeeded",
       environment: "dev",
       projectId: "registry-dev",
+      accountId: "acct_test",
       clientId: "registry-web",
       linkageStatus: "linked",
       returnUrl: "https://client.example",
@@ -866,13 +869,13 @@ describe("analytics emitter", () => {
         eventName: "support.help.opened",
         source: "registry-journey",
       }),
-    ).resolves.toBeUndefined();
+    ).resolves.toBe(false);
     await expect(
       emitAnalyticsEvent({
         eventName: "support.help.message_sent",
         source: "registry-journey",
       }),
-    ).resolves.toBeUndefined();
+    ).resolves.toBe(false);
 
     expect(errorSpy).toHaveBeenCalledWith(
       "[analytics] Ingress rejected event",
