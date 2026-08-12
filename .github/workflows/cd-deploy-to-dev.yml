@@ -43,5 +43,5 @@ jobs:
       min_instances: '0'
       max_instances: '5'
       cpu: '1'
-      memory: 256Mi
+      memory: 512Mi
     secrets: inherit
