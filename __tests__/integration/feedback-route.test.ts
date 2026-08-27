@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockEmitAnalyticsEvent } = vi.hoisted(() => ({
   mockEmitAnalyticsEvent: vi.fn(),
@@ -36,6 +36,16 @@ const validPayload = {
   comments: "No puedo completar la verificacion de mi cuenta.",
 };
 
+const originalAnalyticsEnvironment = process.env.ANALYTICS_ENVIRONMENT;
+
+function restoreEnvValue(key: string, value: string | undefined) {
+  if (value === undefined) {
+    delete process.env[key];
+  } else {
+    process.env[key] = value;
+  }
+}
+
 function expectedAccountId(cedula: string) {
   return `acct_${createHash("sha256")
     .update(`cedula:${cedula}`)
@@ -53,12 +63,18 @@ describe("feedback route", () => {
     delete process.env.ANALYTICS_INGRESS_URL;
     delete process.env.ANALYTICS_INGRESS_API_KEY;
     delete process.env.ANALYTICS_INGRESS_API_KEY_HEADER;
+    delete process.env.ANALYTICS_ENVIRONMENT;
+  });
+
+  afterEach(() => {
+    restoreEnvValue("ANALYTICS_ENVIRONMENT", originalAnalyticsEnvironment);
   });
 
   it("stores support requests before delivering redacted analytics", async () => {
     process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
     process.env.ANALYTICS_INGRESS_API_KEY = "support-secret";
     process.env.ANALYTICS_INGRESS_API_KEY_HEADER = "x-api-key";
+    process.env.ANALYTICS_ENVIRONMENT = "staging";
     const fetchMock = vi.fn(async () => new Response("ok", { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
     mockEmitAnalyticsEvent.mockResolvedValueOnce(true);
@@ -80,6 +96,7 @@ describe("feedback route", () => {
     expect(options.headers["x-api-key"]).toBe("support-secret");
     expect(supportPayload).toEqual({
       requestId: body.requestId,
+      environment: "staging",
       accountId: expectedAccountId(validPayload.cedula),
       oryIdentityId: null,
       channel: "registration_report",
@@ -93,6 +110,7 @@ describe("feedback route", () => {
       {
         eventName: "support.requested",
         source: "registry-app",
+        environment: "staging",
         accountId: expectedAccountId(validPayload.cedula),
         step: "support",
         outcome: "succeeded",
@@ -111,6 +129,57 @@ describe("feedback route", () => {
     expect(
       JSON.stringify(mockEmitAnalyticsEvent.mock.calls[0][0]),
     ).not.toContain(validPayload.comments);
+  });
+
+  it("uses the same normalized support-origin environment for storage and analytics", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
+    process.env.ANALYTICS_INGRESS_API_KEY = "support-secret";
+    process.env.ANALYTICS_ENVIRONMENT = "development";
+    const fetchMock = vi.fn(async () => new Response("ok", { status: 201 }));
+    vi.stubGlobal("fetch", fetchMock);
+    mockEmitAnalyticsEvent.mockResolvedValueOnce(true);
+
+    const response = await POST(request(validPayload));
+
+    expect(response.status).toBe(200);
+    const [, options] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      { body: string },
+    ];
+    const supportPayload = JSON.parse(options.body);
+
+    expect(supportPayload.environment).toBe("dev");
+    expect(mockEmitAnalyticsEvent.mock.calls[0][0]).toMatchObject({
+      environment: "dev",
+    });
+  });
+
+  it("rejects unsupported analytics environments before support storage or analytics", async () => {
+    process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
+    process.env.ANALYTICS_INGRESS_API_KEY = "support-secret";
+    process.env.ANALYTICS_ENVIRONMENT = "qa";
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await POST(request(validPayload));
+
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({
+      success: false,
+      code: "SERVER_ERROR",
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(mockEmitAnalyticsEvent).not.toHaveBeenCalled();
+    expect(JSON.stringify(errorSpy.mock.calls)).not.toContain(
+      validPayload.comments,
+    );
+    expect(JSON.stringify(errorSpy.mock.calls)).not.toContain(
+      validPayload.email,
+    );
+    expect(JSON.stringify(errorSpy.mock.calls)).not.toContain(
+      validPayload.cedula,
+    );
   });
 
   it("returns NOT_CONFIGURED when support storage configuration is incomplete", async () => {
@@ -217,6 +286,7 @@ describe("feedback route", () => {
       RequestInit,
     ];
     const supportPayload = JSON.parse(supportOptions.body as string);
+    expect(supportPayload.environment).toBe("dev");
     expect(supportPayload.accountId).toBe(expectedAccountId("40225926449"));
     expect(supportPayload.registrationStep).toBe("liveness");
     expect(JSON.stringify(supportPayload)).not.toContain(validPayload.cedula);

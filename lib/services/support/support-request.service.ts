@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { AnalyticsEnvironment } from "@/lib/analytics/environment";
 import {
   getAnalyticsApiBaseUrl,
   getAnalyticsIngressHeaderName,
@@ -12,6 +13,7 @@ export type SupportRequestChannel = "registration_report";
 
 export type SubmitSupportRequestInput = {
   requestId: string;
+  environment: AnalyticsEnvironment;
   accountId: string;
   oryIdentityId: string | null;
   channel: SupportRequestChannel;

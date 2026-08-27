@@ -2,6 +2,10 @@ import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import {
+  type AnalyticsEnvironment,
+  resolveAnalyticsEnvironment,
+} from "@/lib/analytics/environment";
 import { feedbackApiPayloadSchema } from "@/lib/schemas/feedback/feedback.schema";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
 import { submitSupportRequest } from "@/lib/services/support/support-request.service";
@@ -33,6 +37,7 @@ function registrationStepFromSession(session: RegistrationSession | null) {
 async function emitSupportRequestedEvent(params: {
   accountId: string;
   requestId: string;
+  environment: AnalyticsEnvironment;
   registrationStep: string;
   commentLength: number;
 }) {
@@ -40,6 +45,7 @@ async function emitSupportRequestedEvent(params: {
     {
       eventName: "support.requested",
       source: "registry-app",
+      environment: params.environment,
       accountId: params.accountId,
       step: "support",
       outcome: "succeeded",
@@ -78,11 +84,13 @@ export async function POST(request: Request) {
     }
 
     const registrationStep = registrationStepFromSession(registrationSession);
+    const environment = resolveAnalyticsEnvironment();
     const accountId = buildAccountIdFromCedula(
       registrationSession?.cedula ?? parsed.data.cedula,
     );
     const supportWrite = await submitSupportRequest({
       requestId,
+      environment,
       accountId,
       oryIdentityId: null,
       channel: "registration_report",
@@ -106,6 +114,7 @@ export async function POST(request: Request) {
     const emitted = await emitSupportRequestedEvent({
       accountId,
       requestId,
+      environment,
       registrationStep,
       commentLength: parsed.data.comments.length,
     });
