@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { RekognitionClientConfig } from "@aws-sdk/client-rekognition";
 import { RekognitionClient } from "@aws-sdk/client-rekognition";
 
 const GOOGLE_IDENTITY_TOKEN_URL =
@@ -7,6 +8,8 @@ const GOOGLE_IDENTITY_TOKEN_URL =
 const DEFAULT_WEB_IDENTITY_AUDIENCE = "sts.amazonaws.com";
 const DEFAULT_ROLE_SESSION_NAME = "cuenta-unica-registry";
 const CREDENTIAL_EXPIRATION_BUFFER_MS = 5 * 60 * 1000;
+const AWS_IAM_ROLE_ARN_PATTERN =
+  /^arn:aws(?:-[a-z]+)*:iam::\d{12}:role\/[\w+=,.@/-]+$/;
 
 type AwsSessionCredentials = {
   accessKeyId: string;
@@ -127,6 +130,12 @@ function getCredentials() {
   const roleArn = getOptionalEnv("AWS_ROLE_ARN");
 
   if (roleArn) {
+    if (!AWS_IAM_ROLE_ARN_PATTERN.test(roleArn)) {
+      throw new Error(
+        "AWS_ROLE_ARN must be an IAM role ARN like arn:aws:iam::<account-id>:role/<role-name>. For local development, leave AWS_ROLE_ARN empty and use AWS_PROFILE.",
+      );
+    }
+
     return () => getFederatedCredentials(roleArn);
   }
 
@@ -135,12 +144,16 @@ function getCredentials() {
 
 let client: RekognitionClient | null = null;
 
+export function createRekognitionClientConfig(): RekognitionClientConfig {
+  return {
+    region: getRequiredEnv("AWS_REGION"),
+    credentials: getCredentials(),
+  };
+}
+
 export function getRekognitionClient() {
   if (!client) {
-    client = new RekognitionClient({
-      region: getRequiredEnv("AWS_REGION"),
-      credentials: getCredentials(),
-    });
+    client = new RekognitionClient(createRekognitionClientConfig());
   }
 
   return client;
