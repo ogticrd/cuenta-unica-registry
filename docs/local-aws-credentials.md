@@ -195,6 +195,17 @@ La respuesta debe mostrar un ARN parecido a:
 arn:aws:sts::280686762883:assumed-role/CuentaUnicaRegistryLocalDeveloperRole/...
 ```
 
+Ese ARN es solo la salida esperada de validacion. No copiarlo a `AWS_ROLE_ARN`
+en `.env`.
+
+Para validar el permiso exacto que usa la app al iniciar liveness:
+
+```powershell
+aws rekognition create-face-liveness-session --settings 'ChallengePreferences=[{Type=FaceMovementAndLightChallenge}]' --profile cuenta-unica-dev --region us-east-1
+```
+
+La respuesta debe incluir un `SessionId`. La sesion queda sin usar y expira.
+
 ### Configurar `.env`
 
 En `.env`, dejar:
@@ -202,6 +213,7 @@ En `.env`, dejar:
 ```env
 AWS_REGION=us-east-1
 AWS_PROFILE=cuenta-unica-dev
+AWS_ROLE_ARN=
 ```
 
 No agregar credenciales AWS permanentes al `.env`.

@@ -243,11 +243,12 @@ that, the AWS SDK reuses temporary credentials until they expire.
 Before testing the UI, you can verify that the app profile can reach AWS:
 
 ```powershell
-aws rekognition list-collections --profile cuenta-unica-dev --region us-east-1
+aws rekognition create-face-liveness-session --settings 'ChallengePreferences=[{Type=FaceMovementAndLightChallenge}]' --profile cuenta-unica-dev --region us-east-1
 ```
 
-This command may return an empty list. That is fine. The useful part is that it
-does not fail with an authentication or authorization error.
+This command creates a short-lived, unused liveness session and returns a
+`SessionId`. The useful part is that it does not fail with an authentication or
+authorization error.
 
 ## Troubleshooting
 
@@ -330,7 +331,12 @@ If this command works, confirm your `.env` has:
 ```env
 AWS_REGION=us-east-1
 AWS_PROFILE=cuenta-unica-dev
+AWS_ROLE_ARN=
 ```
+
+Do not copy the `arn:aws:sts::...:assumed-role/...` value from
+`get-caller-identity` into `AWS_ROLE_ARN`. That ARN is proof that the local
+profile is already assuming the role. `AWS_ROLE_ARN` is only for Cloud Run OIDC.
 
 Then restart the dev server:
 
