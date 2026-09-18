@@ -45,7 +45,7 @@
     "title": "Verificación",
     "subtitle": "Prueba de vida",
     "description": "A continuación validaremos tu identidad mediante una verificación facial y prueba de vida. Asegúrate de cumplir con las siguientes condiciones:",
-    "unavailable": "¡Lo sentimos! No podemos validar tu identidad en estos momentos. Por favor, intentalo más tarde.",
+    "unavailable": "¡Lo sentimos! En estos momentos, el servicio de validación de identidad de la Junta Central Electoral (JCE) no está disponible. Por favor, inténtalo más tarde.",
     "camera": "Utilizar un dispositivo que posea <b>cámara frontal</b> integrada.",
     "face": "Permitir que tomemos capturas de <b>tu rostro.</b>",
     "photosensitivity": "Esta verificación muestra <b>luces de colores.</b> Tenga cuidado si es fotosensible."
@@ -78,6 +78,7 @@
   },
   "alreadyRegistered": "¿Ya tienes una cuenta?",
   "actions": {
+    "retry": "VOLVER A INTENTAR",
     "confirm": "CONFIRMAR",
     "start": "INICIAR PROCESO",
     "login": "INGRESAR",
