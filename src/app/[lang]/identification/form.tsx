@@ -14,6 +14,7 @@ import { createCedulaSchema } from '@/common/validation-schemas';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
+import { ButtonApp } from '@/components/elements/button';
 import { identifyAccount } from './identify.action';
 import { localizeString } from '@/common/helpers';
 import { SubmitButton } from './submit.button';
@@ -27,6 +28,17 @@ import { Steps } from '@/components/Steps';
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
+  const [attempt, setAttempt] = React.useState(0);
+
+  return (
+    <IdentificationForm
+      key={attempt}
+      onRetry={() => setAttempt((current) => current + 1)}
+    />
+  );
+}
+
+function IdentificationForm({ onRetry }: { onRetry: () => void }) {
   const { AlertError } = useSnackAlert();
   const allowRef = React.useRef(false);
   const { intl } = useLanguage();
@@ -126,9 +138,10 @@ export function Form() {
 
   if (state?.message === 'step2.unavailable') {
     return (
-      <Box role="alert" sx={{ width: '100%', py: 4, textAlign: 'center' }}>
+      <Box sx={{ width: '100%', py: 4, textAlign: 'center' }}>
         <Image src="/assets/verification.svg" alt="" width={190} height={162} />
         <Typography
+          role="alert"
           color="primary"
           fontWeight={500}
           fontSize="14px"
@@ -136,6 +149,9 @@ export function Form() {
         >
           {intl.step2.unavailable}
         </Typography>
+        <Box sx={{ mt: 4 }}>
+          <ButtonApp onClick={onRetry}>{intl.actions.retry}</ButtonApp>
+        </Box>
       </Box>
     );
   }

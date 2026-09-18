@@ -102,6 +102,21 @@ describe('identification outage state', () => {
       ).toBeNull();
       expect(findCitizen).toHaveBeenCalledTimes(1);
       expect(setCookie).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByRole('button', { name: intl.actions.retry }));
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.getByRole('textbox')).toBeTruthy();
+      expect(screen.getByText(intl.step1.title)).toBeTruthy();
+      expect(findCitizen).toHaveBeenCalledTimes(1);
+
+      await submitCedula(intl);
+      await waitFor(() => {
+        expect(screen.queryByRole('textbox')).toBeNull();
+      });
+      expect(screen.getByRole('alert').textContent).toBe(
+        intl.step2.unavailable,
+      );
+      expect(findCitizen).toHaveBeenCalledTimes(2);
     },
   );
 
