@@ -36,7 +36,7 @@ export async function identifyAccount(
   const citizen = await findCitizen(cedula).catch(() => null);
 
   if (!citizen) {
-    return { message: 'errors.cedula.invalid' };
+    return { message: 'step2.unavailable' };
   }
 
   await setCookie('citizen', citizen);
