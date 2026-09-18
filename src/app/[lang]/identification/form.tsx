@@ -1,11 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextField, Tooltip } from '@mui/material';
+import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import React, { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
+import Image from 'next/image';
 import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -21,6 +22,7 @@ import theme from '@/components/themes/theme';
 import { useRecaptchaToken } from '@/hooks';
 import { useLanguage } from '../provider';
 import { LOGIN_URL } from '@/common';
+import { Steps } from '@/components/Steps';
 
 type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
@@ -72,7 +74,9 @@ export function Form() {
         level: 'error',
       });
 
-      AlertError(message);
+      if (state.message !== 'step2.unavailable') {
+        AlertError(message);
+      }
     }
     // eslint-disable-next-line
   }, [state]);
@@ -120,61 +124,92 @@ export function Form() {
     ],
   );
 
+  if (state?.message === 'step2.unavailable') {
+    return (
+      <Box role="alert" sx={{ width: '100%', py: 4, textAlign: 'center' }}>
+        <Image src="/assets/verification.svg" alt="" width={190} height={162} />
+        <Typography
+          color="primary"
+          fontWeight={500}
+          fontSize="14px"
+          sx={{ mt: 4 }}
+        >
+          {intl.step2.unavailable}
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <form action={action} onSubmit={handleSubmit}>
-      <input type="hidden" {...register('token')} />
-      <input type="hidden" {...register('cedula')} />
+    <Box sx={{ width: '100%' }}>
+      <Steps step={0} />
 
-      <GridContainer>
-        <GridItem lg={12} md={12}>
-          <Tooltip title={intl.step1.cedulaTooltip}>
-            <TextField
-              required
-              onChange={onChange}
-              label={intl.step1.cedula}
-              placeholder="***-**00000-0"
-              autoComplete="off"
-              error={Boolean(formState.errors.cedula)}
-              helperText={formState.errors?.cedula?.message}
-              fullWidth
-              slotProps={{
-                input: {
-                  inputComponent: CustomTextMask,
-                  endAdornment: <LoadingAdornment />,
-                },
+      <Box sx={{ my: 4 }}>
+        <Typography
+          color="primary"
+          textAlign="center"
+          fontWeight={500}
+          fontSize="14px"
+        >
+          {intl.step1.description}
+        </Typography>
+      </Box>
 
-                htmlInput: {
-                  inputMode: 'numeric',
-                },
-              }}
-            />
-          </Tooltip>
-        </GridItem>
+      <form action={action} onSubmit={handleSubmit}>
+        <input type="hidden" {...register('token')} />
+        <input type="hidden" {...register('cedula')} />
 
-        <GridItem lg={12} md={12} sx={{ my: 3 }}>
-          <SubmitButton />
-        </GridItem>
-      </GridContainer>
+        <GridContainer>
+          <GridItem lg={12} md={12}>
+            <Tooltip title={intl.step1.cedulaTooltip}>
+              <TextField
+                required
+                onChange={onChange}
+                label={intl.step1.cedula}
+                placeholder="***-**00000-0"
+                autoComplete="off"
+                error={Boolean(formState.errors.cedula)}
+                helperText={formState.errors?.cedula?.message}
+                fullWidth
+                slotProps={{
+                  input: {
+                    inputComponent: CustomTextMask,
+                    endAdornment: <LoadingAdornment />,
+                  },
 
-      <GridContainer>
-        <GridItem md={12} lg={12}>
-          <TextBodyTiny textCenter>
-            <span style={{ color: theme.palette.primary.main }}>
-              {intl.alreadyRegistered}
-            </span>{' '}
-            <Link href={LOGIN_URL}>
-              <span
-                style={{
-                  color: theme.palette.info.main,
-                  textDecoration: 'underline',
+                  htmlInput: {
+                    inputMode: 'numeric',
+                  },
                 }}
-              >
-                {intl.actions.loginHere}
-              </span>
-            </Link>
-          </TextBodyTiny>
-        </GridItem>
-      </GridContainer>
-    </form>
+              />
+            </Tooltip>
+          </GridItem>
+
+          <GridItem lg={12} md={12} sx={{ my: 3 }}>
+            <SubmitButton />
+          </GridItem>
+        </GridContainer>
+
+        <GridContainer>
+          <GridItem md={12} lg={12}>
+            <TextBodyTiny textCenter>
+              <span style={{ color: theme.palette.primary.main }}>
+                {intl.alreadyRegistered}
+              </span>{' '}
+              <Link href={LOGIN_URL}>
+                <span
+                  style={{
+                    color: theme.palette.info.main,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {intl.actions.loginHere}
+                </span>
+              </Link>
+            </TextBodyTiny>
+          </GridItem>
+        </GridContainer>
+      </form>
+    </Box>
   );
 }
