@@ -78,6 +78,8 @@ beforeEach(() => {
   process.env.LIVENESS_SIMILARITY_THRESHOLD = 95;
   process.env.JCE_PHOTO_API = 'https://jce.example.test';
   process.env.JCE_PHOTO_API_KEY = 'test-key';
+  process.env.CEDULA_TOKEN_API = 'https://citizens.example.test/token';
+  process.env.CITIZENS_API_AUTH_KEY = 'test-auth-key';
   setRequestCookies({
     citizen: encodeCookiePayload({ id: TEST_CEDULA, name: 'Ana' }),
   });
@@ -167,7 +169,9 @@ describe('biometric API routes', () => {
 
     vi.setSystemTime(new Date('2026-07-07T10:00:30.000Z'));
 
-    const cooldownResponse = await postBiometricSession(createPostRequest(true));
+    const cooldownResponse = await postBiometricSession(
+      createPostRequest(true),
+    );
     const cooldownBody = await cooldownResponse.json();
     applyBiometricCookie(cooldownResponse);
 
@@ -313,7 +317,10 @@ describe('biometric API routes', () => {
     mockRekognitionClient(client);
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue(new Response(null, { status: 404 })),
+      vi
+        .fn()
+        .mockResolvedValueOnce(Response.json({ access_token: 'test-token' }))
+        .mockResolvedValueOnce(new Response(null, { status: 404 })),
     );
 
     const createResponse = await postBiometricSession(createPostRequest());
@@ -386,7 +393,10 @@ describe('biometric API routes', () => {
     mockRekognitionClient(client);
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue(new Response(new Uint8Array([4, 5, 6]))),
+      vi
+        .fn()
+        .mockResolvedValueOnce(Response.json({ access_token: 'test-token' }))
+        .mockResolvedValueOnce(new Response(new Uint8Array([4, 5, 6]))),
     );
 
     const createResponse = await postBiometricSession(createPostRequest());
@@ -427,7 +437,10 @@ describe('biometric API routes', () => {
     mockRekognitionClient(client);
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue(new Response(new Uint8Array([4, 5, 6]))),
+      vi
+        .fn()
+        .mockResolvedValueOnce(Response.json({ access_token: 'test-token' }))
+        .mockResolvedValueOnce(new Response(new Uint8Array([4, 5, 6]))),
     );
 
     const createResponse = await postBiometricSession(createPostRequest());
@@ -452,5 +465,22 @@ describe('biometric API routes', () => {
       similarity: 99,
     });
     expect(client.compareFaces).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      'https://citizens.example.test/token',
+      expect.objectContaining({
+        method: 'POST',
+        body: 'grant_type=client_credentials',
+        headers: {
+          Authorization: 'Basic test-auth-key',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      new URL(`https://jce.example.test/${TEST_CEDULA}/photo?api-key=test-key`),
+      { headers: { Authorization: 'Bearer test-token' } },
+    );
   });
 });

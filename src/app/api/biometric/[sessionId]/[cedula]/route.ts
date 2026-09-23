@@ -24,6 +24,7 @@ import {
   type BiometricErrorCode,
   type BiometricFailureResponse,
 } from '@/common/biometric-contract';
+import { fetchCitizensAuthHeaders } from '@/common/helpers/citizens-auth';
 
 type Props = { params: Promise<{ sessionId: string; cedula: string }> };
 
@@ -41,10 +42,7 @@ function createErrorResponse({
     code,
     message: BIOMETRIC_ERROR_MESSAGE_KEY_BY_CODE[code],
   };
-  const response = NextResponse.json(
-    body,
-    { status },
-  );
+  const response = NextResponse.json(body, { status });
 
   if (state) {
     response.cookies.set(createBiometricStateCookie(state));
@@ -247,7 +245,9 @@ const fetchPhotoBuffer = async (cedula: string) => {
   const photoUrl = new URL(`${process.env.JCE_PHOTO_API!}/${cedula}/photo`);
   photoUrl.searchParams.append('api-key', process.env.JCE_PHOTO_API_KEY!);
 
-  return fetch(photoUrl).then((res) => {
+  const headers = await fetchCitizensAuthHeaders();
+
+  return fetch(photoUrl, { headers }).then((res) => {
     if (!res.ok) {
       throw new Error('Citizen photo unavailable');
     }

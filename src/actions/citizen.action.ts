@@ -3,38 +3,19 @@
 import {
   CitizensBasicInformationResponse,
   CitizensBirthInformationResponse,
-  CitizensTokenResponse,
 } from '../types';
 import { unwrap } from '@/common/helpers/unwrap';
-
-const fetchAuthHeaders = async () => {
-  const tokenUrl = process.env.CEDULA_TOKEN_API;
-  const authKey = process.env.CITIZENS_API_AUTH_KEY;
-
-  if (!tokenUrl || !authKey) {
-    return {};
-  }
-
-  return fetch(tokenUrl, {
-    method: 'POST',
-    body: 'grant_type=client_credentials',
-    headers: {
-      Authorization: `Basic ${authKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    cache: 'no-cache',
-  })
-    .then<CitizensTokenResponse>(unwrap)
-    .then(({ access_token }) => ({
-      Authorization: `Bearer ${access_token}`,
-    }));
-};
+import { fetchCitizensAuthHeaders } from '@/common/helpers/citizens-auth';
 
 export async function findCitizen(cedula: string, validated?: boolean) {
   const baseURL = process.env.CEDULA_API ?? process.env.CITIZENS_API_BASE_URL!;
-  const apiKey = process.env.CEDULA_API_KEY ?? process.env.CITIZENS_INFO_API_KEY!;
+  const apiKey =
+    process.env.CEDULA_API_KEY ?? process.env.CITIZENS_INFO_API_KEY!;
 
-  const headers = await fetchAuthHeaders();
+  const headers =
+    process.env.CEDULA_TOKEN_API && process.env.CITIZENS_API_AUTH_KEY
+      ? await fetchCitizensAuthHeaders()
+      : {};
 
   const citizenUrl = new URL(`${baseURL}/${cedula}/info/basic`);
   citizenUrl.searchParams.append('api-key', apiKey);
@@ -45,7 +26,10 @@ export async function findCitizen(cedula: string, validated?: boolean) {
   const { names, id, firstSurname, secondSurname, gender } = citizen;
 
   if (validated) {
-    const headers = await fetchAuthHeaders();
+    const headers =
+      process.env.CEDULA_TOKEN_API && process.env.CITIZENS_API_AUTH_KEY
+        ? await fetchCitizensAuthHeaders()
+        : {};
     const birthUrl = new URL(`${baseURL}/${cedula}/info/birth`);
     birthUrl.searchParams.append('api-key', apiKey);
     const { payload: birth } = await fetch(birthUrl, {
