@@ -16,11 +16,12 @@ import styles from '../liveness/styles.module.css';
 
 type Props = {
   cedula: string;
+  flowId: string;
   redirectUri?: string;
   state?: string;
 };
 
-export function Form({ cedula, redirectUri, state }: Props) {
+export function Form({ cedula, flowId, redirectUri, state }: Props) {
   const [open, setOpen] = useState(false);
   const { intl } = useLanguage();
 
@@ -62,6 +63,8 @@ export function Form({ cedula, redirectUri, state }: Props) {
         {open ? (
           <LivenessModal
             cedula={cedula}
+            source="vid"
+            flowId={flowId}
             setOpen={setOpen}
             redirectUri={redirectUri}
             state={state}

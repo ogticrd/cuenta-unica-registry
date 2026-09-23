@@ -119,7 +119,13 @@ export function Form({ cedula }: Props) {
 
         <GridItem lg={12} md={12}>
           <ButtonApp submit>{intl.actions.start}</ButtonApp>
-          {open ? <LivenessModal cedula={cedula} setOpen={setOpen} /> : null}
+          {open ? (
+            <LivenessModal
+              cedula={cedula}
+              source="registration"
+              setOpen={setOpen}
+            />
+          ) : null}
         </GridItem>
       </GridContainer>
 

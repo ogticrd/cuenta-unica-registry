@@ -1,17 +1,21 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
 
-import { getDictionary } from '@/dictionaries';
+import { serializeSignedCookieValue } from '@/common/helpers/signed-cookie';
+import { getDictionary, type Dictionary } from '@/dictionaries';
 import { Locale } from '@/i18n-config';
 
 const VID_FLOW_PREFIX = 'vid_flow_';
 const VID_FLOW_TTL = 120;
+const VID_FLOW_COOKIE_CONTEXT = 'vid-flow-cookie:v1';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const lang = (searchParams.get('lang') as Locale) || 'es';
   const baseUrl = getBaseUrl(request);
+  const intl = await getDictionary(lang);
 
   const params = {
     access_token: searchParams.get('access_token'),
@@ -20,30 +24,23 @@ export async function GET(request: NextRequest) {
     state: searchParams.get('state') ?? undefined,
   };
 
-  // Validate all params are present
   if (!params.access_token || !params.client_id || !params.redirect_uri) {
-    const errorMessage = encodeURIComponent(
-      'Missing required parameters: access_token, client_id, and redirect_uri are required',
-    );
+    const errorMessage = encodeURIComponent(intl.errors.vid.invalidParameters);
     return NextResponse.redirect(
       new URL(`/${lang}/vid?error=${errorMessage}`, baseUrl),
     );
   }
 
   try {
-    const intl = await getDictionary(lang);
-
-    // Dynamic import to avoid bundling issues
     const { createInputSchema } = await import('@/app/[lang]/vid/input.schema');
 
     const result = await createInputSchema(intl).safeParseAsync(params);
 
     if (!result.success) {
-      // Extract first error message from Zod validation
-      // Zod uses 'issues' array, not 'errors'
-      const firstIssue = result.error.issues?.[0];
-      const errorMessage =
-        firstIssue?.message || result.error.message || 'Invalid parameters';
+      const errorMessage = resolveSafeVidErrorMessage(
+        result.error.issues?.[0]?.message,
+        intl,
+      );
       const encodedError = encodeURIComponent(errorMessage);
       return NextResponse.redirect(
         new URL(`/${lang}/vid?error=${encodedError}`, baseUrl),
@@ -52,7 +49,6 @@ export async function GET(request: NextRequest) {
 
     const { citizen, redirectUri, state } = result.data;
 
-    // Create flow
     const flowId = randomUUID();
     const flowData = {
       cedula: citizen.id,
@@ -65,7 +61,7 @@ export async function GET(request: NextRequest) {
     const cookieStore = await cookies();
     cookieStore.set(
       `${VID_FLOW_PREFIX}${flowId}`,
-      btoa(JSON.stringify(flowData)),
+      serializeSignedCookieValue(flowData, VID_FLOW_COOKIE_CONTEXT),
       {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -75,22 +71,44 @@ export async function GET(request: NextRequest) {
       },
     );
 
-    // Redirect to clean URL
     return NextResponse.redirect(
       new URL(`/${lang}/vid?flow=${flowId}`, baseUrl),
     );
   } catch (error) {
-    console.error('VID flow creation failed:', error);
-    // Extract error message from caught error
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : 'An error occurred during validation';
+    Sentry.captureMessage('vid_flow_creation_failed', {
+      level: 'error',
+      tags: { code: 'vid_flow_creation_failed' },
+      extra: { errorName: getSafeErrorName(error) },
+    });
+
+    const errorMessage = resolveSafeVidErrorMessage(error, intl);
     const encodedError = encodeURIComponent(errorMessage);
     return NextResponse.redirect(
       new URL(`/${lang}/vid?error=${encodedError}`, baseUrl),
     );
   }
+}
+
+function getSafeErrorName(error: unknown) {
+  return error instanceof Error ? error.name : typeof error;
+}
+
+function resolveSafeVidErrorMessage(
+  error: unknown,
+  intl: Dictionary,
+): string {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  const safeMessages = new Set([
+    intl.errors.cedula.invalid,
+    intl.errors.vid.invalidParameters,
+    intl.errors.vid.invalidToken,
+    intl.errors.vid.invalidClient,
+    intl.errors.vid.invalidRedirectUri,
+  ]);
+
+  return safeMessages.has(message)
+    ? message
+    : intl.errors.vid.invalidParameters;
 }
 
 /**

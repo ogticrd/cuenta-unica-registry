@@ -14,6 +14,7 @@ import LoadingBackdrop from '@/components/elements/loadingBackdrop';
 import { useSnackAlert } from '@/components/elements/alert';
 import { TextBody } from '@/components/elements/typography';
 import { ButtonApp } from '@/components/elements/button';
+import { localizeString } from '@/common/helpers';
 import { verifyAccount } from './verify.action';
 import { useLanguage } from '../provider';
 
@@ -36,25 +37,25 @@ export function Form({ flow, returnTo, code }: Props) {
     resolver: zodResolver(createVerificationSchema(intl)),
   });
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const [otp, setOtp] = useState(parseOTP(code));
   const inputRefs = useRef(otp.map(createRef<HTMLInputElement>));
 
-  const [state, action] = useActionState(verifyAccount, { message: '' });
+  const [state, action, pending] = useActionState(verifyAccount, { message: '' });
 
   useEffect(() => {
     if (state?.message) {
-      setLoading(false);
       setError(true);
 
-      Sentry.captureMessage(state.message, {
+      const message = localizeString(intl, state.message) || state.message;
+
+      Sentry.captureMessage(message, {
         extra: { state, error: state?.message, flow },
         level: 'error',
       });
 
-      AlertError(state.message);
+      AlertError(message);
     }
     // eslint-disable-next-line
   }, [state]);
@@ -93,7 +94,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
   return (
     <>
-      {loading ? <LoadingBackdrop /> : null}
+      {pending ? <LoadingBackdrop /> : null}
 
       <form action={action}>
         <input type="hidden" name="flow" value={flow} />
@@ -165,7 +166,7 @@ export function Form({ flow, returnTo, code }: Props) {
               </Typography>
             </div>
             <br />
-            <ButtonApp variant="outlined" disabled={!otp.every(Boolean)} submit>
+            <ButtonApp variant="outlined" disabled={!otp.every(Boolean) || pending} submit>
               {intl.actions.verifyAccount}
             </ButtonApp>
           </GridItem>

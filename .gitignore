@@ -187,6 +187,9 @@ Temporary Items
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/.playwright-cli/
 
 # next.js
 /.next/
@@ -285,6 +288,7 @@ web_modules/
 
 # dotenv environment variable files
 .env
+creds.env
 .env.development.local
 .env.test.local
 .env.production.local

@@ -2,8 +2,11 @@
 
 import { cookies } from 'next/headers';
 
+import { parseSignedCookieValue } from '@/common/helpers/signed-cookie';
+
 const VID_FLOW_PREFIX = 'vid_flow_';
 const VID_FLOW_TTL = 120; // seconds
+const VID_FLOW_COOKIE_CONTEXT = 'vid-flow-cookie:v1';
 
 export type VidFlowData = {
   cedula: string;
@@ -12,6 +15,25 @@ export type VidFlowData = {
   state?: string;
   createdAt: number;
 };
+
+function isVidFlowData(value: unknown): value is VidFlowData {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const data = value as Partial<VidFlowData>;
+
+  return (
+    typeof data.cedula === 'string' &&
+    data.cedula.replace(/\D/g, '') === data.cedula &&
+    data.cedula.length === 11 &&
+    typeof data.citizenName === 'string' &&
+    typeof data.redirectUri === 'string' &&
+    (data.state === undefined || typeof data.state === 'string') &&
+    typeof data.createdAt === 'number' &&
+    Number.isFinite(data.createdAt)
+  );
+}
 
 export async function getVidFlow(flowId: string): Promise<VidFlowData | null> {
   if (!flowId || !/^[0-9a-f-]{36}$/i.test(flowId)) {
@@ -26,7 +48,15 @@ export async function getVidFlow(flowId: string): Promise<VidFlowData | null> {
   }
 
   try {
-    const data = JSON.parse(atob(cookie.value)) as VidFlowData;
+    const data = parseSignedCookieValue(
+      cookie.value,
+      VID_FLOW_COOKIE_CONTEXT,
+      isVidFlowData,
+    );
+
+    if (!data) {
+      return null;
+    }
 
     // Check if flow has expired (extra safety beyond cookie TTL)
     if (Date.now() - data.createdAt > VID_FLOW_TTL * 1000) {

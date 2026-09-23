@@ -27,11 +27,11 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
       const userinfoError = userinfo && 'error' in userinfo;
 
       if (!token?.active && (!userinfo || userinfoError)) {
-        throw new Error('Invalid access_token');
+        throw new Error(errors.vid.invalidToken);
       }
 
       if (token?.token_use === 'refresh_token') {
-        throw new Error('Invalid access_token');
+        throw new Error(errors.vid.invalidToken);
       }
 
       // Validate client_id against token audience or client_id claim
@@ -47,10 +47,10 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
 
       if (audList.length > 0) {
         if (!audList.includes(data.client_id)) {
-          throw new Error('Invalid OAuth2 client');
+          throw new Error(errors.vid.invalidClient);
         }
       } else if (token?.client_id && token.client_id !== data.client_id) {
-        throw new Error('Invalid OAuth2 client');
+        throw new Error(errors.vid.invalidClient);
       }
 
       // Extract identity from token
@@ -93,11 +93,11 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
       const tokenValidatedClient = token?.client_id === data.client_id;
 
       if (!client && !tokenValidatedClient) {
-        throw new Error('Invalid OAuth2 client');
+        throw new Error(errors.vid.invalidClient);
       }
 
       if (client && !client.redirect_uris?.includes(data.redirect_uri)) {
-        throw new Error('Invalid redirect_uri');
+        throw new Error(errors.vid.invalidRedirectUri);
       }
 
       return {

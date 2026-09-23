@@ -11,7 +11,7 @@ Sentry.init({
   // Add optional integrations for additional features
   integrations: [Sentry.replayIntegration({
     // Additional Replay configuration goes in here, for example:
-    maskAllText: false,
+    maskAllText: true,
     blockAllMedia: true,
   })],
 
@@ -36,9 +36,9 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Disable automatic PII collection by default.
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

@@ -130,6 +130,7 @@ export default async function VidPage({ params, searchParams }: Props) {
 
       <Form
         cedula={flowData.cedula}
+        flowId={search.flow}
         redirectUri={flowData.redirectUri}
         state={flowData.state}
       />
