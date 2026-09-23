@@ -3,7 +3,6 @@
 import React, { createContext, use, useState } from 'react';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import Grow from '@mui/material/Grow';
 
 // Snackbar state and methods interface
 interface SnackbarState {
@@ -68,23 +67,21 @@ const SnackAlert: React.FC<SnackAlertProps> = ({ children }) => {
       value={{ AlertError, AlertWarning, AlertSuccess }}
     >
       {children}
-      <Grow in={open} style={{ transformOrigin: 'bottom left' }}>
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={open}
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={`${vertical}-${horizontal}`}
+      >
+        <Alert
           onClose={handleClose}
-          key={`${vertical}-${horizontal}`}
+          severity={severity}
+          variant="filled"
+          sx={{ maxWidth: '37rem', lineHeight: '1.4rem' }}
         >
-          <Alert
-            onClose={handleClose}
-            severity={severity}
-            variant="filled"
-            sx={{ maxWidth: '37rem', lineHeight: '1.4rem' }}
-          >
-            {content}
-          </Alert>
-        </Snackbar>
-      </Grow>
+          {content}
+        </Alert>
+      </Snackbar>
     </SnackAlertContext.Provider>
   );
 };
