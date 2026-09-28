@@ -19,6 +19,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # ==== App specific variables (igual que antes) ====
+ARG NEXT_PUBLIC_APP_ENV=development
+ENV NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV}
+
 ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
 

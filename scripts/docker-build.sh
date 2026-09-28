@@ -8,6 +8,7 @@ AWS_EXPORTS_PATH=./src/amplifyconfiguration.json
  
 docker build \
   --secret id=AWS_EXPORTS_JSON,src=$AWS_EXPORTS_PATH \
+  --build-arg NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV \
   --build-arg SENTRY_ORG=$SENTRY_ORG \
   --build-arg SENTRY_PROJECT=$SENTRY_PROJECT \
   --build-arg SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN \
