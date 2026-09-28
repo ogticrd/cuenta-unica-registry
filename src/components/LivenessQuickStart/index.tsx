@@ -383,14 +383,17 @@ export function LivenessQuickStart({
             onClick={() => fetchCreateLiveness()}
             disabled={!canRetry || retryAfterSeconds > 0}
             variant="contained"
-            color="info"
             size="large"
             sx={{
-              color: "#fff",
+              backgroundColor: "#fff",
+              color: "var(--primary-color)",
               borderRadius: "999px",
+              "&:hover": {
+                backgroundColor: "#f3f6fb",
+              },
               "&.Mui-disabled": {
-                backgroundColor: "#2962ff",
-                color: "#fff",
+                backgroundColor: "#fff",
+                color: "var(--primary-color)",
                 opacity: 0.7,
               },
             }}
