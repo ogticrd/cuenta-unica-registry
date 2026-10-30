@@ -41,6 +41,7 @@ export function Form() {
 function IdentificationForm({ onRetry }: { onRetry: () => void }) {
   const { AlertError } = useSnackAlert();
   const allowRef = React.useRef(false);
+  const [validatingCedula, setValidatingCedula] = React.useState(false);
   const { intl } = useLanguage();
 
   const [state, action, pending] = useActionState(identifyAccount, undefined);
@@ -63,16 +64,15 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
     control,
   });
 
+  const cedula = watch('cedula') ?? '';
+  const isCedulaComplete = /^\d{11}$/.test(cedula);
+
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const cedula = target.value.replace(/-/g, '');
-    setValue('cedula', cedula);
+    setValue('cedula', cedula, { shouldDirty: true, shouldValidate: false });
 
     if (formState.errors.cedula) {
       clearErrors('cedula');
-    }
-
-    if (cedula.length === 11) {
-      trigger('cedula');
     }
   };
 
@@ -105,29 +105,35 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
       // Otherwise, intercept native submit while we validate
       e.preventDefault();
 
-      if (pending) return;
+      if (pending || validatingCedula) return;
 
-      // Ensure form is valid; trigger validation if needed
-      const isValid = formState.isValid || (await trigger());
-      if (!isValid) return;
+      setValidatingCedula(true);
 
-      // Ensure we have a fresh token before dispatching the server action
-      const validToken = hasFreshToken ? true : await ensureValidToken();
-      if (!validToken) {
-        AlertError(intl.errors.recaptcha.issues);
-        return;
+      try {
+        // Run all cedula validations only after the user submits the form.
+        const isValid = await trigger();
+        if (!isValid) return;
+
+        // Ensure we have a fresh token before dispatching the server action
+        const validToken = hasFreshToken ? true : await ensureValidToken();
+        if (!validToken) {
+          AlertError(intl.errors.recaptcha.issues);
+          return;
+        }
+
+        // Give React a tick to flush hidden input updates to the DOM
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+        // Re-submit natively so the form action context is preserved (useFormStatus works)
+        allowRef.current = true;
+        form?.requestSubmit();
+      } finally {
+        setValidatingCedula(false);
       }
-
-      // Give React a tick to flush hidden input updates to the DOM
-      await new Promise<void>((resolve) => setTimeout(resolve, 0));
-
-      // Re-submit natively so the form action context is preserved (useFormStatus works)
-      allowRef.current = true;
-      form?.requestSubmit();
     },
     [
       pending,
-      formState.isValid,
+      validatingCedula,
       trigger,
       ensureValidToken,
       hasFreshToken,
@@ -202,7 +208,9 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
           </GridItem>
 
           <GridItem lg={12} md={12} sx={{ my: 3 }}>
-            <SubmitButton />
+            <SubmitButton
+              disabled={!isCedulaComplete || validatingCedula || pending}
+            />
           </GridItem>
         </GridContainer>
 

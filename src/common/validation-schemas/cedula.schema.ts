@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
 import { Context } from '@/app/[lang]/provider';
-import { validLuhn } from '@/common/helpers/validations';
+import { validateCedula } from '@/actions/cedula-validation.action';
 
 export const createCedulaSchema = ({ validations, errors }: Context['intl']) =>
   z.object({
     cedula: z
       .string()
       .min(11, validations.cedula.min)
-      .max(11, validations.cedula.max),
-    // .refine(async (cedula) => validLuhn(cedula), {
-    //   message: errors.cedula.invalid,
-    // }),
+      .max(11, validations.cedula.max)
+      .refine(async (cedula) => validateCedula(cedula), {
+        message: errors.cedula.invalid,
+      }),
     token: z.string(),
   });

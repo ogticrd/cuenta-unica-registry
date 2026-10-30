@@ -9,6 +9,7 @@ import {
   setRecoverySession,
   validateRecaptcha,
 } from '@/actions';
+import { validateCedula } from '@/actions/cedula-validation.action';
 import { State } from '@/types';
 
 export async function startAccountRecovery(
@@ -26,6 +27,10 @@ export async function startAccountRecovery(
 
   if (!isHuman) {
     return { message: 'errors.recaptcha.validation' };
+  }
+
+  if (!(await validateCedula(cedula))) {
+    return { message: 'errors.cedula.invalid' };
   }
 
   // For recovery, we need to verify the account EXISTS (opposite of registration)

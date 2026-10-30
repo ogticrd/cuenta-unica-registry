@@ -2,7 +2,6 @@ import 'server-only';
 
 import z from 'zod';
 
-import { validLuhn } from '@/common/helpers/validations';
 import { Context } from '../provider';
 
 export const createInputSchema = ({ errors }: Context['intl']) =>
@@ -14,7 +13,8 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
       state: z.string().optional(),
     })
     .transform(async (data) => {
-      const { findCitizen, findIdentityById } = await import('@/actions');
+      const { findCitizen, findIdentityById, validateCedula } =
+        await import('@/actions');
       const { getOAuth2Client, introspectAccessToken, getUserInfoFromToken } =
         await import('@/common/lib/oauth');
 
@@ -81,12 +81,16 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
         normalize(traits?.preferred_username) ||
         normalize(identityId);
 
-      if (!cedula || cedula.length !== 11 || !(await validLuhn(cedula))) {
+      if (!cedula || !(await validateCedula(cedula))) {
         throw new Error(errors.cedula.invalid);
       }
 
       // Fetch citizen data from padron
-      const citizen = await findCitizen(cedula);
+      const citizen = await findCitizen(cedula).catch(() => null);
+
+      if (!citizen) {
+        throw new Error(errors.cedula.invalid);
+      }
 
       // Validate OAuth2 client and redirect_uri
       const client = await getOAuth2Client(data.client_id);
