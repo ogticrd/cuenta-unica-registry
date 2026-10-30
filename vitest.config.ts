@@ -1,4 +1,5 @@
-import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
+import { configDefaults, defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -7,25 +8,24 @@ export default defineConfig({
     alias: [
       {
         find: /^@\/common\/helpers\/rekognition$/,
-        replacement: new URL(
-          './__tests__/mocks/rekognition-helper.ts',
-          import.meta.url,
-        ).pathname,
+        replacement: fileURLToPath(
+          new URL('./__tests__/mocks/rekognition-helper.ts', import.meta.url),
+        ),
       },
       {
         find: '@sentry/nextjs',
-        replacement: new URL(
-          './__tests__/mocks/sentry-nextjs.ts',
-          import.meta.url,
-        ).pathname,
+        replacement: fileURLToPath(
+          new URL('./__tests__/mocks/sentry-nextjs.ts', import.meta.url),
+        ),
       },
       {
-        find: '@/',
-        replacement: new URL('./src/', import.meta.url).pathname,
+        find: '@',
+        replacement: fileURLToPath(new URL('./src', import.meta.url)),
       },
     ],
   },
   test: {
     environment: 'jsdom',
+    exclude: [...configDefaults.exclude, '**/.kilo/**'],
   },
 });
