@@ -120,7 +120,12 @@ export async function registerAccount(
     }
   }
 
-  const citizen = await findCitizen(cedula, true);
+  const citizen = await findCitizen(cedula, true).catch(() => null);
+
+  if (!citizen) {
+    return { message: 'errors.cedula.invalid', meta };
+  }
+
   const registration = await ory
     .updateRegistrationFlow({
       flow,
