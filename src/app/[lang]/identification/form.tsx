@@ -52,6 +52,7 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
     register,
     trigger,
     clearErrors,
+    setError,
     watch,
     control,
   } = useForm<CedulaForm>({
@@ -79,6 +80,10 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
   React.useEffect(() => {
     if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
+
+      if (state.message === 'errors.cedula.invalid') {
+        setError('cedula', { type: 'server', message });
+      }
 
       Sentry.captureMessage(message, {
         tags: { form: 'identification' },

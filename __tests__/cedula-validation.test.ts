@@ -14,12 +14,16 @@ afterEach(() => {
 });
 
 describe('cedula validation', () => {
-  it('accepts a cedula with a valid Luhn checksum', async () => {
+  it('keeps remote validation out of the client schema', async () => {
+    vi.stubEnv(
+      'CEDULA_VALIDATION_API',
+      'https://api.example.test/v3/cedulas',
+    );
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await createCedulaSchema(es).safeParseAsync({
-      cedula: '00000000000',
+      cedula: '00000000001',
       token: '',
     });
 
@@ -27,23 +31,16 @@ describe('cedula validation', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('rejects a cedula with an invalid Luhn checksum', async () => {
-    const result = await createCedulaSchema(es).safeParseAsync({
-      cedula: '00000000001',
-      token: '',
-    });
+  it('accepts a cedula with a valid Luhn checksum', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
 
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            path: ['cedula'],
-            message: es.errors.cedula.invalid,
-          }),
-        ]),
-      );
-    }
+    await expect(validateCedula('00000000000')).resolves.toBe(true);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects a cedula with an invalid Luhn checksum', async () => {
+    await expect(validateCedula('00000000001')).resolves.toBe(false);
   });
 
   it('accepts a configured Luhn exception hash', async () => {
@@ -54,12 +51,7 @@ describe('cedula validation', () => {
       '031f50e5e09a5f61b2da02c2f59fde68fba579de4e1ef7a5490d6425f810977e',
     );
 
-    const result = await createCedulaSchema(es).safeParseAsync({
-      cedula: '00000000001',
-      token: '',
-    });
-
-    expect(result.success).toBe(true);
+    await expect(validateCedula('00000000001')).resolves.toBe(true);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -73,12 +65,7 @@ describe('cedula validation', () => {
       .mockResolvedValue(new Response(JSON.stringify({ valid: true })));
     vi.stubGlobal('fetch', fetchMock);
 
-    const result = await createCedulaSchema(es).safeParseAsync({
-      cedula: '00000000001',
-      token: '',
-    });
-
-    expect(result.success).toBe(true);
+    await expect(validateCedula('00000000001')).resolves.toBe(true);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, options] = fetchMock.mock.calls[0];
     expect(url.toString()).toBe(

@@ -40,6 +40,7 @@ export function Form() {
     register,
     trigger,
     clearErrors,
+    setError,
     watch,
     control,
   } = useForm<CedulaForm>({
@@ -67,6 +68,10 @@ export function Form() {
   React.useEffect(() => {
     if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
+
+      if (state.message === 'errors.cedula.invalid') {
+        setError('cedula', { type: 'server', message });
+      }
 
       Sentry.captureMessage(message, {
         tags: { form: 'account_recovery' },

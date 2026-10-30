@@ -110,9 +110,11 @@ describe('identification citizen lookup', () => {
 
     fireEvent.click(confirmButton);
 
-    expect(await screen.findByText(es.errors.cedula.invalid)).toBeTruthy();
+    expect(await screen.findAllByText(es.errors.cedula.invalid)).toHaveLength(
+      2,
+    );
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(validateRecaptcha).not.toHaveBeenCalled();
+    expect(validateRecaptcha).toHaveBeenCalledTimes(1);
     expect(findIamCitizen).not.toHaveBeenCalled();
     expect(findCitizen).not.toHaveBeenCalled();
   });
