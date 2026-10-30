@@ -191,6 +191,7 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
             <Tooltip title={intl.step1.cedulaTooltip}>
               <TextField
                 required
+                value={cedula}
                 onChange={onChange}
                 label={intl.step1.cedula}
                 placeholder="***-**00000-0"

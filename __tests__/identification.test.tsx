@@ -113,6 +113,9 @@ describe('identification citizen lookup', () => {
     expect(await screen.findAllByText(es.errors.cedula.invalid)).toHaveLength(
       2,
     );
+    expect(screen.getByRole<HTMLInputElement>('textbox').value).toBe(
+      '000-0000000-1',
+    );
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(validateRecaptcha).toHaveBeenCalledTimes(1);
     expect(findIamCitizen).not.toHaveBeenCalled();
