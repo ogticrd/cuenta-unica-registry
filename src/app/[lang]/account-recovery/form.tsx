@@ -2,7 +2,7 @@
 
 import { TextField, Tooltip } from '@mui/material';
 import React, { useActionState } from 'react';
-import * as Sentry from '@sentry/nextjs';
+import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import Link from 'next/link';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
@@ -62,11 +62,7 @@ export function Form() {
         setError('cedula', { type: 'server', message });
       }
 
-      Sentry.captureMessage(message, {
-        tags: { form: 'account_recovery' },
-        extra: { error: state?.message },
-        level: 'error',
-      });
+      recordFormOutcome('account_recovery', state.message);
 
       AlertError(message);
     }

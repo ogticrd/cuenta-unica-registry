@@ -2,7 +2,7 @@
 
 import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import React, { useActionState } from 'react';
-import * as Sentry from '@sentry/nextjs';
+import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -74,11 +74,7 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
         setError('cedula', { type: 'server', message });
       }
 
-      Sentry.captureMessage(message, {
-        tags: { form: 'identification' },
-        extra: { error: state?.message },
-        level: 'error',
-      });
+      recordFormOutcome('identification', state.message);
 
       if (state.message !== 'step2.unavailable') {
         AlertError(message);

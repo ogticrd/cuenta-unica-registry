@@ -1,6 +1,7 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
 
 import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
 
@@ -47,7 +48,11 @@ export async function validateRecaptcha(token: string) {
 
     return { isHuman };
   } catch (error) {
-    Sentry.captureException(error, { tags: { type: 'recaptcha' } });
+    Sentry.captureMessage('recaptcha_verification_failed', {
+      level: 'error',
+      tags: { type: 'recaptcha' },
+      extra: { errorName: getSafeErrorName(error) },
+    });
 
     return {
       message: 'errors.unknown',

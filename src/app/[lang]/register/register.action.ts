@@ -3,6 +3,10 @@
 import type { RegistrationFlow, VerificationFlow } from '@ory/client';
 import { redirect } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
+import {
+  getSafeErrorName,
+  recordIdentityProviderFailure,
+} from '@/common/helpers/sentry-telemetry';
 
 import {
   findCitizen,
@@ -19,10 +23,6 @@ import {
 import { ory } from '@/common/lib/ory';
 import { State } from '@/types';
 
-function getSafeErrorName(error: unknown) {
-  return error instanceof Error ? error.name : typeof error;
-}
-
 async function verify(email: string): Promise<VerificationFlow> {
   const flow = await ory
     .createNativeVerificationFlow()
@@ -34,7 +34,10 @@ async function verify(email: string): Promise<VerificationFlow> {
       updateVerificationFlowBody: { method: 'code', email },
     })
     .then((res) => res.data)
-    .catch((err) => err.response.data);
+    .catch((err) => {
+      recordIdentityProviderFailure('verification', err);
+      return err.response.data;
+    });
 }
 
 export async function verifyUser(prev: State, form: FormData): Promise<State> {
@@ -148,14 +151,7 @@ export async function registerAccount(
     })
     .then((res) => res.data)
     .catch<RegistrationFlow>((err) => {
-      Sentry.captureMessage('registration_flow_update_failed', {
-        level: 'error',
-        tags: { code: 'registration_flow_update_failed' },
-        extra: {
-          errorName: getSafeErrorName(err),
-          status: err?.response?.status,
-        },
-      });
+      recordIdentityProviderFailure('registration', err);
       return err.response?.data;
     });
 

@@ -40,7 +40,10 @@ vi.mock('next/navigation', () => ({ redirect: vi.fn() }));
 vi.mock('next/font/google', () => ({
   Poppins: () => ({ style: { fontFamily: 'Poppins' } }),
 }));
-vi.mock('@sentry/nextjs', () => ({ captureMessage: vi.fn() }));
+vi.mock('@sentry/nextjs', () => ({
+  captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
+}));
 const captcha = vi.hoisted(() => ({ execute: vi.fn() }));
 vi.mock('next-recaptcha-v3', () => ({
   useReCaptcha: () => ({
