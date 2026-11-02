@@ -14,11 +14,8 @@ afterEach(() => {
 });
 
 describe('cedula validation', () => {
-  it('keeps remote validation out of the client schema', async () => {
-    vi.stubEnv(
-      'CEDULA_VALIDATION_API',
-      'https://api.example.test/v3/cedulas',
-    );
+  it('rejects a checksum failure locally when no exception lookup is supplied', async () => {
+    vi.stubEnv('CEDULA_VALIDATION_API', 'https://api.example.test/v3/cedulas');
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
@@ -27,7 +24,7 @@ describe('cedula validation', () => {
       token: '',
     });
 
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

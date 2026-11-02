@@ -1,16 +1,13 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import React, { useActionState } from 'react';
-import { useForm } from 'react-hook-form';
 import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import Image from 'next/image';
-import { z } from 'zod';
 
 import { GridContainer, GridItem } from '@/components/elements/grid';
-import { createCedulaSchema } from '@/common/validation-schemas';
+import { useCedulaForm } from '@/hooks/useCedulaForm';
 import { TextBodyTiny } from '@/components/elements/typography';
 import { CustomTextMask } from '@/components/CustomTextMask';
 import { useSnackAlert } from '@/components/elements/alert';
@@ -24,8 +21,6 @@ import { useRecaptchaToken } from '@/hooks';
 import { useLanguage } from '../provider';
 import { LOGIN_URL } from '@/common';
 import { Steps } from '@/components/Steps';
-
-type CedulaForm = z.infer<ReturnType<typeof createCedulaSchema>>;
 
 export function Form() {
   const [attempt, setAttempt] = React.useState(0);
@@ -41,6 +36,7 @@ export function Form() {
 function IdentificationForm({ onRetry }: { onRetry: () => void }) {
   const { AlertError } = useSnackAlert();
   const allowRef = React.useRef(false);
+  const inputRevision = React.useRef(0);
   const [validatingCedula, setValidatingCedula] = React.useState(false);
   const { intl } = useLanguage();
 
@@ -50,31 +46,24 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
     formState,
     setValue,
     register,
-    trigger,
-    clearErrors,
     setError,
-    watch,
     control,
-  } = useForm<CedulaForm>({
-    reValidateMode: 'onChange',
-    resolver: zodResolver(createCedulaSchema(intl)),
-  });
+    cedula,
+    validateInput,
+    checkingCedula,
+    canSubmitCedula,
+    canRetryCedula,
+    cedulaReceipt,
+  } = useCedulaForm(intl);
 
-  const { ensureValidToken, hasFreshToken } = useRecaptchaToken({
+  const { generateToken } = useRecaptchaToken({
     setValue,
     control,
   });
 
-  const cedula = watch('cedula') ?? '';
-  const isCedulaComplete = /^\d{11}$/.test(cedula);
-
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    const cedula = target.value.replace(/-/g, '');
-    setValue('cedula', cedula, { shouldDirty: true, shouldValidate: false });
-
-    if (formState.errors.cedula) {
-      clearErrors('cedula');
-    }
+    inputRevision.current += 1;
+    void validateInput(target.value.replace(/-/g, ''));
   };
 
   React.useEffect(() => {
@@ -110,17 +99,19 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
       // Otherwise, intercept native submit while we validate
       e.preventDefault();
 
-      if (pending || validatingCedula) return;
+      if (pending || validatingCedula || !canSubmitCedula) return;
 
+      const revision = inputRevision.current;
       setValidatingCedula(true);
 
       try {
-        // Run all cedula validations only after the user submits the form.
-        const isValid = await trigger();
+        // Reuse the completed schema check; exception lookups are deduplicated.
+        const isValid = await validateInput(cedula);
         if (!isValid) return;
 
-        // Ensure we have a fresh token before dispatching the server action
-        const validToken = hasFreshToken ? true : await ensureValidToken();
+        // reCAPTCHA tokens are single-use, even when the server rejects the form.
+        const validToken = await generateToken();
+        if (inputRevision.current !== revision) return;
         if (!validToken) {
           AlertError(intl.errors.recaptcha.issues);
           return;
@@ -128,6 +119,9 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
 
         // Give React a tick to flush hidden input updates to the DOM
         await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+        // Cancel even if the user changed the ID and then restored it.
+        if (inputRevision.current !== revision) return;
 
         // Re-submit natively so the form action context is preserved (useFormStatus works)
         allowRef.current = true;
@@ -139,9 +133,10 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
     [
       pending,
       validatingCedula,
-      trigger,
-      ensureValidToken,
-      hasFreshToken,
+      canSubmitCedula,
+      validateInput,
+      cedula,
+      generateToken,
       AlertError,
       intl,
     ],
@@ -185,6 +180,7 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
       <form action={action} onSubmit={handleSubmit}>
         <input type="hidden" {...register('token')} />
         <input type="hidden" {...register('cedula')} />
+        <input type="hidden" name="cedulaValidation" value={cedulaReceipt} />
 
         <GridContainer>
           <GridItem lg={12} md={12}>
@@ -197,12 +193,26 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
                 placeholder="***-**00000-0"
                 autoComplete="off"
                 error={Boolean(formState.errors.cedula)}
-                helperText={formState.errors?.cedula?.message}
+                helperText={
+                  checkingCedula
+                    ? intl.loader.cedula
+                    : formState.errors?.cedula?.message
+                }
                 fullWidth
                 slotProps={{
                   input: {
                     inputComponent: CustomTextMask,
-                    endAdornment: <LoadingAdornment />,
+                    endAdornment: (
+                      <LoadingAdornment
+                        pending={checkingCedula}
+                        retryLabel={intl.actions.retry}
+                        onRetry={
+                          canRetryCedula
+                            ? () => void validateInput(cedula, true)
+                            : undefined
+                        }
+                      />
+                    ),
                   },
 
                   htmlInput: {
@@ -215,7 +225,7 @@ function IdentificationForm({ onRetry }: { onRetry: () => void }) {
 
           <GridItem lg={12} md={12} sx={{ my: 3 }}>
             <SubmitButton
-              disabled={!isCedulaComplete || validatingCedula || pending}
+              disabled={!canSubmitCedula || validatingCedula || pending}
             />
           </GridItem>
         </GridContainer>
