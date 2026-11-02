@@ -29,16 +29,20 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
     resolver: zodResolver(createReportSchema(intl)),
   });
 
-  const sendFeedback = handleSubmit(({ email, comments, name = '' }) => {
-    Sentry.captureFeedback({
-      email,
-      message: comments,
-      name,
-    });
+  const sendFeedback = handleSubmit(
+    ({ cedula, email, comments, name = '' }) => {
+      Sentry.captureFeedback({
+        email,
+        message: comments,
+        name,
+        // Keep the submitted ID on this feedback only, not on the global scope.
+        tags: { cedula: cedula.replace(/-/g, '') },
+      });
 
-    setTimeout(() => setSent(true), 213);
-    setTimeout(closeModal, 2300);
-  });
+      setTimeout(() => setSent(true), 213);
+      setTimeout(closeModal, 2300);
+    },
+  );
 
   const closeModal = () => {
     setSent(false);

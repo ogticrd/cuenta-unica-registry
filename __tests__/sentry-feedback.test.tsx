@@ -20,7 +20,7 @@ vi.mock('next/font/google', () => ({
 }));
 afterEach(() => cleanup());
 
-it('submits user feedback without a synthetic error event or cedula', async () => {
+it('preserves all feedback values without a synthetic error event', async () => {
   render(
     <LanguageProvider intl={es}>
       <UserFeedbackModal open onClose={vi.fn()} />
@@ -45,9 +45,7 @@ it('submits user feedback without a synthetic error event or cedula', async () =
     name: 'Test Reporter',
     email: 'test@example.test',
     message: 'The page did not load.',
+    tags: { cedula: '00000000001' },
   });
   expect(Sentry.captureMessage).not.toHaveBeenCalled();
-  expect(
-    JSON.stringify(vi.mocked(Sentry.captureFeedback).mock.calls),
-  ).not.toContain('00000000001');
 });
