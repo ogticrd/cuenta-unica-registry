@@ -9,7 +9,6 @@ export {
   type RecoverySession,
 } from './cookie.action';
 export { validateRecaptcha } from './recaptcha.action';
-export { validateCedula } from './cedula-validation.action';
 export { findCitizen } from './citizen.action';
 export {
   findIamCitizen,

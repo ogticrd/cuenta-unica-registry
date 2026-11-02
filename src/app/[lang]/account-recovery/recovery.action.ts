@@ -9,7 +9,7 @@ import {
   setRecoverySession,
   validateRecaptcha,
 } from '@/actions';
-import { validateCedula } from '@/actions/cedula-validation.action';
+import { validateCedula } from '@/common/helpers/cedula-validation';
 import { State } from '@/types';
 
 export async function startAccountRecovery(

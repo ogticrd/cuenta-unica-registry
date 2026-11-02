@@ -7,6 +7,16 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        // Tests execute server modules directly; Next.js enforces this boundary at build time.
+        find: 'server-only',
+        replacement: fileURLToPath(
+          new URL(
+            './node_modules/next/dist/compiled/server-only/empty.js',
+            import.meta.url,
+          ),
+        ),
+      },
+      {
         find: /^@\/common\/helpers\/rekognition$/,
         replacement: fileURLToPath(
           new URL('./__tests__/mocks/rekognition-helper.ts', import.meta.url),

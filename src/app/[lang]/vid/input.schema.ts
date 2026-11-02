@@ -2,6 +2,8 @@ import 'server-only';
 
 import z from 'zod';
 
+import { validateCedula } from '@/common/helpers/cedula-validation';
+
 import { Context } from '../provider';
 
 export const createInputSchema = ({ errors, step2 }: Context['intl']) =>
@@ -13,8 +15,7 @@ export const createInputSchema = ({ errors, step2 }: Context['intl']) =>
       state: z.string().optional(),
     })
     .transform(async (data) => {
-      const { findCitizen, findIdentityById, validateCedula } =
-        await import('@/actions');
+      const { findCitizen, findIdentityById } = await import('@/actions');
       const { getOAuth2Client, introspectAccessToken, getUserInfoFromToken } =
         await import('@/common/lib/oauth');
 

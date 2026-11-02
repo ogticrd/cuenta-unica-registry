@@ -1,10 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { validateCedula } from '@/actions/cedula-validation.action';
+import { validateCedula } from '@/common/helpers/cedula-validation';
 import { createCedulaSchema } from '@/common/validation-schemas';
 import es from '@/dictionaries/es.json';
+import * as validationActions from '@/actions/cedula-validation.action';
+import { validateRecaptcha } from '@/actions/recaptcha.action';
+import { hasCedulaValidationReceipt } from '@/common/helpers/cedula-validation-receipt';
+
+vi.mock('@/actions/recaptcha.action', () => ({ validateRecaptcha: vi.fn() }));
 
 beforeEach(() => {
+  vi.resetAllMocks();
+  vi.stubEnv('NEXT_PUBLIC_LUHN_EXCEPTION_HASHES', '');
+  vi.mocked(validateRecaptcha).mockResolvedValue({ isHuman: true });
   vi.stubEnv('CEDULA_VALIDATION_API', '');
 });
 
@@ -135,6 +143,53 @@ describe('cedula validation', () => {
       expect(fetchMock).not.toHaveBeenCalled();
     },
   );
+});
+
+describe('public exception validation action', () => {
+  beforeEach(() => {
+    vi.stubEnv('SITE_COOKIE_KEY', 'receipt-test-secret');
+    vi.stubEnv('CEDULA_VALIDATION_API', 'https://api.example.test/v3/cedulas');
+  });
+
+  it('only exports the CAPTCHA-guarded entry point', () => {
+    expect(Object.keys(validationActions)).toEqual(['checkCedulaException']);
+  });
+
+  it.each(['missing', 'rejected'] as const)(
+    'rejects a %s CAPTCHA before any metered lookup',
+    async (scenario) => {
+      vi.mocked(validateRecaptcha).mockResolvedValue({ isHuman: false });
+      const lookup = vi.fn();
+      vi.stubGlobal('fetch', lookup);
+      expect(
+        await validationActions.checkCedulaException(
+          '00000000001',
+          scenario === 'missing' ? '' : 'private-token',
+        ),
+      ).toEqual({ status: 'recaptcha' });
+      expect(lookup).not.toHaveBeenCalled();
+      expect(validateRecaptcha).toHaveBeenCalledTimes(
+        scenario === 'missing' ? 0 : 1,
+      );
+    },
+  );
+
+  it('issues a receipt only after a guarded successful lookup', async () => {
+    const lookup = vi.fn().mockResolvedValue(Response.json({ valid: true }));
+    vi.stubGlobal('fetch', lookup);
+    const result = await validationActions.checkCedulaException(
+      '00000000001',
+      'private-token',
+    );
+    expect(validateRecaptcha).toHaveBeenCalledWith('private-token');
+    expect(lookup).toHaveBeenCalledTimes(1);
+    expect(result.status).toBe('valid');
+    expect(
+      'receipt' in result &&
+        hasCedulaValidationReceipt('00000000001', result.receipt),
+    ).toBe(true);
+  });
+
 });
 
 // Proofs are signed server-side so a browser cannot manufacture a whitelist pass.
