@@ -51,7 +51,14 @@ describe.each([
     'Provider rejected 00000000001 test@example.test private-token',
   ])('retains service failures without leaking details', async (message) => {
     parse.mockRejectedValueOnce(new Error(message));
-    await GET(request(lang));
+    const response = await GET(request(lang));
+    expect(
+      new URL(response.headers.get('location')!).searchParams.get('error'),
+    ).toBe(
+      message === intl.step2.unavailable
+        ? intl.step2.unavailable
+        : intl.errors.vid.invalidParameters,
+    );
     expect(Sentry.captureMessage).toHaveBeenCalledWith(
       'vid_flow_creation_failed',
       expect.objectContaining({ level: 'error' }),

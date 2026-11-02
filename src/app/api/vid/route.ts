@@ -120,6 +120,7 @@ function resolveSafeVidErrorMessage(
 ): string {
   const message = error instanceof Error ? error.message : String(error ?? '');
   const safeMessages = new Set([
+    intl.step2.unavailable,
     intl.errors.cedula.invalid,
     intl.errors.vid.invalidParameters,
     intl.errors.vid.invalidToken,
