@@ -28,8 +28,18 @@ export async function identifyAccount(
     return { message: 'errors.recaptcha.validation' };
   }
 
-  if (!(await validateCedula(cedula))) {
-    return { message: 'errors.cedula.invalid' };
+  const receipt = form.get('cedulaValidation');
+  const validation = await validateCedula(
+    cedula,
+    typeof receipt === 'string' ? receipt : undefined,
+  );
+  if (validation !== 'valid') {
+    return {
+      message:
+        validation === 'invalid'
+          ? 'errors.cedula.invalid'
+          : 'step2.unavailable',
+    };
   }
 
   const { exists } = await findIamCitizen(cedula);
@@ -41,7 +51,7 @@ export async function identifyAccount(
   const citizen = await findCitizen(cedula).catch(() => null);
 
   if (!citizen) {
-    return { message: 'errors.cedula.invalid' };
+    return { message: 'step2.unavailable' };
   }
 
   await setCookie('citizen', citizen);

@@ -124,7 +124,7 @@ describe('identification citizen lookup', () => {
 
   it('revalidates the cedula in the server action', async () => {
     const form = new FormData();
-    form.set('cedula', '00000000001');
+    form.set('cedula', 'invalid');
     form.set('token', 'test-token');
 
     await expect(identifyAccount({ message: '' }, form)).resolves.toEqual({
@@ -136,26 +136,45 @@ describe('identification citizen lookup', () => {
   });
 
   it.each([es, en])(
-    'shows an invalid ID error when the citizen does not exist in JCE in $language',
+    'replaces the whole form without a toast in $language',
     async (intl) => {
       renderForm(intl);
       expect(screen.getByText(intl.step1.title)).toBeTruthy();
       await submitCedula(intl);
 
-      expect((await screen.findByRole('alert')).textContent).toBe(
-        intl.errors.cedula.invalid,
+      await waitFor(() => {
+        expect(screen.queryByRole('textbox')).toBeNull();
+      });
+      expect(screen.getAllByRole('alert')).toHaveLength(1);
+      expect(screen.getByRole('alert').textContent).toBe(
+        intl.step2.unavailable,
       );
-      expect(screen.getByRole('textbox')).toBeTruthy();
-      expect(screen.getByText(intl.step1.title)).toBeTruthy();
-      expect(screen.getByText(intl.step1.description)).toBeTruthy();
+      expect(document.querySelector('.MuiSnackbar-root')).toBeNull();
+      expect(screen.queryByText(intl.step1.title)).toBeNull();
+      expect(screen.queryByText(intl.step1.description)).toBeNull();
       expect(
-        screen.getByRole('button', { name: intl.actions.confirm }),
-      ).toBeTruthy();
+        screen.queryByRole('button', { name: intl.actions.confirm }),
+      ).toBeNull();
       expect(
-        screen.getByRole('link', { name: intl.actions.loginHere }),
-      ).toBeTruthy();
+        screen.queryByRole('link', { name: intl.actions.loginHere }),
+      ).toBeNull();
       expect(findCitizen).toHaveBeenCalledTimes(1);
       expect(setCookie).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByRole('button', { name: intl.actions.retry }));
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.getByRole('textbox')).toBeTruthy();
+      expect(screen.getByText(intl.step1.title)).toBeTruthy();
+      expect(findCitizen).toHaveBeenCalledTimes(1);
+
+      await submitCedula(intl);
+      await waitFor(() => {
+        expect(screen.queryByRole('textbox')).toBeNull();
+      });
+      expect(screen.getByRole('alert').textContent).toBe(
+        intl.step2.unavailable,
+      );
+      expect(findCitizen).toHaveBeenCalledTimes(2);
     },
   );
 

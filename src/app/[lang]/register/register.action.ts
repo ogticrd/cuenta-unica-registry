@@ -123,7 +123,7 @@ export async function registerAccount(
   const citizen = await findCitizen(cedula, true).catch(() => null);
 
   if (!citizen) {
-    return { message: 'errors.cedula.invalid', meta };
+    return { message: 'step2.unavailable', meta };
   }
 
   const registration = await ory

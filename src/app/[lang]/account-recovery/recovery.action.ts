@@ -29,8 +29,18 @@ export async function startAccountRecovery(
     return { message: 'errors.recaptcha.validation' };
   }
 
-  if (!(await validateCedula(cedula))) {
-    return { message: 'errors.cedula.invalid' };
+  const receipt = form.get('cedulaValidation');
+  const validation = await validateCedula(
+    cedula,
+    typeof receipt === 'string' ? receipt : undefined,
+  );
+  if (validation !== 'valid') {
+    return {
+      message:
+        validation === 'invalid'
+          ? 'errors.cedula.invalid'
+          : 'step2.unavailable',
+    };
   }
 
   // For recovery, we need to verify the account EXISTS (opposite of registration)
@@ -44,7 +54,7 @@ export async function startAccountRecovery(
   const citizen = await findCitizen(cedula).catch(() => null);
 
   if (!citizen) {
-    return { message: 'errors.cedula.invalid' };
+    return { message: 'step2.unavailable' };
   }
 
   // Set citizen cookie for the flow

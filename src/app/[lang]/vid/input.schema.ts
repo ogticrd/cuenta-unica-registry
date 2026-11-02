@@ -4,7 +4,7 @@ import z from 'zod';
 
 import { Context } from '../provider';
 
-export const createInputSchema = ({ errors }: Context['intl']) =>
+export const createInputSchema = ({ errors, step2 }: Context['intl']) =>
   z
     .object({
       access_token: z.string(),
@@ -81,15 +81,18 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
         normalize(traits?.preferred_username) ||
         normalize(identityId);
 
-      if (!cedula || !(await validateCedula(cedula))) {
-        throw new Error(errors.cedula.invalid);
+      const validation = await validateCedula(cedula);
+      if (validation !== 'valid') {
+        throw new Error(
+          validation === 'invalid' ? errors.cedula.invalid : step2.unavailable,
+        );
       }
 
       // Fetch citizen data from padron
       const citizen = await findCitizen(cedula).catch(() => null);
 
       if (!citizen) {
-        throw new Error(errors.cedula.invalid);
+        throw new Error(step2.unavailable);
       }
 
       // Validate OAuth2 client and redirect_uri
