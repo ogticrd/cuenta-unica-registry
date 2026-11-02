@@ -4,6 +4,7 @@ import type { CedulaValidationResponse } from '@/types';
 import { unwrap } from './unwrap';
 import { validLuhn } from './validations';
 import { hasCedulaValidationReceipt } from './cedula-validation-receipt';
+import { recordCedulaValidationFailure } from './sentry-telemetry';
 
 const VALIDATION_TIMEOUT_MS = 5_000;
 
@@ -32,6 +33,7 @@ export async function validateCedula(
   const validationApi = process.env.CEDULA_VALIDATION_API;
 
   if (!validationApi) {
+    recordCedulaValidationFailure('missing_api');
     return 'unavailable';
   }
 
@@ -49,8 +51,10 @@ export async function validateCedula(
       if (response.valid === false) return 'invalid';
     }
 
+    recordCedulaValidationFailure('invalid_response');
     return 'unavailable';
-  } catch {
+  } catch (error) {
+    recordCedulaValidationFailure('request_failed', error);
     return 'unavailable';
   }
 }

@@ -32,6 +32,23 @@ export function getSafeErrorName(error: unknown) {
     : 'UnknownError';
 }
 
+export function recordCedulaValidationFailure(
+  reason:
+    | 'missing_api'
+    | 'missing_receipt_key'
+    | 'invalid_response'
+    | 'request_failed',
+  error?: unknown,
+) {
+  Sentry.captureMessage('cedula_validation_unavailable', {
+    level: 'error',
+    tags: { reason },
+    ...(error !== undefined
+      ? { extra: { errorName: getSafeErrorName(error) } }
+      : {}),
+  });
+}
+
 const EXPECTED_BIOMETRIC_CODES = new Set([
   'biometric_attempt_limit_exceeded',
   'biometric_cooldown_active',

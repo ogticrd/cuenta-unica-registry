@@ -1,22 +1,33 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import * as Sentry from '@sentry/nextjs';
 
 import { validateCedula } from '@/common/helpers/cedula-validation';
-import { createCedulaSchema } from '@/common/validation-schemas';
-import es from '@/dictionaries/es.json';
 import * as validationActions from '@/actions/cedula-validation.action';
 import { validateRecaptcha } from '@/actions/recaptcha.action';
 import { hasCedulaValidationReceipt } from '@/common/helpers/cedula-validation-receipt';
+import { createCedulaSchema } from '@/common/validation-schemas';
+import es from '@/dictionaries/es.json';
 
+vi.mock('@sentry/nextjs', () => ({ captureMessage: vi.fn() }));
 vi.mock('@/actions/recaptcha.action', () => ({ validateRecaptcha: vi.fn() }));
 
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.stubEnv('CEDULA_VALIDATION_API', '');
   vi.stubEnv('NEXT_PUBLIC_LUHN_EXCEPTION_HASHES', '');
   vi.mocked(validateRecaptcha).mockResolvedValue({ isHuman: true });
-  vi.stubEnv('CEDULA_VALIDATION_API', '');
 });
 
 afterEach(() => {
+  const telemetry = JSON.stringify(vi.mocked(Sentry.captureMessage).mock.calls);
+  for (const value of [
+    '00000000001',
+    'api.example.test',
+    'private-token',
+    'test@example.test',
+  ]) {
+    expect(telemetry).not.toContain(value);
+  }
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
 });
@@ -42,10 +53,18 @@ describe('cedula validation', () => {
 
     await expect(validateCedula('00000000000')).resolves.toBe('valid');
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
   });
 
   it('reports unavailable when the fallback is not configured', async () => {
     await expect(validateCedula('00000000001')).resolves.toBe('unavailable');
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      'cedula_validation_unavailable',
+      {
+        level: 'error',
+        tags: { reason: 'missing_api' },
+      },
+    );
   });
 
   it('accepts a configured Luhn exception hash', async () => {
@@ -69,6 +88,7 @@ describe('cedula validation', () => {
 
     await expect(validateCedula('00000000001')).resolves.toBe('valid');
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
     const [url, options] = fetchMock.mock.calls[0];
     expect(url.toString()).toBe(
       'https://api.example.test/v3/cedulas/00000000001/validate',
@@ -89,6 +109,7 @@ describe('cedula validation', () => {
     );
 
     await expect(validateCedula('00000000001')).resolves.toBe('invalid');
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -109,9 +130,14 @@ describe('cedula validation', () => {
       name: 'an HTTP error',
       response: () =>
         Promise.resolve(
-          new Response(JSON.stringify({ message: 'Unavailable' }), {
-            status: 503,
-          }),
+          new Response(
+            JSON.stringify({
+              message: '00000000001 test@example.test private-token',
+            }),
+            {
+              status: 503,
+            },
+          ),
         ),
     },
     {
@@ -127,6 +153,11 @@ describe('cedula validation', () => {
     vi.stubGlobal('fetch', vi.fn().mockImplementation(response));
 
     await expect(validateCedula('00000000001')).resolves.toBe('unavailable');
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      'cedula_validation_unavailable',
+      expect.objectContaining({ level: 'error' }),
+    );
   });
 
   it('reports a malformed API URL as unavailable', async () => {
@@ -171,6 +202,7 @@ describe('public exception validation action', () => {
       expect(validateRecaptcha).toHaveBeenCalledTimes(
         scenario === 'missing' ? 0 : 1,
       );
+      expect(Sentry.captureMessage).not.toHaveBeenCalled();
     },
   );
 
@@ -188,8 +220,50 @@ describe('public exception validation action', () => {
       'receipt' in result &&
         hasCedulaValidationReceipt('00000000001', result.receipt),
     ).toBe(true);
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
   });
 
+  it('reports an outage during automatic validation without waiting for form submission', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response('', { status: 503 })),
+    );
+    expect(
+      await validationActions.checkCedulaException(
+        '00000000001',
+        'private-token',
+      ),
+    ).toEqual({ status: 'unavailable' });
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      'cedula_validation_unavailable',
+      {
+        level: 'error',
+        tags: { reason: 'request_failed' },
+        extra: { errorName: 'Error' },
+      },
+    );
+  });
+
+  it('reports missing receipt configuration without spending a lookup', async () => {
+    vi.stubEnv('SITE_COOKIE_KEY', '');
+    const lookup = vi.fn();
+    vi.stubGlobal('fetch', lookup);
+    expect(
+      await validationActions.checkCedulaException(
+        '00000000001',
+        'private-token',
+      ),
+    ).toEqual({ status: 'unavailable' });
+    expect(lookup).not.toHaveBeenCalled();
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      'cedula_validation_unavailable',
+      {
+        level: 'error',
+        tags: { reason: 'missing_receipt_key' },
+      },
+    );
+  });
 });
 
 // Proofs are signed server-side so a browser cannot manufacture a whitelist pass.
