@@ -81,7 +81,7 @@ export function LivenessQuickStart({
 
     const messageKey =
       data.message?.startsWith('errors.') ||
-        data.message?.startsWith('liveness.')
+      data.message?.startsWith('liveness.')
         ? data.message
         : BIOMETRIC_ERROR_MESSAGE_KEY_BY_CODE[data.code];
 
@@ -147,10 +147,6 @@ export function LivenessQuickStart({
   const fetchCreateLiveness = async ({
     forceNew = false,
   }: { forceNew?: boolean } = {}): Promise<void> => {
-    setLoading(true);
-    setError(null);
-    setCanRetry(false);
-
     const response = await fetch(`/api/biometric`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -276,7 +272,9 @@ export function LivenessQuickStart({
   };
 
   useEffect(() => {
-    fetchCreateLiveness();
+    // Session state updates only after the network request resolves.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchCreateLiveness();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -372,29 +370,34 @@ export function LivenessQuickStart({
       ) : (
         <div className={styles.liveness_container}>
           <Button
-            onClick={() => fetchCreateLiveness()}
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              setCanRetry(false);
+              void fetchCreateLiveness();
+            }}
             disabled={!canRetry || retryAfterSeconds > 0}
             variant="contained"
             size="large"
             sx={{
-              backgroundColor: "#fff",
-              color: "var(--primary-color)",
-              borderRadius: "999px",
-              "&:hover": {
-                backgroundColor: "#f3f6fb",
+              backgroundColor: '#fff',
+              color: 'var(--primary-color)',
+              borderRadius: '999px',
+              '&:hover': {
+                backgroundColor: '#f3f6fb',
               },
-              "&.Mui-disabled": {
-                backgroundColor: "#fff",
-                color: "var(--primary-color)",
+              '&.Mui-disabled': {
+                backgroundColor: '#fff',
+                color: 'var(--primary-color)',
                 opacity: 0.7,
               },
             }}
           >
             {retryAfterSeconds > 0
               ? `${intl.liveness.error.tryAgain} (${formatRetryAfterSeconds(
-                retryAfterSeconds,
-                displayLocale,
-              )})`
+                  retryAfterSeconds,
+                  displayLocale,
+                )})`
               : intl.liveness.error.tryAgain}
           </Button>
         </div>
