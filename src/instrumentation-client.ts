@@ -15,8 +15,8 @@ Sentry.init({
     blockAllMedia: true,
   })],
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  // Sample 65% of new traces; error event sampling is independent.
+  tracesSampleRate: 0.65,
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
@@ -42,4 +42,3 @@ Sentry.init({
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
-export const onRequestError = Sentry.captureRequestError;

@@ -35,9 +35,8 @@ export default function UserFeedbackModal({ open, onClose }: Props) {
         email,
         message: comments,
         name,
-        associatedEventId: Sentry.captureMessage('User feedback', {
-          user: { id: cedula.replace(/-/g, ''), email },
-        }),
+        // Keep the submitted ID on this feedback only, not on the global scope.
+        tags: { cedula: cedula.replace(/-/g, '') },
       });
 
       setTimeout(() => setSent(true), 213);

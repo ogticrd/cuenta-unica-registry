@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { recordIdentityProviderFailure } from '@/common/helpers/sentry-telemetry';
 
 import { createSearchParams } from '@/common/helpers/create-search-params';
 import { ory } from '@/common/lib/ory';
@@ -19,7 +20,10 @@ export async function verifyAccount(prev: State, form: FormData) {
       updateVerificationFlowBody: { method: 'code', code },
     })
     .then((res) => res.data)
-    .catch<{ use_flow_id: string }>((err) => err.response.data);
+    .catch<{ use_flow_id: string }>((err) => {
+      recordIdentityProviderFailure('verification', err);
+      return err.response.data;
+    });
 
   if ('ui' in verification) {
     for (const { type, text } of verification.ui.messages ?? []) {

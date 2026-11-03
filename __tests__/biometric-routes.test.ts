@@ -1,5 +1,6 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest } from 'next/server';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { requestCookies, mockCookies } = vi.hoisted(() => ({
   requestCookies: new Map<string, string>(),
@@ -13,6 +14,7 @@ vi.mock('next/headers', () => ({
 vi.mock('@sentry/nextjs', () => ({
   captureException: vi.fn(),
   captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
 }));
 
 vi.mock('@/common/helpers/rekognition', () => ({
@@ -68,6 +70,7 @@ function applyBiometricCookie(response: Response) {
 
 beforeEach(() => {
   vi.restoreAllMocks();
+  vi.clearAllMocks();
   vi.useRealTimers();
   vi.unstubAllGlobals();
   process.env.SITE_COOKIE_KEY = 'test-site-cookie-key';
@@ -130,6 +133,12 @@ describe('biometric API routes', () => {
     const blockedResponse = await postBiometricSession(createPostRequest(true));
     const body = await blockedResponse.json();
 
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+    expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'biometric_liveness_session_blocked',
+      }),
+    );
     expect(blockedResponse.status).toBe(429);
     expect(body).toMatchObject({
       success: false,
@@ -295,6 +304,10 @@ describe('biometric API routes', () => {
     );
     const body = await response.json();
 
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+    expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'biometric_liveness_low_confidence' }),
+    );
     expect(response.status).toBe(403);
     expect(body).toMatchObject({
       success: false,
@@ -337,6 +350,11 @@ describe('biometric API routes', () => {
     );
     const body = await response.json();
 
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ level: 'error' }),
+    );
     expect(response.status).toBe(502);
     expect(body).toMatchObject({
       success: false,
@@ -370,6 +388,11 @@ describe('biometric API routes', () => {
     );
     const body = await response.json();
 
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ level: 'error' }),
+    );
     expect(response.status).toBe(502);
     expect(body).toMatchObject({
       success: false,
@@ -413,6 +436,10 @@ describe('biometric API routes', () => {
     );
     const body = await response.json();
 
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+    expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'biometric_face_mismatch' }),
+    );
     expect(response.status).toBe(404);
     expect(body).toMatchObject({
       success: false,
@@ -458,6 +485,18 @@ describe('biometric API routes', () => {
     const body = await response.json();
 
     expect(response.status).toBe(200);
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+    expect(Sentry.captureException).not.toHaveBeenCalled();
+    expect(
+      vi
+        .mocked(Sentry.addBreadcrumb)
+        .mock.calls.map(([crumb]) => crumb.message),
+    ).toEqual([
+      'rekognition_liveness_session_created',
+      'rekognition_liveness_completed',
+      'rekognition_compare_faces_called',
+      'biometric_face_match_passed',
+    ]);
     expect(body).toMatchObject({
       success: true,
       isMatch: true,
@@ -483,4 +522,23 @@ describe('biometric API routes', () => {
       { headers: { Authorization: 'Bearer test-token' } },
     );
   });
+});
+
+afterEach(() => {
+  const telemetry = JSON.stringify([
+    vi.mocked(Sentry.captureMessage).mock.calls,
+    vi.mocked(Sentry.addBreadcrumb).mock.calls,
+  ]);
+  for (const sensitive of [
+    TEST_CEDULA,
+    'session-1',
+    'test-token',
+    'test-key',
+    'test-auth-key',
+    'ReferenceImage',
+    '"confidence":',
+    '"similarity":',
+  ]) {
+    expect(telemetry).not.toContain(sensitive);
+  }
 });

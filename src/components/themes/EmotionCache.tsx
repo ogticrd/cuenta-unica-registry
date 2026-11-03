@@ -80,14 +80,12 @@ export default function NextAppDirEmotionCacheProvider(
           <style
             key={name}
             data-emotion={`${registry.cache.key}-global ${name}`}
-            // eslint-disable-next-line
             dangerouslySetInnerHTML={{ __html: style }}
           />
         ))}
         {styles ? (
           <style
             data-emotion={dataEmotionAttribute}
-            // eslint-disable-next-line
             dangerouslySetInnerHTML={{ __html: styles }}
           />
         ) : null}

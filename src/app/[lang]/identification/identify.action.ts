@@ -8,6 +8,7 @@ import {
   setCookie,
   validateRecaptcha,
 } from '@/actions';
+import { validateCedula } from '@/common/helpers/cedula-validation';
 import { State } from '@/types';
 
 export async function identifyAccount(
@@ -25,6 +26,20 @@ export async function identifyAccount(
 
   if (!isHuman) {
     return { message: 'errors.recaptcha.validation' };
+  }
+
+  const receipt = form.get('cedulaValidation');
+  const validation = await validateCedula(
+    cedula,
+    typeof receipt === 'string' ? receipt : undefined,
+  );
+  if (validation !== 'valid') {
+    return {
+      message:
+        validation === 'invalid'
+          ? 'errors.cedula.invalid'
+          : 'step2.unavailable',
+    };
   }
 
   const { exists } = await findIamCitizen(cedula);

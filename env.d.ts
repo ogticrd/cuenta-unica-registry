@@ -3,6 +3,7 @@ namespace NodeJS {
     NODE_ENV?: 'development' | 'production';
     CEDULA_API?: string;
     CEDULA_API_KEY?: string;
+    CEDULA_VALIDATION_API?: string;
     JCE_PHOTO_API?: string;
     JCE_PHOTO_API_KEY?: string;
     ENCRYPTION_KEY?: string;

@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import * as Sentry from '@sentry/nextjs';
+import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
 
 import { serializeSignedCookieValue } from '@/common/helpers/signed-cookie';
 import { getDictionary, type Dictionary } from '@/dictionaries';
@@ -75,11 +76,21 @@ export async function GET(request: NextRequest) {
       new URL(`/${lang}/vid?flow=${flowId}`, baseUrl),
     );
   } catch (error) {
-    Sentry.captureMessage('vid_flow_creation_failed', {
-      level: 'error',
-      tags: { code: 'vid_flow_creation_failed' },
-      extra: { errorName: getSafeErrorName(error) },
-    });
+    const code = getExpectedVidErrorCode(error, intl);
+    if (code) {
+      Sentry.addBreadcrumb({
+        category: 'vid',
+        message: 'vid_validation_rejected',
+        level: 'info',
+        data: { code },
+      });
+    } else {
+      Sentry.captureMessage('vid_flow_creation_failed', {
+        level: 'error',
+        tags: { code: 'vid_flow_creation_failed' },
+        extra: { errorName: getSafeErrorName(error) },
+      });
+    }
 
     const errorMessage = resolveSafeVidErrorMessage(error, intl);
     const encodedError = encodeURIComponent(errorMessage);
@@ -89,8 +100,18 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function getSafeErrorName(error: unknown) {
-  return error instanceof Error ? error.name : typeof error;
+function getExpectedVidErrorCode(error: unknown, intl: Dictionary) {
+  if (!(error instanceof Error)) return undefined;
+  const messages = {
+    invalid_cedula: intl.errors.cedula.invalid,
+    invalid_parameters: intl.errors.vid.invalidParameters,
+    invalid_token: intl.errors.vid.invalidToken,
+    invalid_client: intl.errors.vid.invalidClient,
+    invalid_redirect_uri: intl.errors.vid.invalidRedirectUri,
+  };
+  return Object.entries(messages).find(
+    ([, message]) => message === error.message,
+  )?.[0];
 }
 
 function resolveSafeVidErrorMessage(
@@ -99,6 +120,7 @@ function resolveSafeVidErrorMessage(
 ): string {
   const message = error instanceof Error ? error.message : String(error ?? '');
   const safeMessages = new Set([
+    intl.step2.unavailable,
     intl.errors.cedula.invalid,
     intl.errors.vid.invalidParameters,
     intl.errors.vid.invalidToken,

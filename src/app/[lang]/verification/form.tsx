@@ -1,10 +1,10 @@
 'use client';
 
-import { createRef, useEffect, useRef, useState, useActionState } from 'react';
+import { createRef, useEffect, useState, useActionState } from 'react';
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as Sentry from '@sentry/nextjs';
+import { useForm, useWatch } from 'react-hook-form';
+import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import Image from 'next/image';
 import { z } from 'zod';
 
@@ -32,28 +32,26 @@ export function Form({ flow, returnTo, code }: Props) {
   const { AlertError } = useSnackAlert();
   const { intl } = useLanguage();
 
-  const { setValue, watch } = useForm<VerificationForm>({
+  const { setValue, control } = useForm<VerificationForm>({
     reValidateMode: 'onSubmit',
     resolver: zodResolver(createVerificationSchema(intl)),
   });
 
-  const [error, setError] = useState(false);
+  const watchedCode = useWatch({ control, name: 'code', defaultValue: '' });
 
   const [otp, setOtp] = useState(parseOTP(code));
-  const inputRefs = useRef(otp.map(createRef<HTMLInputElement>));
+  const [inputRefs] = useState(() => otp.map(createRef<HTMLInputElement>));
 
   const [state, action, pending] = useActionState(verifyAccount, { message: '' });
 
+  const [dismissedError, setDismissedError] = useState<typeof state | null>(null);
+  const error = Boolean(state?.message) && state !== dismissedError;
+
   useEffect(() => {
     if (state?.message) {
-      setError(true);
-
       const message = localizeString(intl, state.message) || state.message;
 
-      Sentry.captureMessage(message, {
-        extra: { state, error: state?.message, flow },
-        level: 'error',
-      });
+      recordFormOutcome('verification', state.message);
 
       AlertError(message);
     }
@@ -63,11 +61,11 @@ export function Form({ flow, returnTo, code }: Props) {
   const handleChange = (value: string, index: number) => {
     if (isNaN(+value)) return false;
 
-    setError(false);
+    setDismissedError(state);
     setOtp(Object.assign([...otp], { [index]: value }));
 
-    const nextRef = inputRefs.current[index + 1];
-    const prevRef = inputRefs.current[index - 1];
+    const nextRef = inputRefs[index + 1];
+    const prevRef = inputRefs[index - 1];
 
     if (nextRef?.current && value) {
       nextRef.current.focus();
@@ -99,7 +97,7 @@ export function Form({ flow, returnTo, code }: Props) {
       <form action={action}>
         <input type="hidden" name="flow" value={flow} />
         <input type="hidden" name="return_to" value={returnTo} />
-        <input type="hidden" name="code" value={watch('code')} />
+        <input type="hidden" name="code" value={watchedCode} />
 
         <GridContainer>
           <GridItem md={12} lg={12}>
@@ -133,7 +131,7 @@ export function Form({ flow, returnTo, code }: Props) {
                   <TextField
                     value={code}
                     onChange={({ target }) => handleChange(target.value, index)}
-                    inputRef={inputRefs.current[index]}
+                    inputRef={inputRefs[index]}
                     onPaste={handlePaste}
                     error={error}
                     required

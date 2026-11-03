@@ -2,10 +2,11 @@ import 'server-only';
 
 import z from 'zod';
 
-import { validLuhn } from '@/common/helpers/validations';
+import { validateCedula } from '@/common/helpers/cedula-validation';
+
 import { Context } from '../provider';
 
-export const createInputSchema = ({ errors }: Context['intl']) =>
+export const createInputSchema = ({ errors, step2 }: Context['intl']) =>
   z
     .object({
       access_token: z.string(),
@@ -81,12 +82,19 @@ export const createInputSchema = ({ errors }: Context['intl']) =>
         normalize(traits?.preferred_username) ||
         normalize(identityId);
 
-      if (!cedula || cedula.length !== 11 || !(await validLuhn(cedula))) {
-        throw new Error(errors.cedula.invalid);
+      const validation = await validateCedula(cedula);
+      if (validation !== 'valid') {
+        throw new Error(
+          validation === 'invalid' ? errors.cedula.invalid : step2.unavailable,
+        );
       }
 
       // Fetch citizen data from padron
-      const citizen = await findCitizen(cedula);
+      const citizen = await findCitizen(cedula).catch(() => null);
+
+      if (!citizen) {
+        throw new Error(step2.unavailable);
+      }
 
       // Validate OAuth2 client and redirect_uri
       const client = await getOAuth2Client(data.client_id);
