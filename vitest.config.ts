@@ -7,6 +7,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@public',
+        replacement: fileURLToPath(new URL('./public', import.meta.url)),
+      },
+      {
         // Tests execute server modules directly; Next.js enforces this boundary at build time.
         find: 'server-only',
         replacement: fileURLToPath(
