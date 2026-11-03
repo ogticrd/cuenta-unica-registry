@@ -70,7 +70,9 @@ export function useRecaptchaToken<T extends TokenForm>({
   // Auto-generate token on load
   React.useEffect(() => {
     if (loaded && !watchedToken) {
-      generateToken();
+      // Token state updates only after the reCAPTCHA promise resolves.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void generateToken();
     }
   }, [loaded, generateToken, watchedToken]);
 
