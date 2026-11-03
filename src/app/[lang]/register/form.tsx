@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import { z } from 'zod';
 
@@ -53,13 +53,13 @@ export function Form({ cedula, flow, returnTo, isRecoveryMode }: FormProps) {
   const {
     register,
     formState: { errors, isValid },
-    watch,
+    control,
   } = useForm<RegisterForm>({
     mode: 'onChange',
     resolver: zodResolver(createRegisterSchema(intl, cedula)),
   });
 
-  const password = watch('password');
+  const password = useWatch({ control, name: 'password' });
 
   useEffect(() => {
     if (state?.message) {
