@@ -4,7 +4,7 @@ import { createRef, useEffect, useRef, useState, useActionState } from 'react';
 import { TextField, Tooltip, Typography } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import * as Sentry from '@sentry/nextjs';
+import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import Image from 'next/image';
 import { z } from 'zod';
 
@@ -50,10 +50,7 @@ export function Form({ flow, returnTo, code }: Props) {
 
       const message = localizeString(intl, state.message) || state.message;
 
-      Sentry.captureMessage(message, {
-        extra: { state, error: state?.message, flow },
-        level: 'error',
-      });
+      recordFormOutcome('verification', state.message);
 
       AlertError(message);
     }

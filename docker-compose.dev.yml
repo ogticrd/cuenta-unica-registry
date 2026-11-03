@@ -7,6 +7,7 @@ services:
     environment:
       - CEDULA_API
       - CEDULA_API_KEY
+      - CEDULA_VALIDATION_API
       - JCE_PHOTO_API
       - JCE_PHOTO_API_KEY
       - ENCRYPTION_KEY

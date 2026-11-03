@@ -22,6 +22,10 @@ export type CitizensBirthInformationResponse = {
   payload: CitizenBirthInformation;
 };
 
+export type CedulaValidationResponse = {
+  valid: boolean;
+};
+
 export type CitizensTokenResponse = {
   access_token: string;
   token_type: string;

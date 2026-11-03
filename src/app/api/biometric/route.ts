@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
 
 import {
   createBiometricStateCookie,
@@ -42,10 +43,6 @@ function createFailureBody(
   };
 }
 
-function getSafeErrorName(error: unknown) {
-  return error instanceof Error ? error.name : typeof error;
-}
-
 export async function POST(req: NextRequest) {
   const rawPayload = await req.json().catch(() => null);
   const payload = isCreateBiometricSessionPayload(rawPayload)
@@ -86,10 +83,15 @@ export async function POST(req: NextRequest) {
     );
 
     response.cookies.set(createBiometricStateCookie(attempt.state));
-    Sentry.captureMessage('biometric_liveness_session_blocked', {
-      level: 'warning',
-      tags: { source, code: attempt.code },
-      extra: { retryAfterSeconds: attempt.retryAfterSeconds },
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'biometric_liveness_session_blocked',
+      level: 'info',
+      data: {
+        source,
+        code: attempt.code,
+        retryAfterSeconds: attempt.retryAfterSeconds,
+      },
     });
 
     return response;
@@ -126,10 +128,11 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true, sessionId });
 
     response.cookies.set(createBiometricStateCookie(nextState));
-    Sentry.captureMessage('rekognition_liveness_session_created', {
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'rekognition_liveness_session_created',
       level: 'info',
-      tags: { source },
-      extra: { attemptNumber: attempt.attemptNumber },
+      data: { source, attemptNumber: attempt.attemptNumber },
     });
 
     return response;

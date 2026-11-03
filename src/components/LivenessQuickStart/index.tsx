@@ -6,6 +6,11 @@ import React, { useState, useEffect } from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
+import {
+  getSafeErrorName,
+  recordBiometricOutcome,
+  recordDetectorError,
+} from '@/common/helpers/sentry-telemetry';
 
 import { useSnackAlert } from '@/components/elements/alert';
 import { configureAmplifyClient } from '@/common/helpers/amplify-client';
@@ -34,10 +39,6 @@ type Props = {
   redirectUri?: string;
   state?: string;
 };
-
-function getSafeErrorName(error: unknown) {
-  return error instanceof Error ? error.name : typeof error;
-}
 
 export function LivenessQuickStart({
   cedula,
@@ -118,11 +119,7 @@ export function LivenessQuickStart({
     setCanRetry(retryAfter <= 0);
     setError(new Error(resolveErrorMessage(data)));
 
-    Sentry.captureMessage('biometric_verification_failed', {
-      tags: { source, code: data.code },
-      extra: { retryAfter },
-      level: 'warning',
-    });
+    recordBiometricOutcome(source, data);
   };
 
   const resolveDetectorErrorMessage = ({
@@ -290,9 +287,11 @@ export function LivenessQuickStart({
       setSessionId(null);
       setCanRetry(true);
       setError(new Error('errors.liveness.invalidSession'));
-      Sentry.captureMessage('biometric_liveness_session_timed_out', {
-        level: 'warning',
-        tags: { source },
+      Sentry.addBreadcrumb({
+        category: 'biometric',
+        message: 'biometric_liveness_session_timed_out',
+        level: 'info',
+        data: { source },
       });
     }, LIVENESS_TIMEOUT_SECONDS * 1000);
 
@@ -353,14 +352,7 @@ export function LivenessQuickStart({
           onError={({ error, state }) => {
             const message = error?.message ?? state;
 
-            Sentry.captureMessage('biometric_liveness_detector_error', {
-              tags: { source },
-              extra: {
-                detectorState: state,
-                errorName: getSafeErrorName(error),
-              },
-              level: 'error',
-            });
+            recordDetectorError(source, state, error);
 
             setSessionId(null);
             setCanRetry(true);

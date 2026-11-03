@@ -4,6 +4,7 @@ export type {
   CitizensTokenResponse,
   CitizenBirthInformation,
   CitizensBirthInformationResponse,
+  CedulaValidationResponse,
   CitizensDataFlow,
   CitizenCookie,
 } from './citizens.type';

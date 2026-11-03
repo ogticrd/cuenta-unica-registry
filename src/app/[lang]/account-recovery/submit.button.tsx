@@ -6,7 +6,7 @@ import { useFormStatus } from 'react-dom';
 import { ButtonApp } from '@/components/elements/button';
 import { useLanguage } from '../provider';
 
-export function SubmitButton() {
+export function SubmitButton({ disabled = false }: { disabled?: boolean }) {
   const status = useFormStatus();
   const { intl } = useLanguage();
 
@@ -14,7 +14,7 @@ export function SubmitButton() {
     <ButtonApp
       submit
       endIcon={<ArrowCircleRightOutlined />}
-      disabled={status.pending}
+      disabled={disabled || status.pending}
     >
       {intl.accountRecovery?.startRecovery || intl.actions.confirm}
     </ButtonApp>

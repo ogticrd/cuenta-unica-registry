@@ -5,6 +5,7 @@ import type {
 } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
 
 import {
   createBiometricStateCookie,
@@ -49,10 +50,6 @@ function createErrorResponse({
   }
 
   return response;
-}
-
-function getSafeErrorName(error: unknown) {
-  return error instanceof Error ? error.name : typeof error;
 }
 
 export async function GET(req: NextRequest, { params }: Props) {
@@ -125,19 +122,21 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   const confidence = response.Confidence ?? 0;
 
-  Sentry.captureMessage('rekognition_liveness_completed', {
-    level: 'debug',
-    extra: { confidence, source },
-    tags: { source },
+  Sentry.addBreadcrumb({
+    category: 'biometric',
+    message: 'rekognition_liveness_completed',
+    level: 'info',
+    data: { source },
   });
 
   const isLive = confidence > Number(LIVENESS_CONFIDENCE_THRESHOLD);
 
   if (!isLive) {
-    Sentry.captureMessage('biometric_liveness_low_confidence', {
-      level: 'debug',
-      extra: { confidence, source },
-      tags: { source, code: 'liveness_low_confidence' },
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'biometric_liveness_low_confidence',
+      level: 'info',
+      data: { source, code: 'liveness_low_confidence' },
     });
 
     return createErrorResponse({
@@ -177,17 +176,21 @@ export async function GET(req: NextRequest, { params }: Props) {
     };
 
     try {
-      Sentry.captureMessage('rekognition_compare_faces_called', {
-        level: 'debug',
-        tags: { source },
+      Sentry.addBreadcrumb({
+        category: 'biometric',
+        message: 'rekognition_compare_faces_called',
+        level: 'info',
+        data: { source },
       });
 
       const { FaceMatches } = await client.compareFaces(compareFacesParams);
 
       if (!FaceMatches?.length) {
-        Sentry.captureMessage('biometric_face_mismatch', {
-          level: 'debug',
-          tags: { source, code: 'face_mismatch' },
+        Sentry.addBreadcrumb({
+          category: 'biometric',
+          message: 'biometric_face_mismatch',
+          level: 'info',
+          data: { source, code: 'face_mismatch' },
         });
 
         return createErrorResponse({
@@ -197,10 +200,11 @@ export async function GET(req: NextRequest, { params }: Props) {
         });
       }
 
-      Sentry.captureMessage('biometric_face_match_passed', {
-        level: 'debug',
-        extra: { similarity: FaceMatches[0].Similarity, source },
-        tags: { source },
+      Sentry.addBreadcrumb({
+        category: 'biometric',
+        message: 'biometric_face_match_passed',
+        level: 'info',
+        data: { source },
       });
 
       const nextState = recordBiometricSuccess({

@@ -5,7 +5,7 @@ import { version, name } from '../package.json';
 export function register() {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    tracesSampleRate: 1,
+    tracesSampleRate: 0.65,
     debug: false,
     environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
     enabled: process.env.NODE_ENV === 'production',

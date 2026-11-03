@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useActionState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import * as Sentry from '@sentry/nextjs';
+import { recordFormOutcome } from '@/common/helpers/sentry-telemetry';
 import { z } from 'zod';
 
 import {
@@ -65,11 +65,7 @@ export function Form({ cedula, flow, returnTo, isRecoveryMode }: FormProps) {
     if (state?.message) {
       const message = localizeString(intl, state.message) || state.message;
 
-      Sentry.captureMessage(message, {
-        tags: { form: 'register' },
-        extra: { error: state?.message },
-        level: 'error',
-      });
+      recordFormOutcome('register', state.message);
 
       AlertError(message);
     }

@@ -107,6 +107,7 @@ jobs:
             ORY_API_TOKEN=${{ secrets.ORY_API_TOKEN }},
             CEDULA_API=${{ secrets.CEDULA_API }},
             CEDULA_API_KEY=${{ secrets.CEDULA_API_KEY }},
+            CEDULA_VALIDATION_API=${{ secrets.CEDULA_VALIDATION_API }},
             JCE_PHOTO_API=${{ secrets.JCE_PHOTO_API }},
             JCE_PHOTO_API_KEY=${{ secrets.JCE_PHOTO_API_KEY }},
             SITE_COOKIE_KEY=${{ secrets.SITE_COOKIE_KEY }},
