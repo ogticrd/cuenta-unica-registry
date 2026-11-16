@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { version, name } from '../package.json';
+import { filterRegistryMetric } from '@/common/helpers/sentry-metrics';
 
 export function register() {
   const bunVersion =
@@ -10,6 +11,8 @@ export function register() {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     tracesSampleRate: 0.65,
     enableLogs: true,
+    enableMetrics: true,
+    beforeSendMetric: filterRegistryMetric,
     sendDefaultPii: false,
     debug: false,
     environment: process.env.NEXT_PUBLIC_SENTRY_ENV,

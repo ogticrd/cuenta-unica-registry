@@ -6,6 +6,10 @@ import type {
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import {
+  measureRegistryOperation,
+  responseOutcome,
+} from '@/common/helpers/sentry-metrics';
+import {
   getSafeErrorName,
   recordRoutineEvent,
 } from '@/common/helpers/sentry-telemetry';
@@ -55,7 +59,15 @@ function createErrorResponse({
   return response;
 }
 
-export async function GET(req: NextRequest, { params }: Props) {
+export async function GET(req: NextRequest, props: Props) {
+  return measureRegistryOperation(
+    'biometric.verify',
+    () => verifyBiometric(req, props),
+    responseOutcome,
+  );
+}
+
+async function verifyBiometric(req: NextRequest, { params }: Props) {
   const { sessionId, cedula } = await params;
   const source = parseBiometricSource(req.nextUrl.searchParams.get('source'));
   const flowId = req.nextUrl.searchParams.get('flowId') ?? undefined;

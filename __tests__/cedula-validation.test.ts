@@ -8,7 +8,11 @@ import { hasCedulaValidationReceipt } from '@/common/helpers/cedula-validation-r
 import { createCedulaSchema } from '@/common/validation-schemas';
 import es from '@/dictionaries/es.json';
 
-vi.mock('@sentry/nextjs', () => ({ captureMessage: vi.fn() }));
+vi.mock('@sentry/nextjs', () => ({
+  captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
+  metrics: { count: vi.fn(), distribution: vi.fn() },
+}));
 vi.mock('@/actions/recaptcha.action', () => ({ validateRecaptcha: vi.fn() }));
 
 beforeEach(() => {
@@ -19,7 +23,12 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  const telemetry = JSON.stringify(vi.mocked(Sentry.captureMessage).mock.calls);
+  const telemetry = JSON.stringify([
+    vi.mocked(Sentry.captureMessage).mock.calls,
+    vi.mocked(Sentry.metrics.count).mock.calls,
+    vi.mocked(Sentry.metrics.distribution).mock.calls,
+    vi.mocked(Sentry.addBreadcrumb).mock.calls,
+  ]);
   for (const value of [
     '00000000001',
     'api.example.test',
@@ -52,12 +61,22 @@ describe('cedula validation', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     await expect(validateCedula('00000000000')).resolves.toBe('valid');
+    expect(Sentry.metrics.count).toHaveBeenCalledExactlyOnceWith(
+      'registry.operation',
+      1,
+      { attributes: { operation: 'cedula.validation', outcome: 'success' } },
+    );
     expect(fetchMock).not.toHaveBeenCalled();
     expect(Sentry.captureMessage).not.toHaveBeenCalled();
   });
 
   it('reports unavailable when the fallback is not configured', async () => {
     await expect(validateCedula('00000000001')).resolves.toBe('unavailable');
+    expect(Sentry.metrics.count).toHaveBeenCalledExactlyOnceWith(
+      'registry.operation',
+      1,
+      { attributes: { operation: 'cedula.validation', outcome: 'error' } },
+    );
     expect(Sentry.captureMessage).toHaveBeenCalledWith(
       'cedula_validation_unavailable',
       {

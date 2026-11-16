@@ -5,6 +5,7 @@ import { unwrap } from './unwrap';
 import { validLuhn } from './validations';
 import { hasCedulaValidationReceipt } from './cedula-validation-receipt';
 import { recordCedulaValidationFailure } from './sentry-telemetry';
+import { measureRegistryOperation } from './sentry-metrics';
 
 const VALIDATION_TIMEOUT_MS = 5_000;
 
@@ -13,6 +14,22 @@ const VALIDATION_TIMEOUT_MS = 5_000;
  * Citizens validation API as the final fallback.
  */
 export async function validateCedula(
+  cedula: string,
+  receipt?: string,
+): Promise<'valid' | 'invalid' | 'unavailable'> {
+  return measureRegistryOperation(
+    'cedula.validation',
+    () => validateCedulaValue(cedula, receipt),
+    (result) =>
+      result === 'valid'
+        ? 'success'
+        : result === 'invalid'
+          ? 'rejected'
+          : 'error',
+  );
+}
+
+async function validateCedulaValue(
   cedula: string,
   receipt?: string,
 ): Promise<'valid' | 'invalid' | 'unavailable'> {

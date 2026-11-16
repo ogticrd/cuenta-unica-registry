@@ -16,6 +16,7 @@ vi.mock('@sentry/nextjs', () => ({
   captureMessage: vi.fn(),
   addBreadcrumb: vi.fn(),
   logger: { info: vi.fn() },
+  metrics: { count: vi.fn(), distribution: vi.fn() },
 }));
 
 vi.mock('@/common/helpers/rekognition', () => ({
@@ -141,6 +142,11 @@ describe('biometric API routes', () => {
       }),
     );
     expect(blockedResponse.status).toBe(429);
+    expect(Sentry.metrics.count).toHaveBeenLastCalledWith(
+      'registry.operation',
+      1,
+      { attributes: { operation: 'biometric.session', outcome: 'limited' } },
+    );
     expect(body).toMatchObject({
       success: false,
       code: 'biometric_attempt_limit_exceeded',
@@ -310,6 +316,11 @@ describe('biometric API routes', () => {
       expect.objectContaining({ message: 'biometric_liveness_low_confidence' }),
     );
     expect(response.status).toBe(403);
+    expect(Sentry.metrics.count).toHaveBeenLastCalledWith(
+      'registry.operation',
+      1,
+      { attributes: { operation: 'biometric.verify', outcome: 'rejected' } },
+    );
     expect(body).toMatchObject({
       success: false,
       code: 'liveness_low_confidence',
@@ -357,6 +368,11 @@ describe('biometric API routes', () => {
       expect.objectContaining({ level: 'error' }),
     );
     expect(response.status).toBe(502);
+    expect(Sentry.metrics.count).toHaveBeenLastCalledWith(
+      'registry.operation',
+      1,
+      { attributes: { operation: 'biometric.verify', outcome: 'error' } },
+    );
     expect(body).toMatchObject({
       success: false,
       code: 'jce_photo_unavailable',
@@ -509,13 +525,27 @@ describe('biometric API routes', () => {
     expect(
       vi
         .mocked(Sentry.addBreadcrumb)
-        .mock.calls.map(([crumb]) => crumb.message),
+        .mock.calls.filter(([crumb]) => crumb.category === 'biometric')
+        .map(([crumb]) => crumb.message),
     ).toEqual([
       'rekognition_liveness_session_created',
       'rekognition_liveness_completed',
       'rekognition_compare_faces_called',
       'biometric_face_match_passed',
     ]);
+    expect(vi.mocked(Sentry.metrics.count).mock.calls).toEqual([
+      [
+        'registry.operation',
+        1,
+        { attributes: { operation: 'biometric.session', outcome: 'success' } },
+      ],
+      [
+        'registry.operation',
+        1,
+        { attributes: { operation: 'biometric.verify', outcome: 'success' } },
+      ],
+    ]);
+    expect(Sentry.metrics.distribution).toHaveBeenCalledTimes(2);
     expect(body).toMatchObject({
       success: true,
       isMatch: true,
@@ -545,15 +575,20 @@ describe('biometric API routes', () => {
 
 afterEach(() => {
   expect(vi.mocked(Sentry.logger.info).mock.calls).toEqual(
-    vi.mocked(Sentry.addBreadcrumb).mock.calls.map(([event]) => [
-      event.message,
-      { category: event.category, ...event.data },
-    ]),
+    vi
+      .mocked(Sentry.addBreadcrumb)
+      .mock.calls.filter(([event]) => event.category === 'biometric')
+      .map(([event]) => [
+        event.message,
+        { category: event.category, ...event.data },
+      ]),
   );
   const telemetry = JSON.stringify([
     vi.mocked(Sentry.captureMessage).mock.calls,
     vi.mocked(Sentry.addBreadcrumb).mock.calls,
     vi.mocked(Sentry.logger.info).mock.calls,
+    vi.mocked(Sentry.metrics.count).mock.calls,
+    vi.mocked(Sentry.metrics.distribution).mock.calls,
   ]);
   for (const sensitive of [
     TEST_CEDULA,

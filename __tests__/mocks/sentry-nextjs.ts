@@ -9,3 +9,7 @@ export const addBreadcrumb = () => undefined;
 export const captureFeedback = () => undefined;
 
 export const logger = { info: () => undefined };
+export const metrics = {
+  count: () => undefined,
+  distribution: () => undefined,
+};

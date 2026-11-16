@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import {
+  measureRegistryOperation,
+  responseOutcome,
+} from '@/common/helpers/sentry-metrics';
+import {
   getSafeErrorName,
   recordRoutineEvent,
 } from '@/common/helpers/sentry-telemetry';
@@ -47,17 +51,22 @@ function createFailureBody(
 }
 
 export async function POST(req: NextRequest) {
+  return measureRegistryOperation(
+    'biometric.session',
+    () => createSession(req),
+    responseOutcome,
+  );
+}
+
+async function createSession(req: NextRequest) {
   const rawPayload = await req.json().catch(() => null);
-  const payload = isCreateBiometricSessionPayload(rawPayload)
-    ? rawPayload
-    : {};
+  const payload = isCreateBiometricSessionPayload(rawPayload) ? rawPayload : {};
   const source = parseBiometricSource(payload.source);
 
   if (!source) {
-    return NextResponse.json(
-      createFailureBody('invalid_liveness_session'),
-      { status: 400 },
-    );
+    return NextResponse.json(createFailureBody('invalid_liveness_session'), {
+      status: 400,
+    });
   }
 
   const subject = await resolveBiometricSubject({
@@ -66,10 +75,9 @@ export async function POST(req: NextRequest) {
   });
 
   if (!subject) {
-    return NextResponse.json(
-      createFailureBody('invalid_liveness_session'),
-      { status: 400 },
-    );
+    return NextResponse.json(createFailureBody('invalid_liveness_session'), {
+      status: 400,
+    });
   }
 
   const currentState = await getBiometricState();
@@ -146,9 +154,8 @@ export async function POST(req: NextRequest) {
       extra: { errorName: getSafeErrorName(error) },
     });
 
-    return NextResponse.json(
-      createFailureBody('rekognition_error'),
-      { status: 502 },
-    );
+    return NextResponse.json(createFailureBody('rekognition_error'), {
+      status: 502,
+    });
   }
 }

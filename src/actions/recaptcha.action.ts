@@ -2,6 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
+import { measureRegistryOperation } from '@/common/helpers/sentry-metrics';
 
 import type { ReCaptchaResponse, ReCaptchaEvent } from '../types';
 
@@ -21,6 +22,19 @@ const verifyRecaptcha = async (recaptchaEvent: ReCaptchaEvent) => {
 };
 
 export async function validateRecaptcha(token: string) {
+  return measureRegistryOperation(
+    'recaptcha',
+    () => validateRecaptchaToken(token),
+    (result) =>
+      result.isHuman === true
+        ? 'success'
+        : result.isHuman === false
+          ? 'rejected'
+          : 'error',
+  );
+}
+
+async function validateRecaptchaToken(token: string) {
   if (
     process.env.NODE_ENV !== 'production' &&
     process.env.RECAPTCHA_BYPASS_LOCAL === 'true'

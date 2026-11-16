@@ -114,6 +114,10 @@ it.each(['production', 'development'])(
     const client = await import('@/instrumentation-client');
 
     expect(Sentry.init).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(Sentry.init).mock.calls[0][0]).toMatchObject({
+      enableMetrics: true,
+      beforeSendMetric: expect.any(Function),
+    });
     for (const [options] of vi.mocked(Sentry.init).mock.calls) {
       expect(options).toMatchObject({
         enableLogs: true,

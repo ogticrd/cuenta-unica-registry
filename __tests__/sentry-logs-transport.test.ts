@@ -8,9 +8,79 @@ import {
 import { NodeClient } from '@sentry/node';
 import type { Envelope } from '@sentry/core';
 import { recordRoutineEvent } from '@/common/helpers/sentry-telemetry';
+import {
+  filterRegistryMetric,
+  measureRegistryOperation,
+} from '@/common/helpers/sentry-metrics';
 
 // Exercise the installed SDK, bypassing the suite's normal Sentry stub.
 vi.mock('@sentry/nextjs', async () => import('@sentry/browser'));
+
+it('buffers metrics with tracing disabled, without errors, logs, or user data', async () => {
+  const envelopes: Envelope[] = [];
+  const client = new NodeClient({
+    dsn: 'https://public@example.test/1',
+    enabled: true,
+    enableMetrics: true,
+    tracesSampleRate: 0,
+    sendDefaultPii: false,
+    beforeSendMetric: filterRegistryMetric,
+    integrations: [],
+    stackParser: defaultStackParser,
+    transport: () => ({
+      send: async (envelope) => {
+        envelopes.push(envelope);
+        return { statusCode: 200 };
+      },
+      flush: async () => true,
+    }),
+  });
+  const scope = getCurrentScope();
+  const previousClient = scope.getClient();
+  scope.setClient(client);
+  scope.setUser({ id: '00000000001', email: 'test@example.test' });
+  client.init();
+  try {
+    await measureRegistryOperation(
+      'recaptcha',
+      async () => true,
+      () => 'success',
+    );
+    expect(envelopes).toEqual([]);
+    await client.flush(2000);
+    const items = envelopes.flatMap<Envelope[1][number]>(
+      ([, entries]) => entries,
+    );
+    expect(items.map(([header]) => header.type)).toEqual(['trace_metric']);
+    expect(items[0][1]).toMatchObject({
+      items: [
+        {
+          name: 'registry.operation',
+          type: 'counter',
+          value: 1,
+          trace_id: expect.any(String),
+          attributes: {
+            operation: { type: 'string', value: 'recaptcha' },
+            outcome: { type: 'string', value: 'success' },
+          },
+        },
+        {
+          name: 'registry.operation.duration',
+          type: 'distribution',
+          unit: 'millisecond',
+          value: expect.any(Number),
+        },
+      ],
+    });
+    expect(JSON.stringify(envelopes)).not.toContain('00000000001');
+    expect(JSON.stringify(envelopes)).not.toContain('test@example.test');
+  } finally {
+    await client.close(2000);
+    scope.clear();
+    getIsolationScope().clear();
+    scope.setClient(previousClient);
+  }
+});
 
 it.each([
   ['browser', BrowserClient],
