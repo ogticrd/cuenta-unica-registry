@@ -24,8 +24,8 @@
     "test": "vitest"
   },
   "engines": {
-    "npm": ">=10.1.0 <11.0.0",
-    "node": ">=20.9.0 <25.0.0"
+    "npm": ">=11.20.0 <12.0.0",
+    "node": ">=26.13.1 <27.0.0"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.8.1",
@@ -67,7 +67,7 @@
     "@commitlint/types": "^20.5.0",
     "@testing-library/react": "^16.3.3",
     "@types/negotiator": "^0.6.5",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/react-google-recaptcha": "^2.1.9",
