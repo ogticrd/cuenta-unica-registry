@@ -48,7 +48,7 @@ export function StepIdentification({
 
   const form = useForm({
     resolver: zodResolver(identificationSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       cedula: formatCedula(defaultValues.cedula),
     },

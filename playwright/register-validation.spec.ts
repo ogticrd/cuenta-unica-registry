@@ -135,10 +135,12 @@ test.describe("registration form validation", () => {
     const getCitizenLookupPayload = await mockSuccessfulCitizenLookup(page);
     let accountDraftPayload: unknown;
     let livenessSessionRequested = false;
+    let passwordBreachRequestCount = 0;
 
-    await page.route("https://api.pwnedpasswords.com/range/**", (route) =>
-      route.fulfill({ status: 200, body: "" }),
-    );
+    await page.route("https://api.pwnedpasswords.com/range/**", (route) => {
+      passwordBreachRequestCount += 1;
+      return route.fulfill({ status: 200, body: "" });
+    });
     await page.route("**/api/registration/account-draft", async (route) => {
       accountDraftPayload = route.request().postDataJSON();
 
@@ -175,10 +177,43 @@ test.describe("registration form validation", () => {
     await page.getByLabel(/^Correo electrónico/).fill(VALID_EMAIL);
     await page.getByLabel(/^Confirmar correo/).fill(VALID_EMAIL);
     await page.getByLabel(/^Contraseña/).fill(VALID_PASSWORD);
+
+    await expect.poll(() => passwordBreachRequestCount).toBeGreaterThan(0);
+    const requestsAfterPasswordValidation = passwordBreachRequestCount;
+
+    await page.getByLabel(/^Correo electrónico/).fill("correo");
+    await expect(
+      page.getByText("Ingresa un correo electrónico válido"),
+    ).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Correo electrónico/).fill(VALID_EMAIL);
+    await expect(
+      page.getByText("Ingresa un correo electrónico válido"),
+    ).toBeHidden();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Confirmar correo/).fill("otro@example.com");
+    await expect(
+      page.getByText("Los correos electrónicos no coinciden"),
+    ).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Confirmar correo/).fill(VALID_EMAIL);
+    await expect(
+      page.getByText("Los correos electrónicos no coinciden"),
+    ).toBeHidden();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
     await page.getByLabel(/^Confirmar contraseña/).fill(VALID_PASSWORD);
+    await page.waitForTimeout(1_000);
+
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
     await page.getByRole("button", { name: "CONTINUAR" }).click();
 
     await expect(page.getByText("¡Hola, MARLUAN!")).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
     expect(accountDraftPayload).toMatchObject({
       email: VALID_EMAIL,
       password: VALID_PASSWORD,

@@ -5,6 +5,7 @@ import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import {
   type SyntheticEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -31,7 +32,15 @@ import type {
   RegisterAccountDraft,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
-import { getPasswordRequirementStatus } from "@/lib/utils/password";
+import {
+  getPasswordRequirementStatus,
+  isBreachedPassword,
+  isPasswordStrongEnough,
+} from "@/lib/utils/password";
+
+const PASSWORD_BREACH_DEBOUNCE_MS = 500;
+
+type PasswordBreachStatus = "idle" | "checking" | "safe" | "compromised";
 
 interface StepAccountProps {
   onBack: () => void;
@@ -127,9 +136,13 @@ export function StepAccount({
     [cedula, t],
   );
   type AccountValues = z.infer<typeof accountSchema>;
+  const accountResolver = useMemo(
+    () => zodResolver(accountSchema, undefined, { mode: "sync" }),
+    [accountSchema],
+  );
 
   const form = useForm<AccountValues>({
-    resolver: zodResolver(accountSchema),
+    resolver: accountResolver,
     mode: "onChange",
     delayError: 750,
     defaultValues,
@@ -141,6 +154,18 @@ export function StepAccount({
     defaultValues.confirmPassword,
   ].join("\u0000");
   const lastDefaultValuesKey = useRef(defaultValuesKey);
+  const passwordCheck = useRef<
+    | {
+        password: string;
+        promise: Promise<boolean>;
+      }
+    | undefined
+  >(undefined);
+  const [passwordBreachStatus, setPasswordBreachStatus] =
+    useState<PasswordBreachStatus>("idle");
+  const passwordCompromisedMessage = t(
+    "account.validation.password_compromised",
+  );
   const initialGeneralError = initialErrors
     ? translateGeneralError(initialErrors, t)
     : undefined;
@@ -155,6 +180,60 @@ export function StepAccount({
   const hasInitialFieldErrors = Boolean(
     initialEmailErrorMessage || initialPasswordErrorMessage,
   );
+
+  const validatePasswordBreach = useCallback(
+    async (password: string) => {
+      if (passwordCheck.current?.password !== password) {
+        passwordCheck.current = {
+          password,
+          promise: isBreachedPassword(password),
+        };
+      }
+
+      setPasswordBreachStatus("checking");
+      const breached = await passwordCheck.current.promise;
+
+      if (form.getValues("password") !== password) {
+        return breached;
+      }
+
+      setPasswordBreachStatus(breached ? "compromised" : "safe");
+
+      if (breached) {
+        form.setError("password", {
+          type: "password_compromised",
+          message: passwordCompromisedMessage,
+        });
+      } else if (
+        form.getFieldState("password").error?.type === "password_compromised"
+      ) {
+        form.clearErrors("password");
+      }
+
+      return breached;
+    },
+    [form, passwordCompromisedMessage],
+  );
+
+  const currentPassword = form.watch("password");
+
+  useEffect(() => {
+    setPasswordBreachStatus("idle");
+
+    if (form.getFieldState("password").error?.type === "password_compromised") {
+      form.clearErrors("password");
+    }
+
+    if (!isPasswordStrongEnough(currentPassword)) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      void validatePasswordBreach(currentPassword);
+    }, PASSWORD_BREACH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [currentPassword, form, validatePasswordBreach]);
 
   useEffect(() => {
     if (lastDefaultValuesKey.current === defaultValuesKey) {
@@ -194,7 +273,7 @@ export function StepAccount({
     if (
       initialPasswordErrorMessage &&
       form.getFieldState("password").error?.message !==
-      initialPasswordErrorMessage
+        initialPasswordErrorMessage
     ) {
       form.setError("password", {
         message: initialPasswordErrorMessage,
@@ -222,7 +301,15 @@ export function StepAccount({
     t,
   ]);
 
-  const onSubmit = (data: AccountValues) => onNext(data);
+  const onSubmit = async (data: AccountValues) => {
+    const breached = await validatePasswordBreach(data.password);
+
+    if (breached || form.getValues("password") !== data.password) {
+      return;
+    }
+
+    await onNext(data);
+  };
 
   return (
     <div className="space-y-6 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300 w-full">
@@ -330,9 +417,9 @@ export function StepAccount({
                       style={
                         !showPassword
                           ? ({
-                            WebkitTextSecurity: "disc",
-                            textSecurity: "disc",
-                          } as React.CSSProperties)
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
                           : undefined
                       }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
@@ -407,8 +494,9 @@ export function StepAccount({
                         <span>{req.label}</span>
                       </li>
                     ))}
-                    {!form.watch("password") ||
-                      form.formState.errors.password?.message ? (
+                    {!currentPassword ||
+                    passwordBreachStatus !== "safe" ||
+                    form.formState.errors.password?.message ? (
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         <span>{t("account.validation.password_secure")}</span>
@@ -420,7 +508,7 @@ export function StepAccount({
                       </li>
                     )}
                     {form.watch("password") !== form.watch("confirmPassword") ||
-                      !form.watch("confirmPassword") ? (
+                    !form.watch("confirmPassword") ? (
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
                         <span>{t("account.validation.password_match")}</span>
@@ -465,9 +553,9 @@ export function StepAccount({
                       style={
                         !showConfirmPassword
                           ? ({
-                            WebkitTextSecurity: "disc",
-                            textSecurity: "disc",
-                          } as React.CSSProperties)
+                              WebkitTextSecurity: "disc",
+                              textSecurity: "disc",
+                            } as React.CSSProperties)
                           : undefined
                       }
                       className="h-12 pr-10 focus-visible:ring-primary dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-500/30"
