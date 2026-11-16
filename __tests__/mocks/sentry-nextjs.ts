@@ -7,3 +7,5 @@ export const init = () => undefined;
 
 export const addBreadcrumb = () => undefined;
 export const captureFeedback = () => undefined;
+
+export const logger = { info: () => undefined };

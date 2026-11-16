@@ -1,7 +1,7 @@
 {
   "name": "cuenta-unica-registry",
   "description": "Portal de registro de Cuenta Única",
-  "version": "v1.5.18",
+  "version": "v1.5.19",
   "private": false,
   "author": "OGTIC",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "@aws-amplify/adapter-nextjs": "^1.8.1",
     "@aws-amplify/ui-react": "^6.15.7",
     "@aws-amplify/ui-react-liveness": "^3.7.0",
-    "@aws-sdk/client-rekognition": "^3.1161.0",
+    "@aws-sdk/client-rekognition": "^3.1169.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -55,7 +55,7 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-gtm-module": "^2.0.11",
-    "react-hook-form": "^7.91.0",
+    "react-hook-form": "^7.92.0",
     "react-imask": "^7.6.1",
     "typescript": "^5.9.3",
     "zod": "^4.6.7"
@@ -70,8 +70,8 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/react-google-recaptcha": "^2.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.72.1",
-    "@typescript-eslint/parser": "^8.72.1",
+    "@typescript-eslint/eslint-plugin": "^8.72.2",
+    "@typescript-eslint/parser": "^8.72.2",
     "@vitejs/plugin-react": "^5.2.0",
     "aws-crt": "^1.33.3",
     "eslint": "^9.39.5",
@@ -83,12 +83,12 @@
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "vitest": "^4.1.12"
   },
   "peerDependencies": {
-    "@aws-sdk/client-sso-oidc": "^3.986.0",
-    "@aws-sdk/client-sts": "^3.986.0"
+    "@aws-sdk/client-sso-oidc": "^3.1161.0",
+    "@aws-sdk/client-sts": "^3.1161.0"
   },
   "overrides": {
     "next": "16.4.1",

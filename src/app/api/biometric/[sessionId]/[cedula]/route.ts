@@ -5,7 +5,10 @@ import type {
 } from '@aws-sdk/client-rekognition';
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
-import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
+import {
+  getSafeErrorName,
+  recordRoutineEvent,
+} from '@/common/helpers/sentry-telemetry';
 
 import {
   createBiometricStateCookie,
@@ -122,7 +125,7 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   const confidence = response.Confidence ?? 0;
 
-  Sentry.addBreadcrumb({
+  recordRoutineEvent({
     category: 'biometric',
     message: 'rekognition_liveness_completed',
     level: 'info',
@@ -132,7 +135,7 @@ export async function GET(req: NextRequest, { params }: Props) {
   const isLive = confidence > Number(LIVENESS_CONFIDENCE_THRESHOLD);
 
   if (!isLive) {
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'biometric',
       message: 'biometric_liveness_low_confidence',
       level: 'info',
@@ -176,7 +179,7 @@ export async function GET(req: NextRequest, { params }: Props) {
     };
 
     try {
-      Sentry.addBreadcrumb({
+      recordRoutineEvent({
         category: 'biometric',
         message: 'rekognition_compare_faces_called',
         level: 'info',
@@ -186,7 +189,7 @@ export async function GET(req: NextRequest, { params }: Props) {
       const { FaceMatches } = await client.compareFaces(compareFacesParams);
 
       if (!FaceMatches?.length) {
-        Sentry.addBreadcrumb({
+        recordRoutineEvent({
           category: 'biometric',
           message: 'biometric_face_mismatch',
           level: 'info',
@@ -200,7 +203,7 @@ export async function GET(req: NextRequest, { params }: Props) {
         });
       }
 
-      Sentry.addBreadcrumb({
+      recordRoutineEvent({
         category: 'biometric',
         message: 'biometric_face_match_passed',
         level: 'info',

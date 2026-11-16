@@ -4,6 +4,21 @@ import type {
   BiometricSource,
 } from '@/common/biometric-contract';
 
+// Keep error context in breadcrumbs and make routine outcomes searchable in Logs.
+// Callers must supply static messages and sanitized diagnostic attributes only.
+export function recordRoutineEvent(event: {
+  category: string;
+  message: string;
+  level: 'info';
+  data: Record<string, string | number>;
+}) {
+  Sentry.addBreadcrumb(event);
+  Sentry.logger.info(event.message, {
+    category: event.category,
+    ...event.data,
+  });
+}
+
 // Never send arbitrary exception names, messages, bodies, or form state.
 const ERROR_NAMES = new Set([
   'Error',
@@ -63,7 +78,7 @@ export function recordBiometricOutcome(
 ) {
   const { code } = response;
   if (EXPECTED_BIOMETRIC_CODES.has(code)) {
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'biometric',
       message: 'biometric_verification_rejected',
       level: 'info',
@@ -99,7 +114,7 @@ export function recordDetectorError(
   error: unknown,
 ) {
   if (EXPECTED_DETECTOR_STATES.has(state)) {
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'biometric',
       message: 'biometric_liveness_detector_interrupted',
       level: 'info',
@@ -152,7 +167,7 @@ export function recordFormOutcome(form: FormName, message: string) {
   } else {
     // Provider validation text may embed an email, name, or ID. Only keep
     // known application codes; provider failures are reported at the source.
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'form',
       message: 'form_validation_rejected',
       level: 'info',
@@ -209,7 +224,7 @@ export function recordIdentityProviderFailure(
             hasValidationMessages(node.messages),
         )));
   if (status === 400 && isValidation) {
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: operation,
       message: `${operation}_validation_rejected`,
       level: 'info',
