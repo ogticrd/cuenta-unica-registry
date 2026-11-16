@@ -148,6 +148,12 @@ export function LivenessQuickStart({
   const fetchCreateLiveness = async ({
     forceNew = false,
   }: { forceNew?: boolean } = {}): Promise<void> => {
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'liveness_session_requested',
+      level: 'info',
+      data: { source, retry: forceNew },
+    });
     const response = await fetch(`/api/biometric`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -183,15 +189,33 @@ export function LivenessQuickStart({
     setCanRetry(false);
     setSessionId(data.sessionId);
     setLoading(false);
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'liveness_session_ready',
+      level: 'info',
+      data: { source },
+    });
   };
 
   const onUserCancel = () => {
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'liveness_cancelled',
+      level: 'info',
+      data: { source },
+    });
     setSessionId(null);
     setCanRetry(true);
     AlertWarning(intl.liveness.error.tryAgain);
   };
 
   const handleSuccessfulMatch = () => {
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'liveness_verification_accepted',
+      level: 'info',
+      data: { source },
+    });
     if (!redirectUri) {
       router.push('register');
       return;
@@ -234,6 +258,13 @@ export function LivenessQuickStart({
     if (!sessionId) {
       return;
     }
+
+    Sentry.addBreadcrumb({
+      category: 'biometric',
+      message: 'liveness_result_requested',
+      level: 'info',
+      data: { source },
+    });
 
     const params = new URLSearchParams({ source });
 
