@@ -2,7 +2,10 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import * as Sentry from '@sentry/nextjs';
-import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
+import {
+  getSafeErrorName,
+  recordRoutineEvent,
+} from '@/common/helpers/sentry-telemetry';
 
 import { serializeSignedCookieValue } from '@/common/helpers/signed-cookie';
 import { getDictionary, type Dictionary } from '@/dictionaries';
@@ -78,7 +81,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const code = getExpectedVidErrorCode(error, intl);
     if (code) {
-      Sentry.addBreadcrumb({
+      recordRoutineEvent({
         category: 'vid',
         message: 'vid_validation_rejected',
         level: 'info',

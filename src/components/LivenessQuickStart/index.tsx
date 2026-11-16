@@ -8,6 +8,7 @@ import { useParams, useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import {
   getSafeErrorName,
+  recordRoutineEvent,
   recordBiometricOutcome,
   recordDetectorError,
 } from '@/common/helpers/sentry-telemetry';
@@ -285,7 +286,7 @@ export function LivenessQuickStart({
       setSessionId(null);
       setCanRetry(true);
       setError(new Error('errors.liveness.invalidSession'));
-      Sentry.addBreadcrumb({
+      recordRoutineEvent({
         category: 'biometric',
         message: 'biometric_liveness_session_timed_out',
         level: 'info',

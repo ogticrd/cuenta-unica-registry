@@ -15,6 +15,7 @@ vi.mock('@sentry/nextjs', () => ({
   captureException: vi.fn(),
   captureMessage: vi.fn(),
   addBreadcrumb: vi.fn(),
+  logger: { info: vi.fn() },
 }));
 
 vi.mock('@/common/helpers/rekognition', () => ({
@@ -487,6 +488,24 @@ describe('biometric API routes', () => {
     expect(response.status).toBe(200);
     expect(Sentry.captureMessage).not.toHaveBeenCalled();
     expect(Sentry.captureException).not.toHaveBeenCalled();
+    expect(vi.mocked(Sentry.logger.info).mock.calls).toEqual([
+      [
+        'rekognition_liveness_session_created',
+        { category: 'biometric', source: 'registration', attemptNumber: 1 },
+      ],
+      [
+        'rekognition_liveness_completed',
+        { category: 'biometric', source: 'registration' },
+      ],
+      [
+        'rekognition_compare_faces_called',
+        { category: 'biometric', source: 'registration' },
+      ],
+      [
+        'biometric_face_match_passed',
+        { category: 'biometric', source: 'registration' },
+      ],
+    ]);
     expect(
       vi
         .mocked(Sentry.addBreadcrumb)
@@ -525,9 +544,16 @@ describe('biometric API routes', () => {
 });
 
 afterEach(() => {
+  expect(vi.mocked(Sentry.logger.info).mock.calls).toEqual(
+    vi.mocked(Sentry.addBreadcrumb).mock.calls.map(([event]) => [
+      event.message,
+      { category: event.category, ...event.data },
+    ]),
+  );
   const telemetry = JSON.stringify([
     vi.mocked(Sentry.captureMessage).mock.calls,
     vi.mocked(Sentry.addBreadcrumb).mock.calls,
+    vi.mocked(Sentry.logger.info).mock.calls,
   ]);
   for (const sensitive of [
     TEST_CEDULA,

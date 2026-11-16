@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
-import { getSafeErrorName } from '@/common/helpers/sentry-telemetry';
+import {
+  getSafeErrorName,
+  recordRoutineEvent,
+} from '@/common/helpers/sentry-telemetry';
 
 import {
   createBiometricStateCookie,
@@ -83,7 +86,7 @@ export async function POST(req: NextRequest) {
     );
 
     response.cookies.set(createBiometricStateCookie(attempt.state));
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'biometric',
       message: 'biometric_liveness_session_blocked',
       level: 'info',
@@ -128,7 +131,7 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true, sessionId });
 
     response.cookies.set(createBiometricStateCookie(nextState));
-    Sentry.addBreadcrumb({
+    recordRoutineEvent({
       category: 'biometric',
       message: 'rekognition_liveness_session_created',
       level: 'info',

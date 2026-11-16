@@ -43,6 +43,7 @@ vi.mock('next/font/google', () => ({
 vi.mock('@sentry/nextjs', () => ({
   captureMessage: vi.fn(),
   addBreadcrumb: vi.fn(),
+  logger: { info: vi.fn() },
 }));
 const captcha = vi.hoisted(() => ({ execute: vi.fn() }));
 vi.mock('next-recaptcha-v3', () => ({

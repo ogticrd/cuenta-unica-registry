@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as Sentry from '@sentry/nextjs';
 import {
   getSafeErrorName,
@@ -12,8 +12,18 @@ import { BIOMETRIC_ERROR_CODES } from '@/common/biometric-contract';
 vi.mock('@sentry/nextjs', () => ({
   captureMessage: vi.fn(),
   addBreadcrumb: vi.fn(),
+  logger: { info: vi.fn() },
 }));
 beforeEach(() => vi.clearAllMocks());
+
+afterEach(() => {
+  expect(vi.mocked(Sentry.logger.info).mock.calls).toEqual(
+    vi.mocked(Sentry.addBreadcrumb).mock.calls.map(([event]) => [
+      event.message,
+      { category: event.category, ...event.data },
+    ]),
+  );
+});
 
 const privateMessage =
   'Citizen 00000000001 test@example.test access_token=private-token';
@@ -21,6 +31,7 @@ function expectNoPrivateContext() {
   const telemetry = JSON.stringify([
     vi.mocked(Sentry.captureMessage).mock.calls,
     vi.mocked(Sentry.addBreadcrumb).mock.calls,
+    vi.mocked(Sentry.logger.info).mock.calls,
   ]);
   for (const value of ['00000000001', 'test@example.test', 'private-token'])
     expect(telemetry).not.toContain(value);

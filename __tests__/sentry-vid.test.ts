@@ -16,6 +16,7 @@ vi.mock('next/headers', () => ({ cookies: vi.fn() }));
 vi.mock('@sentry/nextjs', () => ({
   captureMessage: vi.fn(),
   addBreadcrumb: vi.fn(),
+  logger: { info: vi.fn() },
 }));
 beforeEach(() => vi.clearAllMocks());
 
