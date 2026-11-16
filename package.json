@@ -73,7 +73,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@typescript-eslint/eslint-plugin": "^8.72.2",
     "@typescript-eslint/parser": "^8.72.2",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.3.0",
     "aws-crt": "^1.33.3",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.6",
@@ -85,7 +85,7 @@
     "jsdom": "^27.4.0",
     "lint-staged": "^17.6.1",
     "prettier": "^3.10.1",
-    "vitest": "^4.1.12",
+    "vitest": "^5.1.0",
     "yaml": "^2.9.1"
   },
   "peerDependencies": {
