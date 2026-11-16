@@ -5,6 +5,9 @@ const { version, name } = require('./package.json');
 
 const nextConfig: NextConfig = {
   serverExternalPackages: [
+    // Resolve the SDK at runtime so Bun selects its native conditional export,
+    // including when this standalone bundle was built with Node.js.
+    '@sentry/nextjs',
     '@aws-amplify/adapter-nextjs',
     'aws-amplify',
     'aws-crt',
@@ -12,6 +15,16 @@ const nextConfig: NextConfig = {
   ],
 
   output: 'standalone',
+
+  // Next's Node-oriented file tracing omits Bun's conditional SDK entry point.
+  outputFileTracingIncludes: {
+    '/*': [
+      './node_modules/@sentry/nextjs/build/cjs/index.bun.js',
+      './node_modules/@sentry/bun/package.json',
+      './node_modules/@sentry/bun/build/cjs/**/*.js',
+      './node_modules/@sentry/server-utils/build/cjs/index.request-handler.js',
+    ],
+  },
 
   turbopack: {
     resolveAlias: {
@@ -30,8 +43,6 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT,
 
   widenClientFileUpload: true,
-
-  tunnelRoute: '/api/monitoring',
 
   sourcemaps: {
     disable: process.env.APP_ENV !== 'production',

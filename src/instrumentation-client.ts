@@ -2,23 +2,28 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs';
 import { version, name } from '../package.json';
+import {
+  sentryDataCollection,
+  sentryTunnelPath,
+} from '@/common/helpers/sentry-options';
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration({
-    // Additional Replay configuration goes in here, for example:
-    maskAllText: true,
-    blockAllMedia: true,
-  })],
+  integrations: [
+    Sentry.replayIntegration({
+      // Additional Replay configuration goes in here, for example:
+      maskAllText: true,
+      blockAllMedia: true,
+    }),
+  ],
 
   // Sample 65% of new traces; error event sampling is independent.
   tracesSampleRate: 0.65,
-  // Enable logs to be sent to Sentry
-  enableLogs: true,
+  tunnel: { path: sentryTunnelPath },
 
   debug: false,
 
@@ -36,9 +41,7 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Disable automatic PII collection by default.
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: false,
+  dataCollection: sentryDataCollection,
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

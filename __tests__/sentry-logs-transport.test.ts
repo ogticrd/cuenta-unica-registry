@@ -7,6 +7,7 @@ import {
 } from '@sentry/browser';
 import { NodeClient } from '@sentry/node';
 import type { Envelope } from '@sentry/core';
+import { sentryDataCollection } from '@/common/helpers/sentry-options';
 import { recordRoutineEvent } from '@/common/helpers/sentry-telemetry';
 import {
   filterRegistryMetric,
@@ -21,9 +22,8 @@ it('buffers metrics with tracing disabled, without errors, logs, or user data', 
   const client = new NodeClient({
     dsn: 'https://public@example.test/1',
     enabled: true,
-    enableMetrics: true,
     tracesSampleRate: 0,
-    sendDefaultPii: false,
+    dataCollection: sentryDataCollection,
     beforeSendMetric: filterRegistryMetric,
     integrations: [],
     stackParser: defaultStackParser,
@@ -37,8 +37,9 @@ it('buffers metrics with tracing disabled, without errors, logs, or user data', 
   });
   const scope = getCurrentScope();
   const previousClient = scope.getClient();
+  const previousUser = scope.getUser();
   scope.setClient(client);
-  scope.setUser({ id: '00000000001', email: 'test@example.test' });
+  scope.setUser({ id: 'synthetic-user-id', email: 'test@example.test' });
   client.init();
   try {
     await measureRegistryOperation(
@@ -72,12 +73,13 @@ it('buffers metrics with tracing disabled, without errors, logs, or user data', 
         },
       ],
     });
-    expect(JSON.stringify(envelopes)).not.toContain('00000000001');
+    expect(JSON.stringify(envelopes)).not.toContain('synthetic-user-id');
     expect(JSON.stringify(envelopes)).not.toContain('test@example.test');
   } finally {
     await client.close(2000);
-    scope.clear();
-    getIsolationScope().clear();
+    scope.setUser(previousUser ?? null);
+    scope.clearBreadcrumbs();
+    getIsolationScope().clearBreadcrumbs();
     scope.setClient(previousClient);
   }
 });
@@ -91,9 +93,8 @@ it.each([
     const envelopes: Envelope[] = [];
     const client = new Client({
       dsn: 'https://public@example.test/1',
-      enableLogs: true,
       enabled: true,
-      sendDefaultPii: false,
+      dataCollection: sentryDataCollection,
       tracesSampleRate: 0,
       integrations: [],
       stackParser: defaultStackParser,
@@ -107,6 +108,7 @@ it.each([
     });
     const scope = getCurrentScope();
     const previousClient = scope.getClient();
+    const previousUser = scope.getUser();
     scope.setClient(client);
     client.init();
 
@@ -140,8 +142,9 @@ it.each([
       ]);
     } finally {
       await client.close(2000);
-      scope.clear();
-      getIsolationScope().clear();
+      scope.setUser(previousUser ?? null);
+      scope.clearBreadcrumbs();
+      getIsolationScope().clearBreadcrumbs();
       scope.setClient(previousClient);
     }
   },
