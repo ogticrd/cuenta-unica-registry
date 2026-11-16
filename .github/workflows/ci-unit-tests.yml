@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Create AWS exports file
         run: echo "$AWS_EXPORTS_JSON" > src/aws-exports.js
