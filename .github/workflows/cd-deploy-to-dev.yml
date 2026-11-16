@@ -17,11 +17,17 @@ concurrency:
   # Ensures that only one workflow task will run at a time. Previous builds, if
   # already in process, will get cancelled. Only the latest commit will be allowed
   # to run, cancelling any workflows in between
-  group: ${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.job }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
+    # PR deployments require both a trusted author and an org-owned source repository.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.owner.login == github.repository_owner &&
+        contains(fromJSON('["MEMBER", "OWNER"]'), github.event.pull_request.author_association))
     uses: ./.github/workflows/sub-build-push-image.yml
     with:
       environment: development
@@ -32,6 +38,12 @@ jobs:
     secrets: inherit
 
   deploy:
+    # PR deployments require both a trusted author and an org-owned source repository.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.owner.login == github.repository_owner &&
+        contains(fromJSON('["MEMBER", "OWNER"]'), github.event.pull_request.author_association))
     needs: [build]
     uses: ./.github/workflows/sub-cloudrun-deploy.yml
     with:

@@ -45,6 +45,12 @@ on:
 
 jobs:
   versioning:
+    # PR deployments require both a trusted author and an org-owned source repository.
+    if: >-
+      contains(fromJSON('["workflow_dispatch", "push", "release"]'), github.event_name) ||
+      (github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.owner.login == github.repository_owner &&
+        contains(fromJSON('["MEMBER", "OWNER"]'), github.event.pull_request.author_association))
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set.outputs.version }}
@@ -70,6 +76,12 @@ jobs:
         run: echo "version=${{ steps.get.outputs.result }}" >> "$GITHUB_OUTPUT"
 
   deploy:
+    # PR deployments require both a trusted author and an org-owned source repository.
+    if: >-
+      contains(fromJSON('["workflow_dispatch", "push", "release"]'), github.event_name) ||
+      (github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.owner.login == github.repository_owner &&
+        contains(fromJSON('["MEMBER", "OWNER"]'), github.event.pull_request.author_association))
     name: Deploy to Cloud Run
     needs: [versioning]
     timeout-minutes: 10
