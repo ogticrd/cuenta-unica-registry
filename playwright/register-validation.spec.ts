@@ -72,6 +72,50 @@ async function continueFromIdentification(page: Page) {
 }
 
 test.describe("registration form validation", () => {
+  test("shows the outlined account recreation button for an existing identity", async ({
+    page,
+  }) => {
+    await page.route("**/api/registration/citizen", (route) =>
+      route.fulfill({
+        status: 409,
+        json: { success: false, code: "identity_exists" },
+      }),
+    );
+    await gotoRegister(page);
+
+    const cedula = page.getByRole("textbox", { name: /Número de cédula/ });
+    await cedula.fill(VALID_CEDULA);
+
+    const alert = page.getByRole("alert").filter({
+      hasText: "Esta cédula ya tiene una Cuenta Única.",
+    });
+    await expect(async () => {
+      await page.getByRole("button", { name: "CONTINUAR" }).click();
+      await expect(alert).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 15_000 });
+    await expect(alert).toContainText("Conservarás tu historial de datos.");
+    const recreate = alert.getByRole("button", {
+      name: "Recuperar acceso",
+      exact: true,
+    });
+    await expect(recreate).toHaveCSS("border-top-width", "2px");
+    await expect(recreate).toHaveCSS("border-top-left-radius", "67px");
+    await expect(recreate).toHaveCSS("height", "41px");
+    await expect(recreate).toHaveCSS("font-size", "14px");
+    await expect(alert).toHaveCSS("color", "rgb(0, 135, 255)");
+    expect(
+      await recreate.evaluate(
+        (button) => button.scrollWidth <= button.clientWidth,
+      ),
+    ).toBe(true);
+    await recreate.click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+
+    await cedula.clear();
+
+    await expect(alert).toHaveCount(0);
+  });
+
   test("shows invalid cedula errors in the form without crashing the page", async ({
     page,
   }) => {

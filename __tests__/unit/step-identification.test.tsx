@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -43,7 +43,8 @@ vi.mock("@/hooks/use-t", () => ({
       "identification.loading": "Validando...",
       "identification.existing_account": "¿Ya tienes una cuenta?",
       "identification.login_cta": "Inicia sesión",
-      "identification.account_exists": "Ya existe una cuenta con esta cédula",
+      "identification.account_exists": "Esta cédula ya tiene una Cuenta Única.",
+      "identification.account_recreation_cta": "Recuperar acceso",
       "identification.id_not_found": "No encontramos esta cédula",
       "identification.lookup_error": "No pudimos validar la cédula",
       "identification.recaptcha_error":
@@ -122,6 +123,39 @@ describe("StepIdentification", () => {
       "aria-invalid",
       "true",
     );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(props.onNext).not.toHaveBeenCalled();
+  });
+
+  it("shows the account recreation button without submitting the form again", async () => {
+    const user = userEvent.setup();
+    vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
+      success: false,
+      code: "identity_exists",
+    });
+    const { props } = renderStepIdentification();
+    const cedula = screen.getByLabelText("Cédula *");
+
+    await user.type(cedula, "40214041176");
+    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Esta cédula ya tiene una Cuenta Única.");
+    expect(cedula).toHaveAttribute("aria-invalid", "false");
+    await user.click(
+      within(alert).getByRole("button", {
+        name: "Recuperar acceso",
+        exact: true,
+      }),
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(citizenService.identifyCitizen).toHaveBeenCalledTimes(1);
+    expect(props.onNext).not.toHaveBeenCalled();
+    expect(props.updateData).not.toHaveBeenCalled();
+
+    await user.clear(cedula);
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });

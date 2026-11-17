@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { JourneyEvent } from "@/components/analytics/journey-event";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -83,11 +84,18 @@ export function StepIdentification({
       );
 
       if (!result.success) {
-        const messageByErrorCode: Record<CitizenLookupErrorCode, string> = {
+        if (result.code === "identity_exists") {
+          form.setError("root.accountExists", { type: result.code });
+          return;
+        }
+
+        const messageByErrorCode: Record<
+          Exclude<CitizenLookupErrorCode, "identity_exists">,
+          string
+        > = {
           invalid_payload: t("identification.id_invalid"),
           invalid_cedula: t("identification.id_invalid"),
           recaptcha_failed: t("identification.recaptcha_error"),
-          identity_exists: t("identification.account_exists"),
           citizen_not_found: t("identification.id_not_found"),
           unexpected_error: t("identification.lookup_error"),
         };
@@ -156,6 +164,9 @@ export function StepIdentification({
                       if (form.formState.errors.cedula) {
                         form.clearErrors("cedula");
                       }
+                      if (form.formState.errors.root?.accountExists) {
+                        form.clearErrors("root.accountExists");
+                      }
 
                       if (normalizeCedula(formattedValue).length === 11) {
                         void form.trigger("cedula");
@@ -172,6 +183,24 @@ export function StepIdentification({
               </FormItem>
             )}
           />
+
+          {form.formState.errors.root?.accountExists && (
+            <Alert className="border-secondary/30 bg-secondary/5 text-secondary dark:border-secondary/50 dark:bg-secondary/10 [&>svg]:text-secondary">
+              <Info aria-hidden="true" className="h-4 w-4" />
+              <AlertTitle className="font-semibold leading-snug">
+                {t("identification.account_exists")}
+              </AlertTitle>
+              <AlertDescription>
+                <p className="text-muted-foreground">{t("identification.account_recreation_description")}</p>
+                <button
+                  type="button"
+                  className="cuc-register-button mt-3 leading-[1.5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                >
+                  {t("identification.account_recreation_cta")}
+                </button>
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="pt-2">
             <Button
