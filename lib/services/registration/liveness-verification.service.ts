@@ -1,6 +1,6 @@
 import "server-only";
 
-import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
+import { verifyCitizenLiveness } from "@/lib/services/biometric/citizen-liveness.service";
 import {
   getRegistrationAccountDraft,
   isRegistrationAccountDraftForSession,
@@ -8,22 +8,11 @@ import {
 } from "@/lib/services/registration/registration-account-draft.service";
 import { getRegistrationLivenessChallenge } from "@/lib/services/registration/registration-liveness-challenge.service";
 import { getRegistrationSession } from "@/lib/services/registration/registration-session.service";
-import {
-  compareFaces,
-  type FaceComparisonResult,
-  getLivenessResults,
-  type LivenessResult,
-} from "@/lib/services/registration/rekognition.service";
 import type { RegistrationSession } from "@/lib/types/registration/session";
 import type {
   VerifyLivenessErrorCode,
   VerifyLivenessResponse,
 } from "@/lib/types/registration/verification";
-
-const LIVENESS_THRESHOLD =
-  Number(process.env.LIVENESS_CONFIDENCE_THRESHOLD) || 90;
-const SIMILARITY_THRESHOLD =
-  Number(process.env.FACE_SIMILARITY_THRESHOLD) || 80;
 
 export type RegistrationLivenessVerificationResult =
   | {
@@ -129,76 +118,10 @@ export async function verifyRegistrationLiveness(
     };
   }
 
-  let liveness: LivenessResult;
-  try {
-    liveness = await getLivenessResults(sessionId);
-  } catch (error) {
-    console.error("[liveness-verification] Failed to get results:", error);
-    return {
-      success: false,
-      status: 502,
-      code: "rekognition_error",
-      session,
-    };
+  const result = await verifyCitizenLiveness(sessionId, session.cedula);
+  if (!result.success) {
+    return { ...result, session };
   }
 
-  if (
-    liveness.confidence < LIVENESS_THRESHOLD ||
-    !liveness.referenceImageBytes
-  ) {
-    return {
-      success: false,
-      status: 400,
-      code: "liveness_check_failed",
-      session,
-    };
-  }
-
-  let citizenPhoto: Uint8Array;
-  try {
-    citizenPhoto = await fetchCitizenPhoto(session.cedula);
-  } catch (error) {
-    console.error("[liveness-verification] Failed to fetch photo:", error);
-    return {
-      success: false,
-      status: 502,
-      code: "citizen_photo_unavailable",
-      session,
-    };
-  }
-
-  let comparison: FaceComparisonResult;
-  try {
-    comparison = await compareFaces(
-      liveness.referenceImageBytes,
-      citizenPhoto,
-      SIMILARITY_THRESHOLD,
-    );
-  } catch (error) {
-    console.error("[liveness-verification] Face comparison failed:", error);
-    return {
-      success: false,
-      status: 502,
-      code: "rekognition_error",
-      session,
-    };
-  }
-
-  if (!comparison.isMatch) {
-    return {
-      success: false,
-      status: 400,
-      code: "face_mismatch",
-      session,
-    };
-  }
-
-  return {
-    success: true,
-    status: 200,
-    session,
-    accountDraft,
-    confidence: liveness.confidence,
-    similarity: comparison.similarity,
-  };
+  return { ...result, session, accountDraft };
 }

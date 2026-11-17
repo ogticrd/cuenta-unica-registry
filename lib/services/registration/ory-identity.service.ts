@@ -38,3 +38,17 @@ export async function checkCitizenIdentity(
     exists: identities.length > 0,
   };
 }
+
+export async function findOryIdentityById(id: string) {
+  try {
+    const { data } = await createOryIdentityClient().getIdentity({ id });
+    return data;
+  } catch (error) {
+    if (
+      (error as { response?: { status?: number } })?.response?.status === 404
+    ) {
+      return null;
+    }
+    throw error;
+  }
+}

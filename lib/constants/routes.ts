@@ -9,6 +9,7 @@ export const ROUTES = {
   // register: "/self-service/registration/browser",
   register: "/register",
   verification: "/verification",
+  vid: "/vid",
   // verification: "/self-service/verification/browser",
   recovery: "/recovery",
   consent: "/consent",

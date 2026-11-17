@@ -1,4 +1,20 @@
 {
+  "vid": {
+    "title": "Verificación de identidad",
+    "intro": "Completa la prueba de vida y la verificación facial para continuar en la aplicación que inició la solicitud.",
+    "start": "Iniciar verificación",
+    "restart": "Vuelve a la aplicación donde iniciaste la solicitud e inténtalo de nuevo.",
+    "errors": {
+      "invalid_parameters": "La solicitud de verificación está incompleta o contiene datos inválidos.",
+      "invalid_token": "La autorización de la solicitud no es válida o ha expirado.",
+      "invalid_client": "La aplicación no está autorizada para iniciar esta verificación.",
+      "invalid_redirect_uri": "La dirección de retorno no está autorizada para esta aplicación.",
+      "citizen_not_found": "No pudimos confirmar los datos del ciudadano.",
+      "service_unavailable": "No pudimos procesar la verificación en este momento.",
+      "flow_expired": "La sesión de verificación no está disponible o ha expirado.",
+      "attempt_limit": "Alcanzaste el límite de intentos de esta sesión."
+    }
+  },
   "login": {
     "loading": "Cargando formulario de acceso...",
     "spinner": "Cargando...",

@@ -1,4 +1,20 @@
 {
+  "vid": {
+    "title": "Identity verification",
+    "intro": "Complete the liveness check and face verification to continue in the application that requested it.",
+    "start": "Start verification",
+    "restart": "Return to the application where you started the request and try again.",
+    "errors": {
+      "invalid_parameters": "The verification request is incomplete or contains invalid information.",
+      "invalid_token": "The request authorization is invalid or has expired.",
+      "invalid_client": "The application is not authorized to start this verification.",
+      "invalid_redirect_uri": "The return address is not authorized for this application.",
+      "citizen_not_found": "We could not confirm the citizen's information.",
+      "service_unavailable": "We could not process the verification right now.",
+      "flow_expired": "The verification session is unavailable or has expired.",
+      "attempt_limit": "You reached the attempt limit for this session."
+    }
+  },
   "login": {
     "loading": "Loading access form...",
     "spinner": "Loading...",

@@ -145,7 +145,6 @@ describe("StepIdentification", () => {
     await user.click(
       within(alert).getByRole("button", {
         name: "Recuperar acceso",
-        exact: true,
       }),
     );
 
