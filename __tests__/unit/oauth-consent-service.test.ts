@@ -37,6 +37,7 @@ vi.mock("@/lib/ory/cookies", () => ({
 import {
   acceptOAuthConsentRequest,
   getConsentClientLabel,
+  getOAuthConsentRequest,
   rejectOAuthConsentRequest,
 } from "@/lib/ory/oauth-consent";
 
@@ -151,6 +152,7 @@ describe("OAuth consent service", () => {
           client_id: "client-123",
         },
         requested_scope: ["openid", "profile", "email"],
+        subject: "identity-123",
       },
     });
     mockToSession.mockResolvedValueOnce({
@@ -322,6 +324,26 @@ describe("OAuth consent service", () => {
         error_description: "The resource owner denied the consent request.",
       },
     });
+  });
+
+  it("returns consent details for the authenticated subject", async () => {
+    await expect(getOAuthConsentRequest("consent-123")).resolves.toMatchObject({
+      subject: "identity-123",
+    });
+  });
+
+  it("does not expose consent details or reject a request from another identity", async () => {
+    mockToSession.mockResolvedValue({
+      data: { identity: { id: "another-identity" } },
+    });
+
+    await expect(getOAuthConsentRequest("consent-123")).rejects.toThrow(
+      "Authenticated Ory session does not match consent subject.",
+    );
+    await expect(rejectOAuthConsentRequest("consent-123")).rejects.toThrow(
+      "Authenticated Ory session does not match consent subject.",
+    );
+    expect(mockRejectOAuth2ConsentRequest).not.toHaveBeenCalled();
   });
 
   it("uses the client name as the consent label", () => {

@@ -22,16 +22,20 @@ const oryMiddleware = createOryMiddleware(oryConfig);
 const PROTECTED_ROUTES = [
   ROUTES.dashboard,
   ROUTES.profile,
-  ROUTES.settings,
+  ROUTES.settingsPage,
   ROUTES.history,
+  ROUTES.notifications,
+  ROUTES.support,
+  ROUTES.about,
+  ROUTES.consent,
 ];
 
 const AUTH_ROUTES = [
-  "/login",
+  ROUTES.login,
   ROUTES.register,
   ROUTES.emailSent,
-  "/recovery",
-  "/verification",
+  ROUTES.recovery,
+  ROUTES.verification,
 ];
 
 const AUTH_ENTRY_PATHS = new Set([
@@ -39,7 +43,7 @@ const AUTH_ENTRY_PATHS = new Set([
   "/register",
   "/recovery",
   "/verification",
-  "/settings",
+  ROUTES.settingsPage,
 ]);
 
 function getAnalyticsSecret() {
@@ -132,11 +136,23 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
   return response;
 }
 
-function isOryFlowRequest(request: NextRequest) {
+function isOryFlowRequest({ pathname, searchParams }: NextRequest["nextUrl"]) {
+  const hasFlow = Boolean(searchParams.get("flow")?.trim());
+
+  if (pathname === ROUTES.login) {
+    return (
+      hasFlow ||
+      Boolean(searchParams.get("login_challenge")?.trim()) ||
+      searchParams.get("refresh") === "true" ||
+      searchParams.get("aal") === "aal2"
+    );
+  }
+
   return (
-    request.nextUrl.searchParams.has("flow") ||
-    request.nextUrl.searchParams.has("login_challenge") ||
-    request.nextUrl.searchParams.has("return_to")
+    hasFlow &&
+    (pathname === ROUTES.recovery ||
+      pathname === ROUTES.verification ||
+      pathname === ROUTES.emailSent)
   );
 }
 
@@ -185,6 +201,7 @@ async function hasOrySession(request: NextRequest) {
       cookie,
     },
     cache: "no-store",
+    redirect: "manual",
   });
 
   return resp.ok;
@@ -233,15 +250,12 @@ export async function proxy(request: NextRequest) {
     return oryMiddleware(request);
   }
 
-  const analyticsResponse = await maybeRefreshAnalyticsContext(request);
-  if (analyticsResponse) {
-    return analyticsResponse;
-  }
-
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
-    path.startsWith(route),
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (route) => path === route || path.startsWith(`${route}/`),
   );
-  const isAuthRoute = AUTH_ROUTES.some((route) => path.startsWith(route));
+  const isAuthRoute = AUTH_ROUTES.some(
+    (route) => path === route || path.startsWith(`${route}/`),
+  );
   const isLandingRoute = path === "/";
 
   if (isProtectedRoute || isAuthRoute || isLandingRoute) {
@@ -258,7 +272,7 @@ export async function proxy(request: NextRequest) {
       return redirectTo(request, ROUTES.login);
     }
 
-    if (isAuthRoute && isAuthenticated && !isOryFlowRequest(request)) {
+    if (isAuthRoute && isAuthenticated && !isOryFlowRequest(request.nextUrl)) {
       return redirectTo(request, ROUTES.dashboard);
     }
 
@@ -267,7 +281,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return (await maybeRefreshAnalyticsContext(request)) ?? NextResponse.next();
 }
 
 export const config = {

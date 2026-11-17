@@ -106,7 +106,7 @@ function buildOidcSessionClaims(
   return claims;
 }
 
-async function resolveConsentIdentity(consent: OAuth2ConsentRequest) {
+async function getConsentForSession(consentChallenge: string) {
   const cookie = await getServerCookies();
   const { data: session } = await getOryClient().toSession({ cookie });
   const identity = session.identity as IdentityForClaims | undefined;
@@ -115,21 +115,21 @@ async function resolveConsentIdentity(consent: OAuth2ConsentRequest) {
     throw new Error("Authenticated Ory session is missing an identity.");
   }
 
-  if (consent.subject && identity.id !== consent.subject) {
+  const { data: consent } =
+    await getOAuth2AdminClient().getOAuth2ConsentRequest({ consentChallenge });
+
+  if (identity.id !== consent.subject) {
     throw new Error(
       "Authenticated Ory session does not match consent subject.",
     );
   }
 
-  return identity;
+  return { consent, identity };
 }
 
 export async function getOAuthConsentRequest(consentChallenge: string) {
-  const response = await getOAuth2AdminClient().getOAuth2ConsentRequest({
-    consentChallenge,
-  });
-
-  return response.data;
+  const { consent } = await getConsentForSession(consentChallenge);
+  return consent;
 }
 
 export async function acceptOAuthConsentRequest(
@@ -139,7 +139,7 @@ export async function acceptOAuthConsentRequest(
     scope?: string[];
   } = {},
 ) {
-  const consent = await getOAuthConsentRequest(consentChallenge);
+  const { consent, identity } = await getConsentForSession(consentChallenge);
   const requestedScope = consent.requested_scope ?? [];
   const requestedAudience = consent.requested_access_token_audience ?? [];
   const grantScope = uniqueStrings(grant.scope ?? requestedScope);
@@ -148,7 +148,6 @@ export async function acceptOAuthConsentRequest(
   assertSubset(grantScope, requestedScope, "OAuth scope");
   assertSubset(grantAudience, requestedAudience, "OAuth audience");
 
-  const identity = await resolveConsentIdentity(consent);
   const idTokenClaims = buildOidcSessionClaims(identity, grantScope);
 
   const response = await getOAuth2AdminClient().acceptOAuth2ConsentRequest({
@@ -168,6 +167,8 @@ export async function acceptOAuthConsentRequest(
 }
 
 export async function rejectOAuthConsentRequest(consentChallenge: string) {
+  await getConsentForSession(consentChallenge);
+
   const response = await getOAuth2AdminClient().rejectOAuth2ConsentRequest({
     consentChallenge,
     rejectOAuth2Request: {
