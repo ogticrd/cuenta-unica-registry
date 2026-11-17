@@ -1,6 +1,7 @@
 export interface CitizenLookupRequest {
   cedula: string;
   returnUrl?: string;
+  recaptchaToken?: string;
 }
 
 export interface CitizenLookupResult {
@@ -20,6 +21,7 @@ export interface CitizenProfileResult {
 export type CitizenLookupErrorCode =
   | "invalid_payload"
   | "invalid_cedula"
+  | "recaptcha_failed"
   | "identity_exists"
   | "citizen_not_found"
   | "unexpected_error";

@@ -23,6 +23,7 @@
     "recovery_subtitle": "Para restablecer la contraseña, ingrese su correo electrónico registrado",
     "recovery_remember": "¿Recuerdas tus credenciales?",
     "recovery_login_cta": "Inicia sesión",
+    "recovery_recaptcha_error": "No pudimos validar que eres una persona. Inténtalo de nuevo.",
     "verify_account": "Verificar cuenta",
     "need_verification_prompt": "¿Necesitas verificar tu cuenta?"
   },
@@ -58,6 +59,7 @@
       "account_exists": "Esta cédula ya tiene una cuenta creada.",
       "id_not_found": "No encontramos información para esta cédula",
       "lookup_error": "No se pudo validar la cédula. Inténtalo de nuevo.",
+      "recaptcha_error": "No pudimos validar que eres una persona. Inténtalo de nuevo.",
       "loading": "Cargando...",
       "continue": "CONTINUAR",
       "existing_account": "¿Ya tienes una cuenta?",
@@ -77,6 +79,7 @@
       "face_mismatch": "Tu rostro no coincide con la foto de tu cédula. Inténtalo de nuevo.",
       "citizen_photo_unavailable": "No se pudo obtener tu foto de referencia. Contacta soporte si el problema persiste.",
       "rekognition_error": "El servicio de verificación facial no está disponible. Inténtalo más tarde.",
+      "cooldown": "Has alcanzado el límite de intentos. Espera unos minutos antes de volver a intentarlo.",
       "retry": "Reintentar verificación",
       "requirements": {
         "device": "Utilizar un dispositivo que posea <strong>cámara frontal</strong> integrada.",

@@ -8,6 +8,10 @@ const {
   mockCreateRegistrationLivenessChallengeCookie,
   mockClearRegistrationLivenessChallengeCookie,
   mockGetRegistrationLivenessChallenge,
+  mockGetRegistrationBiometricState,
+  mockPrepareRegistrationBiometricAttempt,
+  mockCreateRegistrationBiometricStateCookie,
+  mockRecordRegistrationBiometricSessionCreated,
   mockGetRegistrationAccountDraft,
   mockCreateRegistrationAccountDraftCookie,
   mockClearRegistrationAccountDraftCookie,
@@ -39,6 +43,10 @@ const {
   mockCreateRegistrationLivenessChallengeCookie: vi.fn(),
   mockClearRegistrationLivenessChallengeCookie: vi.fn(),
   mockGetRegistrationLivenessChallenge: vi.fn(),
+  mockGetRegistrationBiometricState: vi.fn(),
+  mockPrepareRegistrationBiometricAttempt: vi.fn(),
+  mockCreateRegistrationBiometricStateCookie: vi.fn(),
+  mockRecordRegistrationBiometricSessionCreated: vi.fn(),
   mockGetRegistrationAccountDraft: vi.fn(),
   mockCreateRegistrationAccountDraftCookie: vi.fn(),
   mockClearRegistrationAccountDraftCookie: vi.fn(),
@@ -100,6 +108,19 @@ vi.mock(
       mockCreateRegistrationAccountDraftCookie,
     clearRegistrationAccountDraftCookie:
       mockClearRegistrationAccountDraftCookie,
+  }),
+);
+
+vi.mock(
+  "@/lib/services/registration/registration-biometric-attempt.service",
+  () => ({
+    getRegistrationBiometricState: mockGetRegistrationBiometricState,
+    prepareRegistrationBiometricAttempt:
+      mockPrepareRegistrationBiometricAttempt,
+    createRegistrationBiometricStateCookie:
+      mockCreateRegistrationBiometricStateCookie,
+    recordRegistrationBiometricSessionCreated:
+      mockRecordRegistrationBiometricSessionCreated,
   }),
 );
 
@@ -192,6 +213,7 @@ function createValidAccountDraft(
 beforeEach(() => {
   mockIsPasswordStrongEnough.mockReturnValue(true);
   mockIsBreachedPassword.mockResolvedValue(false);
+  process.env.RECAPTCHA_BYPASS_LOCAL = "true";
 });
 
 describe("registration route orchestration - account", () => {
@@ -1404,6 +1426,23 @@ describe("registration route orchestration - liveness-session", () => {
       httpOnly: true,
       sameSite: "strict",
     });
+    mockGetRegistrationBiometricState.mockResolvedValue(null);
+    mockPrepareRegistrationBiometricAttempt.mockReturnValue({
+      status: "create",
+      state: { attemptsCreated: 0 },
+      attemptNumber: 1,
+      clientRequestToken: "client-request-token",
+    });
+    mockRecordRegistrationBiometricSessionCreated.mockReturnValue({
+      attemptsCreated: 1,
+    });
+    mockCreateRegistrationBiometricStateCookie.mockReturnValue({
+      name: "registration_biometric_state",
+      value: "signed-biometric-state",
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+    });
   });
 
   it("requires an existing registration session", async () => {
@@ -1539,6 +1578,74 @@ describe("registration route orchestration - liveness-session", () => {
     await expect(response.json()).resolves.toEqual({
       success: true,
       sessionId: "session-123",
+    });
+  });
+
+  it("reuses an active liveness session without calling Rekognition again", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      cedula: "00100063362",
+      status: "identified",
+      expiresAt: 1_782_000_000_000,
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce(
+      createValidAccountDraft(),
+    );
+    mockPrepareRegistrationBiometricAttempt.mockReturnValueOnce({
+      status: "reuse",
+      state: { attemptsCreated: 1 },
+      sessionId: "active-session-123",
+    });
+
+    const response = await postLivenessSession();
+
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
+    expect(mockCreateRegistrationLivenessChallengeCookie).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      }),
+      "active-session-123",
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      sessionId: "active-session-123",
+    });
+  });
+
+  it("returns 429 with retry information when biometric attempts are exhausted", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      cedula: "00100063362",
+      status: "identified",
+      expiresAt: 1_782_000_000_000,
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce(
+      createValidAccountDraft(),
+    );
+    mockPrepareRegistrationBiometricAttempt.mockReturnValueOnce({
+      status: "blocked",
+      state: { attemptsCreated: 3 },
+      code: "biometric_attempt_limit_exceeded",
+      retryAfterSeconds: 900,
+    });
+
+    const response = await postLivenessSession(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-session?forceNew=true",
+        { method: "POST" },
+      ),
+    );
+
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
+    expect(response.status).toBe(429);
+    expect(response.cookies.get("registration_biometric_state")?.value).toBe(
+      "signed-biometric-state",
+    );
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "biometric_attempt_limit_exceeded",
+      retryAfterSeconds: 900,
     });
   });
 

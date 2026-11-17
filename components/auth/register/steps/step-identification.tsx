@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRecaptchaToken } from "@/hooks/use-recaptcha-token";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
 import { createCedulaSchema } from "@/lib/schemas/registration";
@@ -44,6 +45,7 @@ export function StepIdentification({
 }: StepIdentificationProps) {
   const t = useT("register");
   const [isLoading, setIsLoading] = useState(false);
+  const { generateToken } = useRecaptchaToken();
   const identificationSchema = createCedulaSchema(t);
 
   const form = useForm({
@@ -64,13 +66,27 @@ export function StepIdentification({
     setIsLoading(true);
 
     try {
+      const recaptchaToken = await generateToken();
+
+      if (!recaptchaToken) {
+        form.setError("cedula", {
+          message: t("identification.recaptcha_error"),
+        });
+        return;
+      }
+
       const cedula = normalizeCedula(data.cedula);
-      const result = await citizenService.identifyCitizen(cedula, returnUrl);
+      const result = await citizenService.identifyCitizen(
+        cedula,
+        returnUrl,
+        recaptchaToken,
+      );
 
       if (!result.success) {
         const messageByErrorCode: Record<CitizenLookupErrorCode, string> = {
           invalid_payload: t("identification.id_invalid"),
           invalid_cedula: t("identification.id_invalid"),
+          recaptcha_failed: t("identification.recaptcha_error"),
           identity_exists: t("identification.account_exists"),
           citizen_not_found: t("identification.id_not_found"),
           unexpected_error: t("identification.lookup_error"),

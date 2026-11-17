@@ -9,6 +9,11 @@ import {
   serializeAnalyticsContext,
   shouldRefreshAnalyticsContext,
 } from "@/lib/analytics/context-core";
+import {
+  RECAPTCHA_PROOF_COOKIE,
+  RECOVERY_RECAPTCHA_ACTION,
+  validateRecaptchaProof,
+} from "@/lib/security/recaptcha-proof-core";
 import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
 
@@ -185,6 +190,32 @@ async function hasOrySession(request: NextRequest) {
   return resp.ok;
 }
 
+function isRecoverySubmission(request: NextRequest) {
+  return (
+    request.method === "POST" &&
+    request.nextUrl.pathname.endsWith("/self-service/recovery")
+  );
+}
+
+async function proxyRecoverySubmission(request: NextRequest) {
+  const secret = process.env.REGISTRATION_SESSION_SECRET;
+  const proof = request.cookies.get(RECAPTCHA_PROOF_COOKIE)?.value;
+  const isValid =
+    !!secret &&
+    (await validateRecaptchaProof(proof, RECOVERY_RECAPTCHA_ACTION, secret));
+
+  if (!isValid) {
+    return NextResponse.json(
+      { success: false, code: "recaptcha_failed" },
+      { status: 403 },
+    );
+  }
+
+  const response = await oryMiddleware(request);
+  response.cookies.delete(RECAPTCHA_PROOF_COOKIE);
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
@@ -195,6 +226,10 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/sessions") ||
     path.startsWith("/.well-known/ory")
   ) {
+    if (isRecoverySubmission(request)) {
+      return proxyRecoverySubmission(request);
+    }
+
     return oryMiddleware(request);
   }
 

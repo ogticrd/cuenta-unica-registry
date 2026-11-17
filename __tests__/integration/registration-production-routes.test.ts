@@ -152,6 +152,7 @@ beforeEach(() => {
   process.env.CITIZENS_PHOTO_API_KEY = "citizens-photo-key";
   process.env.ORY_SDK_URL = "https://ory.example.test";
   process.env.ORY_SDK_TOKEN = "ory-token";
+  process.env.RECAPTCHA_BYPASS_LOCAL = "true";
   delete process.env.ANALYTICS_INGRESS_URL;
   delete process.env.ANALYTICS_ENVIRONMENT;
   delete process.env.ANALYTICS_PROJECT_ID;

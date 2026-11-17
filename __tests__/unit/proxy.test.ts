@@ -5,10 +5,20 @@ import {
   type AnalyticsContext,
   serializeAnalyticsContext,
 } from "@/lib/analytics/context-core";
+import {
+  RECAPTCHA_PROOF_COOKIE,
+  RECOVERY_RECAPTCHA_ACTION,
+  serializeRecaptchaProof,
+} from "@/lib/security/recaptcha-proof-core";
 
-vi.mock("@ory/nextjs/middleware", () => ({
-  createOryMiddleware: () => vi.fn(() => new Response(null, { status: 204 })),
-}));
+vi.mock("@ory/nextjs/middleware", async () => {
+  const { NextResponse } = await import("next/server");
+
+  return {
+    createOryMiddleware: () =>
+      vi.fn(() => new NextResponse(null, { status: 204 })),
+  };
+});
 
 import { proxy } from "@/proxy";
 
@@ -16,8 +26,13 @@ const ORY_SDK_URL = "https://ory.example.test";
 const PUBLIC_ORIGIN = "https://cuenta-unica.example.test";
 const ANALYTICS_SECRET = "proxy-analytics-secret";
 
-function createCloudRunRequest(pathname: string, cookie?: string) {
+function createCloudRunRequest(
+  pathname: string,
+  cookie?: string,
+  method = "GET",
+) {
   return new NextRequest(`https://0.0.0.0:8080${pathname}`, {
+    method,
     headers: {
       ...(cookie ? { cookie } : {}),
       host: "0.0.0.0:8080",
@@ -106,5 +121,40 @@ describe("proxy", () => {
     );
 
     expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("blocks Ory recovery submissions without a reCAPTCHA proof", async () => {
+    process.env.REGISTRATION_SESSION_SECRET = "recaptcha-secret";
+
+    const response = await proxy(
+      createCloudRunRequest(
+        "/.ory/self-service/recovery?flow=flow-123",
+        undefined,
+        "POST",
+      ),
+    );
+
+    expect(response.status).toBe(403);
+  });
+
+  it("forwards Ory recovery submissions with a valid single-use proof", async () => {
+    process.env.REGISTRATION_SESSION_SECRET = "recaptcha-secret";
+    const proof = await serializeRecaptchaProof(
+      RECOVERY_RECAPTCHA_ACTION,
+      "recaptcha-secret",
+    );
+
+    const response = await proxy(
+      createCloudRunRequest(
+        "/.ory/self-service/recovery?flow=flow-123",
+        `${RECAPTCHA_PROOF_COOKIE}=${proof}`,
+        "POST",
+      ),
+    );
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("set-cookie")).toContain(
+      `${RECAPTCHA_PROOF_COOKIE}=`,
+    );
   });
 });

@@ -23,6 +23,13 @@ vi.mock("@/lib/services/registration/citizen.service", () => ({
   },
 }));
 
+vi.mock("@/hooks/use-recaptcha-token", () => ({
+  useRecaptchaToken: () => ({
+    generateToken: vi.fn().mockResolvedValue("recaptcha-token"),
+    isLoaded: true,
+  }),
+}));
+
 vi.mock("@/hooks/use-t", () => ({
   useT: () => {
     const messages: Record<string, string> = {
@@ -39,6 +46,8 @@ vi.mock("@/hooks/use-t", () => ({
       "identification.account_exists": "Ya existe una cuenta con esta cédula",
       "identification.id_not_found": "No encontramos esta cédula",
       "identification.lookup_error": "No pudimos validar la cédula",
+      "identification.recaptcha_error":
+        "No pudimos validar que eres una persona",
     };
 
     return (key: string) => messages[key] ?? key;
@@ -104,6 +113,7 @@ describe("StepIdentification", () => {
     expect(citizenService.identifyCitizen).toHaveBeenCalledWith(
       "40214041176",
       undefined,
+      "recaptcha-token",
     );
     expect(
       await screen.findByText("La cédula ingresada no es válida"),

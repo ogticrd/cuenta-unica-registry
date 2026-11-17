@@ -23,6 +23,7 @@
     "recovery_subtitle": "To reset your password, enter your registered email address",
     "recovery_remember": "Remember your credentials?",
     "recovery_login_cta": "Log in",
+    "recovery_recaptcha_error": "We could not confirm you are a person. Please try again.",
     "verify_account": "Verify account",
     "need_verification_prompt": "Need to verify your account?"
   },
@@ -58,6 +59,7 @@
       "account_exists": "This ID already has an account created.",
       "id_not_found": "We could not find information for this national ID",
       "lookup_error": "We could not validate the national ID. Please try again.",
+      "recaptcha_error": "We could not confirm you are a person. Please try again.",
       "loading": "Loading...",
       "continue": "CONTINUE",
       "existing_account": "Already have an account?",
@@ -77,6 +79,7 @@
       "face_mismatch": "Your face does not match your ID photo. Please try again.",
       "citizen_photo_unavailable": "We could not retrieve your reference photo. Contact support if the problem persists.",
       "rekognition_error": "The facial verification service is currently unavailable. Please try again later.",
+      "cooldown": "You have reached the attempt limit. Wait a few minutes before trying again.",
       "retry": "Retry verification",
       "requirements": {
         "device": "Use a device with a built-in <strong>front-facing camera</strong>.",

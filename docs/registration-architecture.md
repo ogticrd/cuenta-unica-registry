@@ -21,6 +21,7 @@ Crear una identidad Ory solamente cuando una persona:
 | `registration_session: identified` | `/api/registration/citizen` | Cedula validada e identificada; habilita captura de cuenta y liveness. |
 | `registration_account_draft` | `/api/registration/account-draft` | Draft cifrado de email/password para sobrevivir reloads durante liveness. |
 | `registration_liveness_challenge` | `/api/registration/verification/liveness-session` | Challenge firmado que liga la sesion Rekognition a `registration_session`. |
+| `registration_biometric_state` | `/api/registration/verification/liveness-session` | Estado firmado de intentos biométricos, sesión activa y ventana de enfriamiento por cédula. |
 | `registration_session: verified` | liveness exitoso | Biometria aprobada; habilita creacion de cuenta en backend. |
 
 Reglas:
@@ -45,6 +46,13 @@ Reglas:
 - `registration_liveness_challenge` debe existir y coincidir con
   `registration_session.sessionId` y el `sessionId` de Rekognition antes de
   consultar resultados; una prueba de vida creada en otra sesion se rechaza.
+- La creación de sesiones biométricas reutiliza durante tres minutos el desafío
+  activo de la misma sesión de registro. Crear una sesión nueva consume uno de
+  los tres intentos disponibles y, al agotarlos, aplica una espera de quince
+  minutos. Los valores se pueden ajustar mediante `BIOMETRIC_MAX_ATTEMPTS`,
+  `BIOMETRIC_COOLDOWN_SECONDS` y `BIOMETRIC_STATE_TTL_SECONDS`.
+- El estado biométrico se firma, se almacena en una cookie `httpOnly` y se liga
+  a un hash de la cédula. Nunca se debe aceptar un contador enviado en el body.
 - `return_url` se valida antes de firmar `registration_session`: solo se acepta
   el origen actual de la peticion o los origenes configurados en
   `REGISTRATION_ALLOWED_RETURN_ORIGINS`.
@@ -86,6 +94,11 @@ Reglas:
 
 ### APIs Ciudadanas
 
+- Antes de consultar Ory o las APIs ciudadanas, identificación valida un token
+  de Google reCAPTCHA Enterprise para la acción `form_submit`. El umbral por
+  defecto es `0.3`, configurable con `RECAPTCHA_SCORE_THRESHOLD`.
+- La recuperación valida la acción `recovery_submit` y emite una prueba firmada
+  de un solo uso antes de permitir que el proxy envíe el formulario a Ory.
 - La API de informacion basica se usa para confirmar existencia y nombre.
 - La API de nacimiento se usa para completar traits Ory.
 - La API de foto se usa para comparacion facial.

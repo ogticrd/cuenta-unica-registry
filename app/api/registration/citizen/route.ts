@@ -6,6 +6,7 @@ import {
   getCitizenLookupFieldErrors,
 } from "@/lib/schemas/registration";
 import { parseJsonRequest } from "@/lib/services/api-response";
+import { validateRecaptchaToken } from "@/lib/services/recaptcha/recaptcha.service";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
@@ -97,6 +98,19 @@ export async function POST(request: Request) {
     return createErrorResponse("invalid_cedula", 400, {
       cedula: "identification.id_invalid",
     });
+  }
+
+  const recaptchaIsValid = await validateRecaptchaToken(
+    parsedRequest.data.recaptchaToken,
+  );
+
+  if (!recaptchaIsValid) {
+    await emitIdentificationOutcome({
+      success: false,
+      errorCode: "recaptcha_failed",
+      metadata: { stage: "recaptcha_validation" },
+    });
+    return createErrorResponse("recaptcha_failed", 403);
   }
 
   try {
