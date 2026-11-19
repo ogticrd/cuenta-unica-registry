@@ -1,8 +1,10 @@
 "use client";
 
+import { Info } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
 import { useT } from "@/hooks/use-t";
@@ -23,6 +25,7 @@ interface RegisterWizardProps {
   initialName: string;
   initialSessionStatus: RegistrationSessionStatus | null;
   hasAccountDraft: boolean;
+  initialRecoveryMode?: boolean;
   returnUrl?: string;
 }
 
@@ -39,10 +42,12 @@ export function RegisterWizard({
   initialName,
   initialSessionStatus,
   hasAccountDraft,
+  initialRecoveryMode = false,
   returnUrl,
 }: RegisterWizardProps) {
   const t = useT("register");
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(initialRecoveryMode);
   const [activeStep, setActiveStep] = useState<0 | 1 | 2>(initialStep);
   const [sessionStatus, setSessionStatus] =
     useState<RegistrationSessionStatus | null>(initialSessionStatus);
@@ -90,7 +95,9 @@ export function RegisterWizard({
     setIsHydrated(true);
   }, []);
 
-  const handleNext = () => {
+  const handleNext = (recovery = false) => {
+    setIsRecoveryMode(recovery);
+    setSessionStatus("identified");
     setActiveStep((prev) => {
       if (prev === 0) {
         return 1;
@@ -130,6 +137,7 @@ export function RegisterWizard({
         accountErrors: undefined,
       }));
       setSessionStatus(null);
+      setIsRecoveryMode(false);
       setCanFinalizeFromDraft(false);
       setActiveStep(0);
       return;
@@ -151,6 +159,7 @@ export function RegisterWizard({
       accountErrors: undefined,
     });
     setSessionStatus(null);
+    setIsRecoveryMode(false);
     setCanFinalizeFromDraft(false);
     setActiveStep(0);
   };
@@ -226,6 +235,14 @@ export function RegisterWizard({
             steps={steps}
           />
         </div>
+        {isRecoveryMode && (
+          <Alert className="w-full border-secondary/30 bg-secondary/5 text-secondary dark:border-secondary/50 dark:bg-secondary/10 [&>svg]:text-secondary">
+            <Info aria-hidden="true" className="h-4 w-4" />
+            <AlertDescription className="font-semibold">
+              {t("recovery_mode")}
+            </AlertDescription>
+          </Alert>
+        )}
       </CardHeader>
 
       <CardContent className="pt-6">
@@ -254,7 +271,7 @@ export function RegisterWizard({
             onRequireAccount={handleRequireAccount}
             onRequireIdentification={handleRequireIdentification}
             accountDraft={wizardData.accountDraft}
-            autoFinalizeAccount={
+            isIdentityVerified={
               sessionStatus === "verified" && canFinalizeFromDraft
             }
             userData={{ name: wizardData.name }}

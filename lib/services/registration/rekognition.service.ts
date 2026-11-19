@@ -7,10 +7,13 @@ import {
 } from "@aws-sdk/client-rekognition";
 import { getRekognitionClient } from "@/lib/aws/rekognition-client";
 
-export async function createLivenessSession(): Promise<string> {
+export async function createLivenessSession(
+  clientRequestToken?: string,
+): Promise<string> {
   const client = getRekognitionClient();
 
   const command = new CreateFaceLivenessSessionCommand({
+    ClientRequestToken: clientRequestToken,
     Settings: {
       ChallengePreferences: [{ Type: "FaceMovementAndLightChallenge" }],
     },

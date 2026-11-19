@@ -148,14 +148,22 @@ describe("StepVerification", () => {
     expect(assign).toHaveBeenCalledWith("/register/email-sent?flow=flow-123");
   });
 
-  it("finalizes account from a verified draft without starting liveness again", async () => {
+  it("waits for an explicit continuation before finalizing a verified draft", async () => {
     vi.mocked(accountService.registerAccount).mockResolvedValueOnce({
       success: true,
       destination: "email-sent",
       redirectTo: "/register/email-sent?flow=flow-123",
     });
 
-    renderStepVerification({ autoFinalizeAccount: true });
+    renderStepVerification({ isIdentityVerified: true });
+
+    expect(accountService.registerAccount).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "verification.previously_verified",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "account.continue" }));
 
     await waitFor(() => {
       expect(accountService.registerAccount).toHaveBeenCalledWith();
@@ -165,6 +173,30 @@ describe("StepVerification", () => {
       verificationService.completeLivenessRegistration,
     ).not.toHaveBeenCalled();
     expect(assign).toHaveBeenCalledWith("/register/email-sent?flow=flow-123");
+  });
+
+  it.each([
+    "recovery_failed",
+    "recovery_sessions_revocation_failed",
+  ] as const)("returns %s after one explicit attempt without reopening the success modal", async (code) => {
+    vi.mocked(accountService.registerAccount).mockResolvedValueOnce({
+      success: false,
+      code,
+    });
+    const props = renderStepVerification({ isIdentityVerified: true });
+    expect(accountService.registerAccount).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "account.continue" }));
+
+    await waitFor(() =>
+      expect(props.onRequireAccount).toHaveBeenCalledWith({
+        code,
+        fieldErrors: undefined,
+      }),
+    );
+    expect(accountService.registerAccount).toHaveBeenCalledTimes(1);
+    expect(props.onRequireIdentification).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(assign).not.toHaveBeenCalled();
   });
 
   it("always creates a liveness session before account finalization", async () => {

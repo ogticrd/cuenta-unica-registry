@@ -47,7 +47,22 @@ const nextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        source: "/vid",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      },
     ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/vid",
+          has: [{ type: "query", key: "access_token" }],
+          destination: "/api/vid",
+        },
+      ],
+    };
   },
 };
 

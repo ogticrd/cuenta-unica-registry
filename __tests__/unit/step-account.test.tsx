@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
@@ -55,6 +56,8 @@ vi.mock("@/hooks/use-t", () => ({
       "account.draft_missing": "Vuelve a ingresar los datos de la cuenta",
       "account.identity_exists": "Ya existe una cuenta con este correo",
       "account.error": "No pudimos crear tu cuenta",
+      "account.recovery_sessions_revocation_failed":
+        "Tus datos de acceso fueron actualizados, pero no pudimos cerrar todas las sesiones anteriores. Intenta continuar.",
       "identification.id_invalid": "La cédula ingresada no es válida",
       "identification.id_not_found": "No encontramos esta cédula",
       "common.back": "Volver al paso anterior",
@@ -258,6 +261,10 @@ describe("StepAccount", () => {
   it.each([
     ["invalid_payload", "No pudimos crear tu cuenta"],
     ["verification_required", "Completa la prueba de vida"],
+    [
+      "recovery_sessions_revocation_failed",
+      "Tus datos de acceso fueron actualizados, pero no pudimos cerrar todas las sesiones anteriores. Intenta continuar.",
+    ],
   ] as const)("shows %s as a visible account error", async (code, message) => {
     renderStepAccount({
       initialErrors: {
@@ -268,6 +275,7 @@ describe("StepAccount", () => {
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith(message);
     });
+    expect(screen.getByRole("alert")).toHaveTextContent(message);
   });
 
   it("shows a visible confirm password mismatch error and does not continue", async () => {
@@ -284,13 +292,136 @@ describe("StepAccount", () => {
       target: { value: "GovFlow92817Z!" },
     });
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "GovFlow92818Z!" },
+      target: { value: "GovFlow92820Z!" },
     });
     fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
     expect(
       await screen.findByText("Las contraseñas no coinciden"),
     ).toBeInTheDocument();
+    expect(onNext).not.toHaveBeenCalled();
+  });
+
+  it("only requests the password breach check when the password changes", async () => {
+    const fetchSpy = vi.mocked(global.fetch);
+    renderStepAccount();
+
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92817Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92818Z!" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: "GovFlow92819Z!" },
+    });
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "correo" },
+    });
+
+    expect(
+      await screen.findByText("Ingresa un correo electrónico válido"),
+    ).toBeInTheDocument();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Ingresa un correo electrónico válido"),
+      ).not.toBeInTheDocument();
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "otro@example.com" },
+    });
+
+    expect(
+      await screen.findByText("Los correos electrónicos no coinciden"),
+    ).toBeInTheDocument();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Los correos electrónicos no coinciden"),
+      ).not.toBeInTheDocument();
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92820Z!" },
+    });
+
+    expect(
+      await screen.findByText("Las contraseñas no coinciden"),
+    ).toBeInTheDocument();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: "GovFlow92819Z!" },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Las contraseñas no coinciden"),
+      ).not.toBeInTheDocument();
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks a compromised password after the debounced check", async () => {
+    const user = userEvent.setup({ delay: null });
+    const password = "GovFlow92817Z!";
+    const suffix = createHash("sha1")
+      .update(password)
+      .digest("hex")
+      .toUpperCase()
+      .slice(5);
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response(`${suffix}:42`, { status: 200 }),
+    );
+    const onNext = vi.fn();
+    renderStepAccount({ onNext });
+
+    fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
+      target: { value: "marluanespiritusanto@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña *"), {
+      target: { value: password },
+    });
+    fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
+      target: { value: password },
+    });
+
+    expect(
+      await screen.findByText(
+        "Esta contraseña ha sido expuesta en filtraciones conocidas",
+      ),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+
     expect(onNext).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,20 @@
 {
+  "vid": {
+    "title": "Identity verification",
+    "intro": "Complete the liveness check and face verification to continue in the application that requested it.",
+    "start": "Start verification",
+    "restart": "Return to the application where you started the request and try again.",
+    "errors": {
+      "invalid_parameters": "The verification request is incomplete or contains invalid information.",
+      "invalid_token": "The request authorization is invalid or has expired.",
+      "invalid_client": "The application is not authorized to start this verification.",
+      "invalid_redirect_uri": "The return address is not authorized for this application.",
+      "citizen_not_found": "We could not confirm the citizen's information.",
+      "service_unavailable": "We could not process the verification right now.",
+      "flow_expired": "The verification session is unavailable or has expired.",
+      "attempt_limit": "You reached the attempt limit for this session."
+    }
+  },
   "login": {
     "loading": "Loading access form...",
     "spinner": "Loading...",
@@ -23,10 +39,12 @@
     "recovery_subtitle": "To reset your password, enter your registered email address",
     "recovery_remember": "Remember your credentials?",
     "recovery_login_cta": "Log in",
+    "recovery_recaptcha_error": "We could not confirm you are a person. Please try again.",
     "verify_account": "Verify account",
     "need_verification_prompt": "Need to verify your account?"
   },
   "register": {
+    "recovery_mode": "Recovery mode",
     "title": "Cuenta Única Registration",
     "logo_alt": "Cuenta Única",
     "step_label": "Step",
@@ -55,9 +73,14 @@
       "id_required": "The national ID is required",
       "id_invalid_length": "The national ID must contain 11 digits",
       "id_invalid": "The national ID entered is not valid",
-      "account_exists": "This ID already has an account created.",
+      "validation_unavailable": "We could not check your national ID. Please try again in a moment.",
+      "account_exists": "A Cuenta Única already exists for this ID.",
+      "account_recreation_description": "If you forgot your registered email address or no longer have access to it, you can use a new one. Your data history will be preserved.",
+      "account_recreation_cta": "Recover access",
+      "recovery_not_found": "We could not start recovery for this account. Check your ID number and try again.",
       "id_not_found": "We could not find information for this national ID",
       "lookup_error": "We could not validate the national ID. Please try again.",
+      "recaptcha_error": "We could not confirm you are a person. Please try again.",
       "loading": "Loading...",
       "continue": "CONTINUE",
       "existing_account": "Already have an account?",
@@ -72,11 +95,14 @@
       "session_creation_failed": "Could not start facial verification. Please try again.",
       "verifying_identity": "Verifying your identity...",
       "continuing_registration": "Continuing with your account activation...",
+      "previously_verified": "Your identity has already been verified. Press continue to complete the process.",
+      "finalizing": "Completing the process...",
       "verification_failed": "Facial verification was not successful. Please try again.",
       "liveness_failed": "We could not confirm you are a real person. Make sure you are facing the camera with good lighting.",
       "face_mismatch": "Your face does not match your ID photo. Please try again.",
       "citizen_photo_unavailable": "We could not retrieve your reference photo. Contact support if the problem persists.",
       "rekognition_error": "The facial verification service is currently unavailable. Please try again later.",
+      "cooldown": "You have reached the attempt limit. Wait a few minutes before trying again.",
       "retry": "Retry verification",
       "requirements": {
         "device": "Use a device with a built-in <strong>front-facing camera</strong>.",
@@ -145,6 +171,8 @@
       "success_description": "Your citizen account has been created.",
       "identity_exists": "An account already exists for the provided information.",
       "session_missing": "Your registration session expired. You need to start again from identification.",
+      "recovery_failed": "We could not complete account recovery. Please try again.",
+      "recovery_sessions_revocation_failed": "Your login details were updated, but we could not close all previous sessions. Please try to continue.",
       "verification_required": "You must complete facial verification before creating the account.",
       "draft_missing": "Confirm your email and password to continue account activation.",
       "error": "There was an error completing the registration. Please try again.",
@@ -635,6 +663,29 @@
       "subtitle": "Do you want to activate Cuenta Única Ciudadana for your web portal or application?",
       "description": "The integration of Cuenta Única Ciudadana will offer a simple and secure login to the Dominican citizen, will minimize attack vectors (such as creating multiple accounts, identity theft, etc.) and many other benefits. The integration process will be fast and completely painless because we have tools designed to support you, all based on industry authentication and authorization standards (OAuth and OpenID Connect). Contact us for more information!",
       "contact_msg": "To request more information, write to us at"
+    },
+    "government_partners": {
+      "title": "Available services with <highlight>Cuenta Única Ciudadana</highlight>",
+      "subtitle": "Explore the institutions and platforms you can access using your unique profile.",
+      "visit_portal": "Visit portal",
+      "partners": {
+        "gob_do": {
+          "name": "gob.do",
+          "description": "Official portal of the Dominican State. Find information about government services, procedures, news, and central government transparency in one place."
+        },
+        "soy_yo_rd": {
+          "name": "Soy Yo RD",
+          "description": "National Digital Identity Platform. Allows citizens to securely and efficiently validate and share their identity with public and private institutions."
+        },
+        "mejora_regulatoria": {
+          "name": "Mejora Regulatoria",
+          "description": "Initiative to optimize and simplify State procedures. Consult the regulatory framework, provide opinions on new regulations, and promote administrative transparency."
+        },
+        "becas": {
+          "name": "Beca tu Futuro",
+          "description": "National Scholarship System. Discover educational opportunities, apply for national and international scholarships, and take the next step in your academic training."
+        }
+      }
     },
     "faq": {
       "title": "Frequently Asked Questions",

@@ -39,7 +39,7 @@ export function Benefits() {
     <section className="relative py-20 sm:py-32 overflow-hidden bg-white dark:bg-background">
       {/* Dot Pattern Background */}
       <div
-        className="absolute inset-0 z-0 opacity-50 dark:opacity-10"
+        className="absolute inset-0 z-0 opacity-100 dark:opacity-10"
         style={{
           backgroundImage: "radial-gradient(#e2e8f0 2px, transparent 2px)",
           backgroundSize: "40px 40px",
@@ -64,9 +64,8 @@ export function Benefits() {
             return (
               <div
                 key={benefit.title}
-                className={`flex flex-col ${
-                  isEven ? "lg:flex-row-reverse" : "lg:flex-row"
-                } items-center gap-12 lg:gap-24`}
+                className={`flex flex-col ${isEven ? "lg:flex-row-reverse" : "lg:flex-row"
+                  } items-center gap-12 lg:gap-24`}
               >
                 {/* Illustration Side */}
                 <div className="w-full lg:w-1/2 flex justify-center lg:justify-end px-8">

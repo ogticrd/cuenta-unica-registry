@@ -9,8 +9,10 @@ export const ROUTES = {
   // register: "/self-service/registration/browser",
   register: "/register",
   verification: "/verification",
+  vid: "/vid",
   // verification: "/self-service/verification/browser",
   recovery: "/recovery",
+  consent: "/consent",
   error: "/error",
   emailSent: "/register/email-sent",
 
@@ -18,7 +20,7 @@ export const ROUTES = {
   dashboard: "/dashboard",
   profile: "/profile",
   settings: "/self-service/settings/browser",
-  // settings: "/settings",
+  settingsPage: "/settings",
   history: "/history",
 
   terms: "/terms",

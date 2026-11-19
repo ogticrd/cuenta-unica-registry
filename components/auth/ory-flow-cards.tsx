@@ -10,6 +10,7 @@ import {
   CucVerificationFooter,
   CucVerificationHeader,
 } from "@/components/auth/ory-components";
+import { RecoveryRecaptchaGuard } from "@/components/auth/recovery/recovery-recaptcha-guard";
 
 type LoginFlow = Parameters<typeof Login>[0]["flow"];
 type RecoveryFlow = Parameters<typeof Recovery>[0]["flow"];
@@ -63,16 +64,18 @@ export function OryRecoveryCard({
   loginHref,
 }: OryRecoveryCardProps) {
   return (
-    <Recovery
-      flow={flow as RecoveryFlow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucRecoveryHeader,
-          Footer: () => <CucRecoveryFooter loginHref={loginHref} />,
-        },
-      }}
-    />
+    <RecoveryRecaptchaGuard>
+      <Recovery
+        flow={flow as RecoveryFlow}
+        config={dynamicConfig}
+        components={{
+          Card: {
+            Header: CucRecoveryHeader,
+            Footer: () => <CucRecoveryFooter loginHref={loginHref} />,
+          },
+        }}
+      />
+    </RecoveryRecaptchaGuard>
   );
 }
 

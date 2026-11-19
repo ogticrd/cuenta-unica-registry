@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -23,6 +23,13 @@ vi.mock("@/lib/services/registration/citizen.service", () => ({
   },
 }));
 
+vi.mock("@/hooks/use-recaptcha-token", () => ({
+  useRecaptchaToken: () => ({
+    generateToken: vi.fn().mockResolvedValue("recaptcha-token"),
+    isLoaded: true,
+  }),
+}));
+
 vi.mock("@/hooks/use-t", () => ({
   useT: () => {
     const messages: Record<string, string> = {
@@ -36,9 +43,12 @@ vi.mock("@/hooks/use-t", () => ({
       "identification.loading": "Validando...",
       "identification.existing_account": "¿Ya tienes una cuenta?",
       "identification.login_cta": "Inicia sesión",
-      "identification.account_exists": "Ya existe una cuenta con esta cédula",
+      "identification.account_exists": "Esta cédula ya tiene una Cuenta Única.",
+      "identification.account_recreation_cta": "Recuperar acceso",
       "identification.id_not_found": "No encontramos esta cédula",
       "identification.lookup_error": "No pudimos validar la cédula",
+      "identification.recaptcha_error":
+        "No pudimos validar que eres una persona",
     };
 
     return (key: string) => messages[key] ?? key;
@@ -104,6 +114,8 @@ describe("StepIdentification", () => {
     expect(citizenService.identifyCitizen).toHaveBeenCalledWith(
       "40214041176",
       undefined,
+      "recaptcha-token",
+      false,
     );
     expect(
       await screen.findByText("La cédula ingresada no es válida"),
@@ -112,6 +124,52 @@ describe("StepIdentification", () => {
       "aria-invalid",
       "true",
     );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(props.onNext).not.toHaveBeenCalled();
+  });
+
+  it("starts recovery explicitly after an existing account is found", async () => {
+    const user = userEvent.setup();
+    vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
+      success: false,
+      code: "identity_exists",
+    });
+    const { props } = renderStepIdentification();
+    const cedula = screen.getByLabelText("Cédula *");
+
+    await user.type(cedula, "40214041176");
+    await user.click(screen.getByRole("button", { name: "CONTINUAR" }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Esta cédula ya tiene una Cuenta Única.");
+    expect(cedula).toHaveAttribute("aria-invalid", "false");
+    vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
+      success: true,
+      citizen: { id: "40214041176", firstName: "Juan" },
+      recovery: true,
+    });
+    await user.click(
+      within(alert).getByRole("button", {
+        name: "Recuperar acceso",
+      }),
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(citizenService.identifyCitizen).toHaveBeenCalledTimes(2);
+    expect(citizenService.identifyCitizen).toHaveBeenLastCalledWith(
+      "40214041176",
+      undefined,
+      "recaptcha-token",
+      true,
+    );
+    expect(props.onNext).toHaveBeenCalledWith(true);
+    expect(props.updateData).toHaveBeenCalledWith({
+      cedula: "40214041176",
+      name: "Juan",
+    });
+
+    await user.clear(cedula);
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });

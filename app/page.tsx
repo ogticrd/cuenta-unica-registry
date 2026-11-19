@@ -3,6 +3,7 @@
 import { Benefits } from "@/components/home/benefits";
 import { FAQSection } from "@/components/home/faq/faq-section";
 import { GovernmentEntities } from "@/components/home/government";
+import { GovernmentPartners } from "@/components/home/government-partners";
 import { Hero } from "@/components/home/hero/Hero";
 import { Steps } from "@/components/home/steps";
 import { WhatIsCuc } from "@/components/home/what-is-cuc";
@@ -25,6 +26,9 @@ export default function LandingPage() {
 
       {/* Steps Section */}
       <Steps />
+
+      {/* Integrated Institutions Section */}
+      <GovernmentPartners />
 
       {/* For Government Entities Section */}
       <GovernmentEntities />

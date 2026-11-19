@@ -24,8 +24,8 @@ export function CucCardHeader(_props: PropsWithChildren) {
         <Image
           src="/images/cuenta-unica-icon.svg"
           alt="Cuenta Única"
-          width={64}
-          height={64}
+          width={48}
+          height={48}
           className="w-auto rounded-lg"
         />
       </div>
@@ -111,9 +111,9 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
         <Image
           src="/images/cuenta-unica-icon.svg"
           alt="Cuenta Única"
-          width={98}
-          height={96}
-          className="h-16 w-auto rounded-lg"
+          width={48}
+          height={48}
+          className="w-auto rounded-lg"
         />
       </div>
       <h1
@@ -123,7 +123,7 @@ export function CucRecoveryHeader(_props: PropsWithChildren) {
         {t("recovery_title")}
       </h1>
       <p
-        className="text-sm text-gray-600 dark:text-gray-400"
+        className="text-sm font-medium text-gray-500 dark:text-gray-400"
         style={{ marginTop: "8px" }}
       >
         {t("recovery_subtitle")}
@@ -169,19 +169,19 @@ export function CucVerificationHeader(_props: PropsWithChildren) {
         <Image
           src="/images/cuenta-unica-icon.svg"
           alt="Cuenta Única"
-          width={98}
-          height={96}
-          className="h-16 w-auto rounded-lg"
+          width={48}
+          height={48}
+          className="w-auto rounded-lg"
         />
       </div>
       <h1
         className="text-xl font-bold text-primary dark:text-blue-400"
-        style={{ marginTop: "20px" }}
+        style={{ marginTop: "16px" }}
       >
         {t("verification_title")}
       </h1>
       <p
-        className="text-sm text-gray-600 dark:text-gray-400"
+        className="text-sm font-medium text-gray-500 dark:text-gray-400"
         style={{ marginTop: "8px" }}
       >
         {t("verification_subtitle")}

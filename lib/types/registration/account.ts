@@ -34,8 +34,12 @@ export type RegisterAccountErrorCode =
   | "password_weak"
   | "password_compromised"
   | "invalid_cedula"
+  | "cedula_validation_unavailable"
   | "citizen_not_found"
   | "identity_exists"
+  | "recovery_not_found"
+  | "recovery_failed"
+  | "recovery_sessions_revocation_failed"
   | "ory_validation_error"
   | "unexpected_error";
 

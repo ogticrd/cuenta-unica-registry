@@ -2,7 +2,6 @@ import { z } from "zod";
 import type { RegisterAccountFieldErrors } from "@/lib/types/registration/account";
 import { normalizeCedula } from "@/lib/utils/cedula";
 import {
-  isBreachedPassword,
   isPasswordStrongEnough,
   PASSWORD_MIN_LENGTH,
 } from "@/lib/utils/password";
@@ -84,10 +83,6 @@ export function createAccountSchema(t: Translate, cedula = "") {
     })
     .refine(({ password }) => isPasswordStrongEnough(password), {
       message: t("account.validation.password_weak"),
-      path: ["password"],
-    })
-    .refine(async ({ password }) => !(await isBreachedPassword(password)), {
-      message: t("account.validation.password_compromised"),
       path: ["password"],
     });
 }
