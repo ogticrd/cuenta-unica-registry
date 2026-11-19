@@ -7,6 +7,7 @@ import {
 } from "@/lib/schemas/registration";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import { validateRecaptchaToken } from "@/lib/services/recaptcha/recaptcha.service";
+import { validateCedula } from "@/lib/services/registration/cedula-validation.service";
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { checkCitizenIdentity } from "@/lib/services/registration/ory-identity.service";
 import { createRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
@@ -15,7 +16,7 @@ import type {
   CitizenLookupFieldErrors,
   CitizenLookupResponse,
 } from "@/lib/types/registration/citizen";
-import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
+import { hasValidCedulaFormat, normalizeCedula } from "@/lib/utils/cedula";
 import {
   getRequestOrigin,
   getSafeReturnUrl,
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
       ),
     });
 
-  if (!(await isValidCedula(cedula))) {
+  if (!hasValidCedulaFormat(parsedRequest.data.cedula)) {
     await emitIdentificationOutcome({
       success: false,
       errorCode: "invalid_cedula",
@@ -114,6 +115,22 @@ export async function POST(request: Request) {
   }
 
   try {
+    const validation = await validateCedula(cedula);
+    if (!validation.success) {
+      await emitIdentificationOutcome({
+        success: false,
+        errorCode: validation.code,
+        metadata: { stage: "cedula_validation" },
+      });
+      return createErrorResponse(
+        validation.code,
+        validation.status,
+        validation.code === "invalid_cedula"
+          ? { cedula: "identification.id_invalid" }
+          : undefined,
+      );
+    }
+
     const identityLookup = await checkCitizenIdentity(cedula);
     const recoverAccess = parsedRequest.data.recoverAccess === true;
 

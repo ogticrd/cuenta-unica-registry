@@ -128,6 +128,17 @@ La recuperación rechaza identidades inactivas, ausentes o de otra cédula.
 
 ### APIs Ciudadanas
 
+- La validación completa de cédula ocurre en servidor: formato de once dígitos
+  sin valores repetidos, Luhn, excepciones por hash y, como último recurso,
+  `CEDULA_VALIDATION_API/{cedula}/validate`. Solo `valid: true` permite seguir.
+  El navegador valida formato y longitud para no bloquear excepciones antes
+  de consultar el servidor; conserva los mensajes de validación del campo.
+- El endpoint de identificación comprueba reCAPTCHA antes de consultar esa API.
+  La petición usa `cache: "no-store"` y validación del JSON, sin un timeout
+  definido por la aplicación. Un rechazo explícito devuelve `invalid_cedula`
+  (400); un fallo de configuración, transporte o respuesta devuelve `cedula_validation_unavailable`
+  (503) y permite reintentar. La finalización aplica la misma regla y conserva
+  el draft verificado si la consulta falla.
 - Antes de consultar Ory o las APIs ciudadanas, identificación valida un token
   de Google reCAPTCHA Enterprise para la acción `form_submit`. El umbral por
   defecto es `0.3`, configurable con `RECAPTCHA_SCORE_THRESHOLD`.

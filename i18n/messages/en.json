@@ -73,6 +73,7 @@
       "id_required": "The national ID is required",
       "id_invalid_length": "The national ID must contain 11 digits",
       "id_invalid": "The national ID entered is not valid",
+      "validation_unavailable": "We could not check your national ID. Please try again in a moment.",
       "account_exists": "A Cuenta Única already exists for this ID.",
       "account_recreation_description": "If you forgot your registered email address or no longer have access to it, you can use a new one. Your data history will be preserved.",
       "account_recreation_cta": "Recover access",

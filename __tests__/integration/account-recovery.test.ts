@@ -68,8 +68,8 @@ vi.mock("@/lib/services/recaptcha/recaptcha.service", () => ({
   validateRecaptchaToken,
 }));
 vi.mock("@/lib/services/registration/citizen-registry.service", () => ({
-  findCitizenSummaryByCedula: async () => ({
-    id: "40214041176",
+  findCitizenSummaryByCedula: async (cedula: string) => ({
+    id: cedula,
     firstName: "Prueba",
   }),
 }));
@@ -127,10 +127,10 @@ function receiveCookies(response: NextResponse) {
   }
 }
 
-async function startRecovery() {
+async function startRecovery(cedula = "40214041176") {
   const response = await identify(
     request("citizen", {
-      cedula: "40214041176",
+      cedula,
       recoverAccess: true,
       recaptchaToken: "test-token",
     }),
@@ -164,6 +164,8 @@ beforeEach(() => {
   vi.stubEnv("ORY_SDK_URL", "https://ory.example");
   vi.stubEnv("ORY_SDK_TOKEN", "test-token");
   vi.stubEnv("REGISTRATION_SESSION_SECRET", "test-secret");
+  vi.stubEnv("CEDULA_VALIDATION_API", "https://validation.example/v3/cedulas");
+  vi.stubEnv("NEXT_PUBLIC_LUHN_EXCEPTION_HASHES", "");
   validateRecaptchaToken.mockResolvedValue(true);
   listIdentities.mockResolvedValue({ data: [{ id: identityId }] });
   getIdentity.mockResolvedValue({ data: identity });
@@ -193,9 +195,128 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
+});
 
 describe("account recovery in the registration wizard", () => {
+  it("identifies and completes recovery for an API-confirmed non-Luhn cedula", async () => {
+    const cedula = "12345678901";
+    const target = {
+      ...identity,
+      traits: { ...identity.traits, username: cedula },
+    };
+    getIdentity.mockResolvedValue({ data: target });
+    updateIdentity.mockResolvedValue({
+      data: { ...target, traits: { ...target.traits, email: input.email } },
+    });
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce(Response.json({ valid: true }))
+      .mockResolvedValueOnce(Response.json({ valid: true }));
+    await startRecovery(cedula);
+    const response = await completeLiveness(
+      request("verification/liveness-complete", {
+        sessionId: "liveness-session",
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      success: true,
+      destination: "email-sent",
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(fetchSpy.mock.calls.map(([url]) => String(url))).toEqual([
+      `https://validation.example/v3/cedulas/${cedula}/validate`,
+      `https://validation.example/v3/cedulas/${cedula}/validate`,
+    ]);
+    expect(updateIdentity).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: identityId,
+        updateIdentityBody: expect.objectContaining({
+          traits: { ...target.traits, email: input.email },
+        }),
+      }),
+    );
+    receiveCookies(response);
+    expect(await getRegistrationSession()).toBeNull();
+  });
+
+  it("rejects reCAPTCHA before making any external exception lookup", async () => {
+    validateRecaptchaToken.mockResolvedValueOnce(false);
+    const fetchSpy = vi.spyOn(global, "fetch");
+    const response = await identify(
+      request("citizen", {
+        cedula: "12345678901",
+        recaptchaToken: "invalid",
+      }),
+    );
+    expect(response.status).toBe(403);
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(listIdentities).not.toHaveBeenCalled();
+  });
+
+  it("returns a retryable identification error when the validation API is unavailable", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      Response.json({}, { status: 503 }),
+    );
+    const response = await identify(
+      request("citizen", {
+        cedula: "12345678901",
+        recaptchaToken: "test-token",
+      }),
+    );
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      success: false,
+      code: "cedula_validation_unavailable",
+    });
+    expect(response.cookies.getAll()).toHaveLength(0);
+    expect(listIdentities).not.toHaveBeenCalled();
+  });
+
+  it("preserves the verified draft for an explicit retry when exception validation fails during finalization", async () => {
+    const cedula = "12345678901";
+    getIdentity.mockResolvedValue({
+      data: { ...identity, traits: { ...identity.traits, username: cedula } },
+    });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const fetchSpy = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce(Response.json({ valid: true }))
+      .mockResolvedValueOnce(Response.json({}, { status: 503 }))
+      .mockResolvedValueOnce(Response.json({ valid: true }));
+    await startRecovery(cedula);
+    const failed = await completeLiveness(
+      request("verification/liveness-complete", {
+        sessionId: "liveness-session",
+      }),
+    );
+    expect(failed.status).toBe(503);
+    expect(await failed.json()).toMatchObject({
+      success: false,
+      stage: "account",
+      code: "cedula_validation_unavailable",
+    });
+    expect(updateIdentity).not.toHaveBeenCalled();
+    receiveCookies(failed);
+    expect(await getRegistrationSession()).toMatchObject({
+      status: "verified",
+      cedula,
+    });
+    expect(requestCookies.has("registration_account_draft")).toBe(true);
+    const retried = await finalize(request("account", input));
+    expect(retried.status).toBe(200);
+    expect(await retried.json()).toMatchObject({
+      success: true,
+      destination: "email-sent",
+    });
+    expect(getLivenessResults).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
+  });
+
   it("redirects to email verification when the sent-email response contains the code form", async () => {
     await startRecovery();
     updateVerificationFlow.mockResolvedValueOnce({

@@ -98,6 +98,9 @@ export function StepIdentification({
         > = {
           invalid_payload: t("identification.id_invalid"),
           invalid_cedula: t("identification.id_invalid"),
+          cedula_validation_unavailable: t(
+            "identification.validation_unavailable",
+          ),
           recaptcha_failed: t("identification.recaptcha_error"),
           citizen_not_found: t("identification.id_not_found"),
           recovery_not_found: t("identification.recovery_not_found"),

@@ -98,6 +98,8 @@ function translateGeneralError(
       return t("account.validation.password_compromised");
     case "invalid_cedula":
       return t("identification.id_invalid");
+    case "cedula_validation_unavailable":
+      return t("identification.validation_unavailable");
     case "citizen_not_found":
       return t("identification.id_not_found");
     case "ory_validation_error":

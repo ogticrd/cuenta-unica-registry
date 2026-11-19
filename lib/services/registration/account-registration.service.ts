@@ -5,6 +5,7 @@ import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies, mergeCookieHeaders } from "@/lib/ory/cookies";
 import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
 import { recoverOryAccount } from "@/lib/services/registration/account-recovery.service";
+import { validateCedula } from "@/lib/services/registration/cedula-validation.service";
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import {
@@ -29,7 +30,7 @@ import type {
   RegisterAccountResponse,
 } from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
-import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
+import { normalizeCedula } from "@/lib/utils/cedula";
 
 export interface AccountRegistrationResult {
   payload: RegisterAccountResponse;
@@ -229,8 +230,12 @@ export async function completeRegistrationAccount(
     });
   }
 
-  if (!(await isValidCedula(cedula))) {
-    return createAccountRegistrationErrorResult("invalid_cedula", 400);
+  const cedulaValidation = await validateCedula(cedula);
+  if (!cedulaValidation.success) {
+    return createAccountRegistrationErrorResult(
+      cedulaValidation.code,
+      cedulaValidation.status,
+    );
   }
 
   const credentialError = await validateRegistrationAccountCredentials(input, {

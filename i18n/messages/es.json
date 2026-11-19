@@ -73,6 +73,7 @@
       "id_required": "La cédula es requerida",
       "id_invalid_length": "La cédula debe tener 11 dígitos",
       "id_invalid": "La cédula ingresada no es válida",
+      "validation_unavailable": "No pudimos consultar la validación de tu cédula. Inténtalo de nuevo en unos momentos.",
       "account_exists": "Esta cédula ya tiene una Cuenta Única.",
       "account_recreation_description": "Si olvidaste tu correo registrado o ya no tienes acceso a él, puedes usar uno nuevo. Conservarás tu historial de datos.",
       "account_recreation_cta": "Recuperar acceso",

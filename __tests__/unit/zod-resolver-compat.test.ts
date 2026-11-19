@@ -4,6 +4,11 @@ import { describe, expect, it } from "vitest";
 import { createCedulaSchema } from "@/lib/schemas/registration";
 
 describe("zodResolver compatibility", () => {
+  it("allows a well-formed non-Luhn cedula to reach server validation", async () => {
+    const schema = createCedulaSchema((key) => key);
+    const result = await schema.safeParseAsync({ cedula: "123-4567890-1" });
+    expect(result.success).toBe(true);
+  });
   it("returns field errors for Zod 4 issues instead of throwing", async () => {
     const schema = createCedulaSchema((key) => {
       const messages: Record<string, string> = {

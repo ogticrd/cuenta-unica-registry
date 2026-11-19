@@ -34,6 +34,7 @@ export type RegisterAccountErrorCode =
   | "password_weak"
   | "password_compromised"
   | "invalid_cedula"
+  | "cedula_validation_unavailable"
   | "citizen_not_found"
   | "identity_exists"
   | "recovery_not_found"

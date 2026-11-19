@@ -22,6 +22,7 @@ export interface CitizenProfileResult {
 export type CitizenLookupErrorCode =
   | "invalid_payload"
   | "invalid_cedula"
+  | "cedula_validation_unavailable"
   | "recaptcha_failed"
   | "identity_exists"
   | "recovery_not_found"

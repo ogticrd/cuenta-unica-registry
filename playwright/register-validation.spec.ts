@@ -1,8 +1,8 @@
 import { expect, type Page, test } from "@playwright/test";
 
 const VALID_CEDULA = "40214041176";
-const INVALID_CEDULA = "00100000000";
-const INVALID_CEDULA_FORMATTED = "001-0000000-0";
+const INVALID_CEDULA = "00000000000";
+const INVALID_CEDULA_FORMATTED = "000-0000000-0";
 const VALID_CEDULA_FORMATTED = "402-1404117-6";
 const VALID_EMAIL = "john_smith@yopmail.com";
 const VALID_PASSWORD = "John4Sm1t5@nSecure#2026";
@@ -72,9 +72,7 @@ async function continueFromIdentification(page: Page) {
 }
 
 test.describe("registration form validation", () => {
-  test("enters recovery mode from the outlined button for an existing identity", async ({
-    page,
-  }) => {
+  test.beforeEach(async ({ page }) => {
     await page.route("**/recaptcha/enterprise.js*", (route) =>
       route.fulfill({
         contentType: "application/javascript",
@@ -87,6 +85,60 @@ test.describe("registration form validation", () => {
         `,
       }),
     );
+  });
+
+  test("allows a non-Luhn cedula confirmed by the server to reach the account step", async ({
+    page,
+  }) => {
+    let payload: unknown;
+    await page.route("**/api/registration/citizen", (route) => {
+      payload = route.request().postDataJSON();
+      return route.fulfill({
+        status: 200,
+        json: {
+          success: true,
+          citizen: { id: "12345678901", firstName: "Prueba" },
+        },
+      });
+    });
+    await gotoRegister(page);
+    await page
+      .getByRole("textbox", { name: /Número de cédula/ })
+      .fill("12345678901");
+    await page.getByRole("button", { name: "CONTINUAR" }).click();
+    await expect(page.getByLabel(/^Correo electrónico/)).toBeVisible();
+    expect(payload).toMatchObject({
+      cedula: "12345678901",
+      recaptchaToken: "recaptcha-e2e-token",
+    });
+  });
+
+  test("shows a temporary validation outage on the cedula field without advancing", async ({
+    page,
+  }) => {
+    await page.route("**/api/registration/citizen", (route) =>
+      route.fulfill({
+        status: 503,
+        json: { success: false, code: "cedula_validation_unavailable" },
+      }),
+    );
+    await gotoRegister(page);
+    await page
+      .getByRole("textbox", { name: /Número de cédula/ })
+      .fill("12345678901");
+    await page.getByRole("button", { name: "CONTINUAR" }).click();
+    await expect(
+      page.getByText(
+        "No pudimos consultar la validación de tu cédula. Inténtalo de nuevo en unos momentos.",
+      ),
+    ).toBeVisible();
+    await expect(page.getByLabel(/^Correo electrónico/)).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "CONTINUAR" })).toBeEnabled();
+  });
+
+  test("enters recovery mode from the outlined button for an existing identity", async ({
+    page,
+  }) => {
     let recoveryRequested = false;
     await page.route("**/api/registration/citizen", (route) => {
       if (route.request().postDataJSON().recoverAccess === true) {
