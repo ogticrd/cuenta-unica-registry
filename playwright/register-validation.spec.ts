@@ -72,15 +72,39 @@ async function continueFromIdentification(page: Page) {
 }
 
 test.describe("registration form validation", () => {
-  test("shows the outlined account recreation button for an existing identity", async ({
+  test("enters recovery mode from the outlined button for an existing identity", async ({
     page,
   }) => {
-    await page.route("**/api/registration/citizen", (route) =>
+    await page.route("**/recaptcha/enterprise.js*", (route) =>
       route.fulfill({
-        status: 409,
-        json: { success: false, code: "identity_exists" },
+        contentType: "application/javascript",
+        body: `
+          const api = {
+            ready: (callback) => callback(),
+            execute: () => Promise.resolve("recaptcha-e2e-token"),
+          };
+          window.grecaptcha = { ...api, enterprise: api };
+        `,
       }),
     );
+    let recoveryRequested = false;
+    await page.route("**/api/registration/citizen", (route) => {
+      if (route.request().postDataJSON().recoverAccess === true) {
+        recoveryRequested = true;
+        return route.fulfill({
+          status: 200,
+          json: {
+            success: true,
+            citizen: { id: VALID_CEDULA, firstName: "Prueba" },
+            recovery: true,
+          },
+        });
+      }
+      return route.fulfill({
+        status: 409,
+        json: { success: false, code: "identity_exists" },
+      });
+    });
     await gotoRegister(page);
 
     const cedula = page.getByRole("textbox", { name: /Número de cédula/ });
@@ -110,10 +134,11 @@ test.describe("registration form validation", () => {
     ).toBe(true);
     await recreate.click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
-
-    await cedula.clear();
-
-    await expect(alert).toHaveCount(0);
+    await expect(
+      page.getByTestId("registration-wizard").getByRole("alert"),
+    ).toHaveText("Modo recuperación");
+    await expect(page.getByLabel(/^Correo electrónico/)).toBeVisible();
+    expect(recoveryRequested).toBe(true);
   });
 
   test("shows invalid cedula errors in the form without crashing the page", async ({

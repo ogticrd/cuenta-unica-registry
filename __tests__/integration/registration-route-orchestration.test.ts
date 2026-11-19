@@ -713,6 +713,10 @@ describe("registration route orchestration - account", () => {
       payload: {
         id: "verification-flow-456",
         state: "sent_email",
+        ui: {
+          nodes: [],
+          messages: [{ id: 1080003, type: "info", text: "Check your email" }],
+        },
       },
       setCookies: ["ory_verification=def; Path=/; HttpOnly; SameSite=Lax"],
     });
@@ -1348,6 +1352,7 @@ describe("registration route orchestration - citizen", () => {
       undefined,
       undefined,
       undefined,
+      undefined,
     );
     expect(mockGetSafeReturnUrl).toHaveBeenCalledWith("javascript:alert(1)", {
       currentOrigin: "http://localhost",
@@ -1404,6 +1409,7 @@ describe("registration route orchestration - citizen", () => {
         entryPath: "/register",
         returnUrl: "http://localhost:5173/callback",
       }),
+      undefined,
     );
     expect(mockGetSafeReturnUrl).not.toHaveBeenCalled();
     expect(response.status).toBe(200);

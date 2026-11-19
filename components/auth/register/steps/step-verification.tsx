@@ -5,17 +5,19 @@ import {
   Camera,
   Check,
   ExternalLink,
+  Loader2,
   ScanFace,
   ShieldAlert,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   FaceLiveness,
   FaceLivenessLoader,
 } from "@/components/auth/register/face-liveness-detector";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -45,6 +47,7 @@ type VerificationPhase =
   | "liveness_active"
   | "verifying"
   | "creating_account"
+  | "finalizing_account"
   | "error";
 
 interface StepVerificationProps {
@@ -52,7 +55,7 @@ interface StepVerificationProps {
   onRequireAccount: (accountErrors?: RegisterAccountStepErrors) => void;
   onRequireIdentification: () => void;
   accountDraft: RegisterAccountDraft;
-  autoFinalizeAccount?: boolean;
+  isIdentityVerified?: boolean;
   userData: { name: string };
 }
 
@@ -61,7 +64,7 @@ export function StepVerification({
   onRequireAccount,
   onRequireIdentification,
   accountDraft,
-  autoFinalizeAccount = false,
+  isIdentityVerified = false,
   userData,
 }: StepVerificationProps) {
   const t = useT("register");
@@ -175,6 +178,11 @@ export function StepVerification({
           invalid_cedula: t("identification.id_invalid"),
           citizen_not_found: t("identification.id_not_found"),
           identity_exists: t("account.identity_exists"),
+          recovery_not_found: t("identification.recovery_not_found"),
+          recovery_failed: t("account.recovery_failed"),
+          recovery_sessions_revocation_failed: t(
+            "account.recovery_sessions_revocation_failed",
+          ),
           ory_validation_error: t("account.error"),
           unexpected_error: t("account.error"),
         };
@@ -184,7 +192,10 @@ export function StepVerification({
         setPhase("idle");
         setIsModalOpen(false);
 
-        if (accountResult.code === "registration_session_missing") {
+        if (
+          accountResult.code === "registration_session_missing" ||
+          accountResult.code === "recovery_not_found"
+        ) {
           onRequireIdentification();
           toast.error(messageByErrorCode[accountResult.code]);
           return;
@@ -212,20 +223,11 @@ export function StepVerification({
     if (isFinalizingAccount.current) return;
 
     isFinalizingAccount.current = true;
-    setPhase("creating_account");
+    setPhase("finalizing_account");
 
     const accountResult = await accountService.registerAccount();
     handleAccountRegistrationResult(accountResult);
   }, [handleAccountRegistrationResult]);
-
-  useEffect(() => {
-    if (!autoFinalizeAccount) {
-      return;
-    }
-
-    setIsModalOpen(true);
-    void finalizeAccountRegistration();
-  }, [autoFinalizeAccount, finalizeAccountRegistration]);
 
   const handleStartVerification = async () => {
     if (!accountDraft.email || !accountDraft.password) {
@@ -323,6 +325,43 @@ export function StepVerification({
       isFinalizingAccount.current = false;
     }
   };
+
+  if (isIdentityVerified) {
+    return (
+      <div className="flex flex-col items-center w-full gap-4">
+        <Alert className="border-secondary/30 bg-secondary/5 text-primary dark:border-secondary/50 dark:bg-secondary/10 dark:text-blue-200 [&>svg]:text-secondary">
+          <Check aria-hidden="true" className="h-4 w-4" />
+          <AlertDescription>
+            {t("verification.previously_verified")}
+          </AlertDescription>
+        </Alert>
+        <Button
+          type="button"
+          className="h-12 w-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          disabled={phase === "finalizing_account"}
+          onClick={() => void finalizeAccountRegistration()}
+        >
+          {phase === "finalizing_account" && (
+            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+          )}
+          {t(
+            phase === "finalizing_account"
+              ? "verification.finalizing"
+              : "account.continue",
+          )}
+        </Button>
+        <button
+          type="button"
+          onClick={onBack}
+          disabled={phase === "finalizing_account"}
+          className="flex items-center justify-center gap-2 text-sm text-muted-foreground dark:text-slate-400 dark:hover:text-slate-100 hover:text-foreground transition-colors font-medium mt-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {t("common.back")}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300">

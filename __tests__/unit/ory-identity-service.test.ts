@@ -38,7 +38,7 @@ describe("checkCitizenIdentity", () => {
     expect(mockListIdentities).toHaveBeenCalledWith({
       credentialsIdentifier: "40200612345",
     });
-    expect(result).toEqual({ exists: true });
+    expect(result).toEqual({ exists: true, identityId: "identity-1" });
   });
 
   it("returns exists=false when Ory finds no identities", async () => {

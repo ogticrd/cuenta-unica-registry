@@ -2,6 +2,7 @@ export interface CitizenLookupRequest {
   cedula: string;
   returnUrl?: string;
   recaptchaToken?: string;
+  recoverAccess?: boolean;
 }
 
 export interface CitizenLookupResult {
@@ -23,6 +24,7 @@ export type CitizenLookupErrorCode =
   | "invalid_cedula"
   | "recaptcha_failed"
   | "identity_exists"
+  | "recovery_not_found"
   | "citizen_not_found"
   | "unexpected_error";
 
@@ -32,6 +34,7 @@ export type CitizenLookupResponse =
   | {
       success: true;
       citizen: CitizenLookupResult;
+      recovery?: true;
     }
   | {
       success: false;

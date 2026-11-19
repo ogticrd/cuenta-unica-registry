@@ -69,6 +69,37 @@ Reglas:
 
 ## Endpoints
 
+### Recuperación desde el registro
+
+Cuando identificación devuelve `identity_exists`, el botón “Recuperar acceso”
+envía una nueva solicitud con `recoverAccess: true`. El servidor vuelve a validar
+cédula y reCAPTCHA, exige una identidad única y vincula su ID a la sesión
+firmada en `recovery.identityId`.
+
+El wizard muestra “Modo recuperación” debajo del indicador del paso y conserva
+el orden identificación, datos de cuenta y biometría. La sesión hidratada
+mantiene ese modo después de una recarga y el reset lo limpia.
+
+Después de aprobar la biometría y validar el draft, la finalización actualiza
+correo y contraseña sobre la identidad existente. Se conservan ID, schema,
+traits adicionales y metadata, y se revocan las sesiones anteriores. Un fallo
+al enviar la verificación del correo permite reintentar la finalización con el
+draft y la sesión verificada vigentes.
+
+Al recuperar una sesión verificada, la pantalla informa que la identidad ya
+fue validada y espera una continuación explícita. Una recarga permite retomar
+el proceso sin abrir el modal biométrico ni enviar solicitudes de finalización
+automáticamente.
+
+La revocación consulta todas las páginas de sesiones activas antes de
+desactivarlas, para evitar saltos al paginar por posición. Acepta enlaces
+relativos y paginación por token o por número de página; una lista vacía
+termina la consulta aunque Ory incluya un enlace a la siguiente página.
+Una sesión eliminada concurrentemente puede devolver 404.
+Un error de esta operación mantiene la recuperación verificada para reintentar.
+
+La recuperación rechaza identidades inactivas, ausentes o de otra cédula.
+
 | Endpoint | Responsabilidad |
 | --- | --- |
 | `POST /api/registration/citizen` | Validar cedula, buscar identidad Ory existente, consultar ciudadano y firmar sesion `identified`. |
@@ -88,6 +119,9 @@ Reglas:
   `/register/email-sent?flow=...`.
 - Si Ory crea identidad sin `continue_with`, se debe crear explicitamente un
   verification flow de codigo.
+- Un verification flow puede incluir `ui` después de enviar el correo. Solo
+  `error` o mensajes de tipo `error` en el formulario indican un rechazo;
+  los mensajes informativos permiten continuar a la verificación del correo.
 - Solo se puede redirigir a login o `return_url` cuando Ory reporta el email
   como verificado.
 - `verifyCodeAction` debe reenviar cookies del navegador a Ory.

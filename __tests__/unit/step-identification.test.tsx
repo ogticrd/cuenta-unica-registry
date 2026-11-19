@@ -115,6 +115,7 @@ describe("StepIdentification", () => {
       "40214041176",
       undefined,
       "recaptcha-token",
+      false,
     );
     expect(
       await screen.findByText("La cédula ingresada no es válida"),
@@ -127,7 +128,7 @@ describe("StepIdentification", () => {
     expect(props.onNext).not.toHaveBeenCalled();
   });
 
-  it("shows the account recreation button without submitting the form again", async () => {
+  it("starts recovery explicitly after an existing account is found", async () => {
     const user = userEvent.setup();
     vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
       success: false,
@@ -142,6 +143,11 @@ describe("StepIdentification", () => {
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Esta cédula ya tiene una Cuenta Única.");
     expect(cedula).toHaveAttribute("aria-invalid", "false");
+    vi.mocked(citizenService.identifyCitizen).mockResolvedValueOnce({
+      success: true,
+      citizen: { id: "40214041176", firstName: "Juan" },
+      recovery: true,
+    });
     await user.click(
       within(alert).getByRole("button", {
         name: "Recuperar acceso",
@@ -149,9 +155,18 @@ describe("StepIdentification", () => {
     );
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(citizenService.identifyCitizen).toHaveBeenCalledTimes(1);
-    expect(props.onNext).not.toHaveBeenCalled();
-    expect(props.updateData).not.toHaveBeenCalled();
+    expect(citizenService.identifyCitizen).toHaveBeenCalledTimes(2);
+    expect(citizenService.identifyCitizen).toHaveBeenLastCalledWith(
+      "40214041176",
+      undefined,
+      "recaptcha-token",
+      true,
+    );
+    expect(props.onNext).toHaveBeenCalledWith(true);
+    expect(props.updateData).toHaveBeenCalledWith({
+      cedula: "40214041176",
+      name: "Juan",
+    });
 
     await user.clear(cedula);
 

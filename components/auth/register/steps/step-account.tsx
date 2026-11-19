@@ -76,6 +76,12 @@ function translateGeneralError(
       return t("account.error");
     case "identity_exists":
       return t("account.identity_exists");
+    case "recovery_not_found":
+      return t("identification.recovery_not_found");
+    case "recovery_failed":
+      return t("account.recovery_failed");
+    case "recovery_sessions_revocation_failed":
+      return t("account.recovery_sessions_revocation_failed");
     case "registration_session_missing":
       return t("account.session_missing");
     case "verification_required":
@@ -597,7 +603,7 @@ export function StepAccount({
 
             <Button
               type="submit"
-              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="h-12 w-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={form.formState.isSubmitting}
             >
               {t("account.continue")}

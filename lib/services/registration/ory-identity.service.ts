@@ -4,9 +4,10 @@ import { Configuration, IdentityApi } from "@ory/client";
 
 interface CitizenIdentityLookupResult {
   exists: boolean;
+  identityId?: string;
 }
 
-function createOryIdentityClient() {
+export function createOryIdentityClient() {
   const basePath = process.env.ORY_SDK_URL;
   const accessToken = process.env.ORY_SDK_TOKEN;
 
@@ -36,6 +37,7 @@ export async function checkCitizenIdentity(
 
   return {
     exists: identities.length > 0,
+    ...(identities.length === 1 ? { identityId: identities[0].id } : {}),
   };
 }
 

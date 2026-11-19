@@ -36,6 +36,7 @@ export default async function RegistrationPage({
             initialName={registrationWizardState.initialName}
             initialSessionStatus={registrationWizardState.initialSessionStatus}
             hasAccountDraft={registrationWizardState.hasAccountDraft}
+            initialRecoveryMode={registrationWizardState.initialRecoveryMode}
             returnUrl={returnUrl}
           />
         </div>

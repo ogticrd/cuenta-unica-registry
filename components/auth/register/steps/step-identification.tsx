@@ -30,7 +30,7 @@ import {
 } from "@/lib/utils/cedula";
 
 interface StepIdentificationProps {
-  onNext: () => void;
+  onNext: (recovery?: boolean) => void;
   updateData: (data: { cedula: string; name: string }) => void;
   defaultValues: {
     cedula: string;
@@ -52,6 +52,7 @@ export function StepIdentification({
   const form = useForm({
     resolver: zodResolver(identificationSchema),
     mode: "onBlur",
+    delayError: 1000,
     defaultValues: {
       cedula: formatCedula(defaultValues.cedula),
     },
@@ -63,7 +64,8 @@ export function StepIdentification({
     });
   }, [defaultValues.cedula, form]);
 
-  const onSubmit = async (data: { cedula: string }) => {
+  const onSubmit = async (data: { cedula: string }, recoverAccess = false) => {
+    if (isLoading) return;
     setIsLoading(true);
 
     try {
@@ -81,6 +83,7 @@ export function StepIdentification({
         cedula,
         returnUrl,
         recaptchaToken,
+        recoverAccess,
       );
 
       if (!result.success) {
@@ -97,6 +100,7 @@ export function StepIdentification({
           invalid_cedula: t("identification.id_invalid"),
           recaptcha_failed: t("identification.recaptcha_error"),
           citizen_not_found: t("identification.id_not_found"),
+          recovery_not_found: t("identification.recovery_not_found"),
           unexpected_error: t("identification.lookup_error"),
         };
 
@@ -113,7 +117,7 @@ export function StepIdentification({
         cedula,
         name: result.citizen.firstName,
       });
-      onNext();
+      onNext(result.recovery === true);
     } catch (error) {
       console.error("Error validating ID:", error);
       form.setError("cedula", {
@@ -139,7 +143,7 @@ export function StepIdentification({
 
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => onSubmit(data))}
           className="space-y-6 w-full"
           noValidate
         >
@@ -191,9 +195,13 @@ export function StepIdentification({
                 {t("identification.account_exists")}
               </AlertTitle>
               <AlertDescription>
-                <p className="text-muted-foreground">{t("identification.account_recreation_description")}</p>
+                <p className="text-muted-foreground">
+                  {t("identification.account_recreation_description")}
+                </p>
                 <button
                   type="button"
+                  disabled={isLoading}
+                  onClick={form.handleSubmit((data) => onSubmit(data, true))}
                   className="cuc-register-button mt-3 leading-[1.5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                 >
                   {t("identification.account_recreation_cta")}
@@ -205,7 +213,7 @@ export function StepIdentification({
           <div className="pt-2">
             <Button
               type="submit"
-              className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={isLoading}
             >
               {isLoading ? (

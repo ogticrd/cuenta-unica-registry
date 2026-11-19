@@ -115,14 +115,24 @@ export async function POST(request: Request) {
 
   try {
     const identityLookup = await checkCitizenIdentity(cedula);
+    const recoverAccess = parsedRequest.data.recoverAccess === true;
 
-    if (identityLookup.exists) {
+    if (identityLookup.exists && !recoverAccess) {
       await emitIdentificationOutcome({
         success: false,
         errorCode: "identity_exists",
         metadata: { stage: "identity_lookup" },
       });
       return createErrorResponse("identity_exists", 409);
+    }
+
+    if (recoverAccess && !identityLookup.identityId) {
+      await emitIdentificationOutcome({
+        success: false,
+        errorCode: "recovery_not_found",
+        metadata: { stage: "identity_lookup" },
+      });
+      return createErrorResponse("recovery_not_found", 409);
     }
 
     const citizen = await findCitizenSummaryByCedula(cedula);
@@ -139,9 +149,14 @@ export async function POST(request: Request) {
     const payload: CitizenLookupResponse = {
       success: true,
       citizen,
+      ...(recoverAccess ? { recovery: true as const } : {}),
     };
 
     const response = NextResponse.json(payload, { status: 200 });
+    const recovery =
+      recoverAccess && identityLookup.identityId
+        ? { identityId: identityLookup.identityId }
+        : undefined;
     response.cookies.set(
       createRegistrationSessionCookie(
         normalizeCedula(citizen.id),
@@ -149,6 +164,7 @@ export async function POST(request: Request) {
         returnUrl,
         undefined,
         analyticsContext ?? undefined,
+        recovery,
       ),
     );
     await emitIdentificationOutcome({
@@ -156,6 +172,7 @@ export async function POST(request: Request) {
       metadata: {
         cedula: normalizeCedula(citizen.id),
         stage: "citizen_lookup",
+        ...(recoverAccess ? { operation: "account_recovery" } : {}),
         traits: {
           username: normalizeCedula(citizen.id),
           name: { first: citizen.firstName },

@@ -4,12 +4,14 @@ import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies, mergeCookieHeaders } from "@/lib/ory/cookies";
 import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
+import { recoverOryAccount } from "@/lib/services/registration/account-recovery.service";
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import {
   createOryEmailVerificationCodeFlow,
   type OryRegistrationPayload,
   type OryVerificationFlowPayload,
+  type RegisterOryAccountResult,
   registerOryAccount,
 } from "@/lib/services/registration/ory-registration.service";
 import {
@@ -241,24 +243,36 @@ export async function completeRegistrationAccount(
     });
   }
 
-  const citizen = await findCitizenByCedula(cedula);
-
-  if (!citizen) {
-    return createAccountRegistrationErrorResult("citizen_not_found", 404);
-  }
-
   try {
     const incomingCookies = await getServerCookies();
-    const { payload, setCookies } = await registerOryAccount({
-      cookie: incomingCookies,
-      email: input.email,
-      password: input.password,
-      cedula,
-      firstName: citizen.names,
-      lastName: citizen.lastName,
-      birthDate: citizen.birthDate,
-      gender: citizen.gender,
-    });
+    let result: RegisterOryAccountResult;
+    if (registrationSession.recovery) {
+      const recovery = await recoverOryAccount(input, registrationSession);
+      if (!recovery.success) {
+        return createAccountRegistrationErrorResult(
+          recovery.code,
+          recovery.status,
+          { fieldErrors: recovery.fieldErrors },
+        );
+      }
+      result = { payload: { identity: recovery.identity }, setCookies: [] };
+    } else {
+      const citizen = await findCitizenByCedula(cedula);
+      if (!citizen) {
+        return createAccountRegistrationErrorResult("citizen_not_found", 404);
+      }
+      result = await registerOryAccount({
+        cookie: incomingCookies,
+        email: input.email,
+        password: input.password,
+        cedula,
+        firstName: citizen.names,
+        lastName: citizen.lastName,
+        birthDate: citizen.birthDate,
+        gender: citizen.gender,
+      });
+    }
+    const { payload, setCookies } = result;
 
     if (payload.ui) {
       const errorDetails = mapOryAccountErrors(payload);
@@ -304,17 +318,28 @@ export async function completeRegistrationAccount(
           ...verificationFlow.setCookies,
         ];
 
-        if (verificationFlow.payload.ui || verificationFlow.payload.error) {
+        const verificationErrors = [
+          ...(verificationFlow.payload.ui?.messages ?? []),
+          ...(verificationFlow.payload.ui?.nodes ?? []).flatMap(
+            (node) => node.messages ?? [],
+          ),
+        ].filter((message) => message.type === "error");
+
+        if (verificationFlow.payload.error || verificationErrors.length > 0) {
           const errorDetails = mapVerificationFlowErrors(
             verificationFlow.payload,
           );
 
-          if (verificationFlow.payload.error) {
-            console.error(
-              "[account-registration] Ory verification flow returned an error payload:",
-              verificationFlow.payload.error,
-            );
-          }
+          console.error(
+            "[account-registration] Ory email verification failed",
+            JSON.stringify({
+              operation: registrationSession.recovery
+                ? "account_recovery"
+                : "registration",
+              errorId: verificationFlow.payload.error?.id,
+              messageIds: verificationErrors.map((message) => message.id),
+            }),
+          );
 
           return createAccountRegistrationErrorResult(
             errorDetails.code,

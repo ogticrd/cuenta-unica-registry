@@ -56,6 +56,8 @@ vi.mock("@/hooks/use-t", () => ({
       "account.draft_missing": "Vuelve a ingresar los datos de la cuenta",
       "account.identity_exists": "Ya existe una cuenta con este correo",
       "account.error": "No pudimos crear tu cuenta",
+      "account.recovery_sessions_revocation_failed":
+        "Tus datos de acceso fueron actualizados, pero no pudimos cerrar todas las sesiones anteriores. Intenta continuar.",
       "identification.id_invalid": "La cédula ingresada no es válida",
       "identification.id_not_found": "No encontramos esta cédula",
       "common.back": "Volver al paso anterior",
@@ -259,6 +261,10 @@ describe("StepAccount", () => {
   it.each([
     ["invalid_payload", "No pudimos crear tu cuenta"],
     ["verification_required", "Completa la prueba de vida"],
+    [
+      "recovery_sessions_revocation_failed",
+      "Tus datos de acceso fueron actualizados, pero no pudimos cerrar todas las sesiones anteriores. Intenta continuar.",
+    ],
   ] as const)("shows %s as a visible account error", async (code, message) => {
     renderStepAccount({
       initialErrors: {
@@ -269,6 +275,7 @@ describe("StepAccount", () => {
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith(message);
     });
+    expect(screen.getByRole("alert")).toHaveTextContent(message);
   });
 
   it("shows a visible confirm password mismatch error and does not continue", async () => {

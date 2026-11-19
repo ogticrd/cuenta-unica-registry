@@ -5,6 +5,7 @@ export const citizenLookupRequestSchema = z.object({
   cedula: z.string(),
   returnUrl: z.string().optional(),
   recaptchaToken: z.string().min(1).optional(),
+  recoverAccess: z.boolean().optional(),
 });
 
 export function getCitizenLookupFieldErrors(

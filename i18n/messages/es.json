@@ -44,6 +44,7 @@
     "need_verification_prompt": "¿Necesitas verificar tu cuenta?"
   },
   "register": {
+    "recovery_mode": "Modo recuperación",
     "title": "Registro Cuenta Única",
     "logo_alt": "Cuenta Única",
     "step_label": "Paso",
@@ -75,6 +76,7 @@
       "account_exists": "Esta cédula ya tiene una Cuenta Única.",
       "account_recreation_description": "Si olvidaste tu correo registrado o ya no tienes acceso a él, puedes usar uno nuevo. Conservarás tu historial de datos.",
       "account_recreation_cta": "Recuperar acceso",
+      "recovery_not_found": "No pudimos iniciar la recuperación de esta cuenta. Verifica tu cédula e inténtalo de nuevo.",
       "id_not_found": "No encontramos información para esta cédula",
       "lookup_error": "No se pudo validar la cédula. Inténtalo de nuevo.",
       "recaptcha_error": "No pudimos validar que eres una persona. Inténtalo de nuevo.",
@@ -92,6 +94,8 @@
       "session_creation_failed": "No se pudo iniciar la verificación facial. Inténtalo de nuevo.",
       "verifying_identity": "Verificando tu identidad...",
       "continuing_registration": "Continuando con la activación de tu cuenta...",
+      "previously_verified": "Tu identidad ya fue verificada. Presiona continuar para completar el proceso.",
+      "finalizing": "Completando el proceso...",
       "verification_failed": "La verificación facial no fue exitosa. Inténtalo de nuevo.",
       "liveness_failed": "No se pudo confirmar que eres una persona real. Asegúrate de estar frente a la cámara con buena iluminación.",
       "face_mismatch": "Tu rostro no coincide con la foto de tu cédula. Inténtalo de nuevo.",
@@ -166,6 +170,8 @@
       "success_description": "Tu cuenta ciudadana ha sido creada.",
       "identity_exists": "Ya existe una cuenta asociada a los datos ingresados.",
       "session_missing": "Tu sesión de registro expiró. Debes iniciar nuevamente desde la identificación.",
+      "recovery_failed": "No pudimos completar la recuperación. Inténtalo de nuevo.",
+      "recovery_sessions_revocation_failed": "Tus datos de acceso fueron actualizados, pero no pudimos cerrar todas las sesiones anteriores. Intenta continuar.",
       "verification_required": "Debes completar la verificación facial antes de crear la cuenta.",
       "draft_missing": "Debes confirmar tu correo y contraseña para continuar con la activación.",
       "error": "Error al completar el registro. Inténtalo de nuevo.",

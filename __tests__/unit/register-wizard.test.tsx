@@ -58,6 +58,7 @@ vi.mock("@/hooks/use-t", () => ({
       logo_alt: "Cuenta Única",
       title: "Registro",
       step_label: "Paso",
+      recovery_mode: "Modo recuperación",
       "steps.identification.title": "Identificación",
       "steps.identification.description": "Valida tu cédula",
       "steps.account.title": "Cuenta",
@@ -125,6 +126,33 @@ function renderAccountStepWizard() {
 }
 
 describe("RegisterWizard", () => {
+  it("shows recovery mode below the step indicator and clears it on reset", async () => {
+    const { container } = render(
+      <RegisterWizard
+        initialStep={1}
+        initialCedula="40214041176"
+        initialName="Juan"
+        initialSessionStatus="identified"
+        hasAccountDraft={false}
+        initialRecoveryMode
+      />,
+    );
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent("Modo recuperación");
+    const header = container.querySelector(
+      '[data-testid="registration-wizard"] > div',
+    );
+    expect(header).toContainElement(alert);
+    expect(alert.previousElementSibling).toHaveTextContent("Paso");
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Volver al paso anterior/ }),
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument(),
+    );
+    expect(registrationSessionApiService.reset).toHaveBeenCalled();
+  });
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.clearAllMocks();

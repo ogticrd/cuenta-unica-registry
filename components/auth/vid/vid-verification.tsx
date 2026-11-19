@@ -28,10 +28,10 @@ import { cn } from "@/lib/utils";
 type Props =
   | { flowId: string; firstName: string; error?: never }
   | {
-      flowId?: never;
-      firstName?: never;
-      error: VidLaunchErrorCode | "flow_expired";
-    };
+    flowId?: never;
+    firstName?: never;
+    error: VidLaunchErrorCode | "flow_expired";
+  };
 
 type VerificationError = VidLivenessErrorCode | "camera_error";
 
@@ -291,7 +291,7 @@ export function VidVerification({
               type="button"
               onClick={start}
               disabled={!accepted}
-              className="h-12 w-full bg-[#003B73] text-base font-semibold text-white hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700"
+              className="h-12 w-full bg-primary text-base font-semibold text-white hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               {error ? register("verification.retry") : t("start")}
             </Button>

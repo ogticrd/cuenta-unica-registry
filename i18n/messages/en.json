@@ -44,6 +44,7 @@
     "need_verification_prompt": "Need to verify your account?"
   },
   "register": {
+    "recovery_mode": "Recovery mode",
     "title": "Cuenta Única Registration",
     "logo_alt": "Cuenta Única",
     "step_label": "Step",
@@ -75,6 +76,7 @@
       "account_exists": "A Cuenta Única already exists for this ID.",
       "account_recreation_description": "If you forgot your registered email address or no longer have access to it, you can use a new one. Your data history will be preserved.",
       "account_recreation_cta": "Recover access",
+      "recovery_not_found": "We could not start recovery for this account. Check your ID number and try again.",
       "id_not_found": "We could not find information for this national ID",
       "lookup_error": "We could not validate the national ID. Please try again.",
       "recaptcha_error": "We could not confirm you are a person. Please try again.",
@@ -92,6 +94,8 @@
       "session_creation_failed": "Could not start facial verification. Please try again.",
       "verifying_identity": "Verifying your identity...",
       "continuing_registration": "Continuing with your account activation...",
+      "previously_verified": "Your identity has already been verified. Press continue to complete the process.",
+      "finalizing": "Completing the process...",
       "verification_failed": "Facial verification was not successful. Please try again.",
       "liveness_failed": "We could not confirm you are a real person. Make sure you are facing the camera with good lighting.",
       "face_mismatch": "Your face does not match your ID photo. Please try again.",
@@ -166,6 +170,8 @@
       "success_description": "Your citizen account has been created.",
       "identity_exists": "An account already exists for the provided information.",
       "session_missing": "Your registration session expired. You need to start again from identification.",
+      "recovery_failed": "We could not complete account recovery. Please try again.",
+      "recovery_sessions_revocation_failed": "Your login details were updated, but we could not close all previous sessions. Please try to continue.",
       "verification_required": "You must complete facial verification before creating the account.",
       "draft_missing": "Confirm your email and password to continue account activation.",
       "error": "There was an error completing the registration. Please try again.",
