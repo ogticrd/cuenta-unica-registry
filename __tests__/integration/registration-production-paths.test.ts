@@ -251,9 +251,9 @@ describe("registration production paths", () => {
     });
     delete process.env.REGISTRATION_SESSION_SECRET;
 
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     const response = await postVerification();
 
@@ -262,11 +262,10 @@ describe("registration production paths", () => {
       success: false,
       code: "unexpected_error",
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(stdoutSpy).toHaveBeenCalledWith(
       expect.stringContaining(
         "[/api/registration/verification] Failed to validate registration session:",
       ),
-      expect.any(Error),
     );
   });
 

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import { NextResponse } from "next/server";
@@ -281,6 +282,12 @@ export async function completeRegistrationAccount(
 
     if (payload.ui) {
       const errorDetails = mapOryAccountErrors(payload);
+      logger.warn("Ory rechazó los datos del registro", {
+        operation: "registration.account",
+        event: "registration_flow_update_failed",
+        code: errorDetails.code,
+        form: registrationSession.recovery ? "account_recovery" : "register",
+      });
 
       return createAccountRegistrationErrorResult(errorDetails.code, 400, {
         fieldErrors: errorDetails.fieldErrors,
@@ -292,10 +299,14 @@ export async function completeRegistrationAccount(
       const errorDetails = mapOryAccountErrors(payload);
       const status = payload.error.id === "security_csrf_violation" ? 400 : 502;
 
-      console.error(
-        "[account-registration] Ory returned an error payload:",
-        payload.error,
-      );
+      logger.error("Ory rechazó la actualización del registro", {
+        operation: "registration.account",
+        event: "registration_flow_update_failed",
+        code: errorDetails.code,
+        status,
+        errorId: payload.error.id,
+        form: registrationSession.recovery ? "account_recovery" : "register",
+      });
 
       return createAccountRegistrationErrorResult(errorDetails.code, status, {
         fieldErrors: errorDetails.fieldErrors,
@@ -335,16 +346,15 @@ export async function completeRegistrationAccount(
             verificationFlow.payload,
           );
 
-          console.error(
-            "[account-registration] Ory email verification failed",
-            JSON.stringify({
-              operation: registrationSession.recovery
-                ? "account_recovery"
-                : "registration",
-              errorId: verificationFlow.payload.error?.id,
-              messageIds: verificationErrors.map((message) => message.id),
-            }),
-          );
+          logger.error("No se pudo iniciar la verificación del correo", {
+            operation: "registration.email_verification",
+            form: registrationSession.recovery
+              ? "account_recovery"
+              : "register",
+            code: errorDetails.code,
+            errorId: verificationFlow.payload.error?.id,
+            messageIds: verificationErrors.map((message) => message.id),
+          });
 
           return createAccountRegistrationErrorResult(
             errorDetails.code,
@@ -364,10 +374,11 @@ export async function completeRegistrationAccount(
           );
         }
 
-        console.error(
-          "[account-registration] Ory created an unverified identity without a verification flow:",
-          payload.identity.id,
-        );
+        logger.error("Ory devolvió una identidad sin flujo de verificación", {
+          operation: "registration.email_verification",
+          code: "unexpected_error",
+          identityId: payload.identity.id,
+        });
 
         return createAccountRegistrationErrorResult("unexpected_error", 502, {
           setCookies: combinedSetCookies,
@@ -393,7 +404,11 @@ export async function completeRegistrationAccount(
       setCookies,
     });
   } catch (error) {
-    console.error("[account-registration] Registration failed:", error);
+    logger.error(
+      "[account-registration] Registration failed:",
+      { operation: "registration.account-registration.service" },
+      error,
+    );
     return createAccountRegistrationErrorResult("unexpected_error", 500);
   }
 }

@@ -5,7 +5,6 @@ import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useT } from "@/hooks/use-t";
+import { reportClientError } from "@/lib/logging/client";
 import {
   createFeedbackSchema,
   type FeedbackFormData,
@@ -68,6 +68,10 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
     const result = await submitFeedback(data);
 
     if (!result.success) {
+      reportClientError("feedback_failed", {
+        form: "feedback",
+        code: "SERVER_ERROR",
+      });
       toast.error(t("send_error"));
       setSendError(true);
       return;

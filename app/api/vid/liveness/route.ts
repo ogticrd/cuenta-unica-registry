@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import { verifyCitizenLiveness } from "@/lib/services/biometric/citizen-liveness.service";
 import { getRegistrationBiometricConfig } from "@/lib/services/registration/registration-biometric-attempt.service";
@@ -30,7 +32,7 @@ const requestSchema = z.discriminatedUnion("stage", [
 ]);
 const headers = { "Cache-Control": "no-store" };
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   if (
     request.headers.get("content-type")?.split(";")[0] !== "application/json"
   ) {
@@ -70,6 +72,13 @@ export async function POST(request: Request) {
       }
       const attempt = (session.challenge?.attempt ?? 0) + 1;
       if (attempt > getRegistrationBiometricConfig().maxAttempts) {
+        logger.warn("Se alcanzó el límite de intentos biométricos", {
+          operation: "vid.liveness",
+          event: "biometric_liveness_session_blocked",
+          source: "vid",
+          code: "attempt_limit",
+          attemptNumber: attempt,
+        });
         return fail("attempt_limit", 429);
       }
 
@@ -78,9 +87,11 @@ export async function POST(request: Request) {
         .digest("hex");
       const sessionId = await createLivenessSession(requestToken).catch(
         (error: unknown) => {
-          console.error("[vid] Unable to create liveness challenge", {
-            name: error instanceof Error ? error.name : "UnknownError",
-          });
+          logger.error(
+            "[vid] Unable to create liveness challenge",
+            { operation: "app.api.vid.liveness.route" },
+            error,
+          );
           return null;
         },
       );
@@ -95,6 +106,13 @@ export async function POST(request: Request) {
         { success: true, sessionId },
         { headers },
       );
+      logger.info("Sesión de prueba de vida creada", {
+        operation: "vid.liveness",
+        event: "rekognition_liveness_session_created",
+        source: "vid",
+        attemptNumber: attempt,
+        sessionId,
+      });
       response.cookies.set(
         createVidSessionCookie({
           ...session,
@@ -107,7 +125,11 @@ export async function POST(request: Request) {
     if (session.challenge?.sessionId !== data.sessionId) {
       return fail("invalid_session_id", 400);
     }
-    const result = await verifyCitizenLiveness(data.sessionId, session.cedula);
+    const result = await verifyCitizenLiveness(
+      data.sessionId,
+      session.cedula,
+      "vid",
+    );
     if (!result.success) {
       return fail(result.code, result.status);
     }
@@ -126,10 +148,13 @@ export async function POST(request: Request) {
     response.cookies.set(clearVidSessionCookie(session.id));
     return response;
   } catch (error) {
-    console.error("[vid] Unable to process liveness", {
-      stage: data.stage,
-      name: error instanceof Error ? error.name : "UnknownError",
-    });
+    logger.error(
+      "[vid] Unable to process liveness",
+      { operation: "app.api.vid.liveness.route" },
+      error,
+    );
     return fail("unexpected_error", 500);
   }
 }
+
+export const POST = withRequestLogging("/api/vid/liveness", handlePOST);

@@ -10,6 +10,7 @@ import {
   CucVerificationFooter,
   CucVerificationHeader,
 } from "@/components/auth/ory-components";
+import { OryErrorObserver } from "@/components/auth/ory-error-observer";
 import { RecoveryRecaptchaGuard } from "@/components/auth/recovery/recovery-recaptcha-guard";
 
 type LoginFlow = Parameters<typeof Login>[0]["flow"];
@@ -35,22 +36,25 @@ export function OryLoginCard({
   verificationHref,
 }: OryLoginCardProps) {
   return (
-    <Login
-      flow={flow as LoginFlow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucCardHeader,
-          Footer: () => (
-            <CucCardFooter
-              recoveryHref={recoveryHref}
-              registerHref={registerHref}
-              verificationHref={verificationHref}
-            />
-          ),
-        },
-      }}
-    />
+    <>
+      <OryErrorObserver flow={flow} form="login" />
+      <Login
+        flow={flow as LoginFlow}
+        config={dynamicConfig}
+        components={{
+          Card: {
+            Header: CucCardHeader,
+            Footer: () => (
+              <CucCardFooter
+                recoveryHref={recoveryHref}
+                registerHref={registerHref}
+                verificationHref={verificationHref}
+              />
+            ),
+          },
+        }}
+      />
+    </>
   );
 }
 
@@ -65,6 +69,7 @@ export function OryRecoveryCard({
 }: OryRecoveryCardProps) {
   return (
     <RecoveryRecaptchaGuard>
+      <OryErrorObserver flow={flow} form="account_recovery" />
       <Recovery
         flow={flow as RecoveryFlow}
         config={dynamicConfig}
@@ -89,15 +94,18 @@ export function OryVerificationCard({
   loginHref,
 }: OryVerificationCardProps) {
   return (
-    <Verification
-      flow={flow as VerificationFlow}
-      config={dynamicConfig}
-      components={{
-        Card: {
-          Header: CucVerificationHeader,
-          Footer: () => <CucVerificationFooter loginHref={loginHref} />,
-        },
-      }}
-    />
+    <>
+      <OryErrorObserver flow={flow} form="verification" />
+      <Verification
+        flow={flow as VerificationFlow}
+        config={dynamicConfig}
+        components={{
+          Card: {
+            Header: CucVerificationHeader,
+            Footer: () => <CucVerificationFooter loginHref={loginHref} />,
+          },
+        }}
+      />
+    </>
   );
 }

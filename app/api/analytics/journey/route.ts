@@ -4,12 +4,13 @@ import { getAnalyticsContext } from "@/lib/analytics/context";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import { buildTrustedJourneyEventInput } from "@/lib/analytics/journey-event";
 import type { JourneyEventRequest } from "@/lib/analytics/types";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 
 function createErrorResponse(message: string, status: number) {
   return NextResponse.json({ success: false, error: message }, { status });
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   let body: JourneyEventRequest | null = null;
 
   try {
@@ -34,3 +35,5 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ success: true }, { status: 202 });
 }
+
+export const POST = withRequestLogging("/api/analytics/journey", handlePOST);

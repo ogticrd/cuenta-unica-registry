@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   queryCitizenNotificationPreferences,
   updateCitizenNotificationPreferences,
@@ -38,7 +39,7 @@ function createInvalidPayloadResponse(defaults: NotificationPreference[]) {
   );
 }
 
-export async function GET() {
+async function handleGET() {
   try {
     const citizenId = await getAuthenticatedCitizenId();
     const defaults = buildDefaultNotificationPreferences();
@@ -68,7 +69,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request: Request) {
+async function handlePUT(request: Request) {
   try {
     const defaults = buildDefaultNotificationPreferences();
     const [citizenId, parsedBody] = await Promise.all([
@@ -113,3 +114,12 @@ export async function PUT(request: Request) {
     );
   }
 }
+
+export const GET = withRequestLogging(
+  "/api/notifications/preferences",
+  handleGET,
+);
+export const PUT = withRequestLogging(
+  "/api/notifications/preferences",
+  handlePUT,
+);

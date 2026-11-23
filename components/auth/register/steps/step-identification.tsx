@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useRecaptchaToken } from "@/hooks/use-recaptcha-token";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
+import { reportClientError } from "@/lib/logging/client";
 import { createCedulaSchema } from "@/lib/schemas/registration";
 import { citizenService } from "@/lib/services/registration/citizen.service";
 import type { CitizenLookupErrorCode } from "@/lib/types/registration/citizen";
@@ -87,6 +88,11 @@ export function StepIdentification({
       );
 
       if (!result.success) {
+        reportClientError("form_error", {
+          form: recoverAccess ? "account_recovery" : "identification",
+          source: "registration",
+          code: result.code,
+        });
         if (result.code === "identity_exists") {
           form.setError("root.accountExists", { type: result.code });
           return;
@@ -122,7 +128,11 @@ export function StepIdentification({
       });
       onNext(result.recovery === true);
     } catch (error) {
-      console.error("Error validating ID:", error);
+      reportClientError(
+        "form_error",
+        { form: "identification", code: "unexpected_error" },
+        error,
+      );
       form.setError("cedula", {
         message: t("identification.lookup_error"),
       });

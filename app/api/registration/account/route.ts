@@ -1,5 +1,10 @@
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
-import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
+import {
+  getRegistrationRequestJourneyId,
+  withRegistrationSessionAnalyticsContext,
+} from "@/lib/analytics/registration-session-context";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   accountRequestSchema,
   getAccountRequestFieldErrors,
@@ -147,14 +152,15 @@ async function emitAccountResult(params: {
   });
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   let registrationSession: RegistrationSession | null;
 
   try {
     registrationSession = await getRegistrationSession();
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/account] Failed to read registration session:",
+      { operation: "app.api.registration.account.route" },
       error,
     );
     await emitRegistrationOutcome({
@@ -220,8 +226,9 @@ export async function POST(request: Request) {
     try {
       draft = await getRegistrationAccountDraft();
     } catch (error) {
-      console.error(
+      logger.error(
         "[/api/registration/account] Failed to read account draft:",
+        { operation: "app.api.registration.account.route" },
         error,
       );
       await emitRegistrationOutcome({
@@ -276,8 +283,9 @@ export async function POST(request: Request) {
   try {
     draft = await getRegistrationAccountDraft();
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/account] Failed to read account draft:",
+      { operation: "app.api.registration.account.route" },
       error,
     );
     await emitRegistrationOutcome({
@@ -321,3 +329,11 @@ export async function POST(request: Request) {
 
   return createAccountRegistrationResponse(result);
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/account",
+  handlePOST,
+  {
+    resolveJourneyId: getRegistrationRequestJourneyId,
+  },
+);

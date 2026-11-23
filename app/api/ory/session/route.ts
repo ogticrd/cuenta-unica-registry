@@ -1,5 +1,7 @@
 import type { Session } from "@ory/client";
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { getOryClient } from "@/lib/ory/client";
 import { getServerCookies } from "@/lib/ory/cookies";
 
@@ -14,7 +16,7 @@ import { getServerCookies } from "@/lib/ory/cookies";
  *   or
  *   { isAuthenticated: false }
  */
-export async function GET() {
+async function handleGET() {
   try {
     const cookie = await getServerCookies();
 
@@ -28,8 +30,9 @@ export async function GET() {
       const { data } = await oryClient.listMySessions({ cookie });
       otherSessions = data;
     } catch (error: unknown) {
-      console.error(
+      logger.error(
         "[/api/ory/session] Could not fetch other sessions:",
+        { operation: "app.api.ory.session.route" },
         error,
       );
     }
@@ -54,7 +57,11 @@ export async function GET() {
       return NextResponse.json({ isAuthenticated: false }, { status: 200 });
     }
 
-    console.error("[/api/ory/session] Error fetching session:", error);
+    logger.error(
+      "[/api/ory/session] Error fetching session:",
+      { operation: "app.api.ory.session.route" },
+      error,
+    );
     return NextResponse.json(
       {
         success: false,
@@ -66,3 +73,5 @@ export async function GET() {
     );
   }
 }
+
+export const GET = withRequestLogging("/api/ory/session", handleGET);

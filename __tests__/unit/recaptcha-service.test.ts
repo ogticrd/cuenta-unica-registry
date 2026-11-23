@@ -68,13 +68,13 @@ describe("validateRecaptchaToken", () => {
   });
 
   it("fails closed when the assessment service is unavailable", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     vi.spyOn(global, "fetch").mockRejectedValueOnce(new Error("offline"));
 
     await expect(validateRecaptchaToken("token-123")).resolves.toBe(false);
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("supports the explicit local-only bypass", async () => {

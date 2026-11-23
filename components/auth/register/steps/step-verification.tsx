@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
+import { reportClientError } from "@/lib/logging/client";
 import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
@@ -128,6 +129,15 @@ export function StepVerification({
       const result = await verificationService.createLivenessSession(forceNew);
 
       if (!result.success) {
+        reportClientError("form_error", {
+          form: "register",
+          source: "registration",
+          code: result.code,
+          retryAfterSeconds:
+            "retryAfterSeconds" in result
+              ? result.retryAfterSeconds
+              : undefined,
+        });
         if (result.code === "registration_session_missing") {
           setPhase("idle");
           setIsModalOpen(false);
@@ -162,6 +172,11 @@ export function StepVerification({
       accountResult: Awaited<ReturnType<typeof accountService.registerAccount>>,
     ) => {
       if (!accountResult.success) {
+        reportClientError("form_error", {
+          form: "register",
+          source: "registration",
+          code: accountResult.code,
+        });
         const messageByErrorCode: Record<RegisterAccountErrorCode, string> = {
           invalid_payload: t("account.error"),
           registration_session_missing: t("account.session_missing"),
@@ -304,7 +319,11 @@ export function StepVerification({
 
   const handleLivenessError = useCallback(
     async (error: unknown) => {
-      console.error("[StepVerification] Liveness error:", error);
+      reportClientError(
+        "biometric_detector_error",
+        { source: "registration", code: "detector_error" },
+        error,
+      );
 
       if (isHandlingError.current) return;
       isHandlingError.current = true;

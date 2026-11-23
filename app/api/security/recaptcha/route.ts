@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   RECAPTCHA_PROOF_COOKIE,
   RECOVERY_RECAPTCHA_ACTION,
@@ -12,7 +14,7 @@ const requestSchema = z.object({
   action: z.literal(RECOVERY_RECAPTCHA_ACTION),
 });
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const parsedRequest = requestSchema.safeParse(
     await request.json().catch(() => null),
   );
@@ -38,7 +40,9 @@ export async function POST(request: Request) {
 
   const secret = process.env.REGISTRATION_SESSION_SECRET;
   if (!secret) {
-    console.error("[/api/security/recaptcha] Missing signing secret");
+    logger.error("[/api/security/recaptcha] Missing signing secret", {
+      operation: "app.api.security.recaptcha.route",
+    });
     return NextResponse.json(
       { success: false, code: "unexpected_error" },
       { status: 500 },
@@ -58,3 +62,5 @@ export async function POST(request: Request) {
 
   return response;
 }
+
+export const POST = withRequestLogging("/api/security/recaptcha", handlePOST);

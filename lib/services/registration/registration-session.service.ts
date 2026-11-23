@@ -170,7 +170,9 @@ function isValidSessionPayload(
   );
 }
 
-function parseSessionCookie(value: string): RegistrationSession | null {
+export function parseRegistrationSessionCookie(
+  value: string,
+): RegistrationSession | null {
   const parts = value.split(".");
 
   if (parts.length !== 2) {
@@ -286,5 +288,5 @@ export async function getRegistrationSession(): Promise<RegistrationSession | nu
     return null;
   }
 
-  return parseSessionCookie(cookieValue);
+  return parseRegistrationSessionCookie(cookieValue);
 }

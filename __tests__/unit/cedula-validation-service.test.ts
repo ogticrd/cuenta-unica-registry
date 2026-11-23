@@ -10,7 +10,7 @@ const api = "https://validation.example/v3/cedulas";
 beforeEach(() => {
   vi.stubEnv("CEDULA_VALIDATION_API", api);
   vi.stubEnv("NEXT_PUBLIC_LUHN_EXCEPTION_HASHES", "");
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 });
 
 afterEach(() => {
@@ -121,8 +121,8 @@ describe("server cedula validation", () => {
       code: "cedula_validation_unavailable",
       status: 503,
     });
-    expect(console.error).toHaveBeenCalled();
-    const logged = JSON.stringify(vi.mocked(console.error).mock.calls);
+    expect(process.stdout.write).toHaveBeenCalled();
+    const logged = JSON.stringify(vi.mocked(process.stdout.write).mock.calls);
     expect(logged).not.toContain(exception);
     expect(logged).not.toContain(api);
   });

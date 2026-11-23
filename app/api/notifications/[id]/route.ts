@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { updateCitizenNotification } from "@/lib/notifications/buzon-client";
 import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
@@ -23,7 +24,7 @@ function getMutationStatus(result: NotificationMutationResponse) {
   return 503;
 }
 
-export async function PATCH(
+async function handlePATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -75,3 +76,5 @@ export async function PATCH(
     );
   }
 }
+
+export const PATCH = withRequestLogging("/api/notifications/[id]", handlePATCH);

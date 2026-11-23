@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useT } from "@/hooks/use-t";
+import { reportClientError } from "@/lib/logging/client";
 import { translateOryMessageKey } from "@/lib/ory/custom-translations";
 import { createAccountSchema } from "@/lib/schemas/registration";
 import type {
@@ -268,6 +269,11 @@ export function StepAccount({
     if (!initialErrors) {
       return;
     }
+    reportClientError("form_error", {
+      form: "register",
+      source: "registration",
+      code: initialErrors.code,
+    });
 
     if (
       initialEmailErrorMessage &&

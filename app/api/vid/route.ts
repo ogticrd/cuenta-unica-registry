@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { authorizeVidLaunch } from "@/lib/services/vid/vid-launch.service";
 import {
   createVidSessionCookie,
@@ -9,7 +11,7 @@ import {
 } from "@/lib/services/vid/vid-session.service";
 import type { VidLaunchErrorCode } from "@/lib/types/vid";
 
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
 
   function redirectToVid(
@@ -45,9 +47,18 @@ export async function GET(request: NextRequest) {
     );
     return response;
   } catch (error) {
-    console.error("[vid] Unable to start verification", {
-      name: error instanceof Error ? error.name : "UnknownError",
-    });
+    logger.error(
+      "[vid] Unable to start verification",
+      {
+        operation: "vid.launch",
+        event: "vid_flow_creation_failed",
+        source: "vid",
+        code: "service_unavailable",
+      },
+      error,
+    );
     return redirectToVid({ error: "service_unavailable" });
   }
 }
+
+export const GET = withRequestLogging("/api/vid", handleGET);

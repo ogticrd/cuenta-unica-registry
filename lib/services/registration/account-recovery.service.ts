@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Identity, IdentityApi } from "@ory/client";
 import { z } from "zod";
+import { logger } from "@/lib/logging/logger";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import { createOryIdentityClient } from "@/lib/services/registration/ory-identity.service";
 import type {
@@ -143,6 +144,13 @@ export async function recoverOryAccount(
     stage = "sessions_revocation";
     await revokeIdentitySessions(client, identity.id);
 
+    logger.info("Identidad recuperada y sesiones anteriores revocadas", {
+      operation: "registration.account_recovery",
+      event: "registration_recovery_identity_updated",
+      form: "account_recovery",
+      source: "registration",
+      identityId: identity.id,
+    });
     return { success: true, identity: updatedIdentity };
   } catch (error) {
     const response = (
@@ -178,15 +186,20 @@ export async function recoverOryAccount(
       .replace(/\b\d{3}-?\d{7}-?\d\b/g, "[cedula]")
       .replace(/\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b/gi, "[id]")
       .slice(0, 500);
-    console.error(
-      "[account-recovery] Ory request failed",
-      JSON.stringify({
+    logger.error(
+      "Ory rechazó la recuperación de acceso",
+      {
+        operation: "registration.account_recovery",
+        event: "registration_recovery_failed",
+        form: "account_recovery",
+        source: "registration",
         stage,
-        status,
+        upstreamStatus: status,
         errorId: details?.error?.id,
         reason,
-        name: error instanceof Error ? error.name : "UnknownError",
-      }),
+        identityId: session.recovery.identityId,
+      },
+      error,
     );
     if (status === 404 && stage === "identity_lookup") {
       return { success: false, code: "recovery_not_found", status: 409 };

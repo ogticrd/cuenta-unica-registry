@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   accountRequestSchema,
   getAccountRequestFieldErrors,
@@ -28,7 +30,7 @@ function createErrorResponse(
   );
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   try {
     const registrationSession = await getRegistrationSession();
 
@@ -86,7 +88,16 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("[/api/registration/account-draft] Failed:", error);
+    logger.error(
+      "[/api/registration/account-draft] Failed:",
+      { operation: "app.api.registration.account-draft.route" },
+      error,
+    );
     return createErrorResponse("unexpected_error", 500);
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/account-draft",
+  handlePOST,
+);

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 const DEFAULT_RECAPTCHA_SCORE_THRESHOLD = 0.3;
@@ -50,9 +51,11 @@ export async function validateRecaptchaToken(
   const { projectId, apiKey, siteKey } = getRecaptchaConfiguration();
 
   if (!projectId || !apiKey || !siteKey) {
-    console.error(
-      "[recaptcha] Missing RECAPTCHA_PROJECT_ID, RECAPTCHA_API_KEY or NEXT_PUBLIC_RECAPTCHA_SITE_KEY",
-    );
+    logger.error("Falta configuración de reCAPTCHA", {
+      operation: "recaptcha.assessment",
+      stage: "configuration",
+      code: "recaptcha_failed",
+    });
     return false;
   }
 
@@ -76,8 +79,12 @@ export async function validateRecaptchaToken(
     });
 
     if (!response.ok) {
-      console.error(
+      logger.error(
         `[recaptcha] Assessment failed with status ${response.status}`,
+        {
+          operation: "recaptcha.recaptcha.service",
+          upstreamStatus: response.status,
+        },
       );
       return false;
     }
@@ -96,7 +103,11 @@ export async function validateRecaptchaToken(
       score >= getRecaptchaScoreThreshold()
     );
   } catch (error) {
-    console.error("[recaptcha] Assessment request failed:", error);
+    logger.error(
+      "[recaptcha] Assessment request failed:",
+      { operation: "recaptcha.recaptcha.service" },
+      error,
+    );
     return false;
   }
 }

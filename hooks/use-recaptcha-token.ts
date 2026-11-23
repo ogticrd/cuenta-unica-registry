@@ -2,6 +2,7 @@
 
 import { useReCaptcha } from "next-recaptcha-v3";
 import { useCallback } from "react";
+import { reportClientError } from "@/lib/logging/client";
 
 const DEFAULT_RECAPTCHA_ACTION = "form_submit";
 
@@ -20,7 +21,11 @@ export function useRecaptchaToken(action = DEFAULT_RECAPTCHA_ACTION) {
     try {
       return await executeRecaptcha(action);
     } catch (error) {
-      console.error("[recaptcha] Failed to generate token:", error);
+      reportClientError(
+        "recaptcha_token_generation_failed",
+        { code: "recaptcha_failed" },
+        error,
+      );
       return null;
     }
   }, [action, executeRecaptcha, loaded]);

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { queryCitizenNotifications } from "@/lib/notifications/buzon-client";
 import { createNotificationErrorPayload } from "@/lib/notifications/errors";
 import { getAuthenticatedCitizenId } from "@/lib/notifications/server-session";
@@ -15,7 +16,7 @@ function parseStatus(request: Request): NotificationStatus | undefined {
   return undefined;
 }
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   try {
     const citizenId = await getAuthenticatedCitizenId();
 
@@ -47,3 +48,5 @@ export async function GET(request: Request) {
     );
   }
 }
+
+export const GET = withRequestLogging("/api/notifications", handleGET);

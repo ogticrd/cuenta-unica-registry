@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAnalyticsContext } from "@/lib/analytics/context";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   citizenLookupRequestSchema,
   getCitizenLookupFieldErrors,
@@ -28,6 +30,20 @@ async function emitIdentificationOutcome(options: {
   errorCode?: string;
   metadata?: Record<string, unknown>;
 }) {
+  const log = options.success ? logger.info : logger.warn;
+  log("Resultado de la identificación", {
+    operation: "registration.identification",
+    source: "registration",
+    form:
+      options.metadata?.operation === "account_recovery"
+        ? "account_recovery"
+        : "identification",
+    code: options.errorCode,
+    stage:
+      typeof options.metadata?.stage === "string"
+        ? options.metadata.stage
+        : undefined,
+  });
   await emitAnalyticsEvent(
     {
       eventName: options.success
@@ -57,7 +73,7 @@ function createErrorResponse(
   return NextResponse.json(payload, { status });
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const parsedRequest = await parseJsonRequest(
     request,
     citizenLookupRequestSchema,
@@ -203,7 +219,11 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("[/api/registration/citizen] Citizen lookup failed:", error);
+    logger.error(
+      "[/api/registration/citizen] Citizen lookup failed:",
+      { operation: "app.api.registration.citizen.route" },
+      error,
+    );
     await emitIdentificationOutcome({
       success: false,
       errorCode: "unexpected_error",
@@ -212,3 +232,5 @@ export async function POST(request: Request) {
     return createErrorResponse("unexpected_error", 500);
   }
 }
+
+export const POST = withRequestLogging("/api/registration/citizen", handlePOST);

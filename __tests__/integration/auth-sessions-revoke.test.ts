@@ -76,9 +76,9 @@ describe("DELETE /api/ory/sessions/[id]", () => {
   });
 
   it("returns 500 when Ory fails to disable the session", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockDisableMySession.mockRejectedValueOnce(new Error("Ory internal error"));
 
@@ -99,9 +99,8 @@ describe("DELETE /api/ory/sessions/[id]", () => {
       code: "ory_session_revoke_failed",
       error: "Failed to disable session",
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(stdoutSpy).toHaveBeenCalledWith(
       expect.stringContaining("Error disabling session"),
-      expect.any(Error),
     );
   });
 
@@ -135,9 +134,9 @@ describe("DELETE /api/ory/sessions/[id]", () => {
       response: { status: 401 },
     });
 
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     const request = new Request(
       "http://localhost/api/ory/sessions/session-000",
@@ -159,6 +158,6 @@ describe("DELETE /api/ory/sessions/[id]", () => {
       code: "ory_session_revoke_failed",
       error: "Failed to disable session",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { getOryClient } from "@/lib/ory/client";
 import { getServerCookies } from "@/lib/ory/cookies";
 
@@ -7,7 +9,7 @@ import { getServerCookies } from "@/lib/ory/cookies";
  *
  * Disables a specific Ory session by its ID.
  */
-export async function DELETE(
+async function handleDELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -33,7 +35,11 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    console.error("[/api/ory/sessions] Error disabling session:", error);
+    logger.error(
+      "[/api/ory/sessions] Error disabling session:",
+      { operation: "app.api.ory.sessions.[id].route" },
+      error,
+    );
     return NextResponse.json(
       {
         success: false,
@@ -44,3 +50,8 @@ export async function DELETE(
     );
   }
 }
+
+export const DELETE = withRequestLogging(
+  "/api/ory/sessions/[id]",
+  handleDELETE,
+);

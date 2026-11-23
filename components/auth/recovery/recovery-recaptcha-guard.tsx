@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import { useRecaptchaToken } from "@/hooks/use-recaptcha-token";
 import { useT } from "@/hooks/use-t";
+import { reportClientError } from "@/lib/logging/client";
 import { RECOVERY_RECAPTCHA_ACTION } from "@/lib/security/recaptcha-proof-core";
 
 export function RecoveryRecaptchaGuard({
@@ -39,6 +40,11 @@ export function RecoveryRecaptchaGuard({
     try {
       const token = await generateToken();
       if (!token) {
+        reportClientError("form_error", {
+          form: "account_recovery",
+          source: "recovery",
+          code: "recaptcha_failed",
+        });
         toast.error(t("recovery_recaptcha_error"));
         return;
       }
@@ -51,6 +57,11 @@ export function RecoveryRecaptchaGuard({
       });
 
       if (!response.ok) {
+        reportClientError("form_error", {
+          form: "account_recovery",
+          source: "recovery",
+          code: "recaptcha_failed",
+        });
         toast.error(t("recovery_recaptcha_error"));
         return;
       }
@@ -58,7 +69,15 @@ export function RecoveryRecaptchaGuard({
       allowNextSubmit.current = true;
       form.requestSubmit(submitter ?? undefined);
     } catch (error) {
-      console.error("[recovery] reCAPTCHA validation failed:", error);
+      reportClientError(
+        "form_error",
+        {
+          form: "account_recovery",
+          source: "recovery",
+          code: "recaptcha_failed",
+        },
+        error,
+      );
       toast.error(t("recovery_recaptcha_error"));
     } finally {
       validating.current = false;

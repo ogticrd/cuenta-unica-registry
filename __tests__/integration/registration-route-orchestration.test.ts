@@ -870,9 +870,9 @@ describe("registration route orchestration - account", () => {
   });
 
   it("returns unexpected_error when the account draft cannot be read", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
       status: "verified",
@@ -894,7 +894,7 @@ describe("registration route orchestration - account", () => {
     });
     expect(mockGetRegistrationSession).toHaveBeenCalledTimes(1);
     expect(mockRegisterOryAccount).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("rejects account drafts tied to a different cedula", async () => {
@@ -1484,9 +1484,9 @@ describe("registration route orchestration - liveness-session", () => {
   });
 
   it("maps registration session read failures to unexpected_error", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockRejectedValueOnce(
       new Error("cookie store unavailable"),
     );
@@ -1499,7 +1499,7 @@ describe("registration route orchestration - liveness-session", () => {
       code: "unexpected_error",
     });
     expect(mockCreateLivenessSession).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("requires a same-session account draft before creating a liveness session", async () => {
@@ -1676,9 +1676,9 @@ describe("registration route orchestration - liveness-session", () => {
   });
 
   it("maps rekognition failures to a 502 response", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockResolvedValueOnce({
       sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
       cedula: "00100063362",
@@ -1701,7 +1701,7 @@ describe("registration route orchestration - liveness-session", () => {
       success: false,
       code: "rekognition_error",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 });
 
@@ -1755,9 +1755,9 @@ describe("registration route orchestration - session reset", () => {
   });
 
   it("returns unexpected_error when clearing the registration session throws", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockClearRegistrationSessionCookie.mockImplementationOnce(() => {
       throw new Error("cookie store unavailable");
     });
@@ -1769,7 +1769,7 @@ describe("registration route orchestration - session reset", () => {
       success: false,
       code: "unexpected_error",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 });
 

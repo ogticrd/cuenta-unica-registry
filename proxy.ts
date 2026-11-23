@@ -9,6 +9,7 @@ import {
   serializeAnalyticsContext,
   shouldRefreshAnalyticsContext,
 } from "@/lib/analytics/context-core";
+import { logger } from "@/lib/logging/logger";
 import {
   RECAPTCHA_PROOF_COOKIE,
   RECOVERY_RECAPTCHA_ACTION,
@@ -264,8 +265,11 @@ export async function proxy(request: NextRequest) {
     try {
       isAuthenticated = await hasOrySession(request);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error("Error checking Ory session in proxy:", { message });
+      logger.error(
+        "Error checking Ory session in proxy:",
+        { operation: "proxy" },
+        error,
+      );
     }
 
     if (isProtectedRoute && !isAuthenticated) {

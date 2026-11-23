@@ -60,7 +60,8 @@ vi.mock("@ory/client", () => ({
     updateVerificationFlow = updateVerificationFlow;
   },
 }));
-vi.mock("@/lib/analytics/context", () => ({
+vi.mock("@/lib/analytics/context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/analytics/context")>()),
   getAnalyticsContext: async () => null,
 }));
 vi.mock("@/lib/analytics/emitter", () => ({ emitAnalyticsEvent: vi.fn() }));
@@ -258,7 +259,7 @@ describe("account recovery in the registration wizard", () => {
   });
 
   it("returns a retryable identification error when the validation API is unavailable", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
     vi.spyOn(global, "fetch").mockResolvedValueOnce(
       Response.json({}, { status: 503 }),
     );
@@ -282,7 +283,7 @@ describe("account recovery in the registration wizard", () => {
     getIdentity.mockResolvedValue({
       data: { ...identity, traits: { ...identity.traits, username: cedula } },
     });
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
     const fetchSpy = vi
       .spyOn(global, "fetch")
       .mockResolvedValueOnce(Response.json({ valid: true }))
@@ -669,7 +670,9 @@ describe("account recovery in the registration wizard", () => {
 
   it("maps duplicate identifiers from Ory's HTTP 400 and redacts the diagnostic", async () => {
     await startRecovery();
-    const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+    const diagnostic = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     updateIdentity.mockRejectedValueOnce({
       response: {
         status: 400,

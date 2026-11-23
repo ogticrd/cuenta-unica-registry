@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import { verifyCitizenLiveness } from "@/lib/services/biometric/citizen-liveness.service";
@@ -97,8 +98,9 @@ export async function verifyRegistrationLiveness(
   try {
     accountDraft = await getRegistrationAccountDraft();
   } catch (error) {
-    console.error(
+    logger.error(
       "[liveness-verification] Failed to read account draft:",
+      { operation: "registration.liveness-verification.service" },
       error,
     );
     return {

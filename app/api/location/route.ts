@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 
 import type { GeoIpResponse } from "@/lib/types/location";
 
-export async function GET(request: Request) {
+async function handleGET(request: Request) {
   const { searchParams } = new URL(request.url);
   const ip = searchParams.get("ip");
 
@@ -36,10 +38,16 @@ export async function GET(request: Request) {
       { status: 500 },
     );
   } catch (error) {
-    console.error("[Location API Route] Failed:", error);
+    logger.error(
+      "[Location API Route] Failed:",
+      { operation: "app.api.location.route" },
+      error,
+    );
     return NextResponse.json(
       { error: "Failed to get coordinates" },
       { status: 500 },
     );
   }
 }
+
+export const GET = withRequestLogging("/api/location", handleGET);

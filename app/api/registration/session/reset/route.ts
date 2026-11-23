@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 
 import { clearStaleBrowserFlowCookies } from "@/lib/ory/browser-cookie-reset";
 import { getServerCookies } from "@/lib/ory/cookies";
@@ -7,7 +9,7 @@ import { clearRegistrationLivenessChallengeCookie } from "@/lib/services/registr
 import { clearRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type { RegistrationSessionResetResponse } from "@/lib/types/registration/session";
 
-export async function POST() {
+async function handlePOST() {
   try {
     const cookieHeader = await getServerCookies();
     const response = NextResponse.json(
@@ -25,8 +27,9 @@ export async function POST() {
 
     return response;
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/session/reset] Failed to clear registration session:",
+      { operation: "app.api.registration.session.reset.route" },
       error,
     );
 
@@ -39,3 +42,8 @@ export async function POST() {
     );
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/session/reset",
+  handlePOST,
+);

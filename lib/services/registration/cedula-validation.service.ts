@@ -1,6 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
+import { logger } from "@/lib/logging/logger";
 import {
   ApiResponseError,
   parseJsonResponse,
@@ -52,13 +53,17 @@ export async function validateCedula(
       ? { success: true }
       : { success: false, code: "invalid_cedula", status: 400 };
   } catch (error) {
-    console.error(
-      "[cedula-validation] Validation unavailable",
-      JSON.stringify({
+    logger.error(
+      "No se pudo consultar la validación de cédula",
+      {
+        operation: "registration.cedula_validation",
         stage,
-        status: error instanceof ApiResponseError ? error.status : undefined,
-        name: error instanceof Error ? error.name : "UnknownError",
-      }),
+        code: "cedula_validation_unavailable",
+        status: 503,
+        upstreamStatus:
+          error instanceof ApiResponseError ? error.status : undefined,
+      },
+      error,
     );
     return {
       success: false,

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import { getAnalyticsContext } from "./context";
@@ -25,7 +26,11 @@ export async function getAnalyticsTransientPayload(): Promise<
       environment: resolveAnalyticsEnvironment(),
     });
   } catch (error) {
-    console.error("[analytics] Failed to build transient payload:", error);
+    logger.error(
+      "[analytics] Failed to build transient payload:",
+      { operation: "lib.analytics.transient-payload" },
+      error,
+    );
     return undefined;
   }
 }

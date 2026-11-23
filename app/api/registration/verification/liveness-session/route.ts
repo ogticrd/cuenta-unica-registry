@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
-import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
+import {
+  getRegistrationRequestJourneyId,
+  withRegistrationSessionAnalyticsContext,
+} from "@/lib/analytics/registration-session-context";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   clearRegistrationAccountDraftCookie,
   getRegistrationAccountDraft,
@@ -52,6 +56,31 @@ async function emitLivenessSessionOutcome(options: {
   sessionId?: string;
   metadata?: Record<string, unknown>;
 }) {
+  const log = options.success ? logger.info : logger.warn;
+  const stage =
+    typeof options.metadata?.stage === "string"
+      ? options.metadata.stage
+      : undefined;
+  log("Resultado de creación de sesión biométrica", {
+    operation: "registration.liveness_session",
+    source: "registration",
+    event: options.success
+      ? "rekognition_liveness_session_created"
+      : stage === "attempt_limit"
+        ? "biometric_liveness_session_blocked"
+        : "biometric_liveness_session_create_failed",
+    code: options.errorCode,
+    stage,
+    attemptNumber:
+      typeof options.metadata?.attemptNumber === "number"
+        ? options.metadata.attemptNumber
+        : undefined,
+    retryAfterSeconds:
+      typeof options.metadata?.retryAfterSeconds === "number"
+        ? options.metadata.retryAfterSeconds
+        : undefined,
+    sessionId: options.sessionId,
+  });
   await emitAnalyticsEvent(
     withRegistrationSessionAnalyticsContext(
       {
@@ -71,7 +100,7 @@ async function emitLivenessSessionOutcome(options: {
   );
 }
 
-export async function POST(request?: Request) {
+async function handlePOST(request?: Request) {
   let session: Awaited<ReturnType<typeof getRegistrationSession>>;
   let biometricAttempt: ReturnType<typeof prepareRegistrationBiometricAttempt>;
 
@@ -168,8 +197,9 @@ export async function POST(request?: Request) {
       return response;
     }
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/verification/liveness-session] Failed to read registration state:",
+      { operation: "app.api.registration.verification.liveness-session.route" },
       error,
     );
     await emitLivenessSessionOutcome({
@@ -198,6 +228,7 @@ export async function POST(request?: Request) {
       metadata: {
         cedula: session.cedula,
         stage: "created",
+        attemptNumber: biometricAttempt.attemptNumber,
         evidence: {
           liveness: { provider: "aws_rekognition", status: "started" },
         },
@@ -220,8 +251,9 @@ export async function POST(request?: Request) {
 
     return response;
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/verification/liveness-session] Failed to create liveness session:",
+      { operation: "app.api.registration.verification.liveness-session.route" },
       error,
     );
     await emitLivenessSessionOutcome({
@@ -233,3 +265,9 @@ export async function POST(request?: Request) {
     return createErrorResponse("rekognition_error", 502);
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/verification/liveness-session",
+  handlePOST,
+  { resolveJourneyId: getRegistrationRequestJourneyId },
+);

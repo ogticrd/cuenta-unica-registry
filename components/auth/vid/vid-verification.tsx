@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
+import { reportClientError } from "@/lib/logging/client";
 import type {
   VidLaunchErrorCode,
   VidLivenessErrorCode,
@@ -28,10 +29,10 @@ import { cn } from "@/lib/utils";
 type Props =
   | { flowId: string; firstName: string; error?: never }
   | {
-    flowId?: never;
-    firstName?: never;
-    error: VidLaunchErrorCode | "flow_expired";
-  };
+      flowId?: never;
+      firstName?: never;
+      error: VidLaunchErrorCode | "flow_expired";
+    };
 
 type VerificationError = VidLivenessErrorCode | "camera_error";
 
@@ -101,9 +102,19 @@ export function VidVerification({
         capture.current = { sessionId: result.sessionId, active: true };
         setSessionId(result.sessionId);
       } else {
+        reportClientError("form_error", {
+          form: "vid",
+          source: "vid",
+          code: result.success ? "unexpected_error" : result.code,
+        });
         setError(result.success ? "unexpected_error" : result.code);
       }
-    } catch {
+    } catch (error) {
+      reportClientError(
+        "form_error",
+        { form: "vid", source: "vid", code: "network_error" },
+        error,
+      );
       setError("unexpected_error");
     } finally {
       inFlight.current = false;
@@ -141,7 +152,17 @@ export function VidVerification({
         return;
       }
       setError(result.success ? "unexpected_error" : result.code);
-    } catch {
+      reportClientError("form_error", {
+        form: "vid",
+        source: "vid",
+        code: result.success ? "unexpected_error" : result.code,
+      });
+    } catch (error) {
+      reportClientError(
+        "form_error",
+        { form: "vid", source: "vid", code: "network_error" },
+        error,
+      );
       setError("unexpected_error");
     }
     inFlight.current = false;
@@ -208,6 +229,7 @@ export function VidVerification({
           <div className="space-y-4">
             <div className="liveness-detector-wrapper overflow-hidden rounded-lg">
               <FaceLiveness
+                source="vid"
                 sessionId={sessionId}
                 onComplete={complete}
                 onError={handleCameraError}

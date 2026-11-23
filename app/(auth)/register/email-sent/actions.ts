@@ -3,6 +3,7 @@
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
 import { withAnalyticsTransientPayload } from "@/lib/analytics/transient-payload";
 import { getT } from "@/lib/i18n/server";
+import { logger } from "@/lib/logging/logger";
 import { createOryClient } from "@/lib/ory/client";
 import { getServerCookies } from "@/lib/ory/cookies";
 
@@ -25,6 +26,18 @@ async function emitEmailVerificationOutcome(options: {
   errorCode?: string;
   metadata?: Record<string, unknown>;
 }) {
+  const log = options.success ? logger.info : logger.warn;
+  log("Resultado de la verificación del correo", {
+    operation: "registration.email_verification",
+    form: "verification",
+    source: "registration",
+    code: options.errorCode,
+    flowId: options.flowId,
+    stage:
+      typeof options.metadata?.stage === "string"
+        ? options.metadata.stage
+        : undefined,
+  });
   await emitAnalyticsEvent(
     {
       eventName: options.success
@@ -113,7 +126,16 @@ export async function verifyCodeAction(
       return { code: "ory_verification_error", error: messages[0].text };
     }
 
-    console.error("[verifyCodeAction] Unexpected error:", err);
+    logger.error(
+      "No se pudo verificar el código de correo",
+      {
+        operation: "registration.email_verification",
+        form: "verification",
+        code: "unexpected_error",
+        flowId: flow,
+      },
+      err,
+    );
     await emitEmailVerificationOutcome({
       success: false,
       flowId: flow,
