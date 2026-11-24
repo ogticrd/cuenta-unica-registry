@@ -86,8 +86,8 @@ export function RegisterWizard({
     accountErrors:
       initialSessionStatus === "verified" && !hasAccountDraft
         ? ({
-          code: "account_draft_missing",
-        } satisfies RegisterAccountStepErrors)
+            code: "account_draft_missing",
+          } satisfies RegisterAccountStepErrors)
         : undefined,
   });
 

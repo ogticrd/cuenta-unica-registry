@@ -24,8 +24,10 @@ export const AnimatedThemeToggler = ({
         variant="ghost"
         size="sm"
         type="button"
-        className={cn("p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-blue-400",
-          className)}
+        className={cn(
+          "p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-blue-400",
+          className,
+        )}
         {...props}
       >
         <Moon className="h-[1.2rem] w-[1.2rem]" />

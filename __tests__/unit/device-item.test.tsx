@@ -45,7 +45,7 @@ describe("DeviceItem Component", () => {
     expect(screen.queryByTestId("mock-device-map")).not.toBeInTheDocument();
   });
 
-  it("renders IP address, original device name and map after clicking see more", async () => {
+  it("renders session details without the disabled device map after clicking see more", async () => {
     render(<DeviceItem {...defaultProps} />);
 
     const button = screen.getByRole("button", { name: /see_more/i });
@@ -60,6 +60,6 @@ describe("DeviceItem Component", () => {
     expect(screen.getByText("192.168.1.100")).toBeInTheDocument();
     expect(screen.getByText("raw_device_name")).toBeInTheDocument();
     expect(screen.getByText(defaultProps.rawDeviceName)).toBeInTheDocument();
-    expect(screen.getByTestId("mock-device-map")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-device-map")).not.toBeInTheDocument();
   });
 });

@@ -64,8 +64,9 @@ export function Benefits() {
             return (
               <div
                 key={benefit.title}
-                className={`flex flex-col ${isEven ? "lg:flex-row-reverse" : "lg:flex-row"
-                  } items-center gap-12 lg:gap-24`}
+                className={`flex flex-col ${
+                  isEven ? "lg:flex-row-reverse" : "lg:flex-row"
+                } items-center gap-12 lg:gap-24`}
               >
                 {/* Illustration Side */}
                 <div className="w-full lg:w-1/2 flex justify-center lg:justify-end px-8">

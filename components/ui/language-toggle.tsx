@@ -1,10 +1,10 @@
 "use client";
 
+import { Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/hooks/use-t";
 import { setLocale } from "@/lib/actions/set-locale";
-import { Globe } from "lucide-react";
 
 export function LanguageToggle() {
   const locale = useLocale();

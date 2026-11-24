@@ -1,10 +1,11 @@
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StepAccount } from "@/components/auth/register/steps/step-account";
 import type { RegisterAccountDraft } from "@/lib/types/registration/account";
+import { isPasswordStrongEnough } from "@/lib/utils/password";
 
 const { mockToastError } = vi.hoisted(() => ({
   mockToastError: vi.fn(),
@@ -69,7 +70,15 @@ vi.mock("@/hooks/use-t", () => ({
 }));
 
 // Synthetic input for mocked tests; never used with a real account.
-const testPassword = `Test-Only-Aa1!-${randomUUID()}`;
+function createTestPassword() {
+  let value: string;
+  do {
+    value = randomBytes(18).toString("base64");
+  } while (!isPasswordStrongEnough(value));
+  return value;
+}
+
+const testPassword = createTestPassword();
 const testEmail = "usuario@example.com";
 
 const emptyDraft: RegisterAccountDraft = {

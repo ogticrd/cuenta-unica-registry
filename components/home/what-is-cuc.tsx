@@ -11,19 +11,19 @@ const COLORS = {
 
 type GridCell =
   | {
-    id: string;
-    type: "empty";
-    bgTransparent?: boolean;
-  }
+      id: string;
+      type: "empty";
+      bgTransparent?: boolean;
+    }
   | {
-    id: string;
-    type: "card";
-    color: string;
-    dotColor: string;
-    delay: number;
-    duration: number;
-    bgTransparent?: boolean;
-  };
+      id: string;
+      type: "card";
+      color: string;
+      dotColor: string;
+      delay: number;
+      duration: number;
+      bgTransparent?: boolean;
+    };
 
 const gridCells: GridCell[] = [
   // ROW 1

@@ -49,7 +49,10 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
   const [sendError, setSendError] = useState<
     "send_error" | "unavailable" | null
   >(null);
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE?.replace(/\D/g, "");
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE?.replace(
+    /\D/g,
+    "",
+  );
   const isValidPhone = phone && /^[1-9]\d{6,14}$/.test(phone);
 
   const whatsappUrl = isValidPhone

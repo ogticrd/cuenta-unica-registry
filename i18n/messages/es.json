@@ -665,6 +665,7 @@
       "contact_msg": "Para solicitar más información, escríbenos a"
     },
     "government_partners": {
+      "close": "Cerrar detalles de la institución",
       "title": "Servicios disponibles con <highlight>Cuenta Única Ciudadana</highlight>",
       "subtitle": "Explora las instituciones y plataformas a las que puedes acceder utilizando tu perfil único.",
       "visit_portal": "Visitar portal",
