@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
@@ -68,6 +68,10 @@ vi.mock("@/hooks/use-t", () => ({
   },
 }));
 
+// Synthetic input for mocked tests; never used with a real account.
+const testPassword = `Test-Only-Aa1!-${randomUUID()}`;
+const testEmail = "usuario@example.com";
+
 const emptyDraft: RegisterAccountDraft = {
   email: "",
   confirmEmail: "",
@@ -117,11 +121,8 @@ describe("StepAccount", () => {
     const user = userEvent.setup({ delay: null });
     const { props, rerender } = renderStepAccount();
 
-    await user.type(
-      screen.getByLabelText("Correo electrónico *"),
-      "marluanespiritusanto@gmail.com",
-    );
-    await user.type(screen.getByLabelText("Contraseña *"), "GovFlow92817Z!");
+    await user.type(screen.getByLabelText("Correo electrónico *"), testEmail);
+    await user.type(screen.getByLabelText("Contraseña *"), testPassword);
 
     rerender(
       <StepAccount
@@ -136,9 +137,9 @@ describe("StepAccount", () => {
     );
 
     expect(screen.getByLabelText("Correo electrónico *")).toHaveValue(
-      "marluanespiritusanto@gmail.com",
+      testEmail,
     );
-    expect(screen.getByLabelText("Contraseña *")).toHaveValue("GovFlow92817Z!");
+    expect(screen.getByLabelText("Contraseña *")).toHaveValue(testPassword);
   });
 
   it("shows a visible email format error and does not continue", async () => {
@@ -161,16 +162,16 @@ describe("StepAccount", () => {
     renderStepAccount({ onNext });
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
       target: { value: "otro@example.com" },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "GovFlow92817Z!" },
+      target: { value: testPassword },
     });
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "GovFlow92817Z!" },
+      target: { value: testPassword },
     });
     fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
@@ -185,16 +186,16 @@ describe("StepAccount", () => {
     renderStepAccount({ onNext });
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "abcdefghij" },
+      target: { value: "a".repeat(10) },
     });
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "abcdefghij" },
+      target: { value: "a".repeat(10) },
     });
     fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
@@ -283,16 +284,16 @@ describe("StepAccount", () => {
     renderStepAccount({ onNext });
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "GovFlow92817Z!" },
+      target: { value: testPassword },
     });
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "GovFlow92820Z!" },
+      target: { value: `${testPassword}-3` },
     });
     fireEvent.click(screen.getByRole("button", { name: "CONTINUAR" }));
 
@@ -307,19 +308,19 @@ describe("StepAccount", () => {
     renderStepAccount();
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "GovFlow92817Z!" },
+      target: { value: testPassword },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "GovFlow92818Z!" },
+      target: { value: `${testPassword}-1` },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: "GovFlow92819Z!" },
+      target: { value: `${testPassword}-2` },
     });
 
     await waitFor(() => {
@@ -336,7 +337,7 @@ describe("StepAccount", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
 
     await waitFor(() => {
@@ -356,7 +357,7 @@ describe("StepAccount", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
 
     await waitFor(() => {
@@ -367,7 +368,7 @@ describe("StepAccount", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "GovFlow92820Z!" },
+      target: { value: `${testPassword}-3` },
     });
 
     expect(
@@ -376,7 +377,7 @@ describe("StepAccount", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: "GovFlow92819Z!" },
+      target: { value: `${testPassword}-2` },
     });
 
     await waitFor(() => {
@@ -389,9 +390,8 @@ describe("StepAccount", () => {
 
   it("blocks a compromised password after the debounced check", async () => {
     const user = userEvent.setup({ delay: null });
-    const password = "GovFlow92817Z!";
     const suffix = createHash("sha1")
-      .update(password)
+      .update(testPassword)
       .digest("hex")
       .toUpperCase()
       .slice(5);
@@ -402,16 +402,16 @@ describe("StepAccount", () => {
     renderStepAccount({ onNext });
 
     fireEvent.change(screen.getByLabelText("Correo electrónico *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Confirmar correo *"), {
-      target: { value: "marluanespiritusanto@gmail.com" },
+      target: { value: testEmail },
     });
     fireEvent.change(screen.getByLabelText("Contraseña *"), {
-      target: { value: password },
+      target: { value: testPassword },
     });
     fireEvent.change(screen.getByLabelText("Confirmar contraseña *"), {
-      target: { value: password },
+      target: { value: testPassword },
     });
 
     expect(
