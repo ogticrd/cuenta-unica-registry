@@ -93,11 +93,11 @@ export function ProfileInfo() {
             <span className="text-lg">
               {t("id_number")}: {normalizeValue(user.cedula)}
             </span>
-            <span className="hidden md:inline text-border">•</span>
+            {/* <span className="hidden md:inline text-border">•</span>
             <div className="flex items-center justify-center text-sm font-medium text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-500/10 px-3 py-1 rounded-full w-max mx-auto md:mx-0 border border-green-200 dark:border-green-500/20">
               <Shield className="w-4 h-4 mr-1.5" />
               {t("identity_verified")}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -124,11 +124,11 @@ export function ProfileInfo() {
               value={normalizeValue(user.cedula)}
               icon={<Hash className="w-4 h-4 text-muted-foreground/70" />}
             />
-            <PersonalInfoField
+            {/* <PersonalInfoField
               label={t("passport")}
               value={normalizeValue(user.passport)}
               icon={<Book className="w-4 h-4 text-muted-foreground/70" />}
-            />
+            /> */}
             <PersonalInfoField
               label={t("sex")}
               value={formatGender(user.gender)}
@@ -139,11 +139,11 @@ export function ProfileInfo() {
               value={formatBirthDate(user.birthDate)}
               icon={<Calendar className="w-4 h-4 text-muted-foreground/70" />}
             />
-            <PersonalInfoField
+            {/* <PersonalInfoField
               label={t("nationality")}
               value={normalizeValue(user.nationality)}
               icon={<MapPin className="w-4 h-4 text-muted-foreground/70" />}
-            />
+            /> */}
           </div>
         </div>
 
@@ -157,22 +157,21 @@ export function ProfileInfo() {
               label={t("email")}
               value={normalizeValue(user.email)}
               icon={<Mail className="w-4 h-4 text-muted-foreground/70" />}
-              verified={true}
             />
-            <PersonalInfoField
+            {/* <PersonalInfoField
               label={t("phone")}
               value={normalizeValue(user.phone)}
               icon={<Phone className="w-4 h-4 text-muted-foreground/70" />}
-            />
+            /> */}
           </div>
         </div>
       </div>
 
-      <div className="pt-8 border-t dark:border-border text-center mt-12">
+      {/* <div className="pt-8 border-t dark:border-border text-center mt-12">
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           {t("official_records_note")}
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }

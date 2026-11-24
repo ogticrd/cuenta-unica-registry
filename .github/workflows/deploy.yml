@@ -118,6 +118,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate biometric thresholds against v1
+        env:
+          LIVENESS_CONFIDENCE_THRESHOLD: ${{ vars.LIVENESS_CONFIDENCE_THRESHOLD || '85' }}
+          FACE_SIMILARITY_THRESHOLD: ${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD || '95' }}
+        run: |
+          node <<'NODE'
+          for (const [key, expected] of Object.entries({
+            LIVENESS_CONFIDENCE_THRESHOLD: 85,
+            FACE_SIMILARITY_THRESHOLD: 95,
+          })) {
+            if (Number(process.env[key]) !== expected) {
+              throw new Error(`${key} must be ${expected} to match the approved v1 thresholds. Update the GitHub environment variable.`);
+            }
+          }
+          NODE
+
       - name: Build & push image
         id: build
         uses: ogticrd/actions/actions/docker/build@main
@@ -132,6 +148,9 @@ jobs:
             NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || vars.AMPLIFY_IDENTITYPOOL_ID }}
             NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_ID || vars.AMPLIFY_USERPOOL_ID }}
             NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID=${{ vars.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID }}
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_LUHN_EXCEPTION_HASHES=${{ vars.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES }}
+            NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE=${{ vars.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE || '18097181459' }}
             SOURCE_COMMIT=${{ github.sha }}
 
   deploy:
@@ -165,8 +184,19 @@ jobs:
             GOOGLE_CLOUD_PROJECT=${{ vars.GOOGLE_PROJECT_ID }}
             LOG_LEVEL=${{ vars.LOG_LEVEL || 'info' }}
             ORY_SDK_URL=${{ vars.ORY_SDK_URL || vars.ORY_API_URL }}
+            ORY_PUBLIC_URL=${{ vars.ORY_PUBLIC_URL || vars.ORY_SDK_URL || vars.ORY_API_URL }}
             ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN || secrets.ORY_API_TOKEN }}
             REGISTRATION_SESSION_SECRET=${{ secrets.REGISTRATION_SESSION_SECRET }}
+            REGISTRATION_ALLOWED_RETURN_ORIGINS="${{ vars.REGISTRATION_ALLOWED_RETURN_ORIGINS }}"
+            FEEDBACK_API_URL=${{ vars.FEEDBACK_API_URL || secrets.FEEDBACK_API_URL }}
+            RECAPTCHA_PROJECT_ID=${{ vars.RECAPTCHA_PROJECT_ID || vars.RECAPTHA_PROJECT_ID }}
+            RECAPTCHA_API_KEY=${{ secrets.RECAPTCHA_API_KEY || secrets.RECAPTHA_API_KEY }}
+            RECAPTCHA_SCORE_THRESHOLD=${{ vars.RECAPTCHA_SCORE_THRESHOLD || '0.3' }}
+            RECAPTCHA_BYPASS_LOCAL=false
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_LUHN_EXCEPTION_HASHES="${{ vars.NEXT_PUBLIC_LUHN_EXCEPTION_HASHES }}"
+            NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE=${{ vars.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE || '18097181459' }}
+            CEDULA_VALIDATION_API=${{ vars.CEDULA_VALIDATION_API || 'https://api.digital.gob.do/v3/cedulas' }}
             CITIZENS_API_BASE_URL=${{ vars.CITIZENS_API_BASE_URL }}
             CITIZENS_INFO_API_KEY=${{ secrets.CITIZENS_INFO_API_KEY }}
             CITIZENS_PHOTO_API_KEY=${{ secrets.CITIZENS_PHOTO_API_KEY }}
@@ -174,17 +204,21 @@ jobs:
             AWS_ROLE_ARN=${{ vars.AWS_ROLE_ARN }}
             AWS_WEB_IDENTITY_TOKEN_AUDIENCE=${{ vars.AWS_WEB_IDENTITY_TOKEN_AUDIENCE || 'sts.amazonaws.com' }}
             AWS_ROLE_SESSION_NAME=${{ vars.AWS_ROLE_SESSION_NAME || 'cuenta-unica-registry' }}
-            LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD }}
-            FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD }}
+            LIVENESS_CONFIDENCE_THRESHOLD=${{ vars.LIVENESS_CONFIDENCE_THRESHOLD || '85' }}
+            FACE_SIMILARITY_THRESHOLD=${{ vars.FACE_SIMILARITY_THRESHOLD || vars.LIVENESS_SIMILARITY_THRESHOLD || '95' }}
+            BIOMETRIC_MAX_ATTEMPTS=${{ vars.BIOMETRIC_MAX_ATTEMPTS || '3' }}
+            BIOMETRIC_COOLDOWN_SECONDS=${{ vars.BIOMETRIC_COOLDOWN_SECONDS || '900' }}
+            BIOMETRIC_STATE_TTL_SECONDS=${{ vars.BIOMETRIC_STATE_TTL_SECONDS || '1800' }}
             BUZON_API_BASE_URL=${{ vars.BUZON_API_BASE_URL }}
             BUZON_PORTAL_API_KEY=${{ secrets.BUZON_PORTAL_API_KEY }}
             GEOIP_API_URL=${{ vars.GEOIP_API_URL }}
             ANALYTICS_CONTEXT_SECRET=${{ secrets.ANALYTICS_CONTEXT_SECRET }}
             ANALYTICS_INGRESS_URL=${{ vars.ANALYTICS_INGRESS_URL }}
             ANALYTICS_INGRESS_API_KEY=${{ secrets.ANALYTICS_INGRESS_API_KEY }}
-            ANALYTICS_INGRESS_API_KEY_HEADER=${{ vars.ANALYTICS_INGRESS_API_KEY_HEADER || secrets.ANALYTICS_INGRESS_API_KEY_HEADER }}
-            ANALYTICS_PROJECT_ID=${{ secrets.ANALYTICS_PROJECT_ID }}
+            ANALYTICS_INGRESS_API_KEY_HEADER=${{ vars.ANALYTICS_INGRESS_API_KEY_HEADER || secrets.ANALYTICS_INGRESS_API_KEY_HEADER || 'Authorization' }}
+            ANALYTICS_PROJECT_ID=${{ vars.ANALYTICS_PROJECT_ID || secrets.ANALYTICS_PROJECT_ID }}
             ANALYTICS_ENVIRONMENT=${{ vars.ANALYTICS_ENVIRONMENT || secrets.ANALYTICS_ENVIRONMENT }}
+            ANALYTICS_ALLOW_DIRECT_CLIENT_ID=${{ vars.ANALYTICS_ALLOW_DIRECT_CLIENT_ID || 'false' }}
           min-instances: ${{ needs.preflight.outputs.min_instances }}
           max-instances: ${{ needs.preflight.outputs.max_instances }}
           cpu: ${{ needs.preflight.outputs.cpu }}

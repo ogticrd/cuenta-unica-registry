@@ -86,7 +86,7 @@ export default function DashboardPage() {
       title: t("quick_actions_list.personal_data.title"),
       description: t("quick_actions_list.personal_data.desc"),
       icon: <User size={24} />,
-      href: ROUTES.settings,
+      href: ROUTES.profile,
     },
     {
       id: "privacy",
@@ -102,13 +102,13 @@ export default function DashboardPage() {
       icon: <Clock size={24} />,
       href: ROUTES.history,
     },
-    {
-      id: "history_bell",
-      title: t("quick_actions_list.history.title"),
-      description: t("quick_actions_list.history.desc"),
-      icon: <Bell size={24} />,
-      href: ROUTES.history,
-    },
+    // {
+    //   id: "history_bell",
+    //   title: t("quick_actions_list.history.title"),
+    //   description: t("quick_actions_list.history.desc"),
+    //   icon: <Bell size={24} />,
+    //   href: ROUTES.history,
+    // },
   ];
 
   const recentActivities = [
@@ -194,7 +194,7 @@ export default function DashboardPage() {
                 {t("last_access", { date: lastAccessStr })}
               </span>
             </div>
-            <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
+            {/* <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full dark:bg-green-50/20">
               {isVerified ? (
                 <>
                   <CheckCircle
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                   </span>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -251,7 +251,7 @@ export default function DashboardPage() {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
         <StatsCard
           title={t("stats_cards.devices.title")}
           value={devicesCount.toString()}
@@ -263,20 +263,20 @@ export default function DashboardPage() {
           }
           href={ROUTES.history}
         />
-        <StatsCard
+        {/* <StatsCard
           title={t("stats_cards.services.title")}
           value="12"
           icon={<Globe size={24} />}
           description={t("stats_cards.services.desc")}
           href="#"
-        />
-        <StatsCard
+        /> */}
+        {/* <StatsCard
           title={t("stats_cards.actions.title")}
           value="8"
           icon={<Activity size={24} />}
           description={t("stats_cards.actions.desc")}
           href="#"
-        />
+        /> */}
         <StatsCard
           title={t("stats_cards.security.title")}
           value={securityLevelText}
@@ -289,7 +289,7 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <DashboardCard title={t("quick_actions")}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickActions.map((action) => (
             <QuickActionCard
               key={action.id}
@@ -305,7 +305,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activity */}
-        <DashboardCard
+        {/* <DashboardCard
           title={t("recent_activity")}
           action={
             <ActionButton
@@ -328,10 +328,10 @@ export default function DashboardPage() {
               />
             ))}
           </div>
-        </DashboardCard>
+        </DashboardCard> */}
 
         {/* Security Status */}
-        <DashboardCard
+        {/* <DashboardCard
           title={t("security_status")}
           action={
             <ActionButton
@@ -391,11 +391,11 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-        </DashboardCard>
+        </DashboardCard> */}
       </div>
 
       {/* Government Services */}
-      <DashboardCard title={t("gov_services")}>
+      {/* <DashboardCard title={t("gov_services")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {governmentServices.map((service) => (
             <QuickActionCard
@@ -407,10 +407,10 @@ export default function DashboardPage() {
             />
           ))}
         </div>
-      </DashboardCard>
+      </DashboardCard> */}
 
       {/* Important Notifications */}
-      <DashboardCard title={t("notifications")}>
+      {/* <DashboardCard title={t("notifications")}>
         <div className="flex flex-col gap-4">
           {importantNotifications.length === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center">
@@ -429,7 +429,7 @@ export default function DashboardPage() {
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background">
                   {notification.priority === "critical" ||
-                  notification.priority === "high" ? (
+                    notification.priority === "high" ? (
                     <AlertTriangle size={20} className="text-destructive" />
                   ) : (
                     <Info size={20} className="text-secondary" />
@@ -479,7 +479,7 @@ export default function DashboardPage() {
             {t("view_all")}
           </ActionButton>
         </div>
-      </DashboardCard>
+      </DashboardCard> */}
     </div>
   );
 }

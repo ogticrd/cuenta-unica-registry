@@ -55,7 +55,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
 
         {/* Floating Help Button */}
-        <Button
+        {/* <Button
           className={`fixed bottom-6 right-6 rounded-2xl w-14 h-14 bg-background border border-border shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 z-40 group ${isAIChatOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           size="icon"
           onClick={handleHelpOpen}
@@ -65,7 +65,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             size={24}
             className="text-secondary relative z-10 group-hover:scale-110 transition-transform duration-300"
           />
-        </Button>
+        </Button> */}
 
         {/* AI Chat Modal */}
         <AIChatModal

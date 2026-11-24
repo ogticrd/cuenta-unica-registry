@@ -28,7 +28,7 @@ export default function LandingPage() {
       <Steps />
 
       {/* Integrated Institutions Section */}
-      <GovernmentPartners />
+      {/* <GovernmentPartners /> */}
 
       {/* For Government Entities Section */}
       <GovernmentEntities />

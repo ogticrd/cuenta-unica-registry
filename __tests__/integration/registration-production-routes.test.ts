@@ -1360,7 +1360,7 @@ describe("registration production routes", () => {
     );
     expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
     expect(mockRekognitionSend.mock.calls[1]?.[0]?.input).toMatchObject({
-      SimilarityThreshold: 80,
+      SimilarityThreshold: 95,
     });
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({

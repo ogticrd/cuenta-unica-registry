@@ -1,5 +1,6 @@
 import { logger } from "@/lib/logging/logger";
 import "server-only";
+import { z } from "zod";
 import { fetchCitizenPhoto } from "@/lib/services/registration/citizen-photo.service";
 import {
   compareFaces,
@@ -8,10 +9,19 @@ import {
   type LivenessResult,
 } from "@/lib/services/registration/rekognition.service";
 
-const LIVENESS_THRESHOLD =
-  Number(process.env.LIVENESS_CONFIDENCE_THRESHOLD) || 90;
-const SIMILARITY_THRESHOLD =
-  Number(process.env.FACE_SIMILARITY_THRESHOLD) || 80;
+function threshold(value: string | undefined, fallback: number) {
+  const result = z.coerce.number().gt(0).lte(100).safeParse(value);
+  return result.success ? result.data : fallback;
+}
+
+const LIVENESS_THRESHOLD = threshold(
+  process.env.LIVENESS_CONFIDENCE_THRESHOLD,
+  85,
+);
+const SIMILARITY_THRESHOLD = threshold(
+  process.env.FACE_SIMILARITY_THRESHOLD,
+  95,
+);
 
 type CitizenLivenessErrorCode =
   | "liveness_check_failed"
@@ -59,7 +69,7 @@ export async function verifyCitizenLiveness(
     threshold: LIVENESS_THRESHOLD,
   });
   if (
-    liveness.confidence < LIVENESS_THRESHOLD ||
+    liveness.confidence <= LIVENESS_THRESHOLD ||
     !liveness.referenceImageBytes
   ) {
     logger.warn("La prueba de vida no superó la validación", {

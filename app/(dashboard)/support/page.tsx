@@ -117,7 +117,7 @@ export default async function SupportPage() {
           </div>
 
           {/* Quick Link Optional */}
-          <div className="mt-8 text-center pt-4">
+          {/* <div className="mt-8 text-center pt-4">
             <button
               type="button"
               className="inline-flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
@@ -125,7 +125,7 @@ export default async function SupportPage() {
               {t("video_tutorials")}
               <ExternalLink size={14} className="ml-1.5" />
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

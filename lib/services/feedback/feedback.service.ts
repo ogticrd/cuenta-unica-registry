@@ -1,7 +1,8 @@
+import { z } from "zod";
 import { API } from "@/lib/constants/api";
 import type { FeedbackFormData } from "@/lib/schemas/feedback/feedback.schema";
 
-type FeedbackResult =
+export type FeedbackResult =
   | { success: true }
   | {
       success: false;
@@ -25,15 +26,23 @@ export async function submitFeedback(
       body: JSON.stringify(payload),
     });
 
+    const json: unknown = await response.json().catch(() => null);
     if (!response.ok) {
-      if (response.status === 400) {
-        return { success: false, code: "BAD_REQUEST" };
-      }
-      return { success: false, code: "SERVER_ERROR" };
+      const failure = z
+        .object({
+          success: z.literal(false),
+          code: z.enum(["NOT_CONFIGURED", "BAD_REQUEST", "SERVER_ERROR"]),
+        })
+        .safeParse(json);
+      return failure.success
+        ? failure.data
+        : { success: false, code: "SERVER_ERROR" };
     }
 
-    const json = await response.json();
-    return { success: true, ...json };
+    const result = z.object({ success: z.literal(true) }).safeParse(json);
+    return result.success
+      ? { success: true }
+      : { success: false, code: "SERVER_ERROR" };
   } catch (error) {
     console.error("[feedbackService] network error:", error);
     return { success: false, code: "NETWORK_ERROR" };

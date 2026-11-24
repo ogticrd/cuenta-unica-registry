@@ -5,7 +5,6 @@ import {
   type ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -83,7 +82,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated, isAuthLoading]);
 
-  useEffect(() => {
+  // Consultas automáticas pausadas mientras la interfaz de notificaciones está deshabilitada.
+  /* useEffect(() => {
     void refresh();
   }, [refresh]);
 
@@ -104,7 +104,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       window.clearInterval(interval);
       window.removeEventListener("focus", onFocus);
     };
-  }, [isAuthenticated, refresh]);
+  }, [isAuthenticated, refresh]); */
 
   const updateStatus = useCallback(
     async (id: string, status: NotificationStatus) => {

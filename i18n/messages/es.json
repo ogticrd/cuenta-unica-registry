@@ -26,7 +26,7 @@
     "card_subtitle": "Puedes acceder a tu cuenta con tu número de identidad \"Cédula\" o correo electrónico registrado",
     "no_account": "¿No tienes cuenta?",
     "forgot_password": "¿Olvidaste tu contraseña?",
-    "register_cta": "Regístrate, accede a los servicios del Estado Dominicano con un único usuario y contraseña, de forma segura y confiable",
+    "register_cta": "Regístrate, accede con un único usuario y contraseña, de forma segura y confiable",
     "create_account": "CREAR CUENTA",
     "loading_register": "Cargando formulario de registro...",
     "loading_recovery": "Cargando formulario de recuperación...",
@@ -40,8 +40,8 @@
     "recovery_remember": "¿Recuerdas tus credenciales?",
     "recovery_login_cta": "Inicia sesión",
     "recovery_recaptcha_error": "No pudimos validar que eres una persona. Inténtalo de nuevo.",
-    "verify_account": "Verificar cuenta",
-    "need_verification_prompt": "¿Necesitas verificar tu cuenta?"
+    "verify_account": "Verificar mi correo",
+    "need_verification_prompt": "¿Creaste tu cuenta y aún no has verificado tu correo electrónico?"
   },
   "register": {
     "recovery_mode": "Modo recuperación",
@@ -229,7 +229,7 @@
   },
   "dashboard": {
     "welcome": "¡Bienvenido, <highlight>{name}</highlight>!",
-    "subtitle": "Administra tu identidad digital, revisa tu seguridad y accede a los servicios del Estado desde un solo lugar.",
+    "subtitle": "Gestiona tu cuenta, consulta tus dispositivos vinculados y mantén protegida tu identidad digital desde un solo lugar.",
     "loading": "Cargando...",
     "last_access": "Último acceso: {date}",
     "account_verified": "Cuenta verificada",
@@ -244,15 +244,15 @@
     "quick_actions_list": {
       "personal_data": {
         "title": "Datos Personales",
-        "desc": "Consulta y actualiza tu información personal registrada"
+        "desc": "Consulta la información personal registrada en tu cuenta."
       },
       "privacy": {
         "title": "Privacidad y Seguridad",
-        "desc": "Configura la seguridad de tu cuenta y revisa accesos"
+        "desc": "Configura tus métodos de autenticación y cambia tu contraseña."
       },
       "history": {
         "title": "Historial de Actividad",
-        "desc": "Revisa dispositivos conectados y actividad reciente"
+        "desc": "Revisa los dispositivos conectados y cierra sus sesiones."
       },
       "support": {
         "title": "Soporte y Ayuda",
@@ -440,7 +440,7 @@
     }
   },
   "support": {
-    "title": "Soporte y Contacto",
+    "title": "Soporte y Ayuda",
     "subtitle": "¿Tienes dudas o necesitas ayuda con tu Cuenta Única Ciudadana? Estamos aquí para ayudarte y asegurar que tu experiencia sea rápida y segura.",
     "channels_title": "Canales de Atención",
     "faqs_title": "Preguntas Frecuentes",
@@ -613,8 +613,8 @@
     "hero": {
       "welcome_title": "¡Bienvenid@ al servicio de <highlight>Cuenta Única Ciudadana!</highlight>",
       "citizen": "Ciudadana",
-      "welcome_subtitle": "Accede o regístrate con un único usuario y contraseña, para consultar todos los servicios gubernamentales disponibles.",
-      "welcome_body": "Una manera fácil y cómoda de identificarte, para acceder a los servicios del Estado desde tu computadora o celular sin necesidad de trasladarte a los organismos gubernamentales.",
+      "welcome_subtitle": "Identifícate con tu Cuenta Única Ciudadana para acceder a los servicios digitales de las instituciones integradas.",
+      "welcome_body": "Comienza con tu cédula, registra tus datos y verifica tu identidad. Si ya tienes una cuenta, inicia sesión para continuar.",
       "register_btn": "Crear mi cuenta",
       "login_btn": "Iniciar sesión"
     },
@@ -703,6 +703,11 @@
   },
   "feedback": {
     "title": "¡Envíanos tus sugerencias!",
+    "description": "Comparte tu problema o sugerencia, o solicita ayuda por WhatsApp.",
+    "whatsapp_help": "Ayuda por WhatsApp",
+    "whatsapp_message": "Hola, necesito ayuda con mi Cuenta Única Ciudadana.",
+    "sending": "Enviando...",
+    "unavailable": "El servicio de sugerencias no está disponible en este momento. Intenta más tarde.",
     "cedula_label": "Número de cédula",
     "name_label": "Nombre",
     "email_label": "Correo electrónico",

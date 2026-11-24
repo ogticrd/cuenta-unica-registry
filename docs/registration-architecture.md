@@ -126,6 +126,16 @@ La recuperación rechaza identidades inactivas, ausentes o de otra cédula.
   como verificado.
 - `verifyCodeAction` debe reenviar cookies del navegador a Ory.
 
+### Umbrales biométricos compartidos por registro y VID
+
+La configuración se alinea con v1: liveness exige confianza **mayor que 85**;
+comparación facial exige coincidencia devuelta por Rekognition con similitud
+**mayor o igual que 95**. Una confianza exactamente igual a 85 se rechaza.
+Los valores ausentes o fuera del rango (0, 100] usan esos umbrales base.
+Este ajuste sustituye los valores anteriores de v2 (90 y 80) a petición del
+responsable del proyecto. Revisar las variables ya creadas en GitHub: un valor
+explícito del ambiente tiene prioridad sobre el valor por defecto del workflow.
+
 ### APIs Ciudadanas
 
 - La validación completa de cédula ocurre en servidor: formato de once dígitos

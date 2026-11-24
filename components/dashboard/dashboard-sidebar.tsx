@@ -33,9 +33,9 @@ export function DashboardSidebar({
   const menuItems = [
     { icon: Home, label: t("home"), href: ROUTES.dashboard },
     { icon: User, label: t("personal_data"), href: ROUTES.profile },
-    { icon: Bell, label: t("notifications"), href: ROUTES.notifications },
+    // { icon: Bell, label: t("notifications"), href: ROUTES.notifications },
     { icon: HelpCircle, label: t("support"), href: ROUTES.support },
-    { icon: Info, label: t("about"), href: ROUTES.about },
+    // { icon: Info, label: t("about"), href: ROUTES.about },
     { icon: Shield, label: t("security"), href: ROUTES.settings },
     { icon: Clock, label: t("history"), href: ROUTES.history },
   ];
@@ -113,11 +113,10 @@ export function DashboardSidebar({
                   <Link
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "text-secondary bg-secondary/10 font-bold"
-                        : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground font-medium"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                      ? "text-secondary bg-secondary/10 font-bold"
+                      : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground font-medium"
+                      }`}
                   >
                     <Icon
                       size={18}

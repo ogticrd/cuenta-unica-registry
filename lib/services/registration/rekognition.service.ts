@@ -75,6 +75,8 @@ export async function compareFaces(
 
   return {
     similarity,
-    isMatch: similarity >= similarityThreshold,
+    isMatch:
+      Boolean(response.FaceMatches?.length) &&
+      similarity >= similarityThreshold,
   };
 }

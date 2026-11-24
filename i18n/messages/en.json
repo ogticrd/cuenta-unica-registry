@@ -26,7 +26,7 @@
     "card_subtitle": "You can log in with your national ID \"Cédula\" or registered email address",
     "no_account": "Don't have an account?",
     "forgot_password": "Forgot your password?",
-    "register_cta": "Register and access Dominican State services with a single username and password, securely and reliably",
+    "register_cta": "Register and log in using a single username and password—securely and reliably",
     "create_account": "CREATE ACCOUNT",
     "loading_register": "Loading registration form...",
     "loading_recovery": "Loading recovery form...",
@@ -40,8 +40,8 @@
     "recovery_remember": "Remember your credentials?",
     "recovery_login_cta": "Log in",
     "recovery_recaptcha_error": "We could not confirm you are a person. Please try again.",
-    "verify_account": "Verify account",
-    "need_verification_prompt": "Need to verify your account?"
+    "verify_account": "Verify my email",
+    "need_verification_prompt": "Have you created your account but not verified your email address yet?"
   },
   "register": {
     "recovery_mode": "Recovery mode",
@@ -229,7 +229,7 @@
   },
   "dashboard": {
     "welcome": "Welcome, <highlight>{name}</highlight>!",
-    "subtitle": "Manage your digital identity, review your security, and access State services from one place.",
+    "subtitle": "Manage your account, view your linked devices, and keep your digital identity secure—all in one place.",
     "loading": "Loading...",
     "last_access": "Last access: {date}",
     "account_verified": "Verified account",
@@ -244,15 +244,15 @@
     "quick_actions_list": {
       "personal_data": {
         "title": "Personal Data",
-        "desc": "Check and update your registered personal information"
+        "desc": "View the personal information registered in your account."
       },
       "privacy": {
         "title": "Privacy and Security",
-        "desc": "Configure your account security and review access"
+        "desc": "Configure your authentication methods and change your password."
       },
       "history": {
         "title": "Activity History",
-        "desc": "Review connected devices and recent activity"
+        "desc": "Review connected devices and end their sessions."
       },
       "support": {
         "title": "Support and Help",
@@ -440,7 +440,7 @@
     }
   },
   "support": {
-    "title": "Support and Contact",
+    "title": "Support and Help",
     "subtitle": "Do you have any doubts or need help with your Cuenta Única Ciudadana? We are here to help you and ensure your experience is fast and secure.",
     "channels_title": "Service Channels",
     "faqs_title": "Frequently Asked Questions",
@@ -613,8 +613,8 @@
     "hero": {
       "welcome_title": "Welcome to the <highlight>Cuenta Única Ciudadana</highlight> service!",
       "citizen": "Citizen",
-      "welcome_subtitle": "Log in or register with a single username and password to access all available government services.",
-      "welcome_body": "An easy and convenient way to identify yourself and access State services from your computer or mobile device without visiting government offices.",
+      "welcome_subtitle": "Use your Cuenta Única Ciudadana to identify yourself and access digital services from integrated institutions.",
+      "welcome_body": "Start with your identity card number, enter your details, and verify your identity. If you already have an account, log in to continue.",
       "register_btn": "Create my account",
       "login_btn": "Log In"
     },
@@ -703,6 +703,11 @@
   },
   "feedback": {
     "title": "Send us your feedback!",
+    "description": "Share your issue or suggestion, or get help through WhatsApp.",
+    "whatsapp_help": "Get help on WhatsApp",
+    "whatsapp_message": "Hello, I need help with my Cuenta Única Ciudadana.",
+    "sending": "Sending...",
+    "unavailable": "The feedback service is currently unavailable. Please try again later.",
     "cedula_label": "ID number",
     "name_label": "Name",
     "email_label": "Email",

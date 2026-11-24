@@ -130,20 +130,18 @@ export function DeviceItem({
 
   return (
     <div
-      className={`group flex flex-col p-6 rounded-md border-2 transition-all duration-300 hover:shadow-md ${
-        isCurrent
-          ? " border-green-400 shadow-sm dark:border-green-600"
-          : "bg-card border-border hover:border-border/80"
-      }`}
+      className={`group flex flex-col p-6 rounded-md border-2 transition-all duration-300 hover:shadow-md ${isCurrent
+        ? " border-green-400 shadow-sm dark:border-green-600"
+        : "bg-card border-border hover:border-border/80"
+        }`}
     >
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-start gap-5 flex-1 min-w-0">
           <div
-            className={`flex-shrink-0 mt-1 p-3.5 rounded-xl flex items-center justify-center transition-colors ${
-              isCurrent
-                ? "bg-green-500 text-primary-foreground shadow-sm dark:bg-green-600"
-                : "bg-muted text-muted-foreground group-hover:bg-muted/80 group-hover:text-foreground dark:bg-gray-800"
-            }`}
+            className={`flex-shrink-0 mt-1 p-3.5 rounded-xl flex items-center justify-center transition-colors ${isCurrent
+              ? "bg-green-500 text-primary-foreground shadow-sm dark:bg-green-600"
+              : "bg-muted text-muted-foreground group-hover:bg-muted/80 group-hover:text-foreground dark:bg-gray-800"
+              }`}
           >
             {getDeviceIcon()}
           </div>
@@ -265,7 +263,7 @@ export function DeviceItem({
                 )}
               </div>
 
-              {(isLoadingCoords || coords || coordsError) && (
+              {/* {(isLoadingCoords || coords || coordsError) && (
                 <div className="w-full flex flex-col gap-2">
                   <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                     {t("location")}
@@ -286,7 +284,7 @@ export function DeviceItem({
                     <DeviceMap lat={coords.lat} lng={coords.lng} />
                   ) : null}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </CollapsibleContent>

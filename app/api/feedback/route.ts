@@ -5,7 +5,7 @@ import { feedbackApiPayloadSchema } from "@/lib/schemas/feedback/feedback.schema
 
 async function handlePOST(request: Request) {
   try {
-    const json = await request.json();
+    const json: unknown = await request.json().catch(() => null);
     const parsed = feedbackApiPayloadSchema.safeParse(json);
 
     if (!parsed.success) {
@@ -15,7 +15,7 @@ async function handlePOST(request: Request) {
       );
     }
 
-    const FEEDBACK_API_URL = process.env.FEEDBACK_API_URL;
+    const FEEDBACK_API_URL = process.env.FEEDBACK_API_URL?.trim();
 
     if (!FEEDBACK_API_URL) {
       logger.warn("Feedback recibido sin destino configurado", {
@@ -25,13 +25,17 @@ async function handlePOST(request: Request) {
         hasContact: Boolean(parsed.data.email),
         commentLength: parsed.data.comments?.length,
       });
-      return NextResponse.json({ success: true }, { status: 200 });
+      return NextResponse.json(
+        { success: false, code: "NOT_CONFIGURED" },
+        { status: 503 },
+      );
     }
 
     const response = await fetch(FEEDBACK_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed.data),
+      cache: "no-store",
     });
 
     if (!response.ok) {

@@ -2,9 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -44,7 +46,15 @@ interface UserFeedbackModalProps {
 export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
   const t = useT("feedback");
   const [sent, setSent] = useState(false);
-  const [sendError, setSendError] = useState(false);
+  const [sendError, setSendError] = useState<
+    "send_error" | "unavailable" | null
+  >(null);
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE?.replace(/\D/g, "");
+  const isValidPhone = phone && /^[1-9]\d{6,14}$/.test(phone);
+
+  const whatsappUrl = isValidPhone
+    ? `https://wa.me/${phone}?${new URLSearchParams({ text: t("whatsapp_message") })}`
+    : undefined;
 
   const form = useForm<FeedbackFormData>({
     resolver: zodResolver(createFeedbackSchema(t)),
@@ -57,14 +67,15 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
   });
 
   const closeModal = useCallback(() => {
+    if (form.formState.isSubmitting) return;
     setSent(false);
-    setSendError(false);
+    setSendError(null);
     form.reset();
     onClose();
-  }, [form, onClose]);
+  }, [form, form.formState.isSubmitting, onClose]);
 
   const onSubmit = async (data: FeedbackFormData) => {
-    setSendError(false);
+    setSendError(null);
     const result = await submitFeedback(data);
 
     if (!result.success) {
@@ -72,32 +83,59 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
         form: "feedback",
         code: "SERVER_ERROR",
       });
-      toast.error(t("send_error"));
-      setSendError(true);
+      const errorMessage =
+        result.code === "NOT_CONFIGURED" ? "unavailable" : "send_error";
+      toast.error(t(errorMessage));
+      setSendError(errorMessage);
       return;
     }
 
     toast.success(t("sent"));
+    form.reset();
     setSent(true);
-    setTimeout(closeModal, 2300);
   };
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && closeModal()}>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="text-xl text-primary font-semibold">
             {t("title")}
           </DialogTitle>
           <DialogDescription className="sr-only">
-            {t("title")}
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
+
+        {whatsappUrl && (
+          <Button
+            asChild
+            className="h-12 w-full gap-2 rounded-full bg-[#20c15c] px-4 text-base font-semibold text-white shadow-md hover:bg-[#1aab50] focus-visible:ring-[#20c15c]"
+          >
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("whatsapp_help")}
+              title={t("whatsapp_help")}
+            >
+              <Image
+                src="/images/whatsapp.svg"
+                alt=""
+                width={20}
+                height={20}
+                aria-hidden="true"
+              />
+              WhatsApp
+            </a>
+          </Button>
+        )}
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 pt-4"
+            className="space-y-4 sm:space-y-6"
+            aria-busy={form.formState.isSubmitting}
           >
             <FormField
               control={form.control}
@@ -205,17 +243,20 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
             />
 
             {sent && (
-              <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 animate-in fade-in-0 slide-in-from-bottom-2">
+              <Alert
+                role="status"
+                className="border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300"
+              >
                 <CheckCircle2 className="h-4 w-4 shrink-0" />
-                {t("sent")}
-              </div>
+                <AlertDescription>{t("sent")}</AlertDescription>
+              </Alert>
             )}
 
             {sendError && (
-              <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 animate-in fade-in-0 slide-in-from-bottom-2">
+              <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4 shrink-0" />
-                {t("send_error")}
-              </div>
+                <AlertDescription>{t(sendError)}</AlertDescription>
+              </Alert>
             )}
 
             <div className="pt-2">
@@ -227,7 +268,7 @@ export function UserFeedbackModal({ open, onClose }: UserFeedbackModalProps) {
                 {form.formState.isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {t("report")}
+                    {t("sending")}
                   </>
                 ) : (
                   t("report")

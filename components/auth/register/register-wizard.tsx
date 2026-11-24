@@ -86,8 +86,8 @@ export function RegisterWizard({
     accountErrors:
       initialSessionStatus === "verified" && !hasAccountDraft
         ? ({
-            code: "account_draft_missing",
-          } satisfies RegisterAccountStepErrors)
+          code: "account_draft_missing",
+        } satisfies RegisterAccountStepErrors)
         : undefined,
   });
 
@@ -211,7 +211,11 @@ export function RegisterWizard({
 
   return (
     <Card
-      className="w-full max-w-[448px] mx-auto border border-slate-200 dark:border-slate-800 rounded-[10px] bg-white dark:bg-card"
+      className={`w-full max-w-[448px] mx-auto border rounded-[10px] bg-white dark:bg-card ${
+        isRecoveryMode
+          ? "border-secondary dark:border-secondary"
+          : "border-slate-200 dark:border-slate-800"
+      }`}
       data-hydrated={isHydrated}
       data-testid="registration-wizard"
     >
@@ -238,7 +242,7 @@ export function RegisterWizard({
         {isRecoveryMode && (
           <Alert className="w-full border-secondary/30 bg-secondary/5 text-secondary dark:border-secondary/50 dark:bg-secondary/10 [&>svg]:text-secondary">
             <Info aria-hidden="true" className="h-4 w-4" />
-            <AlertDescription className="font-semibold">
+            <AlertDescription className="font-semibold uppercase">
               {t("recovery_mode")}
             </AlertDescription>
           </Alert>

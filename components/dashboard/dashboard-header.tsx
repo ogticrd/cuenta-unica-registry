@@ -51,7 +51,7 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
           <div className="flex items-center space-x-2">
             <LanguageToggle />
             <AnimatedThemeToggler />
-            <Button
+            {/* <Button
               variant="ghost"
               size="sm"
               className="p-2 relative hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 active:scale-95 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-blue-400"
@@ -70,16 +70,16 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               ) : null}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
 
       {/* Notification Drawer */}
-      <NotificationDrawer
+      {/* <NotificationDrawer
         isOpen={isNotificationDrawerOpen}
         onClose={() => setIsNotificationDrawerOpen(false)}
-      />
+      /> */}
     </header>
   );
 }
