@@ -27,18 +27,22 @@ export default async function VidPage({
   const launchError = launchErrors.find((code) => code === error);
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-8 sm:py-12">
-      {session ? (
-        <VidVerification
-          key={session.id}
-          flowId={session.id}
-          firstName={session.firstName}
-        />
-      ) : (
-        <VidVerification
-          error={launchError ?? (flow ? "flow_expired" : "invalid_parameters")}
-        />
-      )}
-    </div>
+    <main className="flex-1 flex items-center justify-center py-12">
+      <div className="container mx-auto px-4 max-w-3xl">
+        {session ? (
+          <VidVerification
+            key={session.id}
+            flowId={session.id}
+            firstName={session.firstName}
+          />
+        ) : (
+          <VidVerification
+            error={
+              launchError ?? (flow ? "flow_expired" : "invalid_parameters")
+            }
+          />
+        )}
+      </div>
+    </main>
   );
 }
