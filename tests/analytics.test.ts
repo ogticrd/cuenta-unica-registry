@@ -848,7 +848,9 @@ describe("analytics emitter", () => {
 
   test("logs rejected and failed ingress delivery without throwing", async () => {
     process.env.ANALYTICS_INGRESS_URL = "https://analytics.example/events";
-    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const errorSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce(
@@ -874,15 +876,22 @@ describe("analytics emitter", () => {
       }),
     ).resolves.toBeUndefined();
 
-    expect(errorSpy).toHaveBeenCalledWith(
-      "[analytics] Ingress rejected event",
-      400,
-      "bad request",
+    const logs = errorSpy.mock.calls.map(([line]) => JSON.parse(String(line)));
+    expect(logs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          severity: "ERROR",
+          operation: "lib.analytics.emitter",
+          upstreamStatus: 400,
+        }),
+        expect.objectContaining({
+          severity: "ERROR",
+          operation: "lib.analytics.emitter",
+          errorType: "Error",
+        }),
+      ]),
     );
-    expect(errorSpy).toHaveBeenCalledWith(
-      "[analytics] Failed to emit event:",
-      expect.any(Error),
-    );
+    expect(JSON.stringify(logs)).not.toContain("bad request");
   });
 });
 

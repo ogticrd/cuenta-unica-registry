@@ -2,6 +2,7 @@ import type { OryPageParams } from "@ory/nextjs/app";
 import { Suspense } from "react";
 import { JourneyEvent } from "@/components/analytics/journey-event";
 import { OryLoginCard } from "@/components/auth/ory-flow-cards";
+import { UserFeedbackButton } from "@/components/feedback/user-feedback-button";
 
 import { LoadingFallback } from "@/components/ui/loading-fallback";
 import { buildAnalyticsContextStartPath } from "@/lib/analytics/client-launch-core";
@@ -68,14 +69,17 @@ async function LoginFlow({ searchParams }: OryPageParams) {
 
 export default async function LoginPage(props: OryPageParams) {
   return (
-    <main className="flex-1 flex items-center justify-center py-12">
-      <div className="container mx-auto px-4">
-        <div className="ory-auth-scope w-full max-w-md mx-auto">
-          <Suspense fallback={<LoadingFallback />}>
-            <LoginFlow searchParams={props.searchParams} />
-          </Suspense>
+    <>
+      <main className="flex-1 flex items-center justify-center py-12">
+        <div className="container mx-auto px-4">
+          <div className="ory-auth-scope w-full max-w-md mx-auto">
+            <Suspense fallback={<LoadingFallback />}>
+              <LoginFlow searchParams={props.searchParams} />
+            </Suspense>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <UserFeedbackButton />
+    </>
   );
 }

@@ -85,6 +85,45 @@ beforeEach(() => {
 });
 
 describe("registration session cookie", () => {
+  it("keeps the recovery target when promoting an identified session", async () => {
+    const recovery = { identityId: TEST_SESSION_ID };
+    const cookie = createRegistrationSessionCookie(
+      "40200612345",
+      "identified",
+      undefined,
+      TEST_SESSION_ID,
+      undefined,
+      recovery,
+    );
+    setRequestCookies({ registration_session: cookie.value });
+    const identified = await getRegistrationSession();
+    expect(identified?.recovery).toEqual(recovery);
+    if (!identified) throw new Error("Expected recovery session");
+
+    const verified = createRegistrationSessionCookieFromSession(
+      identified,
+      "verified",
+    );
+    setRequestCookies({ registration_session: verified.value });
+    await expect(getRegistrationSession()).resolves.toMatchObject({
+      status: "verified",
+      recovery,
+      expiresAt: identified.expiresAt,
+    });
+  });
+
+  it.each([
+    null,
+    true,
+    {},
+    { identityId: "invalid" },
+  ])("rejects a signed session with an invalid recovery target %j", async (recovery) => {
+    setRequestCookies({
+      registration_session: createSignedSessionPayload({ recovery }),
+    });
+    await expect(getRegistrationSession()).resolves.toBeNull();
+  });
+
   it("returns a valid signed registration session", async () => {
     const cookie = createRegistrationSessionCookie(
       "40200612345",

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   clearStaleBrowserFlowCookies,
   serializeClearCookie,
@@ -22,7 +24,7 @@ function getSetCookieName(setCookie: string) {
  * Response:
  *   { success: true, redirect_to: string }
  */
-export async function POST() {
+async function handlePOST() {
   try {
     const cookie = await getServerCookies();
 
@@ -73,7 +75,11 @@ export async function POST() {
 
     return response;
   } catch (error: unknown) {
-    console.error("[/api/ory/logout] Error during logout:", error);
+    logger.error(
+      "[/api/ory/logout] Error during logout:",
+      { operation: "app.api.ory.logout.route" },
+      error,
+    );
 
     // If session is already expired/invalid, treat as success
     const status =
@@ -105,3 +111,5 @@ export async function POST() {
     );
   }
 }
+
+export const POST = withRequestLogging("/api/ory/logout", handlePOST);

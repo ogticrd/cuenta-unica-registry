@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
-import { withRegistrationSessionAnalyticsContext } from "@/lib/analytics/registration-session-context";
+import {
+  getRegistrationRequestJourneyId,
+  withRegistrationSessionAnalyticsContext,
+} from "@/lib/analytics/registration-session-context";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   applyAccountRegistrationCookies,
@@ -147,7 +152,7 @@ async function emitAccountOutcomeFromLiveness(params: {
   );
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   let livenessOutcomeEmitted = false;
 
   try {
@@ -267,8 +272,11 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/verification/liveness-complete] Failed:",
+      {
+        operation: "app.api.registration.verification.liveness-complete.route",
+      },
       error,
     );
     if (!livenessOutcomeEmitted) {
@@ -281,3 +289,9 @@ export async function POST(request: Request) {
     return createVerificationErrorResponse("unexpected_error", 500);
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/verification/liveness-complete",
+  handlePOST,
+  { resolveJourneyId: getRegistrationRequestJourneyId },
+);

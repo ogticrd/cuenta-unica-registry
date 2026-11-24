@@ -88,7 +88,7 @@ export default async function EmailSentPage({
                     </Alert>
                     <Button
                       asChild
-                      className="w-full h-12 text-base font-semibold rounded-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
+                      className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
                     >
                       <Link href={ROUTES.login}>{t("back_to_login")}</Link>
                     </Button>

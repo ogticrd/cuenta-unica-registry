@@ -8,6 +8,10 @@ const {
   mockCreateRegistrationLivenessChallengeCookie,
   mockClearRegistrationLivenessChallengeCookie,
   mockGetRegistrationLivenessChallenge,
+  mockGetRegistrationBiometricState,
+  mockPrepareRegistrationBiometricAttempt,
+  mockCreateRegistrationBiometricStateCookie,
+  mockRecordRegistrationBiometricSessionCreated,
   mockGetRegistrationAccountDraft,
   mockCreateRegistrationAccountDraftCookie,
   mockClearRegistrationAccountDraftCookie,
@@ -39,6 +43,10 @@ const {
   mockCreateRegistrationLivenessChallengeCookie: vi.fn(),
   mockClearRegistrationLivenessChallengeCookie: vi.fn(),
   mockGetRegistrationLivenessChallenge: vi.fn(),
+  mockGetRegistrationBiometricState: vi.fn(),
+  mockPrepareRegistrationBiometricAttempt: vi.fn(),
+  mockCreateRegistrationBiometricStateCookie: vi.fn(),
+  mockRecordRegistrationBiometricSessionCreated: vi.fn(),
   mockGetRegistrationAccountDraft: vi.fn(),
   mockCreateRegistrationAccountDraftCookie: vi.fn(),
   mockClearRegistrationAccountDraftCookie: vi.fn(),
@@ -103,6 +111,19 @@ vi.mock(
   }),
 );
 
+vi.mock(
+  "@/lib/services/registration/registration-biometric-attempt.service",
+  () => ({
+    getRegistrationBiometricState: mockGetRegistrationBiometricState,
+    prepareRegistrationBiometricAttempt:
+      mockPrepareRegistrationBiometricAttempt,
+    createRegistrationBiometricStateCookie:
+      mockCreateRegistrationBiometricStateCookie,
+    recordRegistrationBiometricSessionCreated:
+      mockRecordRegistrationBiometricSessionCreated,
+  }),
+);
+
 vi.mock("@/lib/services/registration/citizen-registry.service", () => ({
   findCitizenByCedula: mockFindCitizenByCedula,
   findCitizenSummaryByCedula: mockFindCitizenSummaryByCedula,
@@ -126,7 +147,8 @@ vi.mock("@/lib/ory/cookies", () => ({
   mergeCookieHeaders: mockMergeCookieHeaders,
 }));
 
-vi.mock("@/lib/utils/cedula", () => ({
+vi.mock("@/lib/utils/cedula", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/utils/cedula")>()),
   isValidCedula: mockIsValidCedula,
   normalizeCedula: mockNormalizeCedula,
 }));
@@ -192,6 +214,7 @@ function createValidAccountDraft(
 beforeEach(() => {
   mockIsPasswordStrongEnough.mockReturnValue(true);
   mockIsBreachedPassword.mockResolvedValue(false);
+  process.env.RECAPTCHA_BYPASS_LOCAL = "true";
 });
 
 describe("registration route orchestration - account", () => {
@@ -503,65 +526,86 @@ describe("registration route orchestration - account", () => {
     });
   });
 
-  it("returns the email-sent destination and clears the registration session after Ory verification flow creation", async () => {
-    mockGetRegistrationSession.mockResolvedValueOnce({
-      sessionId: REGISTRATION_SESSION_ID,
-      cedula: "00100063362",
-      status: "verified",
-      returnUrl: "https://example.com/dashboard",
-    });
-    mockGetRegistrationAccountDraft.mockResolvedValueOnce(
-      createValidAccountDraft(),
-    );
-    mockIsValidCedula.mockResolvedValueOnce(true);
-    mockFindCitizenByCedula.mockResolvedValueOnce({
-      names: "Juan",
-      lastName: "Perez",
-      birthDate: "1990-01-01",
-      gender: "male",
-    });
-    mockRegisterOryAccount.mockResolvedValueOnce({
-      payload: {
-        continue_with: [
-          {
-            action: "show_verification_ui",
-            flow: { id: "flow-123" },
-          },
-        ],
-      },
-      setCookies: ["ory_session=abc; Path=/; HttpOnly; SameSite=Lax"],
-    });
+  it.each([
+    "00100063362",
+    "12345678901",
+  ])("creates an account for %s and clears the session after Ory verification flow creation", async (cedula) => {
+    const fetchSpy = vi.spyOn(global, "fetch");
+    const previousApi = process.env.CEDULA_VALIDATION_API;
+    process.env.CEDULA_VALIDATION_API = "https://validation.example/v3/cedulas";
+    if (cedula === "12345678901") {
+      fetchSpy.mockResolvedValueOnce(Response.json({ valid: true }));
+    }
+    try {
+      mockGetRegistrationSession.mockResolvedValueOnce({
+        sessionId: REGISTRATION_SESSION_ID,
+        cedula,
+        status: "verified",
+        returnUrl: "https://example.com/dashboard",
+      });
+      mockGetRegistrationAccountDraft.mockResolvedValueOnce(
+        createValidAccountDraft({ cedula }),
+      );
+      mockIsValidCedula.mockResolvedValueOnce(cedula !== "12345678901");
+      mockFindCitizenByCedula.mockResolvedValueOnce({
+        names: "Juan",
+        lastName: "Perez",
+        birthDate: "1990-01-01",
+        gender: "male",
+      });
+      mockRegisterOryAccount.mockResolvedValueOnce({
+        payload: {
+          continue_with: [
+            {
+              action: "show_verification_ui",
+              flow: { id: "flow-123" },
+            },
+          ],
+        },
+        setCookies: ["ory_session=abc; Path=/; HttpOnly; SameSite=Lax"],
+      });
 
-    const response = await postAccount(
-      new Request("http://localhost/api/registration/account", {
-        method: "POST",
-        body: JSON.stringify({
-          email: "user@example.com",
-          password: "Password123!",
+      const response = await postAccount(
+        new Request("http://localhost/api/registration/account", {
+          method: "POST",
+          body: JSON.stringify({
+            email: "user@example.com",
+            password: "Password123!",
+          }),
+          headers: { "Content-Type": "application/json" },
         }),
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
+      );
 
-    expect(mockRegisterOryAccount).toHaveBeenCalledWith({
-      cookie: "ory_cookie=value",
-      email: "user@example.com",
-      password: "Password123!",
-      cedula: "00100063362",
-      firstName: "Juan",
-      lastName: "Perez",
-      birthDate: "1990-01-01",
-      gender: "male",
-    });
-    expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toEqual({
-      success: true,
-      destination: "email-sent",
-      redirectTo:
-        "/register/email-sent?flow=flow-123&return_url=https%3A%2F%2Fexample.com%2Fdashboard",
-    });
-    expect(mockClearRegistrationSessionCookie).toHaveBeenCalled();
-    expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalled();
+      expect(mockRegisterOryAccount).toHaveBeenCalledWith({
+        cookie: "ory_cookie=value",
+        email: "user@example.com",
+        password: "Password123!",
+        cedula,
+        firstName: "Juan",
+        lastName: "Perez",
+        birthDate: "1990-01-01",
+        gender: "male",
+      });
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual({
+        success: true,
+        destination: "email-sent",
+        redirectTo:
+          "/register/email-sent?flow=flow-123&return_url=https%3A%2F%2Fexample.com%2Fdashboard",
+      });
+      expect(mockClearRegistrationSessionCookie).toHaveBeenCalled();
+      expect(mockClearRegistrationAccountDraftCookie).toHaveBeenCalled();
+      if (cedula === "12345678901") {
+        expect(fetchSpy).toHaveBeenCalledWith(
+          new URL(`https://validation.example/v3/cedulas/${cedula}/validate`),
+          expect.objectContaining({ cache: "no-store" }),
+        );
+      }
+    } finally {
+      fetchSpy.mockRestore();
+      if (previousApi === undefined) delete process.env.CEDULA_VALIDATION_API;
+      else process.env.CEDULA_VALIDATION_API = previousApi;
+    }
   });
 
   it("rejects direct account credentials that replace an existing same-session draft", async () => {
@@ -691,6 +735,10 @@ describe("registration route orchestration - account", () => {
       payload: {
         id: "verification-flow-456",
         state: "sent_email",
+        ui: {
+          nodes: [],
+          messages: [{ id: 1080003, type: "info", text: "Check your email" }],
+        },
       },
       setCookies: ["ory_verification=def; Path=/; HttpOnly; SameSite=Lax"],
     });
@@ -822,9 +870,9 @@ describe("registration route orchestration - account", () => {
   });
 
   it("returns unexpected_error when the account draft cannot be read", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
       status: "verified",
@@ -846,7 +894,7 @@ describe("registration route orchestration - account", () => {
     });
     expect(mockGetRegistrationSession).toHaveBeenCalledTimes(1);
     expect(mockRegisterOryAccount).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("rejects account drafts tied to a different cedula", async () => {
@@ -1240,8 +1288,6 @@ describe("registration route orchestration - citizen", () => {
   });
 
   it("rejects invalid cedulas before identity lookup", async () => {
-    mockIsValidCedula.mockResolvedValueOnce(false);
-
     const response = await postCitizen(
       new Request("http://localhost/api/registration/citizen", {
         method: "POST",
@@ -1326,6 +1372,7 @@ describe("registration route orchestration - citizen", () => {
       undefined,
       undefined,
       undefined,
+      undefined,
     );
     expect(mockGetSafeReturnUrl).toHaveBeenCalledWith("javascript:alert(1)", {
       currentOrigin: "http://localhost",
@@ -1382,6 +1429,7 @@ describe("registration route orchestration - citizen", () => {
         entryPath: "/register",
         returnUrl: "http://localhost:5173/callback",
       }),
+      undefined,
     );
     expect(mockGetSafeReturnUrl).not.toHaveBeenCalled();
     expect(response.status).toBe(200);
@@ -1404,6 +1452,23 @@ describe("registration route orchestration - liveness-session", () => {
       httpOnly: true,
       sameSite: "strict",
     });
+    mockGetRegistrationBiometricState.mockResolvedValue(null);
+    mockPrepareRegistrationBiometricAttempt.mockReturnValue({
+      status: "create",
+      state: { attemptsCreated: 0 },
+      attemptNumber: 1,
+      clientRequestToken: "client-request-token",
+    });
+    mockRecordRegistrationBiometricSessionCreated.mockReturnValue({
+      attemptsCreated: 1,
+    });
+    mockCreateRegistrationBiometricStateCookie.mockReturnValue({
+      name: "registration_biometric_state",
+      value: "signed-biometric-state",
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+    });
   });
 
   it("requires an existing registration session", async () => {
@@ -1419,9 +1484,9 @@ describe("registration route orchestration - liveness-session", () => {
   });
 
   it("maps registration session read failures to unexpected_error", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockRejectedValueOnce(
       new Error("cookie store unavailable"),
     );
@@ -1434,7 +1499,7 @@ describe("registration route orchestration - liveness-session", () => {
       code: "unexpected_error",
     });
     expect(mockCreateLivenessSession).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("requires a same-session account draft before creating a liveness session", async () => {
@@ -1542,10 +1607,78 @@ describe("registration route orchestration - liveness-session", () => {
     });
   });
 
+  it("reuses an active liveness session without calling Rekognition again", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      cedula: "00100063362",
+      status: "identified",
+      expiresAt: 1_782_000_000_000,
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce(
+      createValidAccountDraft(),
+    );
+    mockPrepareRegistrationBiometricAttempt.mockReturnValueOnce({
+      status: "reuse",
+      state: { attemptsCreated: 1 },
+      sessionId: "active-session-123",
+    });
+
+    const response = await postLivenessSession();
+
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
+    expect(mockCreateRegistrationLivenessChallengeCookie).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      }),
+      "active-session-123",
+    );
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      sessionId: "active-session-123",
+    });
+  });
+
+  it("returns 429 with retry information when biometric attempts are exhausted", async () => {
+    mockGetRegistrationSession.mockResolvedValueOnce({
+      sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
+      cedula: "00100063362",
+      status: "identified",
+      expiresAt: 1_782_000_000_000,
+    });
+    mockGetRegistrationAccountDraft.mockResolvedValueOnce(
+      createValidAccountDraft(),
+    );
+    mockPrepareRegistrationBiometricAttempt.mockReturnValueOnce({
+      status: "blocked",
+      state: { attemptsCreated: 3 },
+      code: "biometric_attempt_limit_exceeded",
+      retryAfterSeconds: 900,
+    });
+
+    const response = await postLivenessSession(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-session?forceNew=true",
+        { method: "POST" },
+      ),
+    );
+
+    expect(mockCreateLivenessSession).not.toHaveBeenCalled();
+    expect(response.status).toBe(429);
+    expect(response.cookies.get("registration_biometric_state")?.value).toBe(
+      "signed-biometric-state",
+    );
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      code: "biometric_attempt_limit_exceeded",
+      retryAfterSeconds: 900,
+    });
+  });
+
   it("maps rekognition failures to a 502 response", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockGetRegistrationSession.mockResolvedValueOnce({
       sessionId: "3f5e57bc-47d0-4f7d-9df8-c15f5bc7f92d",
       cedula: "00100063362",
@@ -1568,7 +1701,7 @@ describe("registration route orchestration - liveness-session", () => {
       success: false,
       code: "rekognition_error",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 });
 
@@ -1622,9 +1755,9 @@ describe("registration route orchestration - session reset", () => {
   });
 
   it("returns unexpected_error when clearing the registration session throws", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
     mockClearRegistrationSessionCookie.mockImplementationOnce(() => {
       throw new Error("cookie store unavailable");
     });
@@ -1636,7 +1769,7 @@ describe("registration route orchestration - session reset", () => {
       success: false,
       code: "unexpected_error",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 });
 

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import {
@@ -155,20 +156,24 @@ export async function emitAnalyticsEvent(
     });
 
     if (!response.ok) {
-      const body = await response.text().catch(() => "");
-      console.error(
-        "[analytics] Ingress rejected event",
-        response.status,
-        body,
-      );
+      logger.error("[analytics] Ingress rejected event", {
+        operation: "lib.analytics.emitter",
+        upstreamStatus: response.status,
+      });
     }
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
-      console.error("[analytics] Ingress request timed out");
+      logger.error("[analytics] Ingress request timed out", {
+        operation: "lib.analytics.emitter",
+      });
       return;
     }
 
-    console.error("[analytics] Failed to emit event:", error);
+    logger.error(
+      "[analytics] Failed to emit event:",
+      { operation: "lib.analytics.emitter" },
+      error,
+    );
   } finally {
     if (timeout) {
       clearTimeout(timeout);

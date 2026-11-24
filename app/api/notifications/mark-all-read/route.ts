@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import {
   queryCitizenNotifications,
   updateCitizenNotification,
@@ -33,7 +34,7 @@ function createMutationFailureResponse(
   });
 }
 
-export async function POST() {
+async function handlePOST() {
   try {
     const citizenId = await getAuthenticatedCitizenId();
 
@@ -86,3 +87,8 @@ export async function POST() {
     );
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/notifications/mark-all-read",
+  handlePOST,
+);

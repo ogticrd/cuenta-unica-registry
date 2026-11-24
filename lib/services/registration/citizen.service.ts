@@ -29,9 +29,16 @@ export const citizenService = {
   async identifyCitizen(
     cedula: string,
     returnUrl?: string,
+    recaptchaToken?: string,
+    recoverAccess?: boolean,
   ): Promise<CitizenLookupResponse> {
     try {
-      const requestBody: CitizenLookupRequest = { cedula, returnUrl };
+      const requestBody: CitizenLookupRequest = {
+        cedula,
+        returnUrl,
+        recaptchaToken,
+        ...(recoverAccess ? { recoverAccess: true } : {}),
+      };
 
       const response = await fetch(API.registrationCitizen, {
         method: "POST",

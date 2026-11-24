@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import { findCitizenSummaryByCedula } from "@/lib/services/registration/citizen-registry.service";
@@ -14,6 +15,7 @@ export interface RegistrationWizardState {
   initialName: string;
   initialSessionStatus: RegistrationSessionStatus | null;
   hasAccountDraft: boolean;
+  initialRecoveryMode?: boolean;
 }
 
 export async function getRegistrationWizardState(): Promise<RegistrationWizardState> {
@@ -54,9 +56,14 @@ export async function getRegistrationWizardState(): Promise<RegistrationWizardSt
       initialName: citizen.firstName,
       initialSessionStatus: session.status,
       hasAccountDraft,
+      ...(session.recovery ? { initialRecoveryMode: true } : {}),
     };
   } catch (error) {
-    console.error("[registration-flow] Failed to hydrate wizard state:", error);
+    logger.error(
+      "[registration-flow] Failed to hydrate wizard state:",
+      { operation: "registration.registration-flow.service" },
+      error,
+    );
 
     return {
       initialStep: 0,

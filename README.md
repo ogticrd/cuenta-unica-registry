@@ -96,6 +96,9 @@ Invariantes:
 
 Mas detalle en `docs/registration-architecture.md` y `docs/testing-strategy.md`.
 
+Los logs estructurados para Cloud Run y la correspondencia con Sentry en v1
+se documentan en docs/observability.md.
+
 ## Estructura principal
 
 - `app/api/registration/*`: endpoints del lado servidor del protocolo de registro.

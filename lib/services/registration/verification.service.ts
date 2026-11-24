@@ -64,9 +64,14 @@ function getCompleteLivenessFailure(
 }
 
 export const verificationService = {
-  async createLivenessSession(): Promise<CreateLivenessSessionResponse> {
+  async createLivenessSession(
+    forceNew = false,
+  ): Promise<CreateLivenessSessionResponse> {
     try {
-      const response = await fetch(API.registrationLivenessSession, {
+      const endpoint = forceNew
+        ? `${API.registrationLivenessSession}?forceNew=true`
+        : API.registrationLivenessSession;
+      const response = await fetch(endpoint, {
         method: "POST",
         credentials: "include",
       });

@@ -4,9 +4,9 @@ import { AlertTriangle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/constants/routes";
+import { reportClientError } from "@/lib/logging/client";
 
 import "./globals.css";
 
@@ -17,7 +17,7 @@ interface GlobalErrorProps {
 
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    console.error(error);
+    reportClientError("client_error", {}, error);
   }, [error]);
 
   const details =

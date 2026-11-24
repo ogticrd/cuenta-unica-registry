@@ -159,9 +159,9 @@ describe("POST /api/ory/logout", () => {
   });
 
   it("returns 500 when createBrowserLogoutFlow fails with unexpected error", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockCreateBrowserLogoutFlow.mockRejectedValueOnce(
       new Error("Ory network failure"),
@@ -176,16 +176,15 @@ describe("POST /api/ory/logout", () => {
       code: "ory_logout_failed",
       error: "Failed to logout",
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(stdoutSpy).toHaveBeenCalledWith(
       expect.stringContaining("Error during logout"),
-      expect.any(Error),
     );
   });
 
   it("returns 500 when updateLogoutFlow fails", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockCreateBrowserLogoutFlow.mockResolvedValueOnce({
       data: {
@@ -208,7 +207,7 @@ describe("POST /api/ory/logout", () => {
       code: "ory_logout_failed",
       error: "Failed to logout",
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("returns success when no Set-Cookie headers come from Ory", async () => {

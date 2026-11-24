@@ -1,8 +1,8 @@
 import { expect, type Page, test } from "@playwright/test";
 
 const VALID_CEDULA = "40214041176";
-const INVALID_CEDULA = "00100000000";
-const INVALID_CEDULA_FORMATTED = "001-0000000-0";
+const INVALID_CEDULA = "00000000000";
+const INVALID_CEDULA_FORMATTED = "000-0000000-0";
 const VALID_CEDULA_FORMATTED = "402-1404117-6";
 const VALID_EMAIL = "john_smith@yopmail.com";
 const VALID_PASSWORD = "John4Sm1t5@nSecure#2026";
@@ -72,6 +72,127 @@ async function continueFromIdentification(page: Page) {
 }
 
 test.describe("registration form validation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route("**/recaptcha/enterprise.js*", (route) =>
+      route.fulfill({
+        contentType: "application/javascript",
+        body: `
+          const api = {
+            ready: (callback) => callback(),
+            execute: () => Promise.resolve("recaptcha-e2e-token"),
+          };
+          window.grecaptcha = { ...api, enterprise: api };
+        `,
+      }),
+    );
+  });
+
+  test("allows a non-Luhn cedula confirmed by the server to reach the account step", async ({
+    page,
+  }) => {
+    let payload: unknown;
+    await page.route("**/api/registration/citizen", (route) => {
+      payload = route.request().postDataJSON();
+      return route.fulfill({
+        status: 200,
+        json: {
+          success: true,
+          citizen: { id: "12345678901", firstName: "Prueba" },
+        },
+      });
+    });
+    await gotoRegister(page);
+    await page
+      .getByRole("textbox", { name: /Número de cédula/ })
+      .fill("12345678901");
+    await page.getByRole("button", { name: "CONTINUAR" }).click();
+    await expect(page.getByLabel(/^Correo electrónico/)).toBeVisible();
+    expect(payload).toMatchObject({
+      cedula: "12345678901",
+      recaptchaToken: "recaptcha-e2e-token",
+    });
+  });
+
+  test("shows a temporary validation outage on the cedula field without advancing", async ({
+    page,
+  }) => {
+    await page.route("**/api/registration/citizen", (route) =>
+      route.fulfill({
+        status: 503,
+        json: { success: false, code: "cedula_validation_unavailable" },
+      }),
+    );
+    await gotoRegister(page);
+    await page
+      .getByRole("textbox", { name: /Número de cédula/ })
+      .fill("12345678901");
+    await page.getByRole("button", { name: "CONTINUAR" }).click();
+    await expect(
+      page.getByText(
+        "No pudimos consultar la validación de tu cédula. Inténtalo de nuevo en unos momentos.",
+      ),
+    ).toBeVisible();
+    await expect(page.getByLabel(/^Correo electrónico/)).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "CONTINUAR" })).toBeEnabled();
+  });
+
+  test("enters recovery mode from the outlined button for an existing identity", async ({
+    page,
+  }) => {
+    let recoveryRequested = false;
+    await page.route("**/api/registration/citizen", (route) => {
+      if (route.request().postDataJSON().recoverAccess === true) {
+        recoveryRequested = true;
+        return route.fulfill({
+          status: 200,
+          json: {
+            success: true,
+            citizen: { id: VALID_CEDULA, firstName: "Prueba" },
+            recovery: true,
+          },
+        });
+      }
+      return route.fulfill({
+        status: 409,
+        json: { success: false, code: "identity_exists" },
+      });
+    });
+    await gotoRegister(page);
+
+    const cedula = page.getByRole("textbox", { name: /Número de cédula/ });
+    await cedula.fill(VALID_CEDULA);
+
+    const alert = page.getByRole("alert").filter({
+      hasText: "Esta cédula ya tiene una Cuenta Única.",
+    });
+    await expect(async () => {
+      await page.getByRole("button", { name: "CONTINUAR" }).click();
+      await expect(alert).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 15_000 });
+    await expect(alert).toContainText("Conservarás tu historial de datos.");
+    const recreate = alert.getByRole("button", {
+      name: "Recuperar acceso",
+      exact: true,
+    });
+    await expect(recreate).toHaveCSS("border-top-width", "2px");
+    await expect(recreate).toHaveCSS("border-top-left-radius", "67px");
+    await expect(recreate).toHaveCSS("height", "41px");
+    await expect(recreate).toHaveCSS("font-size", "14px");
+    await expect(alert).toHaveCSS("color", "rgb(0, 135, 255)");
+    expect(
+      await recreate.evaluate(
+        (button) => button.scrollWidth <= button.clientWidth,
+      ),
+    ).toBe(true);
+    await recreate.click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(
+      page.getByTestId("registration-wizard").getByRole("alert"),
+    ).toHaveText("Modo recuperación");
+    await expect(page.getByLabel(/^Correo electrónico/)).toBeVisible();
+    expect(recoveryRequested).toBe(true);
+  });
+
   test("shows invalid cedula errors in the form without crashing the page", async ({
     page,
   }) => {
@@ -135,10 +256,12 @@ test.describe("registration form validation", () => {
     const getCitizenLookupPayload = await mockSuccessfulCitizenLookup(page);
     let accountDraftPayload: unknown;
     let livenessSessionRequested = false;
+    let passwordBreachRequestCount = 0;
 
-    await page.route("https://api.pwnedpasswords.com/range/**", (route) =>
-      route.fulfill({ status: 200, body: "" }),
-    );
+    await page.route("https://api.pwnedpasswords.com/range/**", (route) => {
+      passwordBreachRequestCount += 1;
+      return route.fulfill({ status: 200, body: "" });
+    });
     await page.route("**/api/registration/account-draft", async (route) => {
       accountDraftPayload = route.request().postDataJSON();
 
@@ -175,10 +298,43 @@ test.describe("registration form validation", () => {
     await page.getByLabel(/^Correo electrónico/).fill(VALID_EMAIL);
     await page.getByLabel(/^Confirmar correo/).fill(VALID_EMAIL);
     await page.getByLabel(/^Contraseña/).fill(VALID_PASSWORD);
+
+    await expect.poll(() => passwordBreachRequestCount).toBeGreaterThan(0);
+    const requestsAfterPasswordValidation = passwordBreachRequestCount;
+
+    await page.getByLabel(/^Correo electrónico/).fill("correo");
+    await expect(
+      page.getByText("Ingresa un correo electrónico válido"),
+    ).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Correo electrónico/).fill(VALID_EMAIL);
+    await expect(
+      page.getByText("Ingresa un correo electrónico válido"),
+    ).toBeHidden();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Confirmar correo/).fill("otro@example.com");
+    await expect(
+      page.getByText("Los correos electrónicos no coinciden"),
+    ).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
+    await page.getByLabel(/^Confirmar correo/).fill(VALID_EMAIL);
+    await expect(
+      page.getByText("Los correos electrónicos no coinciden"),
+    ).toBeHidden();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
     await page.getByLabel(/^Confirmar contraseña/).fill(VALID_PASSWORD);
+    await page.waitForTimeout(1_000);
+
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
+
     await page.getByRole("button", { name: "CONTINUAR" }).click();
 
     await expect(page.getByText("¡Hola, MARLUAN!")).toBeVisible();
+    expect(passwordBreachRequestCount).toBe(requestsAfterPasswordValidation);
     expect(accountDraftPayload).toMatchObject({
       email: VALID_EMAIL,
       password: VALID_PASSWORD,

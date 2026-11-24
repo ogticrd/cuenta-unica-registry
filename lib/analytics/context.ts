@@ -25,7 +25,7 @@ function allowDirectAnalyticsClientId() {
 }
 
 export async function readAnalyticsContextFromRequest(
-  request: NextRequest,
+  request: Pick<NextRequest, "cookies">,
 ): Promise<AnalyticsContext | null> {
   const rawValue = request.cookies.get(ANALYTICS_CONTEXT_COOKIE)?.value;
 

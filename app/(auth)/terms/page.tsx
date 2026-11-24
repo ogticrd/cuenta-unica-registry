@@ -27,9 +27,9 @@ export default async function TermsPage() {
             <Image
               src="/images/cuenta-unica-icon.svg"
               alt="Cuenta Única"
-              width={98}
-              height={96}
-              className="h-16 w-auto rounded-lg"
+              width={48}
+              height={48}
+              className="w-auto rounded-lg"
             />
             <CardTitle className="text-xl font-bold text-primary dark:text-blue-400">
               {title}

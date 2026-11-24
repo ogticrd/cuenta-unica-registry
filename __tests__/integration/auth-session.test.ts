@@ -90,9 +90,9 @@ describe("GET /api/ory/session", () => {
       },
     });
 
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockListMySessions.mockRejectedValueOnce(new Error("Ory timeout"));
 
@@ -103,9 +103,8 @@ describe("GET /api/ory/session", () => {
     expect(body.isAuthenticated).toBe(true);
     expect(body.identity.id).toBe("identity-456");
     expect(body.otherSessions).toEqual([]);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(stdoutSpy).toHaveBeenCalledWith(
       expect.stringContaining("Could not fetch other sessions"),
-      expect.any(Error),
     );
   });
 
@@ -131,9 +130,9 @@ describe("GET /api/ory/session", () => {
   });
 
   it("returns 500 when Ory returns an unexpected error without response status", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockToSession.mockRejectedValueOnce(new Error("Network failure"));
 
@@ -145,13 +144,13 @@ describe("GET /api/ory/session", () => {
     expect(body.isAuthenticated).toBe(false);
     expect(body.code).toBe("ory_session_fetch_failed");
     expect(body.error).toBe("Failed to fetch session");
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("returns 500 when Ory returns a non-401/403 error status", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockToSession.mockRejectedValueOnce({ response: { status: 502 } });
 
@@ -163,7 +162,7 @@ describe("GET /api/ory/session", () => {
     expect(body.isAuthenticated).toBe(false);
     expect(body.code).toBe("ory_session_fetch_failed");
     expect(body.error).toBe("Failed to fetch session");
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("forwards browser cookies to Ory for both toSession and listMySessions", async () => {

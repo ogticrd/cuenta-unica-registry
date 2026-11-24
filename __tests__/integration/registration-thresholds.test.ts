@@ -116,6 +116,99 @@ beforeEach(() => {
 });
 
 describe("liveness threshold configuration", () => {
+  it.each([
+    { confidence: 85, similarity: 99, code: "liveness_check_failed" },
+    { confidence: 85.01, similarity: 95, code: null },
+    { confidence: 99, similarity: 94.99, code: "face_mismatch" },
+    { confidence: 99, similarity: 95, code: null },
+    { confidence: 99, similarity: null, code: "face_mismatch" },
+  ])("matches v1 at confidence=$confidence and similarity=$similarity", async ({
+    confidence,
+    similarity,
+    code,
+  }) => {
+    const { POST } = await import(
+      "@/app/api/registration/verification/liveness-result/route"
+    );
+    setIdentifiedSessionWithLivenessChallenge();
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(Uint8Array.from([4, 5, 6])),
+    );
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) =>
+        command.input?.SessionId
+          ? {
+              Confidence: confidence,
+              ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+              Status: "SUCCEEDED",
+            }
+          : {
+              FaceMatches:
+                similarity === null ? [] : [{ Similarity: similarity }],
+            },
+    );
+    const response = await POST(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        {
+          method: "POST",
+          body: JSON.stringify({ sessionId: "session-123" }),
+          headers: { "Content-Type": "application/json" },
+        },
+      ),
+    );
+    if (code) {
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({ success: false, code });
+    } else {
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({
+        success: true,
+        confidence,
+        similarity,
+      });
+    }
+    if (confidence <= 85) expect(mockRekognitionSend).toHaveBeenCalledTimes(1);
+    else
+      expect(
+        mockRekognitionSend.mock.calls[1][0].input.SimilarityThreshold,
+      ).toBe(95);
+  });
+
+  it("does not allow an invalid facial threshold to weaken comparison", async () => {
+    process.env.FACE_SIMILARITY_THRESHOLD = "-1";
+    const { POST } = await import(
+      "@/app/api/registration/verification/liveness-result/route"
+    );
+    setIdentifiedSessionWithLivenessChallenge();
+    vi.spyOn(global, "fetch").mockResolvedValueOnce(
+      new Response(Uint8Array.from([4, 5, 6])),
+    );
+    mockRekognitionSend.mockImplementation(
+      async (command: { input?: Record<string, unknown> }) =>
+        command.input?.SessionId
+          ? {
+              Confidence: 99,
+              ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
+              Status: "SUCCEEDED",
+            }
+          : { FaceMatches: [{ Similarity: 94 }] },
+    );
+    const response = await POST(
+      new Request(
+        "http://localhost/api/registration/verification/liveness-result",
+        { method: "POST", body: JSON.stringify({ sessionId: "session-123" }) },
+      ),
+    );
+    expect(await response.json()).toMatchObject({
+      success: false,
+      code: "face_mismatch",
+    });
+    expect(mockRekognitionSend.mock.calls[1][0].input.SimilarityThreshold).toBe(
+      95,
+    );
+  });
+
   it("uses custom threshold env vars", async () => {
     // Set custom thresholds BEFORE importing the route module
     process.env.LIVENESS_CONFIDENCE_THRESHOLD = "95";
@@ -136,7 +229,7 @@ describe("liveness threshold configuration", () => {
       async (command: { input?: Record<string, unknown> }) => {
         if (command.input?.SessionId) {
           return {
-            Confidence: 95, // exactly at custom threshold
+            Confidence: 96, // strictly above the custom threshold, as in v1
             ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
             Status: "SUCCEEDED",
           };
@@ -188,7 +281,7 @@ describe("liveness threshold configuration", () => {
       async (command: { input?: Record<string, unknown> }) => {
         if (command.input?.SessionId) {
           return {
-            Confidence: 89, // below default 90 threshold
+            Confidence: 85, // v1 requires confidence strictly greater than 85
             ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
             Status: "SUCCEEDED",
           };
@@ -235,7 +328,7 @@ describe("liveness threshold configuration", () => {
       async (command: { input?: Record<string, unknown> }) => {
         if (command.input?.SessionId) {
           return {
-            Confidence: 89,
+            Confidence: 85,
             ReferenceImage: { Bytes: new Uint8Array([1, 2, 3]) },
             Status: "SUCCEEDED",
           };

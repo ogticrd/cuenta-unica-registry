@@ -10,6 +10,8 @@ import {
   ANALYTICS_CONTEXT_LAUNCH_COOKIE,
   buildAnalyticsContextFromUrl,
 } from "@/lib/analytics/context-core";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { getOAuth2Client } from "@/lib/ory/oauth-client";
 
 type OryOAuth2Client = NonNullable<Awaited<ReturnType<typeof getOAuth2Client>>>;
@@ -68,7 +70,7 @@ function getClientAnalyticsLabels(client: OryOAuth2Client) {
   };
 }
 
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest) {
   const clientId = getAnalyticsLaunchClientId(request.nextUrl);
 
   if (!clientId) {
@@ -80,9 +82,11 @@ export async function GET(request: NextRequest) {
     client = await getOAuth2Client(clientId);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error("[analytics/start] Failed to validate Ory client:", {
-      message,
-    });
+    logger.error(
+      "[analytics/start] Failed to validate Ory client:",
+      { operation: "app.api.analytics.start.route" },
+      error,
+    );
     const status = message.startsWith("Missing ORY_") ? 500 : 502;
     return NextResponse.json(
       { error: "Unable to validate analytics client" },
@@ -128,3 +132,5 @@ export async function GET(request: NextRequest) {
 
   return response;
 }
+
+export const GET = withRequestLogging("/api/analytics/start", handleGET);

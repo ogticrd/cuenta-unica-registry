@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-t";
 import { ROUTES } from "@/lib/constants/routes";
+import { reportClientError } from "@/lib/logging/client";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -18,7 +19,7 @@ export default function AppError({ error, reset }: ErrorProps) {
   const t = useT("error");
 
   useEffect(() => {
-    console.error(error);
+    reportClientError("client_error", {}, error);
   }, [error]);
 
   const details = error?.message?.trim() || t("default_details");

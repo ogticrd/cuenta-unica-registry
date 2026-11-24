@@ -59,19 +59,26 @@ function renderTrustedAnswer(html: string) {
         return <br key={key} />;
       case "a": {
         const href = node.getAttribute("href");
+        const isInternal = Boolean(
+          href?.startsWith("/") && !href.startsWith("//"),
+        );
 
-        if (!isSafeHref(href)) {
+        if (!href || (!isInternal && !isSafeHref(href))) {
           return <React.Fragment key={key}>{children}</React.Fragment>;
         }
 
+        const resolvedHref = isInternal
+          ? new URL(href, window.location.origin).href
+          : href;
+
         return (
           <a
-            href={href ?? undefined}
+            href={resolvedHref}
             key={key}
             rel="noopener noreferrer"
             target="_blank"
           >
-            {children}
+            {isInternal ? resolvedHref : children}
           </a>
         );
       }

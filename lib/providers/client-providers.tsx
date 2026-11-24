@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/lib/auth-context";
 import { NotificationProvider } from "@/lib/notifications/notification-context";
 import { AmplifyProvider } from "@/lib/providers/amplify-provider";
+import { RecaptchaProvider } from "@/lib/providers/recaptcha-provider";
 
 /**
  * Client Component — runs on the client.
@@ -18,11 +19,13 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
       defaultTheme="light"
       disableTransitionOnChange
     >
-      <AmplifyProvider>
-        <AuthProvider>
-          <NotificationProvider>{children}</NotificationProvider>
-        </AuthProvider>
-      </AmplifyProvider>
+      <RecaptchaProvider>
+        <AmplifyProvider>
+          <AuthProvider>
+            <NotificationProvider>{children}</NotificationProvider>
+          </AuthProvider>
+        </AmplifyProvider>
+      </RecaptchaProvider>
     </ThemeProvider>
   );
 }

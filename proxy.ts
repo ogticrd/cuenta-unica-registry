@@ -9,6 +9,12 @@ import {
   serializeAnalyticsContext,
   shouldRefreshAnalyticsContext,
 } from "@/lib/analytics/context-core";
+import { logger } from "@/lib/logging/logger";
+import {
+  RECAPTCHA_PROOF_COOKIE,
+  RECOVERY_RECAPTCHA_ACTION,
+  validateRecaptchaProof,
+} from "@/lib/security/recaptcha-proof-core";
 import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
 
@@ -17,16 +23,20 @@ const oryMiddleware = createOryMiddleware(oryConfig);
 const PROTECTED_ROUTES = [
   ROUTES.dashboard,
   ROUTES.profile,
-  ROUTES.settings,
+  ROUTES.settingsPage,
   ROUTES.history,
+  ROUTES.notifications,
+  ROUTES.support,
+  ROUTES.about,
+  ROUTES.consent,
 ];
 
 const AUTH_ROUTES = [
-  "/login",
+  ROUTES.login,
   ROUTES.register,
   ROUTES.emailSent,
-  "/recovery",
-  "/verification",
+  ROUTES.recovery,
+  ROUTES.verification,
 ];
 
 const AUTH_ENTRY_PATHS = new Set([
@@ -34,7 +44,7 @@ const AUTH_ENTRY_PATHS = new Set([
   "/register",
   "/recovery",
   "/verification",
-  "/settings",
+  ROUTES.settingsPage,
 ]);
 
 function getAnalyticsSecret() {
@@ -127,11 +137,23 @@ async function maybeRefreshAnalyticsContext(request: NextRequest) {
   return response;
 }
 
-function isOryFlowRequest(request: NextRequest) {
+function isOryFlowRequest({ pathname, searchParams }: NextRequest["nextUrl"]) {
+  const hasFlow = Boolean(searchParams.get("flow")?.trim());
+
+  if (pathname === ROUTES.login) {
+    return (
+      hasFlow ||
+      Boolean(searchParams.get("login_challenge")?.trim()) ||
+      searchParams.get("refresh") === "true" ||
+      searchParams.get("aal") === "aal2"
+    );
+  }
+
   return (
-    request.nextUrl.searchParams.has("flow") ||
-    request.nextUrl.searchParams.has("login_challenge") ||
-    request.nextUrl.searchParams.has("return_to")
+    hasFlow &&
+    (pathname === ROUTES.recovery ||
+      pathname === ROUTES.verification ||
+      pathname === ROUTES.emailSent)
   );
 }
 
@@ -180,9 +202,36 @@ async function hasOrySession(request: NextRequest) {
       cookie,
     },
     cache: "no-store",
+    redirect: "manual",
   });
 
   return resp.ok;
+}
+
+function isRecoverySubmission(request: NextRequest) {
+  return (
+    request.method === "POST" &&
+    request.nextUrl.pathname.endsWith("/self-service/recovery")
+  );
+}
+
+async function proxyRecoverySubmission(request: NextRequest) {
+  const secret = process.env.REGISTRATION_SESSION_SECRET;
+  const proof = request.cookies.get(RECAPTCHA_PROOF_COOKIE)?.value;
+  const isValid =
+    !!secret &&
+    (await validateRecaptchaProof(proof, RECOVERY_RECAPTCHA_ACTION, secret));
+
+  if (!isValid) {
+    return NextResponse.json(
+      { success: false, code: "recaptcha_failed" },
+      { status: 403 },
+    );
+  }
+
+  const response = await oryMiddleware(request);
+  response.cookies.delete(RECAPTCHA_PROOF_COOKIE);
+  return response;
 }
 
 export async function proxy(request: NextRequest) {
@@ -195,18 +244,19 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/sessions") ||
     path.startsWith("/.well-known/ory")
   ) {
+    if (isRecoverySubmission(request)) {
+      return proxyRecoverySubmission(request);
+    }
+
     return oryMiddleware(request);
   }
 
-  const analyticsResponse = await maybeRefreshAnalyticsContext(request);
-  if (analyticsResponse) {
-    return analyticsResponse;
-  }
-
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
-    path.startsWith(route),
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (route) => path === route || path.startsWith(`${route}/`),
   );
-  const isAuthRoute = AUTH_ROUTES.some((route) => path.startsWith(route));
+  const isAuthRoute = AUTH_ROUTES.some(
+    (route) => path === route || path.startsWith(`${route}/`),
+  );
   const isLandingRoute = path === "/";
 
   if (isProtectedRoute || isAuthRoute || isLandingRoute) {
@@ -215,15 +265,18 @@ export async function proxy(request: NextRequest) {
     try {
       isAuthenticated = await hasOrySession(request);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error("Error checking Ory session in proxy:", { message });
+      logger.error(
+        "Error checking Ory session in proxy:",
+        { operation: "proxy" },
+        error,
+      );
     }
 
     if (isProtectedRoute && !isAuthenticated) {
       return redirectTo(request, ROUTES.login);
     }
 
-    if (isAuthRoute && isAuthenticated && !isOryFlowRequest(request)) {
+    if (isAuthRoute && isAuthenticated && !isOryFlowRequest(request.nextUrl)) {
       return redirectTo(request, ROUTES.dashboard);
     }
 
@@ -232,7 +285,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return (await maybeRefreshAnalyticsContext(request)) ?? NextResponse.next();
 }
 
 export const config = {

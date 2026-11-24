@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { CardIcon } from "@/components/ui/card-icon";
 import { useT } from "@/hooks/use-t";
-import { Backlight } from "../ui/backlight";
 
 const COLORS = {
   primary: "#003876",
@@ -141,25 +140,23 @@ export function WhatIsCuc() {
 
         {/* Right Side Cards Grid */}
         <div className="flex-shrink-0 relative sm:block">
-          <Backlight blur={75} className="w-full h-full">
-            <div className="grid grid-cols-3 relative z-20">
-              {gridCells.map((cell) => (
-                <div
-                  key={cell.id}
-                  className={`w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 ${cell.bgTransparent ? "bg-transparent" : ""}`}
-                >
-                  {cell.type === "card" && (
-                    <CardIcon
-                      color={cell.color}
-                      dotColor={cell.dotColor}
-                      delay={cell.delay}
-                      duration={cell.duration}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </Backlight>
+          <div className="grid grid-cols-3 relative z-20">
+            {gridCells.map((cell) => (
+              <div
+                key={cell.id}
+                className={`w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 ${cell.bgTransparent ? "bg-transparent" : ""}`}
+              >
+                {cell.type === "card" && (
+                  <CardIcon
+                    color={cell.color}
+                    dotColor={cell.dotColor}
+                    delay={cell.delay}
+                    duration={cell.duration}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

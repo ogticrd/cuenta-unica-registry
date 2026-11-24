@@ -5,6 +5,7 @@ import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import {
   type SyntheticEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -25,13 +26,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useT } from "@/hooks/use-t";
+import { reportClientError } from "@/lib/logging/client";
 import { translateOryMessageKey } from "@/lib/ory/custom-translations";
 import { createAccountSchema } from "@/lib/schemas/registration";
 import type {
   RegisterAccountDraft,
   RegisterAccountStepErrors,
 } from "@/lib/types/registration/account";
-import { getPasswordRequirementStatus } from "@/lib/utils/password";
+import {
+  getPasswordRequirementStatus,
+  isBreachedPassword,
+  isPasswordStrongEnough,
+} from "@/lib/utils/password";
+
+const PASSWORD_BREACH_DEBOUNCE_MS = 500;
+
+type PasswordBreachStatus = "idle" | "checking" | "safe" | "compromised";
 
 interface StepAccountProps {
   onBack: () => void;
@@ -67,6 +77,12 @@ function translateGeneralError(
       return t("account.error");
     case "identity_exists":
       return t("account.identity_exists");
+    case "recovery_not_found":
+      return t("identification.recovery_not_found");
+    case "recovery_failed":
+      return t("account.recovery_failed");
+    case "recovery_sessions_revocation_failed":
+      return t("account.recovery_sessions_revocation_failed");
     case "registration_session_missing":
       return t("account.session_missing");
     case "verification_required":
@@ -83,6 +99,8 @@ function translateGeneralError(
       return t("account.validation.password_compromised");
     case "invalid_cedula":
       return t("identification.id_invalid");
+    case "cedula_validation_unavailable":
+      return t("identification.validation_unavailable");
     case "citizen_not_found":
       return t("identification.id_not_found");
     case "ory_validation_error":
@@ -127,10 +145,15 @@ export function StepAccount({
     [cedula, t],
   );
   type AccountValues = z.infer<typeof accountSchema>;
+  const accountResolver = useMemo(
+    () => zodResolver(accountSchema, undefined, { mode: "sync" }),
+    [accountSchema],
+  );
 
   const form = useForm<AccountValues>({
-    resolver: zodResolver(accountSchema),
+    resolver: accountResolver,
     mode: "onChange",
+    delayError: 750,
     defaultValues,
   });
   const defaultValuesKey = [
@@ -140,6 +163,18 @@ export function StepAccount({
     defaultValues.confirmPassword,
   ].join("\u0000");
   const lastDefaultValuesKey = useRef(defaultValuesKey);
+  const passwordCheck = useRef<
+    | {
+        password: string;
+        promise: Promise<boolean>;
+      }
+    | undefined
+  >(undefined);
+  const [passwordBreachStatus, setPasswordBreachStatus] =
+    useState<PasswordBreachStatus>("idle");
+  const passwordCompromisedMessage = t(
+    "account.validation.password_compromised",
+  );
   const initialGeneralError = initialErrors
     ? translateGeneralError(initialErrors, t)
     : undefined;
@@ -154,6 +189,60 @@ export function StepAccount({
   const hasInitialFieldErrors = Boolean(
     initialEmailErrorMessage || initialPasswordErrorMessage,
   );
+
+  const validatePasswordBreach = useCallback(
+    async (password: string) => {
+      if (passwordCheck.current?.password !== password) {
+        passwordCheck.current = {
+          password,
+          promise: isBreachedPassword(password),
+        };
+      }
+
+      setPasswordBreachStatus("checking");
+      const breached = await passwordCheck.current.promise;
+
+      if (form.getValues("password") !== password) {
+        return breached;
+      }
+
+      setPasswordBreachStatus(breached ? "compromised" : "safe");
+
+      if (breached) {
+        form.setError("password", {
+          type: "password_compromised",
+          message: passwordCompromisedMessage,
+        });
+      } else if (
+        form.getFieldState("password").error?.type === "password_compromised"
+      ) {
+        form.clearErrors("password");
+      }
+
+      return breached;
+    },
+    [form, passwordCompromisedMessage],
+  );
+
+  const currentPassword = form.watch("password");
+
+  useEffect(() => {
+    setPasswordBreachStatus("idle");
+
+    if (form.getFieldState("password").error?.type === "password_compromised") {
+      form.clearErrors("password");
+    }
+
+    if (!isPasswordStrongEnough(currentPassword)) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      void validatePasswordBreach(currentPassword);
+    }, PASSWORD_BREACH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [currentPassword, form, validatePasswordBreach]);
 
   useEffect(() => {
     if (lastDefaultValuesKey.current === defaultValuesKey) {
@@ -180,6 +269,11 @@ export function StepAccount({
     if (!initialErrors) {
       return;
     }
+    reportClientError("form_error", {
+      form: "register",
+      source: "registration",
+      code: initialErrors.code,
+    });
 
     if (
       initialEmailErrorMessage &&
@@ -221,7 +315,15 @@ export function StepAccount({
     t,
   ]);
 
-  const onSubmit = (data: AccountValues) => onNext(data);
+  const onSubmit = async (data: AccountValues) => {
+    const breached = await validatePasswordBreach(data.password);
+
+    if (breached || form.getValues("password") !== data.password) {
+      return;
+    }
+
+    await onNext(data);
+  };
 
   return (
     <div className="space-y-6 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300 w-full">
@@ -406,7 +508,8 @@ export function StepAccount({
                         <span>{req.label}</span>
                       </li>
                     ))}
-                    {!form.watch("password") ||
+                    {!currentPassword ||
+                    passwordBreachStatus !== "safe" ||
                     form.formState.errors.password?.message ? (
                       <li className="flex items-center gap-2.5 transition-colors text-slate-500 dark:text-slate-400">
                         <X className="w-4 h-4 shrink-0 text-slate-400 dark:text-slate-500" />
@@ -508,7 +611,7 @@ export function StepAccount({
 
             <Button
               type="submit"
-              className="h-12 w-full bg-[#003B73] hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="h-12 w-full bg-primary hover:bg-[#002f5c] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={form.formState.isSubmitting}
             >
               {t("account.continue")}

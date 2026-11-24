@@ -265,7 +265,7 @@ export function DeviceItem({
                 )}
               </div>
 
-              {(isLoadingCoords || coords || coordsError) && (
+              {/* {(isLoadingCoords || coords || coordsError) && (
                 <div className="w-full flex flex-col gap-2">
                   <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                     {t("location")}
@@ -286,7 +286,7 @@ export function DeviceItem({
                     <DeviceMap lat={coords.lat} lng={coords.lng} />
                   ) : null}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </CollapsibleContent>

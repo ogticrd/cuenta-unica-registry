@@ -34,9 +34,21 @@ Environment variables** de GitHub.
 | `NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID` | `us-east-1:b1b2e698-23f3-4b5e-945c-ce2a5bc92fc2` | identity pool de Cognito | identity pool de Cognito |
 | `NEXT_PUBLIC_COGNITO_USER_POOL_ID` | `us-east-1_4R9AQlkpf` | user pool de Cognito | user pool de Cognito |
 | `NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID` | `6lkb58rrpita167ncvqmnkq1gl` | app client de Cognito | app client de Cognito |
-| `LIVENESS_CONFIDENCE_THRESHOLD` | `90` | `90`, salvo cambio operativo aprobado | umbral productivo |
-| `FACE_SIMILARITY_THRESHOLD` | `80` | `80`, salvo cambio operativo aprobado | umbral productivo |
+| `LIVENESS_CONFIDENCE_THRESHOLD` | `85` | `85` | `85`, alineado con v1 |
+| `FACE_SIMILARITY_THRESHOLD` | `95` | `95` | `95`, alineado con v1 |
 | `REGISTRATION_ALLOWED_RETURN_ORIGINS` | orígenes confiables separados por coma | orígenes confiables separados por coma | orígenes confiables separados por coma |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | clave pública de Enterprise | clave pública del ambiente | clave pública del ambiente |
+| `NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE` | `18097181459` | número de soporte | número de soporte |
+| `NEXT_PUBLIC_LUHN_EXCEPTION_HASHES` | hashes separados por coma, opcional | opcional | opcional |
+| `CEDULA_VALIDATION_API` | `https://api.digital.gob.do/v3/cedulas` | API aprobada | API aprobada |
+| `RECAPTCHA_PROJECT_ID` | proyecto reCAPTCHA Enterprise | proyecto del ambiente | proyecto del ambiente |
+| `RECAPTCHA_SCORE_THRESHOLD` | `0.3` | valor aprobado | valor aprobado |
+| `FEEDBACK_API_URL` | opcional hasta disponer de API | API receptora de sugerencias | API receptora de sugerencias |
+| `LOG_LEVEL` | `info` en Cloud Run; `debug` local | `info` | `info` |
+| `BIOMETRIC_MAX_ATTEMPTS` | `3` | `3` | `3` |
+| `BIOMETRIC_COOLDOWN_SECONDS` | `900` | `900` | `900` |
+| `BIOMETRIC_STATE_TTL_SECONDS` | `1800` | `1800` | `1800` |
+| `ANALYTICS_ALLOW_DIRECT_CLIENT_ID` | `false` salvo desarrollo aprobado | `false` | `false` |
 | `BUZON_API_BASE_URL` | `https://buzon-ciudadano-staging-i42qq4zxeq-ue.a.run.app` | URL de Buzón Ciudadano | URL de Buzón Ciudadano |
 | `GEOIP_API_URL` | `https://reallyfreegeoip.org/json/` | proveedor GeoIP aprobado | proveedor GeoIP aprobado |
 | `ANALYTICS_INGRESS_URL` | endpoint de analítica | endpoint de analítica | endpoint de analítica |
@@ -73,6 +85,33 @@ La app aplica headers base desde `next.config.mjs` en todas las rutas:
 
 No remover el permiso de cámara; la prueba de vida depende de él.
 
+## Sugerencias, soporte y configuración local
+
+El build valida 85 para liveness y 95 para similitud facial antes de construir
+la imagen. Si un ambiente de GitHub conserva 90/80 u otros valores, hay que
+actualizar esas variables; el workflow rechaza el despliegue con la política anterior.
+
+Login y registro comparten el botón flotante de sugerencias. El modal ofrece un
+enlace de ayuda por WhatsApp con número y mensaje localizados; solo se envía a
+WhatsApp un saludo genérico, sin copiar los campos del formulario.
+
+`FEEDBACK_API_URL` debe apuntar a una API que acepte por POST JSON los campos
+`cedula`, `email`, `name` y `comments`. Solo una respuesta HTTP exitosa del
+destino permite confirmar el envío. Sin esa variable, el endpoint devuelve
+HTTP 503 con `NOT_CONFIGURED` y la pantalla informa que el servicio no está
+disponible. V1 enviaba sugerencias a Sentry; no define una URL de API reutilizable.
+
+Los valores `NEXT_PUBLIC_*` se pasan al construir Docker y quedan incluidos en
+el código del navegador. Cambiarlos requiere construir una imagen nueva; cambiar
+solo la variable de ejecución no actualiza ese código. Las listas de orígenes y
+hashes se entrecomillan en el workflow para conservar sus comas.
+
+`.env.example` contiene los nombres sin valores. `.env` mantiene los valores
+locales reales; las opciones sin uso quedan comentadas, sin credenciales ficticias.
+Las claves estáticas AWS son exclusivamente una alternativa local y no se
+inyectan al contenedor de Cloud Run. Las credenciales E2E se dejan comentadas
+hasta disponer de una cuenta de pruebas aprobada.
+
 ## Secretos
 
 Configurar estos valores en **Settings -> Environments -> <ambiente> ->
@@ -81,6 +120,7 @@ cargarse desde la fuente aprobada de secretos.
 
 - `GAR_JSON_KEY`
 - `ORY_SDK_TOKEN`
+- `RECAPTCHA_API_KEY`
 - `REGISTRATION_SESSION_SECRET`
 - `CITIZENS_INFO_API_KEY`
 - `CITIZENS_PHOTO_API_KEY`

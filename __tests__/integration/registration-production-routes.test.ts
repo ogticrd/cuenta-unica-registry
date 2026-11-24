@@ -152,6 +152,7 @@ beforeEach(() => {
   process.env.CITIZENS_PHOTO_API_KEY = "citizens-photo-key";
   process.env.ORY_SDK_URL = "https://ory.example.test";
   process.env.ORY_SDK_TOKEN = "ory-token";
+  process.env.RECAPTCHA_BYPASS_LOCAL = "true";
   delete process.env.ANALYTICS_INGRESS_URL;
   delete process.env.ANALYTICS_ENVIRONMENT;
   delete process.env.ANALYTICS_PROJECT_ID;
@@ -1359,7 +1360,7 @@ describe("registration production routes", () => {
     );
     expect(mockRekognitionSend).toHaveBeenCalledTimes(2);
     expect(mockRekognitionSend.mock.calls[1]?.[0]?.input).toMatchObject({
-      SimilarityThreshold: 80,
+      SimilarityThreshold: 95,
     });
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({

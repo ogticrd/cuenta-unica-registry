@@ -129,6 +129,18 @@ function isValidSessionPayload(
   }
 
   if (
+    session.recovery !== undefined &&
+    (!session.recovery ||
+      typeof session.recovery !== "object" ||
+      typeof session.recovery.identityId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        session.recovery.identityId,
+      ))
+  ) {
+    return false;
+  }
+
+  if (
     session.analytics !== undefined &&
     !isValidSessionAnalytics(session.analytics)
   ) {
@@ -158,7 +170,9 @@ function isValidSessionPayload(
   );
 }
 
-function parseSessionCookie(value: string): RegistrationSession | null {
+export function parseRegistrationSessionCookie(
+  value: string,
+): RegistrationSession | null {
   const parts = value.split(".");
 
   if (parts.length !== 2) {
@@ -219,6 +233,7 @@ export function createRegistrationSessionCookie(
   returnUrl?: string,
   sessionId: string = randomUUID(),
   analytics?: RegistrationSession["analytics"],
+  recovery?: RegistrationSession["recovery"],
 ): ResponseCookie {
   const issuedAt = Date.now();
   const session: RegistrationSession = {
@@ -227,6 +242,7 @@ export function createRegistrationSessionCookie(
     status,
     ...(returnUrl ? { returnUrl } : {}),
     ...(analytics ? { analytics } : {}),
+    ...(recovery ? { recovery } : {}),
     issuedAt,
     expiresAt: issuedAt + REGISTRATION_SESSION_DURATION_MS,
   };
@@ -272,5 +288,5 @@ export async function getRegistrationSession(): Promise<RegistrationSession | nu
     return null;
   }
 
-  return parseSessionCookie(cookieValue);
+  return parseRegistrationSessionCookie(cookieValue);
 }

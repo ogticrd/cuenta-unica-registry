@@ -8,6 +8,7 @@ export interface RegistrationSession {
   status: RegistrationSessionStatus;
   returnUrl?: string;
   analytics?: AnalyticsContext;
+  recovery?: { identityId: string };
   issuedAt: number;
   expiresAt: number;
 }

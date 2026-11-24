@@ -8,12 +8,18 @@ export type CreateLivenessSessionErrorCode =
   | "registration_session_missing"
   | "account_draft_missing"
   | "verification_already_completed"
+  | "biometric_attempt_limit_exceeded"
+  | "biometric_cooldown_active"
   | "rekognition_error"
   | "unexpected_error";
 
 export type CreateLivenessSessionResponse =
   | { success: true; sessionId: string }
-  | { success: false; code: CreateLivenessSessionErrorCode };
+  | {
+      success: false;
+      code: CreateLivenessSessionErrorCode;
+      retryAfterSeconds?: number;
+    };
 
 export type VerifyLivenessErrorCode =
   | "invalid_payload"

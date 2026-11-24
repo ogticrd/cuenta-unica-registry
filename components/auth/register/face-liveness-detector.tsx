@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from "@aws-amplify/ui-react";
 import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
+import { reportClientError } from "@/lib/logging/client";
 import "@aws-amplify/ui-react/styles.css";
 
 import { useT } from "@/hooks/use-t";
@@ -12,12 +13,14 @@ interface FaceLivenessProps {
   sessionId: string;
   onComplete: () => Promise<void>;
   onError: (error: unknown) => Promise<void>;
+  source?: "registration" | "vid";
 }
 
 export function FaceLiveness({
   sessionId,
   onComplete,
   onError,
+  source = "registration",
 }: FaceLivenessProps) {
   const t = useT("register");
 
@@ -62,7 +65,18 @@ export function FaceLiveness({
         sessionId={sessionId}
         region={AWS_REGION}
         onAnalysisComplete={onComplete}
-        onError={onError}
+        onError={async (event) => {
+          reportClientError(
+            "biometric_detector_error",
+            {
+              source,
+              code: "detector_error",
+              detectorState: event.state,
+            },
+            event.error,
+          );
+          await onError(event);
+        }}
         disableStartScreen={true}
         displayText={displayText}
       />

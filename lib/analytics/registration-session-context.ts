@@ -1,7 +1,20 @@
 import "server-only";
 
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import type { AnalyticsEventInput } from "@/lib/analytics/emitter";
+import { parseRegistrationSessionCookie } from "@/lib/services/registration/registration-session.service";
 import type { RegistrationSession } from "@/lib/types/registration/session";
+
+export function getRegistrationRequestJourneyId(request: Request) {
+  const rawSession = new RequestCookies(request.headers).get(
+    "registration_session",
+  )?.value;
+  if (!rawSession || !process.env.REGISTRATION_SESSION_SECRET) return undefined;
+
+  return getRegistrationSessionAnalyticsContext(
+    parseRegistrationSessionCookie(rawSession),
+  )?.journeyId;
+}
 
 export function getRegistrationSessionAnalyticsContext(
   session: RegistrationSession | null | undefined,

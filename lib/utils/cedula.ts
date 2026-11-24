@@ -23,6 +23,11 @@ export function formatCedula(value: string) {
   return `${digits.slice(0, 3)}-${digits.slice(3, 10)}-${digits.slice(10)}`;
 }
 
+export function hasValidCedulaFormat(value: string) {
+  const digits = value.replace(/-/g, "");
+  return /^\d{11}$/.test(digits) && !hasAllRepeatedDigits(digits);
+}
+
 function checkLuhn(cedula: string) {
   const digits = normalizeCedula(cedula);
 

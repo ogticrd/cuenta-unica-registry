@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { feedbackApiPayloadSchema } from "@/lib/schemas/feedback/feedback.schema";
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   try {
-    const json = await request.json();
+    const json: unknown = await request.json().catch(() => null);
     const parsed = feedbackApiPayloadSchema.safeParse(json);
 
     if (!parsed.success) {
@@ -13,25 +15,36 @@ export async function POST(request: Request) {
       );
     }
 
-    const FEEDBACK_API_URL = process.env.FEEDBACK_API_URL;
+    const FEEDBACK_API_URL = process.env.FEEDBACK_API_URL?.trim();
 
     if (!FEEDBACK_API_URL) {
-      console.info(
-        "[api/feedback] endpoint not configured, payload:",
-        parsed.data,
+      logger.warn("Feedback recibido sin destino configurado", {
+        operation: "feedback.submit",
+        form: "feedback",
+        code: "destination_not_configured",
+        hasContact: Boolean(parsed.data.email),
+        commentLength: parsed.data.comments?.length,
+      });
+      return NextResponse.json(
+        { success: false, code: "NOT_CONFIGURED" },
+        { status: 503 },
       );
-      return NextResponse.json({ success: true }, { status: 200 });
     }
 
     const response = await fetch(FEEDBACK_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed.data),
+      cache: "no-store",
     });
 
     if (!response.ok) {
-      console.error(
+      logger.error(
         `[api/feedback] external server responded with ${response.status}`,
+        {
+          operation: "app.api.feedback.route",
+          upstreamStatus: response.status,
+        },
       );
       return NextResponse.json(
         { success: false, code: "SERVER_ERROR" },
@@ -41,10 +54,16 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("[api/feedback] network/internal error:", error);
+    logger.error(
+      "[api/feedback] network/internal error:",
+      { operation: "app.api.feedback.route" },
+      error,
+    );
     return NextResponse.json(
       { success: false, code: "SERVER_ERROR" },
       { status: 500 },
     );
   }
 }
+
+export const POST = withRequestLogging("/api/feedback", handlePOST);

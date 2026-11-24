@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { emitAnalyticsEvent } from "@/lib/analytics/emitter";
+import { logger } from "@/lib/logging/logger";
+import { withRequestLogging } from "@/lib/logging/with-request-logging";
 import { parseJsonRequest } from "@/lib/services/api-response";
 import {
   createVerifyLivenessPayload,
@@ -45,7 +47,7 @@ async function emitLivenessOutcome(options: {
   );
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   try {
     const parsedBody = await parseJsonRequest(
       request,
@@ -109,8 +111,9 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error(
+    logger.error(
       "[/api/registration/verification/liveness-result] Failed:",
+      { operation: "app.api.registration.verification.liveness-result.route" },
       error,
     );
     await emitLivenessOutcome({
@@ -121,3 +124,8 @@ export async function POST(request: Request) {
     return createErrorResponse("unexpected_error", 500);
   }
 }
+
+export const POST = withRequestLogging(
+  "/api/registration/verification/liveness-result",
+  handlePOST,
+);

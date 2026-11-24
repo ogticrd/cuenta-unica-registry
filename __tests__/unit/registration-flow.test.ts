@@ -164,9 +164,9 @@ describe("getRegistrationWizardState", () => {
   });
 
   it("falls back to step 0 when citizen lookup throws", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     mockGetRegistrationSession.mockResolvedValueOnce({
       cedula: "00100063362",
@@ -180,7 +180,7 @@ describe("getRegistrationWizardState", () => {
       initialSessionStatus: null,
       hasAccountDraft: false,
     });
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(stdoutSpy).toHaveBeenCalled();
   });
 
   it("falls back to step 0 when the session cedula is empty", async () => {

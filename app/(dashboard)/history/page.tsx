@@ -280,7 +280,7 @@ export default function HistoryPage() {
           </div>
         </SecuritySection>
 
-        <SecuritySection title={t("institutional_portals")}>
+        {/* <SecuritySection title={t("institutional_portals")}>
           <div className="space-y-4">
             {portals.map((portal) => (
               <PortalItem
@@ -293,7 +293,7 @@ export default function HistoryPage() {
               />
             ))}
           </div>
-        </SecuritySection>
+        </SecuritySection> */}
       </div>
 
       <ConfirmationModal

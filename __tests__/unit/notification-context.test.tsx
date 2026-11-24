@@ -56,7 +56,7 @@ function notification(
 }
 
 function NotificationConsumer() {
-  const { notifications, unreadCount, markRead, markAllRead } =
+  const { notifications, unreadCount, refresh, markRead, markAllRead } =
     useNotifications();
   const currentStatus = notifications[0]?.status ?? "empty";
 
@@ -64,6 +64,9 @@ function NotificationConsumer() {
     <div>
       <span data-testid="status">{currentStatus}</span>
       <span data-testid="unread">{unreadCount}</span>
+      <button type="button" onClick={refresh}>
+        load notifications
+      </button>
       <button type="button" onClick={() => markRead("security")}>
         mark read
       </button>
@@ -74,12 +77,16 @@ function NotificationConsumer() {
   );
 }
 
-function renderProvider() {
-  return render(
+async function renderProvider() {
+  const result = render(
     <NotificationProvider>
       <NotificationConsumer />
     </NotificationProvider>,
   );
+  await userEvent.click(
+    screen.getByRole("button", { name: "load notifications" }),
+  );
+  return result;
 }
 
 describe("NotificationProvider", () => {
@@ -98,7 +105,7 @@ describe("NotificationProvider", () => {
       error: "not_found",
     });
 
-    renderProvider();
+    await renderProvider();
 
     await expect(screen.findByTestId("status")).resolves.toHaveTextContent(
       "unread",
@@ -127,7 +134,7 @@ describe("NotificationProvider", () => {
       error: "notifications_unavailable",
     });
 
-    renderProvider();
+    await renderProvider();
 
     await expect(screen.findByTestId("unread")).resolves.toHaveTextContent("1");
 

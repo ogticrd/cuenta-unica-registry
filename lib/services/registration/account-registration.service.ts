@@ -1,15 +1,19 @@
+import { logger } from "@/lib/logging/logger";
 import "server-only";
 
 import { NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/routes";
 import { getServerCookies, mergeCookieHeaders } from "@/lib/ory/cookies";
 import { validateRegistrationAccountCredentials } from "@/lib/services/registration/account-credential-validation.service";
+import { recoverOryAccount } from "@/lib/services/registration/account-recovery.service";
+import { validateCedula } from "@/lib/services/registration/cedula-validation.service";
 import { findCitizenByCedula } from "@/lib/services/registration/citizen-registry.service";
 import { mapOryAccountErrors } from "@/lib/services/registration/ory-account-error-mapper";
 import {
   createOryEmailVerificationCodeFlow,
   type OryRegistrationPayload,
   type OryVerificationFlowPayload,
+  type RegisterOryAccountResult,
   registerOryAccount,
 } from "@/lib/services/registration/ory-registration.service";
 import {
@@ -27,7 +31,7 @@ import type {
   RegisterAccountResponse,
 } from "@/lib/types/registration/account";
 import type { RegistrationSession } from "@/lib/types/registration/session";
-import { isValidCedula, normalizeCedula } from "@/lib/utils/cedula";
+import { normalizeCedula } from "@/lib/utils/cedula";
 
 export interface AccountRegistrationResult {
   payload: RegisterAccountResponse;
@@ -227,8 +231,12 @@ export async function completeRegistrationAccount(
     });
   }
 
-  if (!(await isValidCedula(cedula))) {
-    return createAccountRegistrationErrorResult("invalid_cedula", 400);
+  const cedulaValidation = await validateCedula(cedula);
+  if (!cedulaValidation.success) {
+    return createAccountRegistrationErrorResult(
+      cedulaValidation.code,
+      cedulaValidation.status,
+    );
   }
 
   const credentialError = await validateRegistrationAccountCredentials(input, {
@@ -241,27 +249,45 @@ export async function completeRegistrationAccount(
     });
   }
 
-  const citizen = await findCitizenByCedula(cedula);
-
-  if (!citizen) {
-    return createAccountRegistrationErrorResult("citizen_not_found", 404);
-  }
-
   try {
     const incomingCookies = await getServerCookies();
-    const { payload, setCookies } = await registerOryAccount({
-      cookie: incomingCookies,
-      email: input.email,
-      password: input.password,
-      cedula,
-      firstName: citizen.names,
-      lastName: citizen.lastName,
-      birthDate: citizen.birthDate,
-      gender: citizen.gender,
-    });
+    let result: RegisterOryAccountResult;
+    if (registrationSession.recovery) {
+      const recovery = await recoverOryAccount(input, registrationSession);
+      if (!recovery.success) {
+        return createAccountRegistrationErrorResult(
+          recovery.code,
+          recovery.status,
+          { fieldErrors: recovery.fieldErrors },
+        );
+      }
+      result = { payload: { identity: recovery.identity }, setCookies: [] };
+    } else {
+      const citizen = await findCitizenByCedula(cedula);
+      if (!citizen) {
+        return createAccountRegistrationErrorResult("citizen_not_found", 404);
+      }
+      result = await registerOryAccount({
+        cookie: incomingCookies,
+        email: input.email,
+        password: input.password,
+        cedula,
+        firstName: citizen.names,
+        lastName: citizen.lastName,
+        birthDate: citizen.birthDate,
+        gender: citizen.gender,
+      });
+    }
+    const { payload, setCookies } = result;
 
     if (payload.ui) {
       const errorDetails = mapOryAccountErrors(payload);
+      logger.warn("Ory rechazó los datos del registro", {
+        operation: "registration.account",
+        event: "registration_flow_update_failed",
+        code: errorDetails.code,
+        form: registrationSession.recovery ? "account_recovery" : "register",
+      });
 
       return createAccountRegistrationErrorResult(errorDetails.code, 400, {
         fieldErrors: errorDetails.fieldErrors,
@@ -273,10 +299,14 @@ export async function completeRegistrationAccount(
       const errorDetails = mapOryAccountErrors(payload);
       const status = payload.error.id === "security_csrf_violation" ? 400 : 502;
 
-      console.error(
-        "[account-registration] Ory returned an error payload:",
-        payload.error,
-      );
+      logger.error("Ory rechazó la actualización del registro", {
+        operation: "registration.account",
+        event: "registration_flow_update_failed",
+        code: errorDetails.code,
+        status,
+        errorId: payload.error.id,
+        form: registrationSession.recovery ? "account_recovery" : "register",
+      });
 
       return createAccountRegistrationErrorResult(errorDetails.code, status, {
         fieldErrors: errorDetails.fieldErrors,
@@ -304,17 +334,27 @@ export async function completeRegistrationAccount(
           ...verificationFlow.setCookies,
         ];
 
-        if (verificationFlow.payload.ui || verificationFlow.payload.error) {
+        const verificationErrors = [
+          ...(verificationFlow.payload.ui?.messages ?? []),
+          ...(verificationFlow.payload.ui?.nodes ?? []).flatMap(
+            (node) => node.messages ?? [],
+          ),
+        ].filter((message) => message.type === "error");
+
+        if (verificationFlow.payload.error || verificationErrors.length > 0) {
           const errorDetails = mapVerificationFlowErrors(
             verificationFlow.payload,
           );
 
-          if (verificationFlow.payload.error) {
-            console.error(
-              "[account-registration] Ory verification flow returned an error payload:",
-              verificationFlow.payload.error,
-            );
-          }
+          logger.error("No se pudo iniciar la verificación del correo", {
+            operation: "registration.email_verification",
+            form: registrationSession.recovery
+              ? "account_recovery"
+              : "register",
+            code: errorDetails.code,
+            errorId: verificationFlow.payload.error?.id,
+            messageIds: verificationErrors.map((message) => message.id),
+          });
 
           return createAccountRegistrationErrorResult(
             errorDetails.code,
@@ -334,10 +374,11 @@ export async function completeRegistrationAccount(
           );
         }
 
-        console.error(
-          "[account-registration] Ory created an unverified identity without a verification flow:",
-          payload.identity.id,
-        );
+        logger.error("Ory devolvió una identidad sin flujo de verificación", {
+          operation: "registration.email_verification",
+          code: "unexpected_error",
+          identityId: payload.identity.id,
+        });
 
         return createAccountRegistrationErrorResult("unexpected_error", 502, {
           setCookies: combinedSetCookies,
@@ -363,7 +404,11 @@ export async function completeRegistrationAccount(
       setCookies,
     });
   } catch (error) {
-    console.error("[account-registration] Registration failed:", error);
+    logger.error(
+      "[account-registration] Registration failed:",
+      { operation: "registration.account-registration.service" },
+      error,
+    );
     return createAccountRegistrationErrorResult("unexpected_error", 500);
   }
 }

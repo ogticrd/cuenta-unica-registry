@@ -23,6 +23,10 @@ describe("security headers", () => {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        source: "/vid",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      },
     ]);
   });
 });
