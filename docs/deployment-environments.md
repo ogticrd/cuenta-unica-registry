@@ -39,7 +39,7 @@ Environment variables** de GitHub.
 | `FACE_SIMILARITY_THRESHOLD` | `95` | `95` | `95`, alineado con v1 |
 | `REGISTRATION_ALLOWED_RETURN_ORIGINS` | orígenes confiables separados por coma | orígenes confiables separados por coma | orígenes confiables separados por coma |
 | `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | clave pública de Enterprise | clave pública del ambiente | clave pública del ambiente |
-| `NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE` | `18097181459` | número de soporte | número de soporte |
+| `NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE` | opcional; sin valor oculta el botón | opcional; número de soporte | opcional; número de soporte |
 | `NEXT_PUBLIC_LUHN_EXCEPTION_HASHES` | hashes separados por coma, opcional | opcional | opcional |
 | `CEDULA_VALIDATION_API` | `https://api.digital.gob.do/v3/cedulas` | API aprobada | API aprobada |
 | `RECAPTCHA_PROJECT_ID` | proyecto reCAPTCHA Enterprise | proyecto del ambiente | proyecto del ambiente |
@@ -97,8 +97,10 @@ la imagen. Si un ambiente de GitHub conserva 90/80 u otros valores, hay que
 actualizar esas variables; el workflow rechaza el despliegue con la política anterior.
 
 Login y registro comparten el botón flotante de sugerencias. El modal ofrece un
-enlace de ayuda por WhatsApp con número y mensaje localizados; solo se envía a
-WhatsApp un saludo genérico, sin copiar los campos del formulario.
+enlace de ayuda por WhatsApp solo cuando `NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE`
+contiene un número válido. No hay un número predeterminado; si la variable no
+está definida o está vacía, el botón de WhatsApp no se muestra. El mensaje está
+localizado y solo se envía un saludo genérico, sin copiar los campos del formulario.
 
 `FEEDBACK_API_URL` debe apuntar a una API que acepte por POST JSON los campos
 `cedula`, `email`, `name` y `comments`. Solo una respuesta HTTP exitosa del

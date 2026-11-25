@@ -349,7 +349,7 @@
   },
   "history": {
     "title": "Activity History",
-    "subtitle": "View and manage the devices and institutional portals linked to your account.",
+    "subtitle": "Review and manage your account sessions.",
     "linked_devices": "Linked devices",
     "no_devices": "No active devices detected.",
     "institutional_portals": "Institutional portals",
