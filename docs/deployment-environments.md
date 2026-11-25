@@ -69,7 +69,7 @@ No se debe hornear una URL de Cloud Run en el bundle con
 generado por Cloud Run y una URL estática provoca submits cross-origin.
 
 Configurar `ORY_TRUSTED_ORIGINS` en cada ambiente con los orígenes del portal
-separados por coma, sin rutas. En desarrollo local, el valor predeterminado es
+separados por espacios, sin rutas. En desarrollo local, el valor predeterminado es
 `http://localhost:3000`.
 
 `REGISTRATION_ALLOWED_RETURN_ORIGINS` debe incluir solo orígenes confiables que

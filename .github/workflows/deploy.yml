@@ -186,7 +186,7 @@ jobs:
             ORY_SDK_URL=${{ vars.ORY_SDK_URL || vars.ORY_API_URL }}
             ORY_PUBLIC_URL=${{ vars.ORY_PUBLIC_URL || vars.ORY_SDK_URL || vars.ORY_API_URL }}
             ORY_SDK_TOKEN=${{ secrets.ORY_SDK_TOKEN || secrets.ORY_API_TOKEN }}
-            ORY_TRUSTED_ORIGINS="${{ vars.ORY_TRUSTED_ORIGINS }}"
+            ORY_TRUSTED_ORIGINS=${{ vars.ORY_TRUSTED_ORIGINS }}
             REGISTRATION_SESSION_SECRET=${{ secrets.REGISTRATION_SESSION_SECRET }}
             REGISTRATION_ALLOWED_RETURN_ORIGINS="${{ vars.REGISTRATION_ALLOWED_RETURN_ORIGINS }}"
             FEEDBACK_API_URL=${{ vars.FEEDBACK_API_URL || secrets.FEEDBACK_API_URL }}

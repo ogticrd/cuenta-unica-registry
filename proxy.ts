@@ -19,8 +19,7 @@ import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
 
 const trustedOrigins = (process.env.ORY_TRUSTED_ORIGINS ?? "")
-  .split(",")
-  .map((origin) => origin.trim())
+  .split(/\s+/)
   .filter(Boolean);
 
 const oryMiddleware = createOryMiddleware({

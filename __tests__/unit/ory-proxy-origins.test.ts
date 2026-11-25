@@ -27,7 +27,7 @@ describe("Ory proxy trusted origins", () => {
     const trustedOrigin = "https://registry.example.test";
     const alternateOrigin = "https://registry-alt.example.test";
     const oryOrigin = "https://ory.example.test";
-    vi.stubEnv("ORY_TRUSTED_ORIGINS", `${trustedOrigin}, ${alternateOrigin}`);
+    vi.stubEnv("ORY_TRUSTED_ORIGINS", `${trustedOrigin} ${alternateOrigin}`);
     vi.stubEnv("ORY_SDK_URL", oryOrigin);
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(async () => {
       return new Response(null, { status: 401 });
