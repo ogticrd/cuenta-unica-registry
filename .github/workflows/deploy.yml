@@ -84,7 +84,7 @@ jobs:
 
       - name: Checkout release refs
         if: ${{ github.event_name == 'release' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -116,7 +116,7 @@ jobs:
       image: ${{ steps.build.outputs.primary-image }}
       digest: ${{ steps.build.outputs.digest }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Validate biometric thresholds against v1
         env:
