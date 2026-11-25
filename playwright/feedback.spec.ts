@@ -38,7 +38,7 @@ async function fillFeedback(page: Page) {
 
 for (const language of ["es", "en"] as const) {
   for (const path of ["/login", "/register"]) {
-    test(`offers localized feedback and WhatsApp help on ${path} in ${language}`, async ({
+    test(`offers localized feedback and optional WhatsApp help on ${path} in ${language}`, async ({
       page,
       context,
       baseURL,
@@ -81,9 +81,17 @@ for (const language of ["es", "en"] as const) {
         await expect(dialog).toBeVisible({ timeout: 1000 });
       }).toPass({ timeout: 15000 });
       const link = dialog.getByRole("link", { name: messages.whatsapp_help });
+      const phone = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE?.replace(
+        /\D/g,
+        "",
+      );
+      if (!phone || !/^[1-9]\d{6,14}$/.test(phone)) {
+        await expect(link).toHaveCount(0);
+        return;
+      }
       const url = new URL((await link.getAttribute("href")) ?? "");
       expect(url.origin).toBe("https://wa.me");
-      expect(url.pathname).toBe("/18097181459");
+      expect(url.pathname).toBe(`/${phone}`);
       expect(url.searchParams.get("text")).toBe(messages.whatsapp_message);
       await expect(link).toHaveAttribute("target", "_blank");
       await expect(link).toBeInViewport();

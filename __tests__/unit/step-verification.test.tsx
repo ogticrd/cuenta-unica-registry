@@ -1,7 +1,13 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import type React from "react";
 import { createElement } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { StepVerification } from "@/components/auth/register/steps/step-verification";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
@@ -94,9 +100,9 @@ function renderStepVerification(
     ...overrides,
   };
 
-  render(<StepVerification {...props} />);
+  const view = render(<StepVerification {...props} />);
 
-  return props;
+  return { ...props, unmount: view.unmount };
 }
 
 describe("StepVerification", () => {
@@ -114,7 +120,71 @@ describe("StepVerification", () => {
     });
   });
 
-  it("fully navigates after successful liveness and backend account creation", async () => {
+  afterEach(() => vi.useRealTimers());
+
+  it.each([
+    "email-sent",
+    "login",
+  ] as const)("shows verified success for five seconds before navigating to %s", async (destination) => {
+    vi.mocked(verificationService.createLivenessSession).mockResolvedValueOnce({
+      success: true,
+      sessionId: "session-123",
+    });
+    vi.mocked(
+      verificationService.completeLivenessRegistration,
+    ).mockResolvedValueOnce({
+      success: true,
+      confidence: 99,
+      similarity: 96,
+      destination,
+      redirectTo:
+        destination === "login"
+          ? "/login"
+          : "/register/email-sent?flow=flow-123",
+    });
+
+    renderStepVerification();
+
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", { name: "verification.start_process" }),
+    );
+
+    expect(await screen.findByText("complete liveness")).toBeInTheDocument();
+    vi.useFakeTimers();
+    await act(async () => {
+      fireEvent.click(screen.getByText("complete liveness"));
+    });
+
+    expect(
+      verificationService.completeLivenessRegistration,
+    ).toHaveBeenCalledWith("session-123");
+    expect(accountService.registerAccount).not.toHaveBeenCalled();
+    expect(screen.getByText("verification.modal.verified")).toBeInTheDocument();
+    expect(
+      screen.getByText("verification.continuing_registration"),
+    ).toBeInTheDocument();
+    expect(assign).not.toHaveBeenCalled();
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    await act(() => vi.advanceTimersByTimeAsync(4_999));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("verification.modal.verified")).toBeInTheDocument();
+    expect(assign).not.toHaveBeenCalled();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
+
+    await act(() => vi.advanceTimersByTimeAsync(1));
+    expect(assign).toHaveBeenCalledTimes(1);
+    expect(assign).toHaveBeenCalledWith(
+      destination === "login" ? "/login" : "/register/email-sent?flow=flow-123",
+    );
+    if (destination === "login") {
+      expect(mockToastSuccess).toHaveBeenCalledWith("account.success_title", {
+        description: "account.success_description",
+      });
+    }
+  });
+
+  it("cancels the delayed navigation when the verification step unmounts", async () => {
     vi.mocked(verificationService.createLivenessSession).mockResolvedValueOnce({
       success: true,
       sessionId: "session-123",
@@ -128,24 +198,20 @@ describe("StepVerification", () => {
       destination: "email-sent",
       redirectTo: "/register/email-sent?flow=flow-123",
     });
-
-    renderStepVerification();
-
+    const { unmount } = renderStepVerification();
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(
       screen.getByRole("button", { name: "verification.start_process" }),
     );
-
-    expect(await screen.findByText("complete liveness")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("complete liveness"));
-
-    await waitFor(() => {
-      expect(
-        verificationService.completeLivenessRegistration,
-      ).toHaveBeenCalledWith("session-123");
+    await screen.findByText("complete liveness");
+    vi.useFakeTimers();
+    await act(async () => {
+      fireEvent.click(screen.getByText("complete liveness"));
     });
-    expect(accountService.registerAccount).not.toHaveBeenCalled();
-    expect(assign).toHaveBeenCalledWith("/register/email-sent?flow=flow-123");
+    expect(screen.getByText("verification.modal.verified")).toBeInTheDocument();
+    unmount();
+    await act(() => vi.advanceTimersByTimeAsync(5_000));
+    expect(assign).not.toHaveBeenCalled();
   });
 
   it("waits for an explicit continuation before finalizing a verified draft", async () => {

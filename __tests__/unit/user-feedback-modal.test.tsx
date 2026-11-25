@@ -22,7 +22,7 @@ vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 beforeEach(() => {
   vi.clearAllMocks();
   locale.value = "es";
-  vi.stubEnv("NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE", "+1-809-718-1459");
+  vi.stubEnv("NEXT_PUBLIC_WHATSAPP_SUPPORT_PHONE", "+1-202-555-0147");
 });
 afterEach(() => vi.unstubAllEnvs());
 
@@ -51,7 +51,7 @@ describe("feedback modal", () => {
     const link = screen.getByRole("link", { name: text.whatsapp_help });
     const url = new URL(link.getAttribute("href") ?? "");
     expect(url.origin).toBe("https://wa.me");
-    expect(url.pathname).toBe("/18097181459");
+    expect(url.pathname).toBe("/12025550147");
     expect(url.searchParams.get("text")).toBe(text.whatsapp_message);
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
     expect(link).toHaveAttribute("target", "_blank");

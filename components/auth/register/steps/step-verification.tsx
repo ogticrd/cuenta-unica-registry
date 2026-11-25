@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   FaceLiveness,
@@ -33,6 +33,7 @@ import { trackJourneyEvent } from "@/lib/services/analytics/journey.service";
 import { accountService } from "@/lib/services/registration/account.service";
 import { verificationService } from "@/lib/services/registration/verification.service";
 import type {
+  RegisterAccountDestination,
   RegisterAccountDraft,
   RegisterAccountErrorCode,
   RegisterAccountStepErrors,
@@ -41,6 +42,8 @@ import type {
   CreateLivenessSessionErrorCode,
   VerifyLivenessErrorCode,
 } from "@/lib/types/registration/verification";
+
+const VERIFICATION_SUCCESS_DISPLAY_MS = 5_000;
 
 type VerificationPhase =
   | "idle"
@@ -78,6 +81,10 @@ export function StepVerification({
     null,
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [pendingRedirect, setPendingRedirect] = useState<{
+    redirectTo: string;
+    destination: RegisterAccountDestination;
+  } | null>(null);
   const isHandlingError = useRef(false);
   const isCompletingLiveness = useRef(false);
   const isFinalizingAccount = useRef(false);
@@ -237,6 +244,16 @@ export function StepVerification({
     [onRequireAccount, onRequireIdentification, t],
   );
 
+  useEffect(() => {
+    if (phase !== "creating_account" || !pendingRedirect) return;
+
+    const timeout = window.setTimeout(() => {
+      handleAccountRegistrationResult({ success: true, ...pendingRedirect });
+    }, VERIFICATION_SUCCESS_DISPLAY_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [handleAccountRegistrationResult, pendingRedirect, phase]);
+
   const finalizeAccountRegistration = useCallback(async () => {
     if (isFinalizingAccount.current) return;
 
@@ -300,20 +317,15 @@ export function StepVerification({
       return;
     }
 
-    if (result.destination === "login") {
-      toast.success(t("account.success_title"), {
-        description: t("account.success_description"),
-      });
-    }
-
     setPhase("creating_account");
-    window.location.assign(result.redirectTo);
-    isCompletingLiveness.current = false;
+    setPendingRedirect({
+      redirectTo: result.redirectTo,
+      destination: result.destination,
+    });
   }, [
     livenessSessionId,
     onRequireIdentification,
     onRequireAccount,
-    t,
     verificationErrorMessages,
   ]);
 
