@@ -25,6 +25,7 @@ Environment variables** de GitHub.
 | `GOOGLE_PROJECT_ID` | `auth-do` | proyecto GCP de staging | proyecto GCP de producción |
 | `GOOGLE_CLOUD_REGION` | `us-east1` | región de Cloud Run | región de Cloud Run |
 | `ORY_SDK_URL` | `https://focused-gagarin-ywepc2q5bu.projects.oryapis.com` | URL Ory de staging | URL Ory de producción |
+| `ORY_TRUSTED_ORIGINS` | orígenes HTTPS del portal de desarrollo | orígenes HTTPS del portal de staging | orígenes HTTPS del portal de producción |
 | `CITIZENS_API_BASE_URL` | `https://api.devs.digital.gob.do` | URL compartida de APIs ciudadanas | URL productiva de APIs ciudadanas |
 | `AWS_REGION` | `us-east-1` | región de Rekognition | región de Rekognition |
 | `AWS_ROLE_ARN` | rol IAM federado para Rekognition | rol IAM federado para Rekognition | rol IAM federado para Rekognition |
@@ -66,6 +67,10 @@ Next.js; la app deriva ese origen desde `x-forwarded-host` /
 No se debe hornear una URL de Cloud Run en el bundle con
 `NEXT_PUBLIC_ORY_SDK_URL`: development puede ser accesible por más de un host
 generado por Cloud Run y una URL estática provoca submits cross-origin.
+
+Configurar `ORY_TRUSTED_ORIGINS` en cada ambiente con los orígenes del portal
+separados por coma, sin rutas. En desarrollo local, el valor predeterminado es
+`http://localhost:3000`.
 
 `REGISTRATION_ALLOWED_RETURN_ORIGINS` debe incluir solo orígenes confiables que
 puedan recibir al ciudadano después de activar la cuenta. La API de registro

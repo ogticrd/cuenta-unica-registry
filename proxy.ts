@@ -18,7 +18,17 @@ import {
 import oryConfig from "@/ory.config";
 import { ROUTES } from "./lib/constants/routes";
 
-const oryMiddleware = createOryMiddleware(oryConfig);
+const trustedOrigins = (process.env.ORY_TRUSTED_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const oryMiddleware = createOryMiddleware({
+  ...oryConfig,
+  trustedOrigins: trustedOrigins.length
+    ? trustedOrigins
+    : ["http://localhost:3000"],
+});
 
 const PROTECTED_ROUTES = [
   ROUTES.dashboard,
